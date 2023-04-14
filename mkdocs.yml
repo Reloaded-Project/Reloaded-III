@@ -1,0 +1,66 @@
+site_name: Reloaded III Specification
+site_url: https://reloaded-project.github.io/Reloaded-III/
+
+repo_name: Reloaded-Project/Reloaded-III
+repo_url: https://github.com/Reloaded-Project/Reloaded-III
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Sewer56
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/TheSewer56
+
+markdown_extensions:
+  - admonition
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences 
+  - pymdownx.tasklist
+  - def_list
+  - meta
+  - md_in_html
+  - attr_list
+  - footnotes
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+extra_css:
+  - Custom/Stylesheets/extra.css
+
+plugins:
+  - search
+
+theme:
+  name: material
+  palette:
+    primary: red
+    accent: red
+    scheme: slate
+  features:
+    - navigation.instant
+    
+nav:
+  - Home: index.md
+  - Mod Loader:
+      - Core Architecture: Loader/Core-Architecture.md
+      - Platform Support:
+          - About: Loader/PlatformSupport.md
+          - Windows: Loader/Platform-Windows.md
+          - Switch: Loader/Platform-Switch.md
+      - Adding Game Support: Loader/GameSupport.md
+      - Handling Middleware: Loader/Middleware.md
+      - Dependency Injection: Loader/DependencyInjection.md
+    
+  - Backwards Compatibility:
+      - About: BackCompat/00_About.md
+      - Reloaded II: BackCompat/Reloaded-II.md
+      - HedgeModManager: BackCompat/HedgeModManager.md
+  
+  - Wiki: 
+    - Contributing Locally: ContributingLocally.md
+    - Contributing Online: ContributingOnline.md

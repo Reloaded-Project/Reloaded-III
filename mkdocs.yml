@@ -16,7 +16,11 @@ markdown_extensions:
   - tables
   - pymdownx.details
   - pymdownx.highlight
-  - pymdownx.superfences 
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tasklist
   - def_list
   - meta
@@ -47,20 +51,37 @@ theme:
 nav:
   - Home: index.md
   - Mod Loader:
-      - Core Architecture: Loader/Core-Architecture.md
+      - Loader Design:
+          - Core Architecture: Loader/Core-Architecture.md
+          - Load Ordering: Loader/Load-Ordering.md
       - Platform Support:
-          - About: Loader/PlatformSupport.md
-          - Windows: Loader/Platform-Windows.md
-          - Switch: Loader/Platform-Switch.md
+          - About: Loader/Platforms/About.md
+          - Windows: Loader/Platforms/Windows.md
+          - Switch: Loader/Platforms/Switch.md
+          - Linux: Loader/Platforms/Linux.md
+          - OSX: Loader/Platforms/OSX.md
+      - Bootloaders:
+          - About: Loader/Bootloaders/About.md
+          - Windows - DRM Considerations: Loader/Bootloaders/Windows-DRM.md
+          - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
+          - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
+          - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
+      - Backends:
+          - About: Loader/Backends/About.md
+          - .NET (CoreCLR): Loader/Backends/CoreCLR.md
       - Adding Game Support: Loader/GameSupport.md
       - Handling Middleware: Loader/Middleware.md
       - Dependency Injection: Loader/DependencyInjection.md
+      - Mod Build System: Loader/ModBuildSystemCiCd.md
     
   - Backwards Compatibility:
       - About: BackCompat/00_About.md
       - Reloaded II: BackCompat/Reloaded-II.md
       - HedgeModManager: BackCompat/HedgeModManager.md
+        
+  - FAQ: FAQ.md
+  - Best Practices: Best Practices.md
   
   - Wiki: 
-    - Contributing Locally: ContributingLocally.md
-    - Contributing Online: ContributingOnline.md
+    - Contributing Locally: Contributing-Locally.md
+    - Contributing Online: Contributing-Online.md

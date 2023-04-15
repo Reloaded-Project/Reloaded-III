@@ -22,6 +22,10 @@ hide:
 
 It is an ***extensible*** and ***modular*** framework that allows you to create your own mods for any game on virtually any platform.  
 
+R3 is built on a tried and tested architecture; that ensures games stay functional post updates, and ***good*** support for new games can be added ***fast***.  
+
+Don't waste time making a whole infrastructure for your game; *go mod stuff instead!*.  
+
 !!! question
     
     So what is Reloaded about? 👇 Below are some goals of the project.  
@@ -46,7 +50,7 @@ It is an ***extensible*** and ***modular*** framework that allows you to create 
 		</p>
 		<hr class="pillarseparator" />
         <p>
-			Supports a variety of platforms.<br/>
+			Support a variety of platforms.<br/>
 			Native x86, x64, Switch ARM, .NET 7+ etc.
 		</p>
     </div>
@@ -215,7 +219,6 @@ It is an ***extensible*** and ***modular*** framework that allows you to create 
 </div>
 
 The goal is to create a world where modders can focus on actually *modding* the games.  
-Don't waste time making a whole mod loader & manager; focus on your game.
 
 ## Mod Management & Packaging
 
@@ -326,7 +329,7 @@ Don't waste time making a whole mod loader & manager; focus on your game.
     This page looks [awfully familiar to Reloaded-II](https://reloaded-project.github.io/Reloaded-II/), what's up with that?  
 
 `Reloaded-III` is a specification for an enhanced version of `Reloaded-II`; with a newer config schema, 
-support for multiple platforms (not just PC) and the ability to allow anyone write mods in an arbitrary programming
+design that supports multiple platforms (not just Windows) and the ability to allow anyone write mods in an arbitrary programming
 language of their choice. 
 
 It expands the tried and tested Reloaded-II paradigm of having individual mods communicate with each other.  
@@ -345,6 +348,13 @@ archive formats, utility functions etc.
     these archives without repacking.  
 
     All the mod author had to do was set a `dependency` the mod and... that was all, it magically works!
+
+## Feasible?
+
+!!! question
+
+    Whoa, whoa, whoa; isn't that a lot of stuff?  
+    Yeppers, the good news is; most of this stuff already exists in Reloaded-II 😉.
 
 ## Contributions
 

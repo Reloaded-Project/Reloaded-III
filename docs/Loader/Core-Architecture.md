@@ -108,7 +108,7 @@ and/or adding support for legacy mods from other loaders. Basically stuff for ot
 
 For more information see [Backends](./Backends/About.md).  
 
-#### Middleware Handling Mods (Layer 1)
+#### Middleware/OS Handling Mods (Layer 1)
 
 !!! info
 
@@ -133,10 +133,133 @@ These are reusable components you can use from the mods in the upper layers.
 
 !!! info
 
-    These mods abstract the game. Their purpose is providing a mechanism for handling in case of drastic changes.
+    These mods serve as an abstraction layer between regular mods and the lower level components.
 
+Mods in this layer have three main purposes:  
 
-Instead of writing your own whole 'mod loader' from scratch, you instead make a mod that simply sets a dependency on
-e.g. `CRI CPK Archive Support`
+1. Provide simplicity for non-programmers.  
+    - This mod will set dependencies on multiple other mods such as the `Virtual FileSystem` or `Archive Support`.  
+    - Someone who's making a mod that replaces game files should only ever need to set a dependency on this mod.
 
-... page to be completed
+2. Provide resiliency to game updates.  
+    - Providing high level API/SDKs for game functionality that are guaranteed to not break between updates.  
+    - Providing function signatures and definitions (via headers) for APIs not covered by high level API/SDK.  
+
+3. Providing interoperability between different mods:  
+    - Merging binary files (if needed) for various game file formats.  
+
+For regular, non-technical modders; what matters is they just set a dependency on 
+your game mod when creating their mod. This would be usually covered in a 'getting started' guide.
+
+#### Regular Mods (Layer 3)
+
+!!! info
+
+    These are well, just regular mods.
+
+They'll usually set a dependency on a layer 2 mod; and either just carry around game assets 
+to replace in game folder; or their own custom code.
+
+## Lower Level Views
+
+!!! tip
+
+    Shows how the overall system is composed using the sample of mods provided above.  
+
+### From Perspective of Layer 0 (Backend) Mod
+
+```mermaid
+sequenceDiagram
+
+    % Define Items
+    participant Mod Loader
+    participant .NET Backend
+    participant Cool .NET Code Mod
+
+    % Define Actions
+    Mod Loader->>.NET Backend: Load Mod
+    .NET Backend->>Mod Loader: Register Backend 'coreclr-latest'
+    Mod Loader->>.NET Backend: Request to Load 'Cool .NET Code Mod' (via 'coreclr-latest')
+    .NET Backend->>Cool .NET Code Mod: Load the Mod
+```
+
+The mod loader loads the mod. The backend mod uses a loader API to say 'hi, I can handle this [backend](./Backends/About.md#custom-backends)'.  
+
+Down the road when the loader tries to load `Cool .NET Code Mod`, it sees it has backend `coreclr-latest` declared in its config and 
+delegates loading to registered handler (`.NET Backend`).  
+
+### From Perspective of Layer 2 (Game Support) Mod
+
+```mermaid
+sequenceDiagram
+
+    % Define Items
+    participant Mod Loader
+    participant Virtual FileSystem (VFS)
+    participant CRI CPK Archive Support
+    participant Persona 5 Royal Support
+    participant Joker Costume
+
+    % Define Actions
+    Mod Loader->>Persona 5 Royal Support: Load Mod
+    Persona 5 Royal Support->>Mod Loader: Request CRI CPK Archive Support API
+    Mod Loader->>Persona 5 Royal Support: Receive CRI CPK Archive Support Instance
+
+    Mod Loader->>Joker Costume: Load Mod
+    Mod Loader-->Persona 5 Royal Support: Notification: 'Loaded Joker Costume'
+    Persona 5 Royal Support->>CRI CPK Archive Support: Add Files from 'Joker Costume' to CPK Archive (via API)
+```
+
+The `Mod Loader` loads the `Persona 5 Royal Support` Module as normal.  
+
+When down the road the loader loads the `Joker Costume` mod; an event `'ModLoaded'` is fired.  
+
+The `Persona 5 Royal Support` mod picks up the notification, sees the mod included some folder to be added to the CPK
+Archive and calls the `CRI CPK Archive Support API` to map that folder.  
+
+!!! note
+
+    The 'mod was loaded' callback is fired for every mod out there; to enable interactions of this kind.
+
+### Whole System
+
+!!! info
+
+    A top down overview of the overall loading procedure.
+
+!!! note
+
+    This has been slightly simplified to exclude the lower level interactions necessary to load Backend based
+    (Cool .NET Mod) and non-Code based (Joker Costume) mods shown above. Look above to see how that's handled more closely.
+   
+```mermaid
+sequenceDiagram
+
+    % Define Items
+    participant Mod Loader
+    participant .NET Backend
+    participant Virtual FileSystem (VFS)
+    participant CRI CPK Archive Support
+    participant Persona 5 Royal Support
+    participant Cool .NET Code Mod
+    participant Joker Costume
+
+    % Define Actions
+    Mod Loader->>.NET Backend: Load Mod
+    .NET Backend->>Mod Loader: Register Backend
+
+    Mod Loader->>Virtual FileSystem (VFS): Load Mod
+    Virtual FileSystem (VFS)->>Mod Loader: Register API
+
+    Mod Loader->>CRI CPK Archive Support: Load Mod
+    CRI CPK Archive Support->>Mod Loader: Request VFS API
+    Mod Loader->>CRI CPK Archive Support: Receive VFS Instance
+    CRI CPK Archive Support->>Mod Loader: Register API
+
+    Mod Loader->>Persona 5 Royal Support: Load Mod
+    Persona 5 Royal Support->>Mod Loader: Request CRI CPK API
+    Mod Loader->>Persona 5 Royal Support: Receive CRI CPK Instance
+
+    Mod Loader->>Cool .NET Code Mod: Load Mod via .NET Backend Mod
+    Mod Loader->>Joker Costume: Load Mod via Persona 5 Royal Support
+```

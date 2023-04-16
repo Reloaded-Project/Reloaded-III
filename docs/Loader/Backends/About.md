@@ -34,12 +34,14 @@ and shipping separate binaries for multiple platforms.
 In some cases, some custom bootstrapping might be required.
 
 For example:  
+
 - For a .NET game, it might be desirable to execute mods inside the game's own runtime.  
 - For supporting mods for older mod loaders, a backend can act as a wrapper translating exports and implementing old loader APIs.  
 
 | Example Backend                | Description                                                                |
 |--------------------------------|----------------------------------------------------------------------------|
 | `unity.unity-custom`           | Runs mods in `coreclr-latest` for Il2Cpp; `mono` otherwise.                |
+| `sewer56.reloadedii-custom`    | Runs in `coreclr-latest`, provides backwards compatibility for R2 mods.    |
 | `taleworlds.bannerlord-custom` | Loads using .NET Framework (older versions) or .NET Core (newer versions). |
 
 To allow for maximum modularity; custom backends are implemented via regular mods [link pending]; allowing them to be updated

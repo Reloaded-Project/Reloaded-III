@@ -13,7 +13,9 @@ As the core loader is written in Rust, it is theoretically possible to support a
 | [Windows](./Windows.md)             | ✅                       |
 | [Linux (Wine/Proton)](./Windows.md) | ✅                       |
 | [Switch](./Switch.md)               | 🔍 Investigation Needed |
-| [Native Linux](./Linux.md)          | 🔍 Investigation Needed |
-| [Native OSX](./OSX.md)              | 🔍 Investigation Needed |
+| [Native Linux](./Linux.md)          | ⚡ Implement on Demand   |
+| [Native OSX](./OSX.md)              | ⚡ Implement on Demand   |
 | Other                               | ❓ Unknown.              |
 
+`Implement on Demand` means; it'll be done when there's game to test.  
+The code will always be written with cross platform in mind; worry not.  

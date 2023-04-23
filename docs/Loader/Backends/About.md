@@ -14,16 +14,22 @@
 
     It is preferred to use universally recognisable names over internal ones i.e. prefer `switch` over `horizon`.
 
-Example backends include:
+Example backends include:  
 
-| Example Backend   | Description                              |
-|-------------------|------------------------------------------|
-| `win-x86`         | Native x86 Support on Windows            |
-| `win-x64`         | Native x64 Support on Windows            |
-| `switch-aarch64`  | Native ARM64 Support on Switch (Horizon) |
-| `coreclr-latest`  | Latest .NET Runtime                      |
+| Backend          | Description                              |
+|------------------|------------------------------------------|
+| `win-x86`        | Native x86 Support on Windows            |
+| `win-x64`        | Native x64 Support on Windows            |
+| `coreclr-latest` | Latest .NET Runtime                      |
 
-These backends are directly specified inside the mod configurations [link pending]. When the loader is about to load a
+The following backends are backlogged; will be implemented when/if there is demand:  
+
+| Backend        | Description                              |
+|----------------|------------------------------------------|
+| `switch-arm64` | Native ARM64 Support on Switch (Horizon) |
+| `linux-x64`    | Native x64 Support on Switch (Horizon)   |
+
+These backends are directly specified inside the [mod configurations](../Configurations/Mod-Metadata.md#targets). When the loader is about to load a
 mod, it looks up a dictionary specified in the mod config, and starts the mod using the appropriate backend.
 
 It's possible to ship a mod for multiple platforms by including multiple backends in a mod config

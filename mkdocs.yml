@@ -69,11 +69,24 @@ nav:
           - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
       - Backends:
           - About: Loader/Backends/About.md
+          - Native: Loader/Backends/Native.md
           - .NET (CoreCLR): Loader/Backends/CoreCLR.md
-      - Adding Game Support: Loader/GameSupport.md
+      - Configurations:
+          - Mod Metadata: Loader/Configurations/Mod-Metadata.md
+          - Mod Configurations: Loader/Configurations/Mod-Configurations.md
+      - Mod Configuration: Loader/Mod-Configurations.md
+      - Adding Game Support: Loader/Game-Support.md
       - Handling Middleware: Loader/Middleware.md
-      - Dependency Injection: Loader/DependencyInjection.md
-      - Mod Build System: Loader/ModBuildSystemCiCd.md
+      - Dependency Injection: Loader/Dependency-Injection.md
+      - Mod Publishing: Loader/Build-System.md
+      - Loader Deployment: Loader/Deployment.md
+        
+  - Mod Manager:
+      - Configurations:
+          - App Metadata: Manager/Configurations/App-Metadata.md
+    
+  - Online Services:
+      - Community Repository: Services/Community-Repository.md
     
   - Backwards Compatibility:
       - About: BackCompat/00_About.md

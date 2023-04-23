@@ -77,7 +77,7 @@ This has historically worked well and has only overhead of 3 x86 instructions po
 
     For the purposes of Reverse Engineering; [UWPDumper](https://github.com/Wunkolo/UWPDumper) can often be used to get an unencrypted EXE.
 
-!!! info
+!!! failure "Error"
 
     Incompatible with [Inject into Suspended Process](./Windows-InjectIntoSuspended.md); because game EXE is redirected to some
     OS level launcher and thus the wrong program is hooked.

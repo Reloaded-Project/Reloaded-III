@@ -2,7 +2,7 @@
 
 As the core loader is written in Rust, it is theoretically possible to support any platform provided:  
 
-- You have access to libc.  
+- You have access to sufficient amount of libc.  
 - LLVM supports the machine code for your target (e.g. ARM, x86 etc.).  
 - Executable format reverse engineered, so you can make linker produce libraries.  
 - You can dynamically load libraries.  

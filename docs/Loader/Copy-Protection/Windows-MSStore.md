@@ -20,7 +20,7 @@ This also includes games installed via the Xbox App, or 'Gamepass games'.
 
 Many actions performed by Reloaded require access to the EXE, such as:  
 
-- Workflows (Link Pending)
+- Workflows (TODO: Link Pending)
 - App Icon Extraction
 - Determining DLL Name for [DLL Hijacking](../Bootloaders/Windows-DllHijack.md)
 

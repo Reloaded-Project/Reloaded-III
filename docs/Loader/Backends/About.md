@@ -50,5 +50,5 @@ For example:
 | `sewer56.reloadedii-custom`    | Runs in `coreclr-latest`, provides backwards compatibility for R2 mods.    |
 | `taleworlds.bannerlord-custom` | Loads using .NET Framework (older versions) or .NET Core (newer versions). |
 
-To allow for maximum modularity; custom backends are implemented via regular mods [link pending]; allowing them to be updated
+To allow for maximum modularity; custom backends are implemented via regular mods [TODO: link pending]; allowing them to be updated
 independently from the loader.  

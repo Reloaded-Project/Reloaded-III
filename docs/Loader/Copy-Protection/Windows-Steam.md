@@ -63,7 +63,7 @@ Most loaders use either of the two approaches:
     IMPORTANT: This needs to be communicated in the final software.
 
 1. Build [Steamless](https://github.com/atom0s/Steamless) with modern .NET (i.e. .NET Core).  
-   - Produce native Reloaded Packages (LINK PENDING) that bundle Steamless as a Tool.
+   - Produce native Reloaded Packages (TODO: LINK PENDING) that bundle Steamless as a Tool.
 2. Run `Steamless.CLI` with `--keepbind`, `--exp`.
    - This is necessary because some games have an [edge case](https://github.com/atom0s/Steamless/issues/80).
 

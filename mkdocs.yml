@@ -4,6 +4,8 @@ site_url: https://reloaded-project.github.io/Reloaded-III/
 repo_name: Reloaded-Project/Reloaded-III
 repo_url: https://github.com/Reloaded-Project/Reloaded-III
 
+edit_uri: edit/main/docs/
+
 extra:
   social:
     - icon: fontawesome/brands/github

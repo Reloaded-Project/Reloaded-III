@@ -10,7 +10,7 @@
     Did you know the first mod for [Persona 3 on GameBanana](https://gamebanana.com/games/16613) appeared 
     ***40 minutes*** after the game released on PC? No custom code, loader/launcher changes or archive repacking needed.
     
-    The user set dependency on Layer 1 mod; it just worked, like magic. 
+    The user set dependency on [Layer 1](#middlewareos-handling-mods-layer-1) mod; it just worked, like magic. 
 
 ## Overall High Level View
 
@@ -83,14 +83,16 @@ Responsibilities of the loader include:
 - Locating the Profile for Current Game.  
 - Logging: To File, Console etc.  
 - Crash Handling & Error Reporting, e.g. [Create a Minidump on Windows](./Platforms/Windows.md#error-reporting).  
-- Working around [DRM](./Bootloaders/Windows-DRM.md).  
+- Working around [DRM](./Copy-Protection/About.md).  
 
 ### Mods
 
 !!! note
     
     The 'Layers' presented below are only for the purposes of understanding how the overall system is composed; and how
-    different mods rely on each other. When the loader rearranges the [load order](./Load-Ordering.md) 
+    different mods rely on each other.
+    
+    When the loader rearranges the [load order](./Load-Ordering.md) 
     based on dependencies, the overall order should become something similar to this.
 
     To reiterate: There are no 'Layers' for mods in the Loader. This is just to help understanding.

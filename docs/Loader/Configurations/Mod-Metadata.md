@@ -98,7 +98,7 @@ The default set of suggested tags include:
 
 !!! info "If this is true, the mod cannot be explicitly enabled by the user in the manager."  
 
-!!! info "Some libraries may have user [configuration(s)](../Mod-Configurations.md). Manager is free to hide other libraries."
+!!! info "Some libraries may have user [configuration(s)](./Mod-Configurations.md). Manager is free to hide other libraries."
 
 ## Update Data
 

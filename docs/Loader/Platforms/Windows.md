@@ -145,12 +145,6 @@ if !console_exists() {
 }
 ```
 
-## DRM
-
-!!! info
-
-    Refer to section [Windows DRM](../Bootloaders/Windows-DRM.md)
-
 ## Emulation Support
 
 | Architecture   | Supported   |

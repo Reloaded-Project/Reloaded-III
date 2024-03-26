@@ -63,10 +63,13 @@ nav:
           - OSX: Loader/Platforms/OSX.md
       - Bootloaders:
           - About: Loader/Bootloaders/About.md
-          - Windows - DRM Considerations: Loader/Bootloaders/Windows-DRM.md
           - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
           - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
           - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
+      - Copy Protection:
+          - About: Loader/Copy-Protection/About.md
+          - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
+          - Windows - MS Store: Loader/Copy-Protection/Windows-MSStore.md
       - Backends:
           - About: Loader/Backends/About.md
           - Native: Loader/Backends/Native.md

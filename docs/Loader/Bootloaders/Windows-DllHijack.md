@@ -2,7 +2,7 @@
 
 !!! info
 
-    This is probably by far the most common method used by mod loaders everyone knows; but I'll throw in a very, very quick recap just in case.
+    Probably by far the most common method used by mod loaders; but I'll throw in a very, very quick recap just in case.
 
 A quick summary of how it works is like this:  
 
@@ -12,28 +12,34 @@ A quick summary of how it works is like this:
 - In the loader we load the original DLL and redirect all exports to it.  
 - If the game calls one of the exports, we initialize the `mod loader` (only once).  
 
-## Considerations
+## When to Use
 
-!!! info
+!!! info "Any service with an integrated 'Cloud Save' option that runs outside of the game."
 
-    If the mod loader is loaded from a hijacker like [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases), 
-    it might have already worked around Steam DRM.
+This applies to most launchers, e.g. `GOG`, `Microsoft Store`, `Steam`. Some exceptions apply, for instance, games
+can use external SDKs to handle cloud saves manually, in which case using [DLL Injection into Suspended](./Windows-InjectIntoSuspended.md)
+is preferred.
 
 ## Technical Issues
 
-!!! info
+- [Microsoft Store Titles are Encrypted](../Copy-Protection/Windows-MSStore.md)
+    - We must use one of the workarounds to get the stub name.
+  
+- [Steam DRM Wrapper](../Copy-Protection/Windows-Steam.md)
+    - We must delay the initialization of the mod loader until after the Steam DRM Wrapper code runs.
+    - Otherwise mods will try hooking encrypted code and fail miserably.
+    - Or strip the wrapper in name of interoperability.
 
-    This can conflict with legacy injectors because there's only finite amount of DLLs you can stub. You risk running out.
+- Possibility game might not have many available DLLs to stub.
+    - i.e. You risk running out of shims.
+    - We can work around this by loading via existing shim, if found to be installed in game directory.
 
-!!! danger "Issues with Microsoft DRM"
-
-    See [Microsoft DRM](./Windows-DRM.md#microsoft-ms-storegame-pass); it's not known how to automatically determine which
-    DLL name to stub in a reliable fashion.  
+## Considerations
 
 !!! danger
 
-    Generally [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases) is used for this, but has issues
-    with certain games like 64-bit Persona Ports or UWP San Andreas; need to make own loader for these cases.
+    Generally [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases) is used for this, but is not lightweight
+    enough to meet the performance requirements of R3. Could only be used as last resort.
 
 ## Implementation
 

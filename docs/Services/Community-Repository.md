@@ -17,7 +17,6 @@ Some use cases include:
 
 - Automatically registering GameBanana/Nexus/GitHub download sources.  
 - Helping automatic detection of games installed via Steam/Epic/Origin etc.  
-- Providing [bootloader support for GamePass/MS Store](../Loader/Bootloaders/Windows-DRM.md#microsoft-ms-storegame-pass).  
 - Providing compatibility warnings for pre-patched/pre-modded legacy games.  
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)  
 - Auto assign Game IDs in [Application Configurations](../Manager/Configurations/App-Metadata.md).  
@@ -28,7 +27,7 @@ Some use cases include:
 !!! note
 
     This represents the schema of items the individual users add to the repo manually.  
-    This schema can produce 1 or more files in the [API](./#api) (depending on number of game versions, etc.)
+    This schema can produce 1 or more files in the [API](#api) (depending on number of game versions, etc.)
 
 All configurations are written as YAML (for editing convenience), but are converted to JSON for applications to consume.  
 
@@ -304,11 +303,3 @@ The build process performs 2 steps:
 | string | FilePath | Relative path to this `.json` file to the game [Schema](#schema). |
 
 In the case of `ExeToApps`; if there are multiple entries, the user must select the appropriate choice from their UI.
-
-## Microsoft DRM
-
-!!! failure
-
-    Microsoft DRM makes it impossible for end users to read [EXE files](../Loader/Bootloaders/Windows-DRM.md#microsoft-ms-storegame-pass) 
-    for end users; which creates complications. For cases where we cannot auto determine supported DLL names, such as this one,
-    we pull them from the latest game version specified in [Version](#version).

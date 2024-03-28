@@ -1,5 +1,36 @@
 {
     "editor.rulers": [
         100
+    ],
+    "cSpell.words": [
+        "bannerlord",
+        "Bootloader",
+        "Bootloaders",
+        "Compat",
+        "COMPLUS",
+        "coreclr",
+        "CRICPK",
+        "evenodd",
+        "fnref",
+        "fontawesome",
+        "Fonticons",
+        "FORCEENC",
+        "Minidump",
+        "modders",
+        "msvc",
+        "pillarcard",
+        "pillarseparator",
+        "pillartitle",
+        "pillarwrapper",
+        "pymdownx",
+        "recognisable",
+        "Redirector",
+        "reloadedii",
+        "runtimes",
+        "superfences",
+        "taleworlds",
+        "tasklist",
+        "twemoji",
+        "Yeppers"
     ]
 }

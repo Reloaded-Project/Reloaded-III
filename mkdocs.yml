@@ -86,6 +86,7 @@ nav:
       - Dependency Injection: Loader/Dependency-Injection.md
       - Mod Publishing: Loader/Build-System.md
       - Loader Deployment: Loader/Deployment.md
+      - Breaking Changes: Loader/Breaking-Changes.md
         
   - Mod Manager:
       - Configurations:

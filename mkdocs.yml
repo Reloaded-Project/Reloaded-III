@@ -50,7 +50,8 @@ theme:
     scheme: reloaded3-slate
   features:
     - navigation.instant
-    
+    - content.action.edit
+
 nav:
   - Home: index.md
   - Mod Loader:

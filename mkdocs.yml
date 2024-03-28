@@ -87,22 +87,22 @@ nav:
       - Mod Publishing: Loader/Build-System.md
       - Loader Deployment: Loader/Deployment.md
       - Breaking Changes: Loader/Breaking-Changes.md
-        
+
   - Mod Manager:
       - Configurations:
           - App Metadata: Manager/Configurations/App-Metadata.md
-    
+
   - Online Services:
       - Community Repository: Services/Community-Repository.md
-    
+
   - Backwards Compatibility:
       - About: BackCompat/00_About.md
       - Reloaded II: BackCompat/Reloaded-II.md
       - HedgeModManager: BackCompat/HedgeModManager.md
-        
+
   - FAQ: FAQ.md
   - Best Practices: Best Practices.md
-  
-  - Wiki: 
+
+  - Wiki:
     - Contributing Locally: Contributing-Locally.md
     - Contributing Online: Contributing-Online.md

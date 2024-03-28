@@ -1,7 +1,7 @@
 # Contributing to the Wiki: Locally
 
 ## Tutorial
-You should learn the basics of `git`, an easy way is to give [GitHub Desktop (Tutorial)](https://www.youtube.com/watch?v=77W2JSL7-r8) a go.  
+You should learn the basics of `git`, an easy way is to give [GitHub Desktop (Tutorial)](https://www.youtube.com/watch?v=77W2JSL7-r8) a go.
 It's only 15 minutes 😀.
 
 1. Create a GitHub account.
@@ -22,8 +22,8 @@ It's only 15 minutes 😀.
 
     Consider using a [*Markdown Cheat Sheet*](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) if you are new to markdown.
 
-    I recommend using a markdown editor such as `Typora`.  
-    Personally I use *Visual Studio Code*, which has built-in markdown support and preview available (`Ctrl+Shift+P` -> `Markdown: Open Preview`). 
+    I recommend using a markdown editor such as `Typora`.
+    Personally I use *Visual Studio Code*, which has built-in markdown support and preview available (`Ctrl+Shift+P` -> `Markdown: Open Preview`).
 
 5. Commit the changes and push to GitHub.
 

@@ -2,19 +2,19 @@
 
 !!! info
 
-    'Backend' in the context of this spec refers to language/runtime support; for some programming languages, 
-    it might be necessary to manually bootstrap a runtime.  
+    'Backend' in the context of this spec refers to language/runtime support; for some programming languages,
+    it might be necessary to manually bootstrap a runtime.
 
 !!! note
 
     For simplicity; assume Windows builds are dynamically linked to MSVC.
-    i.e. `win-x86` really means `win-x86-msvc`.  
+    i.e. `win-x86` really means `win-x86-msvc`.
 
 !!! tip
 
     It is preferred to use universally recognisable names over internal ones i.e. prefer `switch` over `horizon`.
 
-Example backends include:  
+Example backends include:
 
 | Backend          | Description                              |
 |------------------|------------------------------------------|
@@ -22,7 +22,7 @@ Example backends include:
 | `win-x64`        | Native x64 Support on Windows            |
 | `coreclr-latest` | Latest .NET Runtime                      |
 
-The following backends are backlogged; will be implemented when/if there is demand:  
+The following backends are backlogged; will be implemented when/if there is demand:
 
 | Backend        | Description                              |
 |----------------|------------------------------------------|
@@ -39,10 +39,10 @@ and shipping separate binaries for multiple platforms.
 
 In some cases, some custom bootstrapping might be required.
 
-For example:  
+For example:
 
-- For a .NET game, it might be desirable to execute mods inside the game's own runtime.  
-- For supporting mods for older mod loaders, a backend can act as a wrapper translating exports and implementing old loader APIs.  
+- For a .NET game, it might be desirable to execute mods inside the game's own runtime.
+- For supporting mods for older mod loaders, a backend can act as a wrapper translating exports and implementing old loader APIs.
 
 | Example Backend                | Description                                                                |
 |--------------------------------|----------------------------------------------------------------------------|
@@ -51,4 +51,4 @@ For example:
 | `taleworlds.bannerlord-custom` | Loads using .NET Framework (older versions) or .NET Core (newer versions). |
 
 To allow for maximum modularity; custom backends are implemented via regular mods [TODO: link pending]; allowing them to be updated
-independently from the loader.  
+independently from the loader.

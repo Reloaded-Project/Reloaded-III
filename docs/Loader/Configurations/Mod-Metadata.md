@@ -29,25 +29,25 @@ Inside each mod folder is a file named `R3ModConfig.json`; which stores the meta
 
 A name that uniquely identifies the mod.
 
-The suggested format to use for names is `game.type.subtype.name`.  
+The suggested format to use for names is `game.type.subtype.name`.
 
-- `game` should ideally match [App 'Id'](../../Manager/Configurations/App-Metadata.md#id) for the given application.  
-- `type` name should ideally match category of the mod on a site like [GameBanana](https://gamebanana.com) or [NexusMods](https://www.nexusmods.com).  
-- `subtype` [Optional] provides additional information about the item.  
-- `name` unique identifier for the mod. Can use another `.` dot if additional info is needed.  
+- `game` should ideally match [App 'Id'](../../Manager/Configurations/App-Metadata.md#id) for the given application.
+- `type` name should ideally match category of the mod on a site like [GameBanana](https://gamebanana.com) or [NexusMods](https://www.nexusmods.com).
+- `subtype` [Optional] provides additional information about the item.
+- `name` unique identifier for the mod. Can use another `.` dot if additional info is needed.
 
-Example(s):  
+Example(s):
 
-- `sonicheroes.skins.seasidehillmidnight`  
-- `sonicheroes.skins.seasidehill.midnighthill`  
+- `sonicheroes.skins.seasidehillmidnight`
+- `sonicheroes.skins.seasidehill.midnighthill`
 
-Use lowercase, no spaces, no special characters.  
+Use lowercase, no spaces, no special characters.
 
 ### Non-Game Specific Components
 
 !!! note
 
-    For mods that are non-game specific such as backends; set the `game` identifier as `reloaded3` and use one of the following.  
+    For mods that are non-game specific such as backends; set the `game` identifier as `reloaded3` and use one of the following.
 
 | Type    | Description                                                                             | Example                     |
 |---------|-----------------------------------------------------------------------------------------|-----------------------------|
@@ -61,8 +61,8 @@ Mod manager can choose whether to show non game-specific mods (`reloaded3` id) o
 
 !!! info
 
-    This stores a mod version specified using a [Semantic Versioning](https://semver.org) compatible standard.  
-    This is required for update support.  
+    This stores a mod version specified using a [Semantic Versioning](https://semver.org) compatible standard.
+    This is required for update support.
 
 !!! warning
 
@@ -73,7 +73,7 @@ Mod manager can choose whether to show non game-specific mods (`reloaded3` id) o
 !!! info "Used to make searching within mod managers easier; i.e. `filter by tag`."
 
 These are completely arbitrary, up to end users.
-The default set of suggested tags include:  
+The default set of suggested tags include:
 
 | Tag Name     | Description                   |
 |--------------|-------------------------------|
@@ -96,15 +96,15 @@ The default set of suggested tags include:
 
 ## Is Library
 
-!!! info "If this is true, the mod cannot be explicitly enabled by the user in the manager."  
+!!! info "If this is true, the mod cannot be explicitly enabled by the user in the manager."
 
 !!! info "Some libraries may have user [configuration(s)](./Mod-Configurations.md). Manager is free to hide other libraries."
 
 ## Update Data
 
-!!! info 
+!!! info
 
-    Information tied to Reloaded3's update library. This info is stored in a way that avoids direct dependency 
+    Information tied to Reloaded3's update library. This info is stored in a way that avoids direct dependency
     on Update library by using an `Abstractions` package.
 
 !!! note
@@ -179,9 +179,9 @@ The field `AssetFileName` is provided for backwards compatibility only. e.g. `*u
 
 !!! info "This section specifies info for the individual [backends.](../Backends/About.md)"
 
-Find more info on the pages for the [individual backends](../Backends/About.md), but we'll provide some examples.  
+Find more info on the pages for the [individual backends](../Backends/About.md), but we'll provide some examples.
 
-[Native Mod](../Backends/Native.md):  
+[Native Mod](../Backends/Native.md):
 ```json
 {
   "win-x64" : {
@@ -189,13 +189,13 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
     "x86-sse41": "Mod-SSE41.dll",
     "x86-avx": "Mod-AVX.dll",
     "x86-avx2": "Mod-AVX2.dll"
-  }  
+  }
 }
 ```
 
 !!! note "It's not expected for mod authors to ship with multiple [instruction sets](#instruction-sets) outside of super high perf scenarios. This is just for example."
 
-[.NET CoreCLR Mod](../Backends/CoreCLR.md):  
+[.NET CoreCLR Mod](../Backends/CoreCLR.md):
 
 ```json
 {
@@ -203,7 +203,7 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
     "any": "Heroes.Graphics.Essentials.dll",
     "x86": "x86/Heroes.Graphics.Essentials.dll",
     "x64": "x86/Heroes.Graphics.Essentials.dll"
-  }  
+  }
 }
 ```
 
@@ -228,6 +228,6 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
 
 !!! info "Stores a list of supported games; by using their known [Application ID](../../Manager/Configurations/App-Metadata.md#id)."
 
-Alternatively, when experimenting with new games which do not have a specified Application ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.  
+Alternatively, when experimenting with new games which do not have a specified Application ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 
 Mod managers will automatically update this to appropriate ID during process of querying [Community Repository](../../Services/Community-Repository.md).

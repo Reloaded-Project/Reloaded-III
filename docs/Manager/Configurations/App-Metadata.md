@@ -18,16 +18,16 @@
 
 For games which a user added before it had an entry in the [Community Repository](../../Services/Community-Repository.md).
 
-This value will be autopopulated based on configurations within a future version of [Reloaded.Community](https://github.com/Reloaded-Project/Reloaded.Community).  
+This value will be autopopulated based on configurations within a future version of [Reloaded.Community](https://github.com/Reloaded-Project/Reloaded.Community).
 
 ## Game Versioning Strategy
 
 !!! warning
 
     In some rare cases games can be updated to completely different ports; e.g. an older game can get a '64-bit' upgrade
-    that totally would break all code mods and even change some file formats.  
+    that totally would break all code mods and even change some file formats.
 
-To mitigate this; we will use binary hashes.  
+To mitigate this; we will use binary hashes.
 This value will be autopopulated based on configurations within a future version of [Reloaded.Community](https://github.com/Reloaded-Project/Reloaded.Community).
 
 ```json

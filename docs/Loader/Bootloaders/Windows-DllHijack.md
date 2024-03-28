@@ -4,13 +4,13 @@
 
     Probably by far the most common method used by mod loaders; but I'll throw in a very, very quick recap just in case.
 
-A quick summary of how it works is like this:  
+A quick summary of how it works is like this:
 
-- An EXE can define number of DLLs to import (via `IMAGE_IMPORT_DESCRIPTOR`).  
-- The OS (PE Loader) will load those DLLs when the process is created.  
-- This will load our loader DLL.  
-- In the loader we load the original DLL and redirect all exports to it.  
-- If the game calls one of the exports, we initialize the `mod loader` (only once).  
+- An EXE can define number of DLLs to import (via `IMAGE_IMPORT_DESCRIPTOR`).
+- The OS (PE Loader) will load those DLLs when the process is created.
+- This will load our loader DLL.
+- In the loader we load the original DLL and redirect all exports to it.
+- If the game calls one of the exports, we initialize the `mod loader` (only once).
 
 ## When to Use
 
@@ -24,7 +24,7 @@ is preferred.
 
 - [Microsoft Store Titles are Encrypted](../Copy-Protection/Windows-MSStore.md)
     - We must use one of the workarounds to get the stub name.
-  
+
 - [Steam DRM Wrapper](../Copy-Protection/Windows-Steam.md)
     - We must delay the initialization of the mod loader until after the Steam DRM Wrapper code runs.
     - Otherwise mods will try hooking encrypted code and fail miserably.
@@ -45,6 +45,6 @@ is preferred.
 
 Read the PE header for the names of the DLLs that are imported at boot; and pick an appropriate one that's not already used in the game folder.
 
-Using [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases) is probably a decent temporary solution, 
+Using [Ultimate ASI Loader](https://github.com/ThirteenAG/Ultimate-ASI-Loader/releases) is probably a decent temporary solution,
 but overkill for our use case. The occasional compatibility issue also leaves a bit to be desired, especially since it's not being maintained
-(issues receive not even a response for months on end).  
+(issues receive not even a response for months on end).

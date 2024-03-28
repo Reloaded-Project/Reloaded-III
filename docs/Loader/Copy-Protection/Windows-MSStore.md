@@ -1,5 +1,5 @@
 !!! important "The information on this page is accurate for Project Centennial apps, i.e. Win32 apps converted to UWP."
-    
+
     It is not currently known how much of this applies to pure UWP Apps.
 
 This also includes games installed via the Xbox App, or 'Gamepass games'.
@@ -18,7 +18,7 @@ This also includes games installed via the Xbox App, or 'Gamepass games'.
 
     This appears to not be a copy-protection measure per se, but a leftover from UWP's security model.
 
-Many actions performed by Reloaded require access to the EXE, such as:  
+Many actions performed by Reloaded require access to the EXE, such as:
 
 - Workflows (TODO: Link Pending)
 - App Icon Extraction
@@ -28,78 +28,78 @@ Many actions performed by Reloaded require access to the EXE, such as:
 
 !!! note
 
-    Actual path of EXE reported at runtime is something like `C:\Program Files\WindowsApps\SEGAofAmericaInc.F0cb6b3aer_1.10.23.0_x64_USEU+s751p9cej88mt\P5R.exe` 
+    Actual path of EXE reported at runtime is something like `C:\Program Files\WindowsApps\SEGAofAmericaInc.F0cb6b3aer_1.10.23.0_x64_USEU+s751p9cej88mt\P5R.exe`
     and can change every update.
 
-In other words, do not use the path of the EXE at runtime to check anything critical.  
-Use only for cache purposes at best.  
+In other words, do not use the path of the EXE at runtime to check anything critical.
+Use only for cache purposes at best.
 
 #### Do not use DLL Injection
 
 !!! warning "Although it is technically possible to do so, [DLL Injection](../Bootloaders/Windows-InjectIntoSuspended.md) should be avoided for MS Store games."
 
-Launching many centennial games will invoke a binary called `gamelaunchhelper.exe`.  
+Launching many centennial games will invoke a binary called `gamelaunchhelper.exe`.
 
-This binary is responsible for, among other things, syncing cloud saves. Therefore, it should not be skipped.  
+This binary is responsible for, among other things, syncing cloud saves. Therefore, it should not be skipped.
 
 ### Common Workarounds
 
 !!! info "Or at least the possible ones I can think of"
 
-**1. Dumping the EXE from memory of a running game:**  
-- We could do this, but it'd be very poor User Experience.  
+**1. Dumping the EXE from memory of a running game:**
+- We could do this, but it'd be very poor User Experience.
 
-**2. Using a known DLL name with [DLL Hijacking](../Bootloaders/Windows-DllHijack.md):**  
-- Possible via [Community Repository](../../Services/Community-Repository.md), but this is not a good solution for unknown apps.  
-- Possible via dumping the EXE from memory, but leads to poor UX.  
-- Does not fix the issue of the binary being encrypted, leading to limited functionality.  
+**2. Using a known DLL name with [DLL Hijacking](../Bootloaders/Windows-DllHijack.md):**
+- Possible via [Community Repository](../../Services/Community-Repository.md), but this is not a good solution for unknown apps.
+- Possible via dumping the EXE from memory, but leads to poor UX.
+- Does not fix the issue of the binary being encrypted, leading to limited functionality.
 
-**3. DLL Injection into Suspended Process**  
-- i.e. Force skipping `gamelaunchhelper.exe` to boot into the game directly.  
-- Can be done via `Invoke-CommandInDesktopPackage` in PowerShell.  
-- Does not fix the issue of the binary being encrypted, leading to limited functionality.  
-- Causes issues with cloud saves.  
+**3. DLL Injection into Suspended Process**
+- i.e. Force skipping `gamelaunchhelper.exe` to boot into the game directly.
+- Can be done via `Invoke-CommandInDesktopPackage` in PowerShell.
+- Does not fix the issue of the binary being encrypted, leading to limited functionality.
+- Causes issues with cloud saves.
 
-**4. Replacing the main game EXE with DLL Injector Stub**  
-- DLL Injection by renaming `P5R.exe` to `P5R-orig.exe` and placing DLL Injector as `P5R.exe`, which then runs and injects into `P5R-orig.exe`.  
-- Basically it leads to `gamelaunchhelper.exe` running our injector.  
-- Fixes cloud save issue.  
-- Does not fix the issue of the binary being encrypted, leading to limited functionality.  
+**4. Replacing the main game EXE with DLL Injector Stub**
+- DLL Injection by renaming `P5R.exe` to `P5R-orig.exe` and placing DLL Injector as `P5R.exe`, which then runs and injects into `P5R-orig.exe`.
+- Basically it leads to `gamelaunchhelper.exe` running our injector.
+- Fixes cloud save issue.
+- Does not fix the issue of the binary being encrypted, leading to limited functionality.
 
-**5. Decrypting the EXE**  
-- Basically removing the leftover UWP security model functionality.  
-- When executing code inside the AppX container, the EXE can be read decrypted.  
-- So when we make a copy of the EXE inside the game, the copied file is decrypted.  
-- Can be performed using official `Invoke-CommandInDesktopPackage` applet in PowerShell, and launching a custom EXE to do the copy.  
-- Does not technically circumvent copy protection (to best of my knowledge).  
+**5. Decrypting the EXE**
+- Basically removing the leftover UWP security model functionality.
+- When executing code inside the AppX container, the EXE can be read decrypted.
+- So when we make a copy of the EXE inside the game, the copied file is decrypted.
+- Can be performed using official `Invoke-CommandInDesktopPackage` applet in PowerShell, and launching a custom EXE to do the copy.
+- Does not technically circumvent copy protection (to best of my knowledge).
 
 ### What R3 Should Do
 
-Basically, decrypt the EXE. 
+Basically, decrypt the EXE.
 
-This is a multi-step process which involves:  
+This is a multi-step process which involves:
 
-- Finding `AppxManifest.xml`, which may be in EXE folder or in some folder above.  
-- Parsing `AppxManifest.xml` to extract `Application.Id` and `PackageFamilyName`.  
-    - `PackageFamilyName` is generally derived as `{Identity.Name}-{hash(Identity.Publisher)}`.  
-    - Consider using [package-family-name](https://github.com/russellbanks/package-family-name) library directly.  
-- Finding all unreadable files (just `.exe` files currently).  
+- Finding `AppxManifest.xml`, which may be in EXE folder or in some folder above.
+- Parsing `AppxManifest.xml` to extract `Application.Id` and `PackageFamilyName`.
+    - `PackageFamilyName` is generally derived as `{Identity.Name}-{hash(Identity.Publisher)}`.
+    - Consider using [package-family-name](https://github.com/russellbanks/package-family-name) library directly.
+- Finding all unreadable files (just `.exe` files currently).
 - Launching a custom EXE inside the AppX container which does a copy onto itself (this decrypts).
-    - This custom EXE can be launched using official `Invoke-CommandInDesktopPackage` in PowerShell.  
-    - Or unofficially with COM Interfaces detailed in [launching-a-centennial-app](#launching-a-centennial-app).  
-    - Reloaded-II uses [replace-files-with-itself](https://github.com/Sewer56/replace-files-with-itself) as the binary.  
-    - In Reloaded3, consider using current (server) binary with a `--copy` flag.  
+    - This custom EXE can be launched using official `Invoke-CommandInDesktopPackage` in PowerShell.
+    - Or unofficially with COM Interfaces detailed in [launching-a-centennial-app](#launching-a-centennial-app).
+    - Reloaded-II uses [replace-files-with-itself](https://github.com/Sewer56/replace-files-with-itself) as the binary.
+    - In Reloaded3, consider using current (server) binary with a `--copy` flag.
 
 Although not a stable API, prefer the COM interface. With it you can get a process handle, which in turn lets you use
-[WaitForSingleObject](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject?redirectedfrom=MSDN) 
+[WaitForSingleObject](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject?redirectedfrom=MSDN)
 to wait for the target process to finish.
 
-Refer to [Reloaded-II's code](https://github.com/Reloaded-Project/Reloaded-II/blob/3b800957b5b919ebba42b92e9cf859dbbe1c9926/source/Reloaded.Mod.Launcher.Lib/Utility/TryUnprotectGamePassGame.cs#L14) for some existing reference code. 
+Refer to [Reloaded-II's code](https://github.com/Reloaded-Project/Reloaded-II/blob/3b800957b5b919ebba42b92e9cf859dbbe1c9926/source/Reloaded.Mod.Launcher.Lib/Utility/TryUnprotectGamePassGame.cs#L14) for some existing reference code.
 
 !!! note "Re-launching the server binary is preferable to using a custom EXE. It increases our resilience to false antivirus detections."
 
-    The whole app not working at all is preferable to a tiny amount not working.  
-    More EXEs also mean more potential for false positives.  
+    The whole app not working at all is preferable to a tiny amount not working.
+    More EXEs also mean more potential for false positives.
 
 ### Launching a Centennial App
 
@@ -140,17 +140,17 @@ interface DECLSPEC_UUID("F158268A-D5A5-45CE-99CF-00D6C3F3FC0A") IDesktopAppxActi
     ULONG   STDMETHODCALLTYPE Release() override final;
 
     void STDMETHODCALLTYPE Activate(
-        _In_ PWSTR ApplicationUserModelId, 
-        _In_ PWSTR PackageRelativeExecutable, 
+        _In_ PWSTR ApplicationUserModelId,
+        _In_ PWSTR PackageRelativeExecutable,
         _In_ PWSTR Arguments,
         _Out_ PHANDLE ProcessHandle);
 
 	void STDMETHODCALLTYPE ActivateWithOptions(
-        _In_ PWSTR ApplicationUserModelId, 
-        _In_ PWSTR Executable, 
+        _In_ PWSTR ApplicationUserModelId,
+        _In_ PWSTR Executable,
         _In_ PWSTR Arguments,
-        _In_ ULONG ActivationOptions, 
-        _In_opt_ ULONG ParentProcessId, 
+        _In_ ULONG ActivationOptions,
+        _In_opt_ ULONG ParentProcessId,
         _Out_ PHANDLE ProcessHandle);
 
     void STDMETHODCALLTYPE ActivateWithOptionsAndArgs(
@@ -186,25 +186,25 @@ interface DECLSPEC_UUID("72e3a5b0-8fea-485c-9f8b-822b16dba17f") IDesktopAppxActi
     ULONG   STDMETHODCALLTYPE Release() override final;
 
     void STDMETHODCALLTYPE Activate(
-        _In_ PWSTR ApplicationUserModelId, 
-        _In_ PWSTR PackageRelativeExecutable, 
+        _In_ PWSTR ApplicationUserModelId,
+        _In_ PWSTR PackageRelativeExecutable,
         _In_ PWSTR Arguments,
         _Out_ PHANDLE ProcessHandle);
 
 	void STDMETHODCALLTYPE ActivateWithOptions(
-        _In_ PWSTR ApplicationUserModelId, 
-        _In_ PWSTR Executable, 
+        _In_ PWSTR ApplicationUserModelId,
+        _In_ PWSTR Executable,
         _In_ PWSTR Arguments,
-        _In_ ULONG ActivationOptions, 
-        _In_opt_ ULONG ParentProcessId, 
+        _In_ ULONG ActivationOptions,
+        _In_opt_ ULONG ParentProcessId,
         _Out_ PHANDLE ProcessHandle);
 }
 ```
 
-This code was translated back to C++ and Windows API types from the C# source.  
+This code was translated back to C++ and Windows API types from the C# source.
 
-- Windows11: Create COM object with ClsId `168EB462-775F-42AE-9111-D714B2306C2E`, IId `F158268A-D5A5-45CE-99CF-00D6C3F3FC0A`.  
-- Windows10: Create COM object with ClsId `168EB462-775F-42AE-9111-D714B2306C2E`, IId `72e3a5b0-8fea-485c-9f8b-822b16dba17f`.  
+- Windows11: Create COM object with ClsId `168EB462-775F-42AE-9111-D714B2306C2E`, IId `F158268A-D5A5-45CE-99CF-00D6C3F3FC0A`.
+- Windows10: Create COM object with ClsId `168EB462-775F-42AE-9111-D714B2306C2E`, IId `72e3a5b0-8fea-485c-9f8b-822b16dba17f`.
 
 Using these interfaces looks something like this:
 

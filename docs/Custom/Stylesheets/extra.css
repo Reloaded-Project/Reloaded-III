@@ -26,9 +26,9 @@
   margin-bottom: 0px;
 }
 
-/* 
+/*
   Pillarcard:
-    Provides cards display support.  
+    Provides cards display support.
 */
 
 .pillarwrapper {
@@ -37,7 +37,7 @@
   flex-wrap: wrap;
   align-items: stretch;
 }
- 
+
 .pillarwrapper > div {
 
   padding: 10px 10px 10px 10px;
@@ -58,20 +58,20 @@
 
   /* Add some spacing to our pillars */
   margin: 5px;
-  cursor: default; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */ 
+  cursor: default; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
- 
+
 .pillarwrapper > div:hover {
   box-shadow: 0px 5px 10px rgba(30, 30, 30, 0.85);
 }
- 
+
 .pillarcard {
   padding-bottom:0px;
   opacity: 0.9;
 
   /* Border */
   border: rgba(255, 255, 255, 0.705);
-}   
+}
 
 .pillarcard:hover {
   opacity: 1.0;
@@ -80,11 +80,11 @@
   border: #EF5552;
   border-style: solid;
   border-width: 1px;
-}   
+}
 
 .pillarcard img {
   opacity: 0.8;
-  transition: ease-in-out 200ms;  
+  transition: ease-in-out 200ms;
 }
 
 .pillarcard:hover img {

@@ -11,29 +11,29 @@ hide:
 
 !!! info
 
-    Reloaded III is a placeholder name; we're open for suggestions.  
+    Reloaded III is a placeholder name; we're open for suggestions.
 
-**[Reloaded III]** is a formal specification for an improved version of [Reloaded-II](https://reloaded-project.github.io/Reloaded-II/), a universal Game Modding framework.  
+**[Reloaded III]** is a formal specification for an improved version of [Reloaded-II](https://reloaded-project.github.io/Reloaded-II/), a universal Game Modding framework.
 
 <div align="center">
 	<img src="./Images/Reloaded3ConsoleLogo.png" width="550" align="center" />
 	<br/><br/>
 </div>
 
-It is an ***extensible*** and ***modular*** framework that allows you to create your own mods for any game on virtually any platform.  
+It is an ***extensible*** and ***modular*** framework that allows you to create your own mods for any game on virtually any platform.
 
-R3 is built on a tried and tested architecture; that ensures games stay functional post updates, and ***good*** support for new games can be added ***fast***.  
+R3 is built on a tried and tested architecture; that ensures games stay functional post updates, and ***good*** support for new games can be added ***fast***.
 
-Don't waste time making a whole infrastructure for your game; *go mod stuff instead!*.  
+Don't waste time making a whole infrastructure for your game; *go mod stuff instead!*.
 
 !!! question
-    
-    So what is Reloaded about? 👇 Below are some goals of the project.  
+
+    So what is Reloaded about? 👇 Below are some goals of the project.
 
 ## Mod Loader
 
 <!-- Cards -->
-<!-- 
+<!--
 	Icons: https://squidfunk.github.io/mkdocs-material/reference/icons-emojis/
 	The dirty trick with images is we place them inline in text, let the page build
 	and then copy the HTML out.
@@ -131,7 +131,7 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 		</p>
 		<hr class="pillarseparator" />
         <p>
-			Your code executes before the game<br/> 
+			Your code executes before the game<br/>
 			runs a single line of code.
 		</p>
     </div>
@@ -158,7 +158,7 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 		</p>
 		<hr class="pillarseparator" />
         <p>
-			Debug &amp; Profile your code in Major IDEs<br/> 
+			Debug &amp; Profile your code in Major IDEs<br/>
 			Including Edit &amp; Continue Support<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.
 		</p>
     </div>
@@ -212,13 +212,13 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 		</p>
 		<hr class="pillarseparator" />
         <p>
-			Writing mods should be easy!<br/> 
+			Writing mods should be easy!<br/>
 			Think <a href="https://reloaded-project.github.io/Reloaded-II/DevelopmentEnvironmentSetup/">Reloaded II Docs</a> but for all languages.
 		</p>
     </div>
 </div>
 
-The goal is to create a world where modders can focus on actually *modding* the games.  
+The goal is to create a world where modders can focus on actually *modding* the games.
 
 ## Mod Management & Packaging
 
@@ -235,7 +235,7 @@ The goal is to create a world where modders can focus on actually *modding* the 
 		</p>
 		<hr class="pillarseparator" />
         <p>
-			Doesn't modify game's existing files.<br/> 
+			Doesn't modify game's existing files.<br/>
 			Self contained. Remove R3 folder and it's gone.
 		</p>
     </div>
@@ -262,7 +262,7 @@ The goal is to create a world where modders can focus on actually *modding* the 
 		</p>
 		<hr class="pillarseparator" />
         <p>
-			If a mod requires another mod to function,<br/> 
+			If a mod requires another mod to function,<br/>
 			it will be automatically downloaded.
 		</p>
     </div>
@@ -289,7 +289,7 @@ The goal is to create a world where modders can focus on actually *modding* the 
 		</p>
 		<hr class="pillarseparator" />
         <p>
-            Unified schema for configuring mods.<br/> 
+            Unified schema for configuring mods.<br/>
             Works with any language; changes apply in real time!
 		</p>
     </div>
@@ -301,7 +301,7 @@ The goal is to create a world where modders can focus on actually *modding* the 
 		</p>
 		<hr class="pillarseparator" />
         <p>
-			Supports multiple games at once.<br/> 
+			Supports multiple games at once.<br/>
 			Only one copy of Mod Manager needed.
 		</p>
     </div>
@@ -326,26 +326,26 @@ The goal is to create a world where modders can focus on actually *modding* the 
 
 !!! info
 
-    This page looks [awfully familiar to Reloaded-II](https://reloaded-project.github.io/Reloaded-II/), what's up with that?  
+    This page looks [awfully familiar to Reloaded-II](https://reloaded-project.github.io/Reloaded-II/), what's up with that?
 
-`Reloaded-III` is a specification for an enhanced version of `Reloaded-II`; with a newer config schema, 
+`Reloaded-III` is a specification for an enhanced version of `Reloaded-II`; with a newer config schema,
 design that supports multiple platforms (not just Windows) and the ability to allow anyone write mods in an arbitrary programming
-language of their choice. 
+language of their choice.
 
-It expands the tried and tested Reloaded-II paradigm of having individual mods communicate with each other.  
+It expands the tried and tested Reloaded-II paradigm of having individual mods communicate with each other.
 
-For example, support for specific games is implemented by talking to existing *other mods* which implement middleware/engine specific features for 
+For example, support for specific games is implemented by talking to existing *other mods* which implement middleware/engine specific features for
 archive formats, utility functions etc.
 
 !!! tip
 
-    Did you know the first mod for [Persona 3 on GameBanana](https://gamebanana.com/games/16613) appeared 
-    ***40 minutes*** after the game released on PC?  
-    No changes were needed to Reloaded-II Launcher or Loader.  
+    Did you know the first mod for [Persona 3 on GameBanana](https://gamebanana.com/games/16613) appeared
+    ***40 minutes*** after the game released on PC?
+    No changes were needed to Reloaded-II Launcher or Loader.
 
-    This was possible because the game used `.cpk`, an archive format from 
-    [CRI Middleware](https://en.wikipedia.org/wiki/CRI_Middleware); for which Reloaded had a [universal mod](https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII) to handle 
-    these archives without repacking.  
+    This was possible because the game used `.cpk`, an archive format from
+    [CRI Middleware](https://en.wikipedia.org/wiki/CRI_Middleware); for which Reloaded had a [universal mod](https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII) to handle
+    these archives without repacking.
 
     All the mod author had to do was set a `dependency` the mod and... that was all, it magically works!
 
@@ -353,7 +353,7 @@ archive formats, utility functions etc.
 
 !!! question
 
-    Whoa, whoa, whoa; isn't that a lot of stuff?  
+    Whoa, whoa, whoa; isn't that a lot of stuff?
     Yeppers, the good news is; most of this stuff already exists in Reloaded-II 😉.
 
 ## Contributions

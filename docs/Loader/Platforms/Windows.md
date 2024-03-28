@@ -4,13 +4,13 @@
 
 !!! info
 
-    Some older native mods might want to dynamically link to libraries 
+    Some older native mods might want to dynamically link to libraries
     (.dlls) they ship with their mods. We need to register the mod's directory
     as a possible path for loading DLLs.
 
 ```csharp
 // Reference C# code from Reloaded-II.
-var builder = new StringBuilder(4096); // ought to be enough characters given most programs break at 260 anyway. 
+var builder = new StringBuilder(4096); // ought to be enough characters given most programs break at 260 anyway.
 GetDllDirectoryW(builder.Length, builder);
 SetDllDirectoryW(Path.GetDirectoryName(dllPath));
 _moduleHandle = LoadLibraryW(dllPath);
@@ -21,7 +21,7 @@ SetDllDirectoryW(builder.ToString());
 
 !!! warning
 
-    Assume the user does not have any sort of crash dump/error reporting enabled. 
+    Assume the user does not have any sort of crash dump/error reporting enabled.
     We must generate dumps ourselves when our process dies.
 
 ```rust
@@ -30,7 +30,7 @@ use winapi::um::winnt::{EXCEPTION_POINTERS, LONG};
 unsafe extern "system" fn my_unhandled_exception_filter(exception_info: *mut EXCEPTION_POINTERS) -> LONG {
     // Finish Logging and Generate a Crash Dump...
     // ...
-    
+
     // Return 0 because our exception was not handled; we only generated a dump.
     0
 }
@@ -44,18 +44,18 @@ unsafe {
 }
 ```
 
-After the crash dump has been generated; the code should:  
+After the crash dump has been generated; the code should:
 
-- Generate a Crash Dump.  
-- Dump Log to Same Location as Crash Dump.  
-- Display Crash Address (incl. Module/DLL name).  
-- Open an explorer window in the location of the dump.  
+- Generate a Crash Dump.
+- Dump Log to Same Location as Crash Dump.
+- Display Crash Address (incl. Module/DLL name).
+- Open an explorer window in the location of the dump.
 
-Dumps will be written out to `%temp%/Reloaded-III/process.exe` as:  
+Dumps will be written out to `%temp%/Reloaded-III/process.exe` as:
 
-- `dump.dmp` The crash dump.  
-- `log.txt` The log of the recent run.  
-- `info.json` Contextual information (e.g. Mod list game was started with).  
+- `dump.dmp` The crash dump.
+- `log.txt` The log of the recent run.
+- `info.json` Contextual information (e.g. Mod list game was started with).
 
 A compatible mod manager should clean the `%temp%/Reloaded-III` folder on each boot.
 
@@ -70,11 +70,11 @@ A compatible mod manager should clean the `%temp%/Reloaded-III` folder on each b
     To ensure all logs have been successfully written out to disk; it's necessary to hook
     `kernel32.ExitProcess` to get a notification for when the process exits.
 
-## Wine 
+## Wine
 
-!!! info 
+!!! info
 
-    To detect wine, check if `ntdll` exports `wine_get_version`.  
+    To detect wine, check if `ntdll` exports `wine_get_version`.
     Always note that Wine is in constant development; in the future workarounds might become obsolete.
 
 !!! important
@@ -120,7 +120,7 @@ println!("Is running under Wine: {}", ENVIRONMENT.is_wine);
 
 ### Console
 
-Within Wine, the function `Kernel32.GetConsoleWindow` might not correctly evaluate in some cases, 
+Within Wine, the function `Kernel32.GetConsoleWindow` might not correctly evaluate in some cases,
 or be stubbed entirely.
 
 !!! error "Do not do just this."

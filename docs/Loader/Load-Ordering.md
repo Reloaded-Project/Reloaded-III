@@ -12,7 +12,7 @@
 
 !!! info
 
-    Backends are placed first in the mod load order before any other sorting occurs.  
+    Backends are placed first in the mod load order before any other sorting occurs.
 
 !!! tip
 
@@ -20,7 +20,7 @@
 
 !!! abstract "Log this as warning to console."
 
-Suppose a following mod order:  
+Suppose a following mod order:
 
 ```mermaid
 flowchart LR
@@ -29,9 +29,9 @@ flowchart LR
     Backend --> D
 ```
 
-The `".NET Mod"` should have a dependency on `".NET Backend"`, but it is missing.  
+The `".NET Mod"` should have a dependency on `".NET Backend"`, but it is missing.
 
-To resolve this, the load order should be set to:  
+To resolve this, the load order should be set to:
 
 ```mermaid
 flowchart LR
@@ -44,7 +44,7 @@ flowchart LR
 
 !!! info
 
-    If Mod A sets Dependency on Mod B, then Mod B must be loaded first.  
+    If Mod A sets Dependency on Mod B, then Mod B must be loaded first.
 
 Suppose the following load order.
 
@@ -74,15 +74,15 @@ flowchart LR
 
 !!! info
 
-    Mod A can mark Mod B as incompatible, leading to Mod B being disabled at startup.  
+    Mod A can mark Mod B as incompatible, leading to Mod B being disabled at startup.
 
 !!! warning "Experimental"
 
-    This is intended with the purpose of disabling mods in known guaranteed game-breaking scenarios.  
+    This is intended with the purpose of disabling mods in known guaranteed game-breaking scenarios.
 
 !!! abstract "Log this as warning to console."
 
-Consider the following scenario:  
+Consider the following scenario:
 
 ```mermaid
 flowchart LR
@@ -95,14 +95,14 @@ flowchart LR
     VK --> RT
     RT -. Dependency .-> VK
 
-    9E <-.. Incompatible ..-> VK
+    9E <-. Incompatible ..-> VK
 ```
 
 You have one mod which upgrades game to `Direct3D9Ex` and one that upgrades the game to `Vulkan`.
 
 !!! question "You can only use one Graphics API at a time; so what happens?"
 
-Proposed solution is to destruct the mod with the lower priority, in this case the `D3D9Ex` mod.  
+Proposed solution is to destruct the mod with the lower priority, in this case the `D3D9Ex` mod.
 
 ```mermaid
 flowchart LR
@@ -114,9 +114,9 @@ flowchart LR
     VK --> RT
 ```
 
-Additional Rationale:  
+Additional Rationale:
 
-- Incompatible mods may be implicitly loaded via dependencies with no way of user explicitly disabling them.  
+- Incompatible mods may be implicitly loaded via dependencies with no way of user explicitly disabling them.
 
 ### Edge Case: Mod Dependency was Filtered Out
 
@@ -144,7 +144,7 @@ flowchart LR
 ```
 
 When `Vulkan Support` is filtered out due to being lower priority, the dependencies of `RayTracing Mod` are no longer
-satisfied; thus game cannot be safely started.  
+satisfied; thus game cannot be safely started.
 
 To handle error case; simply check if all dependencies are satisfied after doing all operations.
 
@@ -168,9 +168,9 @@ flowchart LR
     B -. Incompatible .-> A
 ```
 
-If higher priority `Mod C` marks `Mod B` as incompatible, `Mod A` can stay as it is no longer incompatible.  
+If higher priority `Mod C` marks `Mod B` as incompatible, `Mod A` can stay as it is no longer incompatible.
 
-i.e. After removing items; this load order should be...  
+i.e. After removing items; this load order should be...
 
 ```mermaid
 flowchart LR
@@ -206,8 +206,8 @@ flowchart LR
 
 !!! info
 
-    Mod A can mark Mod B as deprecated in the context of dependency resolution.  
-    In this case, all Dependencies to Mod A are re-routed to Mod B during the mod loading procedure.  
+    Mod A can mark Mod B as deprecated in the context of dependency resolution.
+    In this case, all Dependencies to Mod A are re-routed to Mod B during the mod loading procedure.
 
 !!! danger "Dangerous"
 
@@ -222,13 +222,13 @@ flowchart LR
     A["Old Game Support"]
     B["New Game Support"]
     C["Costume Mod"]
-    
+
     A --> C
     C --> B
     C -. Dependency .-> A
 ```
 
-If Mod B declares itself as successor of Mod A [deprecates Mod A], dependencies to Mod A are rerouted to Mod B.  
+If Mod B declares itself as successor of Mod A [deprecates Mod A], dependencies to Mod A are rerouted to Mod B.
 
 And since there is no longer a dependency on `Old Game Support`; the mod is excluded entirely.
 
@@ -237,7 +237,7 @@ flowchart LR
     %% Define
     B["New Game Support"]
     C["Costume Mod"]
-    
+
     C -. Dependency .-> B
     B --> C
 ```

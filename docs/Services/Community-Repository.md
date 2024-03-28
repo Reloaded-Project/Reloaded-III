@@ -1,37 +1,37 @@
 ﻿# Community Repository
 
-!!! info 
+!!! info
 
-    The community repository. This allows us to apply per-game specific support/rules without having to recompile mod managers.  
+    The community repository. This allows us to apply per-game specific support/rules without having to recompile mod managers.
 
 !!! note "This documents a future iteration of [Reloaded.Community](https://github.com/Reloaded-Project/Reloaded.Community) repository."
 
 ## About
 
-The `Community Repository` contains game-specific information for launchers implementing the Reloaded3 spec.  
+The `Community Repository` contains game-specific information for launchers implementing the Reloaded3 spec.
 
 The idea is we can update the information we know about various games without ever having to recompile individual launchers,
 instead, dynamically downloading them from the web.
 
-Some use cases include:  
+Some use cases include:
 
-- Automatically registering GameBanana/Nexus/GitHub download sources.  
-- Helping automatic detection of games installed via Steam/Epic/Origin etc.  
-- Providing compatibility warnings for pre-patched/pre-modded legacy games.  
-- Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)  
-- Auto assign Game IDs in [Application Configurations](../Manager/Configurations/App-Metadata.md).  
-- Updating [Mod Configurations](../Loader/Configurations/Mod-Metadata.md) with correct [App ID](../Manager/Configurations/App-Metadata.md#id)s marking which games an app supports.  
+- Automatically registering GameBanana/Nexus/GitHub download sources.
+- Helping automatic detection of games installed via Steam/Epic/Origin etc.
+- Providing compatibility warnings for pre-patched/pre-modded legacy games.
+- Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
+- Auto assign Game IDs in [Application Configurations](../Manager/Configurations/App-Metadata.md).
+- Updating [Mod Configurations](../Loader/Configurations/Mod-Metadata.md) with correct [App ID](../Manager/Configurations/App-Metadata.md#id)s marking which games an app supports.
 
 ## Schema
 
 !!! note
 
-    This represents the schema of items the individual users add to the repo manually.  
+    This represents the schema of items the individual users add to the repo manually.
     This schema can produce 1 or more files in the [API](#api) (depending on number of game versions, etc.)
 
-All configurations are written as YAML (for editing convenience), but are converted to JSON for applications to consume.  
+All configurations are written as YAML (for editing convenience), but are converted to JSON for applications to consume.
 
-They can have any name (as long as they use their own unique folder), in this spec we will refer to them as `App.yml`.  
+They can have any name (as long as they use their own unique folder), in this spec we will refer to them as `App.yml`.
 
 | Type          | Item                                            | Description                                                                                     |
 |---------------|-------------------------------------------------|-------------------------------------------------------------------------------------------------|
@@ -61,7 +61,7 @@ Versions:
     ExeName: "tsonic_win.exe"
     Version: "1.0.0.1"
     Date: "2004-10-18T08:15:02"
-    
+
 OtherBinaries:
   - Hash: "8CF7D3CD8CDBBFE"
     ExeName: "launcher.exe"
@@ -97,15 +97,15 @@ BadHashDescription: "Mods target the NoCD version of Sonic Heroes; specifically 
 | string   | ExeName     | Name of executable.                                                                               |
 | string[] | EntryPoints | [Optional*] Name of [entry point DLLs for hijacking.](../Loader/Bootloaders/Windows-DllHijack.md) |
 | string   | Version     | [Optional] Version of game bound to this executable.                                              |
-| DateTime | Date        | [Optional] Date of this version, as ISO 8601.                                                     | 
+| DateTime | Date        | [Optional] Date of this version, as ISO 8601.                                                     |
 
-This version and their time are supposed to be purely informative.  
+This version and their time are supposed to be purely informative.
 
 !!! note "`EntryPoints` is required for EXEs but optional for any other type that inherits `Version`"
 
 !!! warning
 
-    In cases where a game significantly differs after a update to the point where handling it using existing mods 
+    In cases where a game significantly differs after a update to the point where handling it using existing mods
     is not possible (e.g. 32bit -> 64bit + changed file formats); you should make a new entry for the game in the repository,
     e.g. `Persona 4 Golden 64-bit`, rather than adding a new version.
 
@@ -119,9 +119,9 @@ This version and their time are supposed to be purely informative.
 
 And all existing fields in [Version](#version)...
 
-Example Message:  
+Example Message:
 
-- `This executable is the launcher for this game. Are you sure you didn't want to select <X>?`.  
+- `This executable is the launcher for this game. Are you sure you didn't want to select <X>?`.
 
 ### Icon
 
@@ -141,9 +141,9 @@ Example Message:
 
 !!! info "BannerH: Use `920x430` or a multiple of this resolution."
 
-We use the Steam resolutions for `BannerV` and `BannerH`, and official Steam assets when possible.  
+We use the Steam resolutions for `BannerV` and `BannerH`, and official Steam assets when possible.
 
-Mod manager can choose to display either, or not use any at all.  
+Mod manager can choose to display either, or not use any at all.
 
 ### Store Information
 
@@ -264,8 +264,8 @@ Repository Root
 
 !!! info
 
-    The raw files specified in [schema](#schema) go through a 'build' process.  
-    This build process converts the files to `.json` and spit it out in a format suitable for hosting on [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages).  
+    The raw files specified in [schema](#schema) go through a 'build' process.
+    This build process converts the files to `.json` and spit it out in a format suitable for hosting on [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages).
 
 Output format:
 
@@ -279,10 +279,10 @@ Repository Root
         └── App.json.br
 ```
 
-The build process performs 2 steps:  
+The build process performs 2 steps:
 
-- Converts the `.yml` files to `.json` for easier consumption from managers.  
-- Produces an [Index](#index) for searching for a given game.  
+- Converts the `.yml` files to `.json` for easier consumption from managers.
+- Produces an [Index](#index) for searching for a given game.
 
 ### Index
 
@@ -295,7 +295,7 @@ The build process performs 2 steps:
 | Dictionary<string, IndexItem[]> | ExeToApps  | Maps game `.exe` file to App. |
 | Dictionary<string, IndexItem>   | HashToApps | Maps game `.exe` hash to App. |
 
-`IndexItem` is defined as:  
+`IndexItem` is defined as:
 
 | Type   | Item     | Description                                                       |
 |--------|----------|-------------------------------------------------------------------|

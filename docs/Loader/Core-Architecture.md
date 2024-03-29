@@ -104,7 +104,7 @@ It is ***extremely important*** that the loader only ships the bare essentials, 
     Mods which are missing a direct or transitive dependency should be ignored, and the backend
     should instead log a warning to the console.
 
-    The Diagnostics system [TODO: Link Pending] should warn users inside the launcher if it believes
+    The [Diagnostics system][diagnostics] should warn users inside the launcher if it believes
 
 !!! warning "The backend cannot have dependencies which rely on backend itself."
 
@@ -283,6 +283,7 @@ sequenceDiagram
 [backends]: ./Backends/About.md
 [backend]: ./Backends/About.md#custom-backends
 [create-minidump]: ./Platforms/Windows.md#error-reporting
+[diagnostics]: ../Server/Diagnostics.md
 [drm]: ./Copy-Protection/About.md
 [layer-1]: #middlewareos-handling-mods-layer-1
 [load-order]: ./Load-Ordering.md

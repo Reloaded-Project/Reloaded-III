@@ -88,9 +88,10 @@ nav:
       - Loader Deployment: Loader/Deployment.md
       - Breaking Changes: Loader/Breaking-Changes.md
 
-  - Mod Manager:
-      - Configurations:
-          - App Metadata: Manager/Configurations/App-Metadata.md
+  - Server (Manager Backend):
+    - Diagnostics: Server/Diagnostics.md
+    - Configurations:
+        - App Metadata: Server/Configurations/App-Metadata.md
 
   - Online Services:
       - Community Repository: Services/Community-Repository.md

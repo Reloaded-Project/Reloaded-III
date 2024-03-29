@@ -31,7 +31,7 @@ A name that uniquely identifies the mod.
 
 The suggested format to use for names is `game.type.subtype.name`.
 
-- `game` should ideally match [App 'Id'](../../Manager/Configurations/App-Metadata.md#id) for the given application.
+- `game` should ideally match [App 'Id'](../../Server/Configurations/App-Metadata.md#id) for the given application.
 - `type` name should ideally match category of the mod on a site like [GameBanana](https://gamebanana.com) or [NexusMods](https://www.nexusmods.com).
 - `subtype` [Optional] provides additional information about the item.
 - `name` unique identifier for the mod. Can use another `.` dot if additional info is needed.
@@ -226,7 +226,7 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
 
 ## Supported Games
 
-!!! info "Stores a list of supported games; by using their known [Application ID](../../Manager/Configurations/App-Metadata.md#id)."
+!!! info "Stores a list of supported games; by using their known [Application ID](../../Server/Configurations/App-Metadata.md#id)."
 
 Alternatively, when experimenting with new games which do not have a specified Application ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 

@@ -19,8 +19,8 @@ Some use cases include:
 - Helping automatic detection of games installed via Steam/Epic/Origin etc.
 - Providing compatibility warnings for pre-patched/pre-modded legacy games.
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
-- Auto assign Game IDs in [Application Configurations](../Manager/Configurations/App-Metadata.md).
-- Updating [Mod Configurations](../Loader/Configurations/Mod-Metadata.md) with correct [App ID](../Manager/Configurations/App-Metadata.md#id)s marking which games an app supports.
+- Auto assign Game IDs in [Application Configurations](../Server/Configurations/App-Metadata.md).
+- Updating [Mod Configurations](../Loader/Configurations/Mod-Metadata.md) with correct [App ID](../Server/Configurations/App-Metadata.md#id)s marking which games an app supports.
 
 ## Schema
 
@@ -33,20 +33,20 @@ All configurations are written as YAML (for editing convenience), but are conver
 
 They can have any name (as long as they use their own unique folder), in this spec we will refer to them as `App.yml`.
 
-| Type          | Item                                            | Description                                                                                     |
-|---------------|-------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| string        | [Id](../Manager/Configurations/App-Metadata.md) | Unique identifier for this game. Copied to [App Id](../Manager/Configurations/App-Metadata.md). |
-| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'.                                           |
-| Version[]     | [Versions](#version)                            | Versions of the executable.                                                                     |
-| Version[]     | [Launchers](#other-binaries)                    | Stores information about other executables in game folder you probably don't wanna mod.         |
-| string        | [Icon](#icon)                                   | Icon for the game in 1:1 aspect ratio.                                                          |
-| string        | [BannerH](#banner)                              | Horizontal banner for the game.                                                                 |
-| string        | [BannerV](#banner)                              | Vertical banner for the game.                                                                   |
-| StoreInfo     | [StoreInformation](#store-information)          | Game store specific information.                                                                |
-| ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                                      |
-| Warning[]     | [Warnings](#warnings)                           | Warnings to display if specific files are found in game folder.                                 |
-| string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                              |
-| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking](../Loader/Bootloaders/Windows-DllHijack.md).      |
+| Type          | Item                                            | Description                                                                                    |
+| ------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| string        | [Id](../Server/Configurations/App-Metadata.md)  | Unique identifier for this game. Copied to [App Id](../Server/Configurations/App-Metadata.md). |
+| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'.                                          |
+| Version[]     | [Versions](#version)                            | Versions of the executable.                                                                    |
+| Version[]     | [Launchers](#other-binaries)                    | Stores information about other executables in game folder you probably don't wanna mod.        |
+| string        | [Icon](#icon)                                   | Icon for the game in 1:1 aspect ratio.                                                         |
+| string        | [BannerH](#banner)                              | Horizontal banner for the game.                                                                |
+| string        | [BannerV](#banner)                              | Vertical banner for the game.                                                                  |
+| StoreInfo     | [StoreInformation](#store-information)          | Game store specific information.                                                               |
+| ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                                     |
+| Warning[]     | [Warnings](#warnings)                           | Warnings to display if specific files are found in game folder.                                |
+| string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                             |
+| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking](../Loader/Bootloaders/Windows-DllHijack.md).     |
 
 !!! note "Note: All hashes listed in this specification are `xxHash64`."
 
@@ -92,7 +92,7 @@ BadHashDescription: "Mods target the NoCD version of Sonic Heroes; specifically 
 !!! info "Stores individual version information for a binary with a given hash."
 
 | Type     | Item        | Description                                                                                       |
-|----------|-------------|---------------------------------------------------------------------------------------------------|
+| -------- | ----------- | ------------------------------------------------------------------------------------------------- |
 | string   | Hash        | Hash of executable.                                                                               |
 | string   | ExeName     | Name of executable.                                                                               |
 | string[] | EntryPoints | [Optional*] Name of [entry point DLLs for hijacking.](../Loader/Bootloaders/Windows-DllHijack.md) |
@@ -113,9 +113,9 @@ This version and their time are supposed to be purely informative.
 
 !!! info "Extends from [Version](#version)"
 
-| Type     | Item    | Description                                          |
-|----------|---------|------------------------------------------------------|
-| string   | Message | Message to display for this executable.              |
+| Type   | Item    | Description                             |
+| ------ | ------- | --------------------------------------- |
+| string | Message | Message to display for this executable. |
 
 And all existing fields in [Version](#version)...
 
@@ -148,7 +148,7 @@ Mod manager can choose to display either, or not use any at all.
 ### Store Information
 
 | Type           | Item                      | Description                                   |
-|----------------|---------------------------|-----------------------------------------------|
+| -------------- | ------------------------- | --------------------------------------------- |
 | EAGameInfo     | [EADesktop](#ea-desktop)  | Contains EA Desktop related information.      |
 | EpicGameInfo   | [Epic](#epic-games-store) | Contains Epic Game Store related information. |
 | GogGameInfo    | [Gog](#gog)               | Contains EA Desktop related information.      |
@@ -163,7 +163,7 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 !!! failure "[Given how hard they are trying to stop you from finding out where your games are installed by using military grade SHA3-256 encryption](https://github.com/erri120/GameFinder/wiki/EA-Desktop); changes here might be needed someday."
 
 | Type   | Item       | Description                                               |
-|--------|------------|-----------------------------------------------------------|
+| ------ | ---------- | --------------------------------------------------------- |
 | string | SoftwareID | Unique ID for this game used in 'EA Desktop' application. |
 
 #### Epic Games Store
@@ -171,7 +171,7 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 !!! warning "It is unconfirmed whether this is the best item to use, this may still be changed."
 
 | Type   | Item          | Description                     |
-|--------|---------------|---------------------------------|
+| ------ | ------------- | ------------------------------- |
 | string | CatalogItemId | Unique ID in catalog for 'EGS'. |
 
 #### GOG
@@ -179,7 +179,7 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 !!! tip "You can use the [GOG Database](https://www.gogdb.org/) to look up these IDs."
 
 | Type | Item | Description                            |
-|------|------|----------------------------------------|
+| ---- | ---- | -------------------------------------- |
 | long | ID   | Unique ID for this game used in 'GOG'. |
 
 #### Origin
@@ -187,7 +187,7 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 !!! warning "EA is [deprecating Origin in favour of EA Desktop](https://www.ea.com/en-gb/news/ea-app)"
 
 | Type   | Item | Description                               |
-|--------|------|-------------------------------------------|
+| ------ | ---- | ----------------------------------------- |
 | string | ID   | Unique ID for this game used in 'Origin'. |
 
 #### Steam
@@ -195,19 +195,19 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 !!! tip "You can use the [SteamDB](https://steamdb.info/) to look up these IDs."
 
 | Type   | Item          | Description                     |
-|--------|---------------|---------------------------------|
+| ------ | ------------- | ------------------------------- |
 | string | CatalogItemId | Unique ID in catalog for 'EGS'. |
 
 #### Xbox
 
-| Type     | Item     | Description                                                                                                                                                         |
-|----------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| string   | ID       | Unique ID. Corresponds to [Package.Identity.Name in AppxManifest.xml](https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity) |
+| Type   | Item | Description                                                                                                                                                         |
+| ------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| string | ID   | Unique ID. Corresponds to [Package.Identity.Name in AppxManifest.xml](https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity) |
 
 ### Mod Source Information
 
 | Type           | Item                      | Description                     |
-|----------------|---------------------------|---------------------------------|
+| -------------- | ------------------------- | ------------------------------- |
 | GameBananaInfo | [GameBanana](#gamebanana) | Info for GameBanana Mod Search. |
 | NexusInfo      | [NexusMods](#nexus-mods)  | Info for NexusMods Mod Search.  |
 
@@ -215,17 +215,17 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 
 !!! info "Derived from URL to game page."
 
-| Type      | Item                      | Description                                                                 |
-|-----------|---------------------------|-----------------------------------------------------------------------------|
-| int       | Id                        | Unique identifier for game, e.g. 6061 for https://gamebanana.com/games/6061 |
+| Type | Item | Description                                                                 |
+| ---- | ---- | --------------------------------------------------------------------------- |
+| int  | Id   | Unique identifier for game, e.g. 6061 for https://gamebanana.com/games/6061 |
 
 #### Nexus Mods
 
 !!! info "Derived from URL to game page."
 
-| Type   | Item                      | Description                                                             |
-|--------|---------------------------|-------------------------------------------------------------------------|
-| string | Id                        | Domain for the game, e.g. `skyrim` for https://www.nexusmods.com/skyrim |
+| Type   | Item | Description                                                             |
+| ------ | ---- | ----------------------------------------------------------------------- |
+| string | Id   | Domain for the game, e.g. `skyrim` for https://www.nexusmods.com/skyrim |
 
 In the Nexus API this ID is usually referred to as `Domain`.
 
@@ -234,14 +234,14 @@ In the Nexus API this ID is usually referred to as `Domain`.
 Can be used to provide warnings for 3rd party components. e.g. Old DLL mods incompatible with Reloaded, Steam API Emulator DLLs, etc.
 
 | Type        | Item                   | Description                                            |
-|-------------|------------------------|--------------------------------------------------------|
+| ----------- | ---------------------- | ------------------------------------------------------ |
 | string      | Message                | The error message to display if any files are matched. |
-| WarningItem | [Items](#warning-item) | Warning Item(s) List of files to match against. |
+| WarningItem | [Items](#warning-item) | Warning Item(s) List of files to match against.        |
 
 #### Warning Item
 
 | Type   | Item     | Description                                                            |
-|--------|----------|------------------------------------------------------------------------|
+| ------ | -------- | ---------------------------------------------------------------------- |
 | string | Hash     | [Optional] Hash of the item.                                           |
 | string | FilePath | Path of the file relative to the folder in which the EXE is contained. |
 
@@ -291,14 +291,14 @@ The build process performs 2 steps:
     The Index contains serialized dictionaries responsible for quick lookup of individual games.
 
 | Type                            | Item       | Description                   |
-|---------------------------------|------------|-------------------------------|
+| ------------------------------- | ---------- | ----------------------------- |
 | Dictionary<string, IndexItem[]> | ExeToApps  | Maps game `.exe` file to App. |
 | Dictionary<string, IndexItem>   | HashToApps | Maps game `.exe` hash to App. |
 
 `IndexItem` is defined as:
 
 | Type   | Item     | Description                                                       |
-|--------|----------|-------------------------------------------------------------------|
+| ------ | -------- | ----------------------------------------------------------------- |
 | string | AppName  | User friendly name for the game.                                  |
 | string | FilePath | Relative path to this `.json` file to the game [Schema](#schema). |
 

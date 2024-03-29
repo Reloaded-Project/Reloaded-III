@@ -186,7 +186,7 @@ You can fix this issue by not allowing {ModA} to overwrite {FileA}.
 
 The `Details` are written in Markdown.
 
-## Fixes
+## Fixes Rules
 
 !!! info "Some Diagnostics May Offer Automated Fixes"
 
@@ -195,11 +195,15 @@ The `Details` are written in Markdown.
     - Convert this texture to newer format.
     - Archive the mod for better load times.
 
-Some rules apply when writing mod-fixes:
+When implementing fixes, mod developers should adhere to the following guidelines and best practices.
 
 ### Fixes should be non-destructive.
 
 !!! info "Any change done by a fix should be revertible."
+
+    - Ensure that any changes made by a fix do not result in permanent data loss.
+    - If a fix involves modifying or converting files, create backups or store the original files in a temporary location.
+    - Provide clear instructions or options for users to revert the changes if needed.
 
 This revert does not have to be 1 click.
 The important condition is that the action does not lead to data loss.
@@ -211,6 +215,44 @@ the implications, they could lose their lossless copies of the textures. We want
 In a situation like this, the code fix may make a copy of the old textures inside a 'temporary' folder.
 If the user is satisfied with the result, they may then delete the temporary folder with the old
 textures.
+
+### Diagnostic 'fixes' should make the changes clear to the user.
+
+!!! info "Be very clear and explicit to the user."
+
+    - Before applying any fixes that may have significant impact on the user's mod setup, prompt the user for confirmation.
+    - Clearly explain the purpose, effects, and potential risks associated with the fix.
+    - Explanation needs to be clear to END USERS, not just modders & programmers.
+
+Example:
+
+```
+We are going to convert textures from PNG to DDS (BC7).
+The new textures will be more efficient and take up less space.
+
+Benefits:
+    - Improves game performance
+    - Reduces memory usage
+    - Speeds up loading times
+
+Important notes:
+    - The conversion process is permanent and cannot be undone.
+    - We will create a backup of the original PNG textures in a separate folder.
+    - Converted DDS textures may have a slightly lower visual quality compared to PNGs.
+    - The difference in quality is usually minimal.
+
+Do you want to convert the textures to DDS format?
+[No / Yes]
+```
+
+### Fixes should revert to prior state on error
+
+!!! info "If your diagnostic fix encounters an error, you should revert the mod to its previous state"
+
+    - There should be no changes to mod compared to prior state.
+    - Diagnostic may leave an error log in a temporary directory.
+
+This revert should be automated. An error dialog should then be displayed.
 
 ## Implementing Diagnostics
 
@@ -226,7 +268,7 @@ diagnostics should be moved out to separate plugins which would be dynamically e
 
 !!! tip "Diagnostic Plugins, just like mods and everything else are regular packages."
 
-### Updated Diagnostics
+### Diagnostics Update Triggers
 
 !!! info "The current set of diagnostics results may be affected by the following events"
 
@@ -242,6 +284,68 @@ diagnostics should be moved out to separate plugins which would be dynamically e
 
 - `Profile Changed / Initialize`
     - Find all diagnostic emitters for enabled mods and run them.
+
+### Diagnostics are Asynchronous
+
+!!! info "The server will run all diagnostics asynchronously on each trigger."
+
+The server will run the diagnostics in the background and report back to the UI as soon as each
+new diagnostic is emitted.
+
+Diagnostics must ensure they don't run for too long to ensure that they don't randomly appear
+out of nowhere in the user UI. (Make them fast as 'fsck')
+
+!!! warning "New diagnostics cannot be ran until the initial 'Initialize' is completed"
+
+### API Requirement
+
+!!! info "This represents currently known API requirements"
+
+Diagnostics API must provide the following:
+
+- A file tree.
+    - For all game folders, and all folders of enabled mods (including transitive).
+    - Either as flat array or as tree.
+    - Should include hash or last modified date.
+- Method to read file from tree as stream.
+- Method to read whole file from tree.
+- Logging API.
+
+Files may exist inside archives. This is why we need explicit methods for reading files.
+Streams could be used to read partially, in the event that we only want a header from a file.
+Otherwise we provide method to read the full file.
+
+## Diagnostics Rules
+
+### Read Only What You Need
+
+!!! tip "If you only need to read a file header, use the Stream API"
+
+I/O can be very slow, so it's very crucial that we read as little as possible.
+
+### Caching and Incremental Updates
+
+!!! info "Implement caching to reuse results of expensive diagnostics"
+
+    In particular:
+
+    - Information obtained through I/O (reading file contents).
+    - Information that requires some CPU crunching.
+
+The file tree provided by the diagnostics API gives you basic file info (names, hashes, last modified).
+Use this information as the 'key' to your cache.
+
+!!! note "TODO: Make Extremely Minimal Caching System with Minimal Code Size"
+
+### Log Issues
+
+!!! info "Diagnostic emitters should log any warnings produced using the API."
+
+### Add Localization
+
+!!! info "User facing messages (actual diagnostic text) should be translated according to language."
+
+TODO: How we implement this is currently undecided.
 
 <!-- Forked from: https://github.com/Nexus-Mods/NexusMods.App/blob/main/docs/development-guidelines/Diagnostics.md -->
 

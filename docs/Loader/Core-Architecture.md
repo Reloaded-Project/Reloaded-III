@@ -174,18 +174,14 @@ your game mod when creating their mod. This would be usually covered in a 'getti
 
 #### Regular Mods (Layer 3)
 
-!!! info
-
-    These are well, just regular mods.
+!!! info "These are well, just regular mods."
 
 They'll usually set a dependency on a layer 2 mod; and either just carry around game assets
 to replace in game folder; or their own custom code.
 
 ## Lower Level Views
 
-!!! tip
-
-    Shows how the overall system is composed using the sample of mods provided above.
+!!! tip "Shows how the overall system is composed using the sample of mods provided above."
 
 ### From Perspective of Layer 0 (Backend) Mod
 

@@ -12,7 +12,7 @@
 
 ## Id
 
-!!! info "A known, standardised name that uniquely identifies this application."
+!!! info "A known, standardized name that uniquely identifies this application."
 
 !!! warning "For games without established communities or people experimenting with new titles, this may be left blank."
 

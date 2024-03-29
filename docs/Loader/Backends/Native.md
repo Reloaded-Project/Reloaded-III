@@ -29,7 +29,7 @@ For example, if the backend specified is `win-x64`, it is assumed the CPU suppor
 
 !!! info "Configurations can define DLLs built for processor-specific feature sets."
 
-The following are currently recognised by the spec:
+The following are currently recognized by the spec:
 
 | Type   | Name      | Description               |
 |--------|-----------|---------------------------|

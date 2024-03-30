@@ -55,36 +55,36 @@ theme:
 nav:
   - Home: index.md
   - Mod Loader:
-      - Core Architecture: Loader/Core-Architecture.md
-      - Platform Support:
-          - About: Loader/Platforms/About.md
-          - Windows: Loader/Platforms/Windows.md
-          - Switch: Loader/Platforms/Switch.md
-          - Linux: Loader/Platforms/Linux.md
-          - OSX: Loader/Platforms/OSX.md
-      - Bootloaders:
-          - About: Loader/Bootloaders/About.md
-          - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
-          - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
-          - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
-      - Copy Protection:
-          - About: Loader/Copy-Protection/About.md
-          - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
-          - Windows - MS Store: Loader/Copy-Protection/Windows-MSStore.md
-      - Backends:
-          - About: Loader/Backends/About.md
-          - Native: Loader/Backends/Native.md
-          - .NET (CoreCLR): Loader/Backends/CoreCLR.md
-      - Configurations:
-          - Mod Metadata: Loader/Configurations/Mod-Metadata.md
-          - Mod Configurations: Loader/Configurations/Mod-Configurations.md
-      - Mod Configuration: Loader/Mod-Configurations.md
-      - Adding Game Support: Loader/Game-Support.md
-      - Handling Middleware: Loader/Middleware.md
-      - Dependency Injection: Loader/Dependency-Injection.md
-      - Mod Publishing: Loader/Build-System.md
-      - Loader Deployment: Loader/Deployment.md
-      - Breaking Changes: Loader/Breaking-Changes.md
+    - Core Architecture: Loader/Core-Architecture.md
+    - Platform Support:
+        - About: Loader/Platforms/About.md
+        - Windows: Loader/Platforms/Windows.md
+        - Switch: Loader/Platforms/Switch.md
+        - Linux: Loader/Platforms/Linux.md
+        - OSX: Loader/Platforms/OSX.md
+    - Bootloaders:
+        - About: Loader/Bootloaders/About.md
+        - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
+        - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
+        - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
+    - Copy Protection:
+        - About: Loader/Copy-Protection/About.md
+        - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
+        - Windows - MS Store: Loader/Copy-Protection/Windows-MSStore.md
+    - Backends:
+        - About: Loader/Backends/About.md
+        - Native: Loader/Backends/Native.md
+        - .NET (CoreCLR): Loader/Backends/CoreCLR.md
+    - Configurations:
+        - Mod Metadata: Loader/Configurations/Mod-Metadata.md
+        - Mod Configurations: Loader/Configurations/Mod-Configurations.md
+    - Mod Configuration: Loader/Mod-Configurations.md
+    - Adding Game Support: Loader/Game-Support.md
+    - Handling Middleware: Loader/Middleware.md
+    - Dependency Injection: Loader/Dependency-Injection.md
+    - Mod Publishing: Loader/Build-System.md
+    - Loader Deployment: Loader/Deployment.md
+    - Breaking Changes: Loader/Breaking-Changes.md
 
   - Server (Manager Backend):
     - Diagnostics: Server/Diagnostics.md

@@ -1,50 +1,33 @@
 ﻿# Load Ordering
 
-!!! info
+!!! warning "Conceptually Load Ordering is part of the Loader, but we do it in Server"
 
-    This page shows the rules used when ordering mods to be loaded.
+    This is for performance reasons.
 
-!!! note
+    Doing this in loader means reading info for all packages, which could be expensive for
+    users with 2000+ packages installed. (Especially on Network Storage or HDDs)
 
-    Mods loaded last are assumed to be of highest priority.
+    Instead, we prepare and cache this on the server, which already has the info in memory 
+    and the loader does only what is needed.
 
-## Backends are Rearranged as First
+    Doing this in server also allows for *better error handling*, and friendlier error
+    feedback to the user.
 
-!!! info
+!!! info "This page shows the rules used when ordering mods to be loaded."
 
-    Backends are placed first in the mod load order before any other sorting occurs.
+!!! note "Mods loaded last are assumed to be of highest priority."
 
-!!! tip
+When the user launches the game, the loader will look at the user's load order and then
+reorder & disable mods such that they meet dependency requirements.
 
-    This is a safeguard in case individual developers forget to set a dependency on the required backend.
+These operations are done in the following order:
 
-!!! abstract "Log this as warning to console."
-
-Suppose a following mod order:
-
-```mermaid
-flowchart LR
-    NetMod[".NET Mod"] --> B
-    B --> Backend[".NET Backend"]
-    Backend --> D
-```
-
-The `".NET Mod"` should have a dependency on `".NET Backend"`, but it is missing.
-
-To resolve this, the load order should be set to:
-
-```mermaid
-flowchart LR
-    Backend[".NET Backend"] --> NetMod[".NET Mod"]
-    NetMod --> B
-    B --> D
-```
+- Reorder Mods
+- Destroy (Remove) Mods
 
 ## Dependencies Must be Loaded First
 
-!!! info
-
-    If Mod A sets Dependency on Mod B, then Mod B must be loaded first.
+!!! info "If Mod A sets Dependency on Mod B, then Mod B must be loaded first."
 
 Suppose the following load order.
 
@@ -67,20 +50,18 @@ flowchart LR
     A --> B
     B --> D
 
-    A -. Depends On .-> C
+    A -. Depends On ..-> C
 ```
 
 ## Mods can Disable Incompatible Mods During Startup
 
-!!! info
-
-    Mod A can mark Mod B as incompatible, leading to Mod B being disabled at startup.
+!!! info "Mod A can mark Mod B as incompatible, leading to Mod B being disabled at startup."
 
 !!! warning "Experimental"
 
     This is intended with the purpose of disabling mods in known guaranteed game-breaking scenarios.
 
-!!! abstract "Log this as warning to console."
+!!! abstract "Log this as a warning."
 
 Consider the following scenario:
 
@@ -150,11 +131,9 @@ To handle error case; simply check if all dependencies are satisfied after doing
 
 ### Edge Case: Recursive Incompatibility
 
-!!! info
+!!! info "If Mod C disables Mod B which disables Mod A; Mod A should stay."
 
-    If Mod A disables Mod B which disables Mod C; Mod C should stay.
-
-!!! abstract "Log this case in console under 'info' level."
+!!! abstract "Log this using 'info' level."
 
 Consider the following:
 
@@ -164,8 +143,8 @@ flowchart LR
     A --> B
     B --> C
 
-    C -. Incompatible .-> B
-    B -. Incompatible .-> A
+    C -. Incompatible ..-> B
+    B -. Incompatible ..-> A
 ```
 
 If higher priority `Mod C` marks `Mod B` as incompatible, `Mod A` can stay as it is no longer incompatible.
@@ -182,14 +161,14 @@ flowchart LR
 
 !!! info
 
-    If Mod A disables Mod B which depends on Mod C; **BUT** Mod C was not part of original group of mods to load, discard Mod C too.
+    If Mod C disables Mod B which depends on Mod A; **BUT** Mod A was not part of original group of mods to load, discard Mod A too.
 
-!!! abstract "Log this case in console under 'info' level."
+!!! abstract "Log this under 'info' level."
 
 ```mermaid
 flowchart LR
     %% Define
-    A -- Via Dependency --> B
+    A -. Via Dependency .-> B
     B --> C
 
     C -. Incompatible .-> B
@@ -214,7 +193,7 @@ flowchart LR
     This is intended to allow communities to pick up the work if a maintainer of one critical dependency goes missing;
     however risks the possibility of abuse. This should be seen as last resort.
 
-!!! abstract "Log this as warning to console."
+!!! abstract "Log this as warning."
 
 ```mermaid
 flowchart LR

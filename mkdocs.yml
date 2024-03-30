@@ -55,9 +55,7 @@ theme:
 nav:
   - Home: index.md
   - Mod Loader:
-      - Loader Design:
-          - Core Architecture: Loader/Core-Architecture.md
-          - Load Ordering: Loader/Load-Ordering.md
+      - Core Architecture: Loader/Core-Architecture.md
       - Platform Support:
           - About: Loader/Platforms/About.md
           - Windows: Loader/Platforms/Windows.md
@@ -92,6 +90,7 @@ nav:
     - Diagnostics: Server/Diagnostics.md
     - Configurations:
         - App Metadata: Server/Configurations/App-Metadata.md
+    - Load Ordering: Server/Load-Ordering.md
 
   - Online Services:
       - Community Repository: Services/Community-Repository.md

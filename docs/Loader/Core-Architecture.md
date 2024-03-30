@@ -286,7 +286,7 @@ sequenceDiagram
 [diagnostics]: ../Server/Diagnostics.md
 [drm]: ./Copy-Protection/About.md
 [layer-1]: #middlewareos-handling-mods-layer-1
-[load-order]: ./Load-Ordering.md
+[load-order]: ../Server/Load-Ordering.md
 [p3p-gamebanana]: https://gamebanana.com/games/16613
 [reloaded-ii]: https://github.com/Reloaded-Project/Reloaded-II
 [win-dll-hijacking]: ./Bootloaders/Windows-DllHijack.md

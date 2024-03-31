@@ -10,3 +10,5 @@
 
 Not planned; unless there's demand for it.<br/>
 I (Sewer) have never owned Apple hardware, and Virtual Machine development is very painful.
+
+Aside from some security measures though, a lot of the details will be similar to Linux.

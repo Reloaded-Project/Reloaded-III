@@ -7,7 +7,7 @@
 | [Windows](./Windows.md)             | ✅                      |
 | [Linux (Wine/Proton)](./Windows.md) | ✅                      |
 | [Native Linux](./Linux.md)          | ⚡ Implement on Demand  |
-| [Native OSX](./OSX.md)              | ⚡ Implement on Demand  |
+| [Native OSX](./OSX.md)              | 🔍 Investigation Needed |
 | [Other](./Other.md)                 | 🔍 Investigation Needed |
 
 `Implement on Demand` means; it'll be done when there's game to test.

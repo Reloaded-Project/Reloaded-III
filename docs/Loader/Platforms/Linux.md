@@ -2,10 +2,10 @@
 
 !!! note "Wine is covered under [Windows](./Windows.md)."
 
-!!! question "This Topic Needs Research"
+!!! question "This May be Improved"
 
-    This topic is a grey area for me; native Linux games are not often modded.<br/>
-    Any feedback from an expert would be appreciated.
+    Native Linux games are not often modded.<br/>
+    There may be some better methods to do the things here.
 
 !!! info
 

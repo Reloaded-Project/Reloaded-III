@@ -59,14 +59,9 @@ nav:
     - Platform Support:
         - About: Loader/Platforms/About.md
         - Windows: Loader/Platforms/Windows.md
-        - Switch: Loader/Platforms/Switch.md
         - Linux: Loader/Platforms/Linux.md
         - OSX: Loader/Platforms/OSX.md
-    - Bootloaders:
-        - About: Loader/Bootloaders/About.md
-        - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
-        - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
-        - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
+        - Other: Loader/Platforms/Other.md
     - Copy Protection:
         - About: Loader/Copy-Protection/About.md
         - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
@@ -102,6 +97,15 @@ nav:
 
   - FAQ: FAQ.md
   - Best Practices: Best Practices.md
+
+  - Research & Explanations:
+    - Bootloaders:
+      - About: Loader/Bootloaders/About.md
+      - Windows:
+        - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
+        - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
+      - Linux: 
+        - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
 
   - Wiki:
     - Contributing Locally: Contributing-Locally.md

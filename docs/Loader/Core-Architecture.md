@@ -289,5 +289,5 @@ sequenceDiagram
 [load-order]: ../Server/Load-Ordering.md
 [p3p-gamebanana]: https://gamebanana.com/games/16613
 [reloaded-ii]: https://github.com/Reloaded-Project/Reloaded-II
-[win-dll-hijacking]: ./Bootloaders/Windows-DllHijack.md
-[win-dll-inject]: ./Bootloaders/Windows-InjectIntoSuspended.md
+[win-dll-hijacking]: ../Research/Bootloaders/Windows-DllHijack.md
+[win-dll-inject]: ../Research/Bootloaders/Windows-InjectIntoSuspended.md

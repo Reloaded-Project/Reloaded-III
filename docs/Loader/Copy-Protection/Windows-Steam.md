@@ -37,7 +37,7 @@ This holds true for all currently known versions of SteamStub.
 
 Most loaders use either of the two approaches:
 
-- [DLL Hijack](../Bootloaders/Windows-DllHijack.md) a known DLL and init in one of the library's Init functions e.g. `d3d9.CreateDevice`.
+- [DLL Hijack](../../Research/Bootloaders/Windows-DllHijack.md) a known DLL and init in one of the library's Init functions e.g. `d3d9.CreateDevice`.
 - Hook a library's init function (e.g. `d3d9.CreateDevice`), load Reloaded in the hook, and unhook.
 
 !!! danger "We can't do this in R3, we should assume no knowledge of target game."
@@ -88,7 +88,7 @@ This has historically worked well and has only overhead of 3 x86 instructions po
 !!! tip
 
     The SteamWorks API forces games to reboot if they have not been launched via Steam; this can be problematic
-    for [DLL Injection](../Bootloaders/Windows-InjectIntoSuspended.md).
+    for [DLL Injection](../../Research/Bootloaders/Windows-InjectIntoSuspended.md).
 
 1. Set `SteamAppID` env var.
 2. Hook `steam_api.SteamAPI_RestartAppIfNecessary`.

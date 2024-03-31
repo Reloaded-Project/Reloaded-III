@@ -1,4 +1,9 @@
-﻿# Switch
+﻿# Other
+
+This one covers platforms such as consoles and toothbrushes, where a guaranteed fully working `libc`
+is not always present.
+
+## Horizon (Switch)
 
 !!! question "This Topic Needs Research"
 
@@ -10,4 +15,5 @@
     This field is generally confusing in the bootloader aspect; hearing things like 'Skyline is a shot in the dark for non-Smash',
     'Exlaunch is more stable but generally lacking in hooks department', etc.
 
-Need community PR; or a modded Switch.
+Need community PR; or a modded Switch. I don't know much about this platform.<br/>
+There is demand, but I know very little about the limitations.

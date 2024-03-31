@@ -22,10 +22,10 @@ is preferred.
 
 ## Technical Issues
 
-- [Microsoft Store Titles are Encrypted](../Copy-Protection/Windows-MSStore.md)
+- [Microsoft Store Titles are Encrypted](../../Loader/Copy-Protection/Windows-MSStore.md)
     - We must use one of the workarounds to get the stub name.
 
-- [Steam DRM Wrapper](../Copy-Protection/Windows-Steam.md)
+- [Steam DRM Wrapper](../../Loader/Copy-Protection/Windows-Steam.md)
     - We must delay the initialization of the mod loader until after the Steam DRM Wrapper code runs.
     - Otherwise mods will try hooking encrypted code and fail miserably.
     - Or strip the wrapper in name of interoperability.

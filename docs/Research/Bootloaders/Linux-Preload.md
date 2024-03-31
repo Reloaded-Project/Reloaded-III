@@ -1,8 +1,11 @@
 ﻿# Linux Library Preload
 
 This technique is effectively equivalent to [Windows: Inject Into Suspended Process](./Windows-InjectIntoSuspended.md) but officially supported at the OS level.
-
 Run the target process with `LD_PRELOAD=path/to/your/library.so command args...`
+
+Summary:
+This is the only approach (I'm aware of) that can satisfy the constraint of executing custom code before game code.
+This is not possible with `ptrace` at least.
 
 ## Issue: Spaces in Paths
 

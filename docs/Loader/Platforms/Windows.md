@@ -17,7 +17,7 @@ _moduleHandle = LoadLibraryW(dllPath);
 SetDllDirectoryW(builder.ToString());
 ```
 
-## Error Reporting
+## Crash Handler
 
 !!! warning
 
@@ -43,25 +43,6 @@ unsafe {
     SetUnhandledExceptionFilter(Some(my_unhandled_exception_filter));
 }
 ```
-
-After the crash dump has been generated; the code should:
-
-- Generate a Crash Dump.
-- Dump Log to Same Location as Crash Dump.
-- Display Crash Address (incl. Module/DLL name).
-- Open an explorer window in the location of the dump.
-
-Dumps will be written out to `%temp%/Reloaded-III/process.exe` as:
-
-- `dump.dmp` The crash dump.
-- `log.txt` The log of the recent run.
-- `info.json` Contextual information (e.g. Mod list game was started with).
-
-A compatible mod manager should clean the `%temp%/Reloaded-III` folder on each boot.
-
-!!! question
-
-    Open for suggestions as to where place the dumps; if anyone has any other preference.
 
 ## Process Exit Hook
 

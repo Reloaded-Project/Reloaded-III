@@ -22,7 +22,7 @@ Many actions performed by Reloaded require access to the EXE, such as:
 
 - Workflows (TODO: Link Pending)
 - App Icon Extraction
-- Determining DLL Name for [DLL Hijacking](../Bootloaders/Windows-DllHijack.md)
+- Determining DLL Name for [DLL Hijacking](../../Research/Bootloaders/Windows-DllHijack.md)
 
 #### Binary Path at Runtime Doesn't Match Real Location
 
@@ -36,7 +36,7 @@ Use only for cache purposes at best.
 
 #### Do not use DLL Injection
 
-!!! warning "Although it is technically possible to do so, [DLL Injection](../Bootloaders/Windows-InjectIntoSuspended.md) should be avoided for MS Store games."
+!!! warning "Although it is technically possible to do so, [DLL Injection](../../Research/Bootloaders/Windows-InjectIntoSuspended.md) should be avoided for MS Store games."
 
 Launching many centennial games will invoke a binary called `gamelaunchhelper.exe`.
 
@@ -49,7 +49,7 @@ This binary is responsible for, among other things, syncing cloud saves. Therefo
 **1. Dumping the EXE from memory of a running game:**
 - We could do this, but it'd be very poor User Experience.
 
-**2. Using a known DLL name with [DLL Hijacking](../Bootloaders/Windows-DllHijack.md):**
+**2. Using a known DLL name with [DLL Hijacking](../../Research/Bootloaders/Windows-DllHijack.md):**
 - Possible via [Community Repository](../../Services/Community-Repository.md), but this is not a good solution for unknown apps.
 - Possible via dumping the EXE from memory, but leads to poor UX.
 - Does not fix the issue of the binary being encrypted, leading to limited functionality.

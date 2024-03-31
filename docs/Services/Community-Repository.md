@@ -46,7 +46,7 @@ They can have any name (as long as they use their own unique folder), in this sp
 | ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                                     |
 | Warning[]     | [Warnings](#warnings)                           | Warnings to display if specific files are found in game folder.                                |
 | string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                             |
-| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking](../Loader/Bootloaders/Windows-DllHijack.md).     |
+| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking](../Research/Bootloaders/Windows-DllHijack.md).     |
 
 !!! note "Note: All hashes listed in this specification are `xxHash64`."
 
@@ -95,7 +95,7 @@ BadHashDescription: "Mods target the NoCD version of Sonic Heroes; specifically 
 | -------- | ----------- | ------------------------------------------------------------------------------------------------- |
 | string   | Hash        | Hash of executable.                                                                               |
 | string   | ExeName     | Name of executable.                                                                               |
-| string[] | EntryPoints | [Optional*] Name of [entry point DLLs for hijacking.](../Loader/Bootloaders/Windows-DllHijack.md) |
+| string[] | EntryPoints | [Optional*] Name of [entry point DLLs for hijacking.](../Research/Bootloaders/Windows-DllHijack.md) |
 | string   | Version     | [Optional] Version of game bound to this executable.                                              |
 | DateTime | Date        | [Optional] Date of this version, as ISO 8601.                                                     |
 

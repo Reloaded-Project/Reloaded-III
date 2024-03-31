@@ -9,5 +9,5 @@ Basically, how we get our loader running.
 
 In some cases, it is important to support a variety of bootloaders on a given target OS.
 
-The inclusion of [Copy Protection](../Copy-Protection/About.md) can make
+The inclusion of [Copy Protection](../../Loader/Copy-Protection/About.md) can make
 certain injection methods incompatible, in which case we must work around these issues.

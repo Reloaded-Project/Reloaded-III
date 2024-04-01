@@ -13,7 +13,7 @@ hide:
 
     Reloaded III is a placeholder name; we're open for suggestions.
 
-**[Reloaded III]** is a formal specification for an improved version of [Reloaded-II](https://reloaded-project.github.io/Reloaded-II/), a universal Game Modding framework.
+**[Reloaded III]** is a formal specification for an improved version of [Reloaded-II][reloaded-ii], a universal Game Modding framework.
 
 <div align="center">
 	<img src="./Images/Reloaded3ConsoleLogo.png" width="550" align="center" />
@@ -326,7 +326,7 @@ The goal is to create a world where modders can focus on actually *modding* the 
 
 !!! info
 
-    This page looks [awfully familiar to Reloaded-II](https://reloaded-project.github.io/Reloaded-II/), what's up with that?
+    This page looks [awfully familiar to Reloaded-II][reloaded-ii], what's up with that?
 
 `Reloaded-III` is a specification for an enhanced version of `Reloaded-II`; with a newer config schema,
 design that supports multiple platforms (not just Windows) and the ability to allow anyone write mods in an arbitrary programming
@@ -339,12 +339,12 @@ archive formats, utility functions etc.
 
 !!! tip
 
-    Did you know the first mod for [Persona 3 on GameBanana](https://gamebanana.com/games/16613) appeared
+    Did you know the first mod for [Persona 3 on GameBanana][p3p-gamebanana] appeared
     ***40 minutes*** after the game released on PC?
     No changes were needed to Reloaded-II Launcher or Loader.
 
     This was possible because the game used `.cpk`, an archive format from
-    [CRI Middleware](https://en.wikipedia.org/wiki/CRI_Middleware); for which Reloaded had a [universal mod](https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII) to handle
+    [CRI Middleware][cri-middleware]; for which Reloaded had a [universal mod][universal-mod] to handle
     these archives without repacking.
 
     All the mod author had to do was set a `dependency` the mod and... that was all, it magically works!
@@ -361,3 +361,9 @@ archive formats, utility functions etc.
 Contributions to this specification are **highly encouraged**; feel free to make corrections of any sort, and discuss issues as needed.
 
 [^1]: For .NET you might need to set `COMPLUS_FORCEENC = 1` environment variable.
+
+<!-- Links -->
+[cri-middleware]: https://en.wikipedia.org/wiki/CRI_Middleware
+[p3p-gamebanana]: https://gamebanana.com/games/16613
+[reloaded-ii]: https://reloaded-project.github.io/Reloaded-II/
+[universal-mod]: https://github.com/Sewer56/CriFs.V2.Hook.ReloadedII

@@ -4,11 +4,11 @@
 
 | Operating System                    | Status                 |
 | ----------------------------------- | ---------------------- |
-| [Windows](./Windows.md)             | ✅                      |
-| [Linux (Wine/Proton)](./Windows.md) | ✅                      |
-| [Native Linux](./Linux.md)          | ⚡ Implement on Demand  |
-| [Native OSX](./OSX.md)              | 🔍 Investigation Needed |
-| [Other](./Other.md)                 | 🔍 Investigation Needed |
+| [Windows][windows]             | ✅                      |
+| [Linux (Wine/Proton)][windows] | ✅                      |
+| [Native Linux][linux]          | ⚡ Implement on Demand  |
+| [Native OSX][osx]              | 🔍 Investigation Needed |
+| [Other][other]                 | 🔍 Investigation Needed |
 
 `Implement on Demand` means; it'll be done when there's game to test.
 The code will always be written with cross platform in mind; worry not.
@@ -21,11 +21,11 @@ As the core loader is written in Rust, it is theoretically possible to support a
 - LLVM supports the machine code for your target (e.g. ARM, x86 etc.).
 - Executable format reverse engineered, so you can make linker produce libraries.
 - You can dynamically load libraries.
-- You can arbitrarily execute code in a game process ([write a Bootloader](../../Research/Bootloaders/About.md)).
+- You can arbitrarily execute code in a game process ([write a Bootloader][bootloader]).
 
 ## Categories Covered in Each Platform
 
-!!! note "Note: Info on bootstrapping the loader itself is covered under [Bootloader](../Platforms/About.md)."
+!!! note "Note: Info on bootstrapping the loader itself is covered under [Bootloader][bootloader]."
 
 These topic instead include platform specific caveats and strategies, such as:
 
@@ -56,3 +56,10 @@ Dumps will be written out to [TODO: Link Pending] as:
 The server should clean old crash dumps after some time (for instance, 7 days).
 
 !!! note "Crash handling should be opt-out in loader, in case you want to use an external handler."
+
+<!-- Links -->
+[bootloader]: ../../Research/Bootloaders/About.md
+[linux]: ./Linux.md
+[osx]: ./OSX.md
+[other]: ./Other.md
+[windows]: ./Windows.md

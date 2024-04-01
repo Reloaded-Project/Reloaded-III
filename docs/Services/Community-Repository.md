@@ -4,7 +4,7 @@
 
     The community repository. This allows us to apply per-game specific support/rules without having to recompile mod managers.
 
-!!! note "This documents a future iteration of [Reloaded.Community](https://github.com/Reloaded-Project/Reloaded.Community) repository."
+!!! note "This documents a future iteration of [Reloaded.Community][reloaded-community] repository."
 
 ## About
 
@@ -19,8 +19,8 @@ Some use cases include:
 - Helping automatic detection of games installed via Steam/Epic/Origin etc.
 - Providing compatibility warnings for pre-patched/pre-modded legacy games.
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
-- Auto assign Game IDs in [Application Configurations](../Server/Configurations/App-Metadata.md).
-- Updating [Mod Configurations](../Server/Configurations/Mod-Metadata.md) with correct [App ID](../Server/Configurations/App-Metadata.md#id)s marking which games an app supports.
+- Auto assign Game IDs in [Application Configurations][app-metadata].
+- Updating [Mod Configurations][mod-metadata] with correct [App ID][app-metadata-id]s marking which games an app supports.
 
 ## Schema
 
@@ -33,20 +33,20 @@ All configurations are written as YAML (for editing convenience), but are conver
 
 They can have any name (as long as they use their own unique folder), in this spec we will refer to them as `App.yml`.
 
-| Type          | Item                                            | Description                                                                                    |
-| ------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| string        | [Id](../Server/Configurations/App-Metadata.md)  | Unique identifier for this game. Copied to [App Id](../Server/Configurations/App-Metadata.md). |
-| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'.                                          |
-| Version[]     | [Versions](#version)                            | Versions of the executable.                                                                    |
-| Version[]     | [Launchers](#other-binaries)                    | Stores information about other executables in game folder you probably don't wanna mod.        |
-| string        | [Icon](#icon)                                   | Icon for the game in 1:1 aspect ratio.                                                         |
-| string        | [BannerH](#banner)                              | Horizontal banner for the game.                                                                |
-| string        | [BannerV](#banner)                              | Vertical banner for the game.                                                                  |
-| StoreInfo     | [StoreInformation](#store-information)          | Game store specific information.                                                               |
-| ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                                     |
-| Warning[]     | [Warnings](#warnings)                           | Warnings to display if specific files are found in game folder.                                |
-| string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                             |
-| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking](../Research/Bootloaders/Windows-DllHijack.md).   |
+| Type          | Item                                            | Description                                                                             |
+| ------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------- |
+| string        | [Id][app-metadata]                              | Unique identifier for this game. Copied to [App Id][app-metadata].                      |
+| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'.                                   |
+| Version[]     | [Versions](#version)                            | Versions of the executable.                                                             |
+| Version[]     | [Launchers](#other-binaries)                    | Stores information about other executables in game folder you probably don't wanna mod. |
+| string        | [Icon](#icon)                                   | Icon for the game in 1:1 aspect ratio.                                                  |
+| string        | [BannerH](#banner)                              | Horizontal banner for the game.                                                         |
+| string        | [BannerV](#banner)                              | Vertical banner for the game.                                                           |
+| StoreInfo     | [StoreInformation](#store-information)          | Game store specific information.                                                        |
+| ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                              |
+| Warning[]     | [Warnings](#warnings)                           | Warnings to display if specific files are found in game folder.                         |
+| string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                      |
+| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking][win-dllhijack].                           |
 
 !!! note "Note: All hashes listed in this specification are `xxHash64`."
 
@@ -91,13 +91,13 @@ BadHashDescription: "Mods target the NoCD version of Sonic Heroes; specifically 
 
 !!! info "Stores individual version information for a binary with a given hash."
 
-| Type     | Item        | Description                                                                                         |
-| -------- | ----------- | --------------------------------------------------------------------------------------------------- |
-| string   | Hash        | Hash of executable.                                                                                 |
-| string   | ExeName     | Name of executable.                                                                                 |
-| string[] | EntryPoints | [Optional*] Name of [entry point DLLs for hijacking.](../Research/Bootloaders/Windows-DllHijack.md) |
-| string   | Version     | [Optional] Version of game bound to this executable.                                                |
-| DateTime | Date        | [Optional] Date of this version, as ISO 8601.                                                       |
+| Type     | Item        | Description                                                          |
+| -------- | ----------- | -------------------------------------------------------------------- |
+| string   | Hash        | Hash of executable.                                                  |
+| string   | ExeName     | Name of executable.                                                  |
+| string[] | EntryPoints | [Optional*] Name of [entry point DLLs for hijacking.][win-dllhijack] |
+| string   | Version     | [Optional] Version of game bound to this executable.                 |
+| DateTime | Date        | [Optional] Date of this version, as ISO 8601.                        |
 
 This version and their time are supposed to be purely informative.
 
@@ -156,11 +156,11 @@ Mod manager can choose to display either, or not use any at all.
 | SteamGameInfo  | [Steam](#steam)           | Contains Steam related information.           |
 | XboxGameInfo   | [Xbox](#xbox)             | Xbox Game Pass information.                   |
 
-Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder) library.
+Supported stores are based on [GameFinder][gamefinder] library.
 
 #### EA Desktop
 
-!!! failure "[Given how hard they are trying to stop you from finding out where your games are installed by using military grade SHA3-256 encryption](https://github.com/erri120/GameFinder/wiki/EA-Desktop); changes here might be needed someday."
+!!! failure "[Given how hard they are trying to stop you from finding out where your games are installed by using military grade SHA3-256 encryption][ea-desktop-docs]; changes here might be needed someday."
 
 | Type   | Item       | Description                                               |
 | ------ | ---------- | --------------------------------------------------------- |
@@ -176,7 +176,7 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 
 #### GOG
 
-!!! tip "You can use the [GOG Database](https://www.gogdb.org/) to look up these IDs."
+!!! tip "You can use the [GOG Database][gog-db] to look up these IDs."
 
 | Type | Item | Description                            |
 | ---- | ---- | -------------------------------------- |
@@ -184,7 +184,7 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 
 #### Origin
 
-!!! warning "EA is [deprecating Origin in favour of EA Desktop](https://www.ea.com/en-gb/news/ea-app)"
+!!! warning "EA is [deprecating Origin in favour of EA Desktop][ea-desktop]"
 
 | Type   | Item | Description                               |
 | ------ | ---- | ----------------------------------------- |
@@ -192,7 +192,7 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 
 #### Steam
 
-!!! tip "You can use the [SteamDB](https://steamdb.info/) to look up these IDs."
+!!! tip "You can use the [SteamDB][steamdb] to look up these IDs."
 
 | Type   | Item          | Description                     |
 | ------ | ------------- | ------------------------------- |
@@ -200,9 +200,9 @@ Supported stores are based on [GameFinder](https://github.com/erri120/GameFinder
 
 #### Xbox
 
-| Type   | Item | Description                                                                                                                                                         |
-| ------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| string | ID   | Unique ID. Corresponds to [Package.Identity.Name in AppxManifest.xml](https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity) |
+| Type   | Item | Description                                                                                   |
+| ------ | ---- | --------------------------------------------------------------------------------------------- |
+| string | ID   | Unique ID. Corresponds to [Package.Identity.Name in AppxManifest.xml][appx-manifest-identity] |
 
 ### Mod Source Information
 
@@ -265,7 +265,8 @@ Repository Root
 !!! info
 
     The raw files specified in [schema](#schema) go through a 'build' process.
-    This build process converts the files to `.json` and spit it out in a format suitable for hosting on [GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages).
+    This build process converts the files to `.json` and spit it out in a format suitable for hosting on 
+    [GitHub Pages][github-pages].
 
 Output format:
 
@@ -303,3 +304,17 @@ The build process performs 2 steps:
 | string | FilePath | Relative path to this `.json` file to the game [Schema](#schema). |
 
 In the case of `ExeToApps`; if there are multiple entries, the user must select the appropriate choice from their UI.
+
+<!-- Links -->
+[app-metadata]: ../Server/Configurations/App-Metadata.md
+[app-metadata-id]: ../Server/Configurations/App-Metadata.md#id
+[appx-manifest-identity]: https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity
+[ea-desktop]: https://www.ea.com/en-gb/news/ea-app
+[ea-desktop-docs]: https://github.com/erri120/GameFinder/wiki/EA-Desktop
+[gamefinder]: https://github.com/erri120/GameFinder
+[github-pages]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
+[gog-db]: https://www.gogdb.org/
+[mod-metadata]: ../Server/Configurations/Mod-Metadata.md
+[reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
+[steamdb]: https://steamdb.info/
+[win-dllhijack]: ../Research/Bootloaders/Windows-DllHijack.md

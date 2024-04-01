@@ -42,6 +42,7 @@ The following are currently recognized by the spec:
 This functionality is provided for high performance dependencies, where every fraction of a nanosecond counts.
 
 It is not expected that mod authors will manually leverage this functionality; that said; it is hoped we could inject it
-during the [publish process](../Mod-Publishing.md) if possible for the given platform.
+during the [publish process][mod-publishing] if possible for the given platform.
 
 [mod-metadata-targets]: ../../Server/Configurations/Mod-Metadata.md#targets
+[mod-publishing]: ../Mod-Publishing.md

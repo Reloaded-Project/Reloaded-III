@@ -6,10 +6,6 @@ This also includes games installed via the Xbox App, or 'Gamepass games'.
 
 ## Microsoft (MS Store/Game Pass)
 
-!!! info
-
-    For the purposes of Reverse Engineering; [UWPDumper](https://github.com/Wunkolo/UWPDumper) can often be used to get an unencrypted EXE.
-
 ### Dangers
 
 #### Binaries are Encrypted
@@ -22,7 +18,7 @@ Many actions performed by Reloaded require access to the EXE, such as:
 
 - Workflows (TODO: Link Pending)
 - App Icon Extraction
-- Determining DLL Name for [DLL Hijacking](../../Research/Bootloaders/Windows-DllHijack.md)
+- Determining DLL Name for [DLL Hijacking][dll-hijacking]
 
 #### Binary Path at Runtime Doesn't Match Real Location
 
@@ -36,7 +32,7 @@ Use only for cache purposes at best.
 
 #### Do not use DLL Injection
 
-!!! warning "Although it is technically possible to do so, [DLL Injection](../../Research/Bootloaders/Windows-InjectIntoSuspended.md) should be avoided for MS Store games."
+!!! warning "Although it is technically possible to do so, [DLL Injection][dll-injection] should be avoided for MS Store games."
 
 Launching many centennial games will invoke a binary called `gamelaunchhelper.exe`.
 
@@ -49,8 +45,8 @@ This binary is responsible for, among other things, syncing cloud saves. Therefo
 **1. Dumping the EXE from memory of a running game:**
 - We could do this, but it'd be very poor User Experience.
 
-**2. Using a known DLL name with [DLL Hijacking](../../Research/Bootloaders/Windows-DllHijack.md):**
-- Possible via [Community Repository](../../Services/Community-Repository.md), but this is not a good solution for unknown apps.
+**2. Using a known DLL name with [DLL Hijacking][dll-hijacking]:**
+- Possible via [Community Repository][community-repository], but this is not a good solution for unknown apps.
 - Possible via dumping the EXE from memory, but leads to poor UX.
 - Does not fix the issue of the binary being encrypted, leading to limited functionality.
 
@@ -82,19 +78,19 @@ This is a multi-step process which involves:
 - Finding `AppxManifest.xml`, which may be in EXE folder or in some folder above.
 - Parsing `AppxManifest.xml` to extract `Application.Id` and `PackageFamilyName`.
     - `PackageFamilyName` is generally derived as `{Identity.Name}-{hash(Identity.Publisher)}`.
-    - Consider using [package-family-name](https://github.com/russellbanks/package-family-name) library directly.
+    - Consider using [package-family-name][package-family-name] library directly.
 - Finding all unreadable files (just `.exe` files currently).
 - Launching a custom EXE inside the AppX container which does a copy onto itself (this decrypts).
     - This custom EXE can be launched using official `Invoke-CommandInDesktopPackage` in PowerShell.
     - Or unofficially with COM Interfaces detailed in [launching-a-centennial-app](#launching-a-centennial-app).
-    - Reloaded-II uses [replace-files-with-itself](https://github.com/Sewer56/replace-files-with-itself) as the binary.
+    - Reloaded-II uses [replace-files-with-itself][replace-files-with-itself] as the binary.
     - In Reloaded3, consider using current (server) binary with a `--copy` flag.
 
 Although not a stable API, prefer the COM interface. With it you can get a process handle, which in turn lets you use
-[WaitForSingleObject](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject?redirectedfrom=MSDN)
+[WaitForSingleObject][wait-for-single-object]
 to wait for the target process to finish.
 
-Refer to [Reloaded-II's code](https://github.com/Reloaded-Project/Reloaded-II/blob/3b800957b5b919ebba42b92e9cf859dbbe1c9926/source/Reloaded.Mod.Launcher.Lib/Utility/TryUnprotectGamePassGame.cs#L14) for some existing reference code.
+Refer to [Reloaded-II's code][reloaded-ii-unprotect] for some existing reference code.
 
 !!! note "Re-launching the server binary is preferable to using a custom EXE. It increases our resilience to false antivirus detections."
 
@@ -259,4 +255,15 @@ There's no telling when a future Windows version may change something, as we're 
 3. Find the C# Class Name and DLL.
 4. Open the DLL in a decompiler (e.g. dnSpy).
 
-You should get some fairly readable C# code, so if the COM interface ever changes, you can find the new interface quickly.
+You should get some fairly readable C# code, so if the COM interface ever changes, 
+you can find the new interface quickly.
+
+<!-- Links -->
+
+[community-repository]: ../../Services/Community-Repository.md
+[dll-hijacking]: ../../Research/Bootloaders/Windows-DllHijack.md
+[dll-injection]: ../../Research/Bootloaders/Windows-InjectIntoSuspended.md
+[package-family-name]: https://github.com/russellbanks/package-family-name
+[reloaded-ii-unprotect]: https://github.com/Reloaded-Project/Reloaded-II/blob/3b800957b5b919ebba42b92e9cf859dbbe1c9926/source/Reloaded.Mod.Launcher.Lib/Utility/TryUnprotectGamePassGame.cs#L14
+[replace-files-with-itself]: https://github.com/Sewer56/replace-files-with-itself
+[wait-for-single-object]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject?redirectedfrom=MSDN

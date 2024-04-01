@@ -1,6 +1,6 @@
 ﻿# Linux Library Preload
 
-This technique is effectively equivalent to [Windows: Inject Into Suspended Process](./Windows-InjectIntoSuspended.md) but officially supported at the OS level.
+This technique is effectively equivalent to [Windows: Inject Into Suspended Process][inject-into-suspended] but officially supported at the OS level.
 Run the target process with `LD_PRELOAD=path/to/your/library.so command args...`
 
 Summary:
@@ -22,3 +22,6 @@ If the path to the mod loader contains a space, the mod manager must create a Sy
 - Add mod loader library to value of `LD_PRELOAD`.
 - Start the process.
 - Restore original `LD_PRELOAD` value.
+
+<!-- Links -->
+[inject-into-suspended]: ./Windows-InjectIntoSuspended.md

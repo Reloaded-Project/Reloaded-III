@@ -31,7 +31,7 @@ A name that uniquely identifies the mod.
 
 The suggested format to use for names is `game.type.subtype.name`.
 
-- `game` should ideally match [App 'Id'](../../Server/Configurations/App-Metadata.md#id) for the given application.
+- `game` should ideally match [App 'Id'][app-metadata-id] for the given application.
 - `type` name should ideally match category of the mod on a site like [GameBanana](https://gamebanana.com) or [NexusMods](https://www.nexusmods.com).
 - `subtype` [Optional] provides additional information about the item.
 - `name` unique identifier for the mod. Can use another `.` dot if additional info is needed.
@@ -49,11 +49,11 @@ Use lowercase, no spaces, no special characters.
 
     For mods that are non-game specific such as backends; set the `game` identifier as `reloaded3` and use one of the following.
 
-| Type    | Description                                                                                       | Example                     |
-| ------- | ------------------------------------------------------------------------------------------------- | --------------------------- |
-| backend | For [backends][backend].                                                                          | `reloaded3.backend.coreclr` |
-| api     | For [middleware/API hooks](../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1). | `reloaded3.api.windows.vfs` |
-| utility | For utility mods with reusable code.                                                              | `reloaded3.utility.hooks`   |
+| Type    | Description                                       | Example                     |
+| ------- | ------------------------------------------------- | --------------------------- |
+| backend | For [backends][backend].                          | `reloaded3.backend.coreclr` |
+| api     | For [middleware/API hooks][middleware-api-hooks]. | `reloaded3.api.windows.vfs` |
+| utility | For utility mods with reusable code.              | `reloaded3.utility.hooks`   |
 
 Mod manager can choose whether to show non game-specific mods (`reloaded3` id) on a specific game's page or not.
 
@@ -61,7 +61,7 @@ Mod manager can choose whether to show non game-specific mods (`reloaded3` id) o
 
 !!! info
 
-    This stores a mod version specified using a [Semantic Versioning](https://semver.org) compatible standard.
+    This stores a mod version specified using a [Semantic Versioning][semantic-versioning] compatible standard.
     This is required for update support.
 
 !!! warning
@@ -98,7 +98,7 @@ The default set of suggested tags include:
 
 !!! info "If this is true, the mod cannot be explicitly enabled by the user in the manager."
 
-!!! info "Some libraries may have user [configuration(s)](./Mod-Configurations.md). Manager is free to hide other libraries."
+!!! info "Some libraries may have user [configuration(s)][mod-configurations]. Manager is free to hide other libraries."
 
 ## Update Data
 
@@ -181,7 +181,7 @@ The field `AssetFileName` is provided for backwards compatibility only. e.g. `*u
 
 Find more info on the pages for the [individual backends][backend], but we'll provide some examples.
 
-[Native Mod](../../Loader/Backends/Native.md):
+[Native Mod][native-backend]:
 ```json
 {
   "win-x64" : {
@@ -195,7 +195,7 @@ Find more info on the pages for the [individual backends][backend], but we'll pr
 
 !!! note "It's not expected for mod authors to ship with multiple [instruction sets](#instruction-sets) outside of super high perf scenarios. This is just for example."
 
-[.NET CoreCLR Mod](../../Loader/Backends/CoreCLR.md):
+[.NET CoreCLR Mod][coreclr-backend]:
 
 ```json
 {
@@ -207,7 +207,7 @@ Find more info on the pages for the [individual backends][backend], but we'll pr
 }
 ```
 
-[Reloaded-II Mod](../../Loader/Backends/CoreCLR.md#reloaded-ii):
+[Reloaded-II Mod][reloaded2-backend]:
 
 ```json
 {
@@ -222,14 +222,24 @@ Find more info on the pages for the [individual backends][backend], but we'll pr
 }
 ```
 
-!!! info "For .NET, the `x86` and `x64` fields indicate binaries using [ReadyToRun](../../Loader/Backends/CoreCLR.md#ready-to-run) technology. Usually a mod will only specify `any` or a `x86`+`x64` pair."
+!!! info "For .NET, the `x86` and `x64` fields indicate binaries using [ReadyToRun][ready-to-run] technology. Usually a mod will only specify `any` or a `x86`+`x64` pair."
 
 ## Supported Games
 
-!!! info "Stores a list of supported games; by using their known [Application ID](../../Server/Configurations/App-Metadata.md#id)."
+!!! info "Stores a list of supported games; by using their known [Application ID][app-metadata-id]."
 
 Alternatively, when experimenting with new games which do not have a specified Application ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 
-Mod managers will automatically update this to appropriate ID during process of querying [Community Repository](../../Services/Community-Repository.md).
+Mod managers will automatically update this to appropriate ID during process of querying [Community Repository][community-repository].
 
+<!-- Links -->
+[app-metadata-id]: ../../Server/Configurations/App-Metadata.md#id
 [backend]: ../../Loader/Backends/About.md
+[community-repository]: ../../Services/Community-Repository.md
+[coreclr-backend]: ../../Loader/Backends/CoreCLR.md
+[middleware-api-hooks]: ../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
+[mod-configurations]: ./Mod-Configurations.md
+[native-backend]: ../../Loader/Backends/Native.md
+[ready-to-run]: ../../Loader/Backends/CoreCLR.md#ready-to-run
+[reloaded2-backend]: ../../Loader/Backends/CoreCLR.md#reloaded-ii
+[semantic-versioning]: https://semver.org

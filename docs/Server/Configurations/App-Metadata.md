@@ -16,9 +16,9 @@
 
 !!! warning "For games without established communities or people experimenting with new titles, this may be left blank."
 
-For games which a user added before it had an entry in the [Community Repository](../../Services/Community-Repository.md).
+For games which a user added before it had an entry in the [Community Repository][community-repository].
 
-This value will be autopopulated based on configurations within a future version of [Reloaded.Community](https://github.com/Reloaded-Project/Reloaded.Community).
+This value will be autopopulated based on configurations within a future version of [Reloaded.Community][reloaded-community].
 
 ## Game Versioning Strategy
 
@@ -28,7 +28,7 @@ This value will be autopopulated based on configurations within a future version
     that totally would break all code mods and even change some file formats.
 
 To mitigate this; we will use binary hashes.
-This value will be autopopulated based on configurations within a future version of [Reloaded.Community](https://github.com/Reloaded-Project/Reloaded.Community).
+This value will be autopopulated based on configurations within a future version of [Reloaded.Community][reloaded-community].
 
 ```json
 {
@@ -58,3 +58,7 @@ This value will be autopopulated based on configurations within a future version
   }
 }
 ```
+
+<!-- Links -->
+[community-repository]: ../../Services/Community-Repository.md
+[reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community

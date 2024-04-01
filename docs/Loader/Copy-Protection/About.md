@@ -11,10 +11,10 @@ And unfortunately, naturally, that means sometimes copy protection gets in the w
 
 ## Sub-Sections
 
-- [Windows: Denuvo](./Windows-Denuvo.md)
-- [Windows: Microsoft Store](./Windows-MSStore.md)
-- [Windows: Steam](./Windows-Steam.md)
-- [Windows: SafeDisc](./Windows-SafeDisc.md)
+- [Windows: Denuvo][windows-denuvo]
+- [Windows: Microsoft Store][windows-msstore]
+- [Windows: Steam][windows-steam]
+- [Windows: SafeDisc][windows-safedisc]
 
 ## Suggestions & Actions
 
@@ -27,8 +27,8 @@ DRM-Free and ***Defective by Design*** versions.
 
 Example: `Yakuza: Like a Dragon`
 
-- [DRM Free Goodness](https://www.gog.com/en/game/yakuza_like_a_dragon) on GOG
-- [Denuvo Infested Garbage](https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/) on Steam
+- [DRM Free Goodness][yakuza-gog] on GOG
+- [Denuvo Infested Garbage][yakuza-steam] on Steam
 
 The Steam version is harder to mod, may have more performance issues and will one day...
 
@@ -37,6 +37,12 @@ The Steam version is harder to mod, may have more performance issues and will on
 With the GOG version, you can at least have peace of mind and one day show your kids or grandkids
 the joy of your childhood games.
 
-### Prefer DRM-Free Versions
-
 ### Detection
+
+<!-- Links -->
+[yakuza-gog]: https://www.gog.com/en/game/yakuza_like_a_dragon
+[yakuza-steam]: https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/
+[windows-denuvo]: ./Windows-Denuvo.md
+[windows-msstore]: ./Windows-MSStore.md
+[windows-steam]: ./Windows-Steam.md
+[windows-safedisc]: ./Windows-SafeDisc.md

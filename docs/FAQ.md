@@ -9,9 +9,9 @@
 
 We will use HedgeModManager's `Codes` system as an example.
 
-![HedgeModManager](./Images/HedgeModManagerCodes.png)
+![HedgeModManager][hedge-mod-manager]
 
-HedgeModManager has a codes system that allows users to write [short scripts](https://github.com/thesupersonic16/HedgeModManager/blob/rewrite/HedgeModManager/Resources/Codesv2/SonicGenerations.hmm)
+HedgeModManager has a codes system that allows users to write [short scripts][short-scripts]
 using C# which modify game behaviour. This is intended for 1 liners for which writing a full mod would be overkill.
 
 In HMM when the game is ran, the loader loads the .NET (Framework) runtime, pastes the enabled codes and compiles them using
@@ -37,3 +37,7 @@ With those changes, now:
 ## My game requires that mods are merged.
 
 nya~
+
+<!-- Links -->
+[hedge-mod-manager]: ./Images/HedgeModManagerCodes.png
+[short-scripts]: https://github.com/thesupersonic16/HedgeModManager/blob/rewrite/HedgeModManager/Resources/Codesv2/SonicGenerations.hmm

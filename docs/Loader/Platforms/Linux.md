@@ -1,6 +1,6 @@
 ﻿# Linux
 
-!!! note "Wine is covered under [Windows](./Windows.md)."
+!!! note "Wine is covered under [Windows][windows]."
 
 !!! question "This May be Improved"
 
@@ -13,7 +13,7 @@
 
 ## Bootstrapping
 
-Covered in [Linux Preload Bootloader](../../Research/Bootloaders/Linux-Preload.md).
+Covered in [Linux Preload Bootloader][linux-preload].
 
 ## Native Mods with Dynamic Linking
 
@@ -113,8 +113,8 @@ This spawns the game with its `stdout` in alacritty.
 
 !!! info "Alternative Solution: Can we spawn a terminal and pass stdout/stdin/stderr via it?"
 
-A [useful blog post](https://poor.dev/blog/terminal-anatomy/).<br/>
-Another [useful blog post](https://stackoverflow.com/a/65377109).
+A [useful blog post][terminal-anatomy].<br/>
+Another [useful blog post][stackoverflow-pty].
 
 With `xterm` or a terminal that allows you to specify a pseudoterminal, you
 can do it like this:
@@ -352,3 +352,9 @@ In fact, in isolation, the user code is less than 0.5kB, if you also replace`pri
 !!! note "Remember that this is example code."
 
     This code needs cleanup. It's not production ready, and has some edge cases.
+
+<!-- Links -->
+[windows]: ./Windows.md
+[linux-preload]: ../../Research/Bootloaders/Linux-Preload.md
+[stackoverflow-pty]: https://stackoverflow.com/a/65377109
+[terminal-anatomy]: https://poor.dev/blog/terminal-anatomy/

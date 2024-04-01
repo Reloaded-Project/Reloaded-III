@@ -349,5 +349,6 @@ TODO: How we implement this is currently undecided.
 
 <!-- Forked from: https://github.com/Nexus-Mods/NexusMods.App/blob/main/docs/development-guidelines/Diagnostics.md -->
 
+<!-- Links -->
 [compiler-errors]: https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0027
 [diagnostic-id]: https://github.com/Nexus-Mods/NexusMods.App/blob/main/src/Abstractions/NexusMods.Abstractions.Games.Diagnostics/DiagnosticId.cs

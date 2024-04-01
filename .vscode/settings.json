@@ -7,6 +7,7 @@
         "alacritty",
         "alloc",
         "APPINSTALLER",
+        "Assasin's",
         "autopopulated",
         "bannerlord",
         "behaviour",
@@ -15,6 +16,7 @@
         "Breakin",
         "characteroverhaul",
         "CLSCTX",
+        "codefusion",
         "Compat",
         "COMPLUS",
         "coreclr",
@@ -91,6 +93,8 @@
         "runtimes",
         "seasidehill",
         "seasidehillmidnight",
+        "secdrv",
+        "Secu",
         "SIGABRT",
         "sigaction",
         "SIGBUS",
@@ -107,6 +111,7 @@
         "Steamless",
         "Steamworks",
         "struct",
+        "stxt",
         "superfences",
         "taleworlds",
         "tasklist",
@@ -125,6 +130,7 @@
         "winapi",
         "winget",
         "writeln",
+        "xdelta",
         "Yeppers"
     ]
 }

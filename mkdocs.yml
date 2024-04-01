@@ -64,8 +64,9 @@ nav:
         - Other: Loader/Platforms/Other.md
     - Copy Protection:
         - About: Loader/Copy-Protection/About.md
-        - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
+        - Windows - Denuvo: Loader/Copy-Protection/Windows-Denuvo.md
         - Windows - MS Store: Loader/Copy-Protection/Windows-MSStore.md
+        - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
     - Backends:
         - About: Loader/Backends/About.md
         - Native: Loader/Backends/Native.md

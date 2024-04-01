@@ -1,4 +1,4 @@
-# About Copy Protection
+# About Copy Protection (DRM)
 
 !!! info
 
@@ -11,26 +11,32 @@ And unfortunately, naturally, that means sometimes copy protection gets in the w
 
 ## Sub-Sections
 
-- [Windows: Steam](./Windows-Steam.md)
+- [Windows: Denuvo](./Windows-Denuvo.md)
 - [Windows: Microsoft Store](./Windows-MSStore.md)
+- [Windows: Steam](./Windows-Steam.md)
+- [Windows: SafeDisc](./Windows-SafeDisc.md)
 
-## Miscellaneous
+## Suggestions & Actions
 
-### Denuvo
+### Prefer DRM-Free Versions
 
-!!! question "Some Denuvo titles have Anti-Debugging Measures"
+!!! info "Mods should always target DRM-Free version(s) of games if available."
 
-    However it is unclear whether it is an optional Denuvo component or additional DRM from the publisher.
+In some rare scenarios a game may be officially distributed in both 
+DRM-Free and ***Defective by Design*** versions.
 
-!!! info
+Example: `Yakuza: Like a Dragon`
 
-    Some SEGA games circa 2017 featuring Denuvo also have an anti-debug measure where `ntdll.DbgUiRemoteBreakin` will
-    constantly be rewritten with  `ret` (0xC3) on a background thread to prevent debugging.
+- [DRM Free Goodness](https://www.gog.com/en/game/yakuza_like_a_dragon) on GOG
+- [Denuvo Infested Garbage](https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/) on Steam
 
-    It is usually easy to patch. Known affected titles include Sonic Forces and Puyo Puyo Tetris.
+The Steam version is harder to mod, may have more performance issues and will one day...
 
-Aside from obfuscating select game functions, generally Denuvo is
-surprisingly the least intrusive modern DRM solution as far as loading mods is concerned.
+***STOP. WORKING. FOREVER.***
 
-All the pain is transferred to those making mods, be it waiting 30 hours for static analysis
-to finish, or obfuscating the random game function.
+With the GOG version, you can at least have peace of mind and one day show your kids or grandkids
+the joy of your childhood games.
+
+### Prefer DRM-Free Versions
+
+### Detection

@@ -16,7 +16,7 @@ all other backends are implemented as external mods.
 
 ## Configuration
 
-!!! info "These are the configuration properties that apply to [Mod Metadata Targets](../Configurations/Mod-Metadata.md#targets)"
+!!! info "These are the configuration properties that apply to [Mod Metadata Targets][mod-metadata-targets]"
 
 | Type   | Name | Description  |
 |--------|------|--------------|
@@ -43,3 +43,5 @@ This functionality is provided for high performance dependencies, where every fr
 
 It is not expected that mod authors will manually leverage this functionality; that said; it is hoped we could inject it
 during the [publish process](../Mod-Publishing.md) if possible for the given platform.
+
+[mod-metadata-targets]: ../../Server/Configurations/Mod-Metadata.md#targets

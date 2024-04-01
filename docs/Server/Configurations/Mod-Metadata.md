@@ -8,22 +8,22 @@
 
 Inside each mod folder is a file named `R3ModConfig.json`; which stores the metadata of each mod.
 
-| Type                             | Name                               | Description                                                                |
-|----------------------------------|------------------------------------|----------------------------------------------------------------------------|
-| string                           | [Id](#id)                          | A name that uniquely identifies the mod.                                   |
-| string                           | Name                               | Name of the mod.                                                           |
-| string                           | Author                             | Main author(s) of the mod. Separate multiple authors with commas.          |
-| SemVer                           | [Version](#version)                | Semantic versioning version of the mod.                                    |
-| string                           | Description                        | Short description of the mod. (<= 200 chars)                               |
-| string[]                         | [Tags](#tags)                      | Used to make searching easier within mod managers.                         |
-| string                           | [Icon](#icon)                      | Relative path of preview icon.                                             |
-| bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.                 |
-| UpdateData                       | [UpdateData](#update-data)         | Stores mod update specific information.                                    |
-| DependencyInfo                   | [Dependencies](#dependency-info)   | Stores information about this mod's dependencies.                          |
-| string                           | SourceUrl                          | Link to source code (if applicable).                                       |
-| string                           | ProjectUrl                         | Link to website to learn more about the project.                           |
-| Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.](../Backends/About.md) |
-| string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                                            |
+| Type                             | Name                               | Description                                                       |
+| -------------------------------- | ---------------------------------- | ----------------------------------------------------------------- |
+| string                           | [Id](#id)                          | A name that uniquely identifies the mod.                          |
+| string                           | Name                               | Name of the mod.                                                  |
+| string                           | Author                             | Main author(s) of the mod. Separate multiple authors with commas. |
+| SemVer                           | [Version](#version)                | Semantic versioning version of the mod.                           |
+| string                           | Description                        | Short description of the mod. (<= 200 chars)                      |
+| string[]                         | [Tags](#tags)                      | Used to make searching easier within mod managers.                |
+| string                           | [Icon](#icon)                      | Relative path of preview icon.                                    |
+| bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.        |
+| UpdateData                       | [UpdateData](#update-data)         | Stores mod update specific information.                           |
+| DependencyInfo                   | [Dependencies](#dependency-info)   | Stores information about this mod's dependencies.                 |
+| string                           | SourceUrl                          | Link to source code (if applicable).                              |
+| string                           | ProjectUrl                         | Link to website to learn more about the project.                  |
+| Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend]     |
+| string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                                   |
 
 ## Id
 
@@ -49,11 +49,11 @@ Use lowercase, no spaces, no special characters.
 
     For mods that are non-game specific such as backends; set the `game` identifier as `reloaded3` and use one of the following.
 
-| Type    | Description                                                                             | Example                     |
-|---------|-----------------------------------------------------------------------------------------|-----------------------------|
-| backend | For [backends](../Backends/About.md).                                                   | `reloaded3.backend.coreclr` |
-| api     | For [middleware/API hooks](../Core-Architecture.md#middlewareos-handling-mods-layer-1). | `reloaded3.api.windows.vfs` |
-| utility | For utility mods with reusable code.                                                    | `reloaded3.utility.hooks`   |
+| Type    | Description                                                                                       | Example                     |
+| ------- | ------------------------------------------------------------------------------------------------- | --------------------------- |
+| backend | For [backends][backend].                                                                          | `reloaded3.backend.coreclr` |
+| api     | For [middleware/API hooks](../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1). | `reloaded3.api.windows.vfs` |
+| utility | For utility mods with reusable code.                                                              | `reloaded3.utility.hooks`   |
 
 Mod manager can choose whether to show non game-specific mods (`reloaded3` id) on a specific game's page or not.
 
@@ -76,7 +76,7 @@ These are completely arbitrary, up to end users.
 The default set of suggested tags include:
 
 | Tag Name     | Description                   |
-|--------------|-------------------------------|
+| ------------ | ----------------------------- |
 | GUI/HUD      | Any 2D element on the screen. |
 | Stage/Level  | Self explanatory.             |
 | Character    | Playable characters.          |
@@ -112,7 +112,7 @@ The default set of suggested tags include:
     This section might be moved to dedicated Update library section.
 
 | Type                 | Name                                                   | Description                              |
-|----------------------|--------------------------------------------------------|------------------------------------------|
+| -------------------- | ------------------------------------------------------ | ---------------------------------------- |
 | string               | [ReleaseMetadataFileName](#release-metadata-file-name) | A name that uniquely identifies the mod. |
 | GameBananaUpdateInfo | [GameBananaUpdateInfo](#gamebanana-update-info)        | Info on how to update from GitHub.       |
 | GitHubUpdateInfo     | [GitHubUpdateInfo](#github-update-info)                | Info on how to update from GameBanana.   |
@@ -130,14 +130,14 @@ unless they know what they're doing.
 ### GameBanana Update Info
 
 | Type   | Name     | Description                                                                                                                                           |
-|--------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | string | ItemType | Type of item on GameBanana API, e.g. 'Mod', 'Sound', 'Wip'                                                                                            |
 | int    | ItemId   | Id of the item on GameBanana, this is the last number in the URL to your mod page; e.g. 150115 if your mod URL is https://gamebanana.com/mods/150115. |
 
 ### GitHub Update Info
 
 | Type   | Name           | Description                                                                           |
-|--------|----------------|---------------------------------------------------------------------------------------|
+| ------ | -------------- | ------------------------------------------------------------------------------------- |
 | string | UserName       | The user/organization name associated with the repository to fetch files from.        |
 | string | RepositoryName | The name of the repository to fetch files from.                                       |
 | bool   | AssetFileName  | [Optional] Pattern for the file name to download if no metadata file is found.        |
@@ -149,39 +149,39 @@ The field `AssetFileName` is provided for backwards compatibility only. e.g. `*u
 
 !!! warning "Implementation delayed until API allows non-premium members to generate download links."
 
-| Type   | Name          | Description                               |
-|--------|---------------|-------------------------------------------|
-| string | GameDomain    | The ID/Domain for the game. e.g. 'skyrim' |
-| int    | ModId         | Unique index for the mod.                 |
+| Type   | Name       | Description                               |
+| ------ | ---------- | ----------------------------------------- |
+| string | GameDomain | The ID/Domain for the game. e.g. 'skyrim' |
+| int    | ModId      | Unique index for the mod.                 |
 
 ### NuGet Update Info
 
-| Type     | Name                         | Description                                        |
-|----------|------------------------------|----------------------------------------------------|
-| string[] | DefaultRepositoryUrls        | List of NuGet URLs/repos this mod can update from. |
+| Type     | Name                  | Description                                        |
+| -------- | --------------------- | -------------------------------------------------- |
+| string[] | DefaultRepositoryUrls | List of NuGet URLs/repos this mod can update from. |
 
 ## Dependency Info
 
 !!! info "The dependency resolution strategy is to simply copy update info of all dependencies into this structure. We can use that info to resolve mods if they are missing."
 
-| Type            | Name             | Description                                                     |
-|-----------------|------------------|-----------------------------------------------------------------|
-| DependencyItem  | DependencyItem   | A tuple of mod ID and copy of mod's [UpdateData](#update-data). |
+| Type           | Name           | Description                                                     |
+| -------------- | -------------- | --------------------------------------------------------------- |
+| DependencyItem | DependencyItem | A tuple of mod ID and copy of mod's [UpdateData](#update-data). |
 
 `DependencyItem` is defined as:
 
 | Type       | Name                       | Description                             |
-|------------|----------------------------|-----------------------------------------|
+| ---------- | -------------------------- | --------------------------------------- |
 | string     | ModId                      | Unique ID of the dependency.            |
 | UpdateData | [UpdateData](#update-data) | Stores mod update specific information. |
 
 ## Targets
 
-!!! info "This section specifies info for the individual [backends.](../Backends/About.md)"
+!!! info "This section specifies info for the individual [backends.][backend]"
 
-Find more info on the pages for the [individual backends](../Backends/About.md), but we'll provide some examples.
+Find more info on the pages for the [individual backends][backend], but we'll provide some examples.
 
-[Native Mod](../Backends/Native.md):
+[Native Mod](../../Loader/Backends/Native.md):
 ```json
 {
   "win-x64" : {
@@ -195,7 +195,7 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
 
 !!! note "It's not expected for mod authors to ship with multiple [instruction sets](#instruction-sets) outside of super high perf scenarios. This is just for example."
 
-[.NET CoreCLR Mod](../Backends/CoreCLR.md):
+[.NET CoreCLR Mod](../../Loader/Backends/CoreCLR.md):
 
 ```json
 {
@@ -207,7 +207,7 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
 }
 ```
 
-[Reloaded-II Mod](../Backends/CoreCLR.md#reloaded-ii):
+[Reloaded-II Mod](../../Loader/Backends/CoreCLR.md#reloaded-ii):
 
 ```json
 {
@@ -222,7 +222,7 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
 }
 ```
 
-!!! info "For .NET, the `x86` and `x64` fields indicate binaries using [ReadyToRun](../Backends/CoreCLR.md#ready-to-run) technology. Usually a mod will only specify `any` or a `x86`+`x64` pair."
+!!! info "For .NET, the `x86` and `x64` fields indicate binaries using [ReadyToRun](../../Loader/Backends/CoreCLR.md#ready-to-run) technology. Usually a mod will only specify `any` or a `x86`+`x64` pair."
 
 ## Supported Games
 
@@ -231,3 +231,5 @@ Find more info on the pages for the [individual backends](../Backends/About.md),
 Alternatively, when experimenting with new games which do not have a specified Application ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 
 Mod managers will automatically update this to appropriate ID during process of querying [Community Repository](../../Services/Community-Repository.md).
+
+[backend]: ../../Loader/Backends/About.md

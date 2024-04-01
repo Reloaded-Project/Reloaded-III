@@ -20,7 +20,7 @@ Some use cases include:
 - Providing compatibility warnings for pre-patched/pre-modded legacy games.
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
 - Auto assign Game IDs in [Application Configurations](../Server/Configurations/App-Metadata.md).
-- Updating [Mod Configurations](../Loader/Configurations/Mod-Metadata.md) with correct [App ID](../Server/Configurations/App-Metadata.md#id)s marking which games an app supports.
+- Updating [Mod Configurations](../Server/Configurations/Mod-Metadata.md) with correct [App ID](../Server/Configurations/App-Metadata.md#id)s marking which games an app supports.
 
 ## Schema
 
@@ -46,7 +46,7 @@ They can have any name (as long as they use their own unique folder), in this sp
 | ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                                     |
 | Warning[]     | [Warnings](#warnings)                           | Warnings to display if specific files are found in game folder.                                |
 | string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                             |
-| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking](../Research/Bootloaders/Windows-DllHijack.md).     |
+| string[]      | [DllEntryPoints](#dll-entry-points)             | Names of DLLs we can use with [DLL Hijacking](../Research/Bootloaders/Windows-DllHijack.md).   |
 
 !!! note "Note: All hashes listed in this specification are `xxHash64`."
 
@@ -91,13 +91,13 @@ BadHashDescription: "Mods target the NoCD version of Sonic Heroes; specifically 
 
 !!! info "Stores individual version information for a binary with a given hash."
 
-| Type     | Item        | Description                                                                                       |
-| -------- | ----------- | ------------------------------------------------------------------------------------------------- |
-| string   | Hash        | Hash of executable.                                                                               |
-| string   | ExeName     | Name of executable.                                                                               |
+| Type     | Item        | Description                                                                                         |
+| -------- | ----------- | --------------------------------------------------------------------------------------------------- |
+| string   | Hash        | Hash of executable.                                                                                 |
+| string   | ExeName     | Name of executable.                                                                                 |
 | string[] | EntryPoints | [Optional*] Name of [entry point DLLs for hijacking.](../Research/Bootloaders/Windows-DllHijack.md) |
-| string   | Version     | [Optional] Version of game bound to this executable.                                              |
-| DateTime | Date        | [Optional] Date of this version, as ISO 8601.                                                     |
+| string   | Version     | [Optional] Version of game bound to this executable.                                                |
+| DateTime | Date        | [Optional] Date of this version, as ISO 8601.                                                       |
 
 This version and their time are supposed to be purely informative.
 

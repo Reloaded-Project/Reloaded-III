@@ -1,19 +1,15 @@
-﻿Here is the Markdown text rewritten using link definitions, with the link definitions sorted alphabetically and using `kebab-case`:
+﻿# CoreCLR Backend
 
-# CoreCLR Backend
+!!! info "Microsoft has a [guide for this][dotnet-hosting-guide]"
 
-!!! info
+!!! note "Microsoft does not publish a statically linked library for this."
 
-    Microsoft has a [guide for this][dotnet-hosting-guide].
+    However, after some editing to .NET sources [Reloaded-II][reloaded-ii-nethost]
+    features a pre-built static lib for loading this runtime.
 
-!!! note
+!!! warning "This backend is not available everywhere."
 
-    Microsoft does not publish a statically linked library for this; however, after some editing to .NET sources
-    [Reloaded-II][reloaded-ii-nethost] features a pre-built static lib for loading this runtime.
-
-!!! warning
-
-    This backend is unavailable on `Switch`.
+    For example, some platforms like a certain console with detachable controllers do not support this.
 
 ## Version Resolution Strategy
 
@@ -28,9 +24,7 @@ Otherwise load our own copy of the runtime.
 - Download copy of [.NET SDK][dotnet-sdk-download], and include it in our mod.
 - Pass folder path of the extracted SDK via `get_hostfxr_parameters.dotnet_root` to `get_hostfxr_path`.  [Documented Here.][native-hosting-locate-hostfxr]
 
-!!! note
-
-    These APIs are only supported in Core 3.X and above.
+!!! note "Note: These APIs are only supported in Core 3.X and above."
 
 ## Assembly Load Contexts
 
@@ -43,6 +37,8 @@ Otherwise load our own copy of the runtime.
 ## Reloaded II
 
 !!! info "Declares how backwards compatibility with Reloaded-II APIs is handled."
+
+!!! warning "Coming Soon"
 
 [dotnet-hosting-guide]: https://learn.microsoft.com/en-us/dotnet/core/tutorials/netcore-hosting
 [dotnet-sdk-download]: https://dotnet.microsoft.com/en-us/download/dotnet/7.0

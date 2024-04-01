@@ -59,6 +59,7 @@
         "keepbind",
         "libc",
         "libloaderapi",
+        "microarchitecture",
         "midnighthill",
         "Minidump",
         "minwindef",

@@ -10,11 +10,14 @@
 
     - `win-x86` really means `win-x86-msvc`.
     - `linux-x86` really means `linux-x86-glibc`.
+    - `dotnet-latest` really means `dotnet-latest-coreclr`.
 
-!!! tip
+!!! tip "It is preferred to use universally recognisable names over internal ones"
 
-    It is preferred to use universally recognisable names over internal ones
-    i.e. prefer `switch` over `horizon`.
+    For example, prefer:
+
+    - `switch` over `horizon`
+    - `dotnet` over `coreclr`
 
 Planned backends include:
 
@@ -25,6 +28,13 @@ Planned backends include:
 | `linux-x64`     | Native x64 Support on Linux   |
 | `linux-x86`     | Native x86 Support on Linux   |
 | `dotnet-latest` | Latest .NET Runtime           |
+
+Backends that will be delivered if there's community interest in terms of donations/code contributions:
+
+| Backend       | Description                     |
+| ------------- | ------------------------------- |
+| `win-arm64`   | Native ARM64 Support on Windows |
+| `linux-arm64` | Native ARM64 Support on Linux   |
 
 Some potential backends could only be delivered with community involvement, due to lack of knowledge:
 
@@ -42,7 +52,7 @@ and shipping separate binaries for multiple platforms.
 
 ## Custom Backends
 
-In some cases, some custom bootstrapping might be required.
+!!! note "In some cases, some custom bootstrapping might be required."
 
 For example:
 
@@ -55,8 +65,9 @@ For example:
 | `sewer56.reloadedii-custom`    | Runs in `dotnet-latest`, provides backwards compatibility for R2 mods.     |
 | `taleworlds.bannerlord-custom` | Loads using .NET Framework (older versions) or .NET Core (newer versions). |
 
-To allow for maximum modularity; custom backends are implemented via regular mods [TODO: link pending]; allowing them to be updated
-independently from the loader.
+To allow for maximum modularity; custom backends are implemented via [regular mods][regular-mods]; 
+allowing them to be updated independently from the loader.
 
 <!-- Links -->
 [mod-configurations-targets]: ../../Server/Configurations/Mod-Metadata.md#targets
+[regular-mods]: ../Core-Architecture.md#regular-mods-layer-3

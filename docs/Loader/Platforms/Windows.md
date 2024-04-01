@@ -2,11 +2,9 @@
 
 ## Native Mods with Dynamic Linking
 
-!!! info
-
-    Some older native mods might want to dynamically link to libraries
-    (.dlls) they ship with their mods. We need to register the mod's directory
-    as a possible path for loading DLLs.
+!!! info "Some older native mods might want to dynamically link to libraries (.dlls) they ship with their mods."
+    
+    We need to register the mod's directory as a possible path for loading DLLs.
 
 ```csharp
 // Reference C# code from Reloaded-II.
@@ -19,9 +17,8 @@ SetDllDirectoryW(builder.ToString());
 
 ## Crash Handler
 
-!!! warning
+!!! warning "Assume the user does not have any sort of crash dump/error reporting enabled."
 
-    Assume the user does not have any sort of crash dump/error reporting enabled.
     We must generate dumps ourselves when our process dies.
 
 ```rust
@@ -53,9 +50,8 @@ unsafe {
 
 ## Wine
 
-!!! info
-
-    To detect wine, check if `ntdll` exports `wine_get_version`.
+!!! info "To detect wine, check if `ntdll` exports `wine_get_version`."
+    
     Always note that Wine is in constant development; in the future workarounds might become obsolete.
 
 !!! important

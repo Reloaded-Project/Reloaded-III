@@ -199,7 +199,7 @@ Find more info on the pages for the [individual backends][backend], but we'll pr
 
 ```json
 {
-  "coreclr-latest" : {
+  "dotnet-latest" : {
     "any": "Heroes.Graphics.Essentials.dll",
     "x86": "x86/Heroes.Graphics.Essentials.dll",
     "x64": "x86/Heroes.Graphics.Essentials.dll"

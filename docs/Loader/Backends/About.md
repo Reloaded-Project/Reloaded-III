@@ -18,13 +18,13 @@
 
 Planned backends include:
 
-| Backend          | Description                   |
-| ---------------- | ----------------------------- |
-| `win-x86`        | Native x86 Support on Windows |
-| `win-x64`        | Native x64 Support on Windows |
-| `linux-x64`      | Native x64 Support on Linux   |
-| `linux-x86`      | Native x86 Support on Linux   |
-| `coreclr-latest` | Latest .NET Runtime           |
+| Backend         | Description                   |
+| --------------- | ----------------------------- |
+| `win-x86`       | Native x86 Support on Windows |
+| `win-x64`       | Native x64 Support on Windows |
+| `linux-x64`     | Native x64 Support on Linux   |
+| `linux-x86`     | Native x86 Support on Linux   |
+| `dotnet-latest` | Latest .NET Runtime           |
 
 Some potential backends could only be delivered with community involvement, due to lack of knowledge:
 
@@ -51,8 +51,8 @@ For example:
 
 | Example Backend                | Description                                                                |
 | ------------------------------ | -------------------------------------------------------------------------- |
-| `unity.unity-custom`           | Runs mods in `coreclr-latest` for Il2Cpp; `mono` otherwise.                |
-| `sewer56.reloadedii-custom`    | Runs in `coreclr-latest`, provides backwards compatibility for R2 mods.    |
+| `unity.unity-custom`           | Runs mods in `dotnet-latest` for Il2Cpp; `mono` otherwise.                 |
+| `sewer56.reloadedii-custom`    | Runs in `dotnet-latest`, provides backwards compatibility for R2 mods.     |
 | `taleworlds.bannerlord-custom` | Loads using .NET Framework (older versions) or .NET Core (newer versions). |
 
 To allow for maximum modularity; custom backends are implemented via regular mods [TODO: link pending]; allowing them to be updated

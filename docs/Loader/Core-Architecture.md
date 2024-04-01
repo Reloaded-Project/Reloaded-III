@@ -195,14 +195,14 @@ sequenceDiagram
 
     % Define Actions
     Mod Loader->>.NET Backend: Load Mod
-    .NET Backend->>Mod Loader: Register Backend 'coreclr-latest'
-    Mod Loader->>.NET Backend: Request to Load 'Cool .NET Code Mod' (via 'coreclr-latest')
+    .NET Backend->>Mod Loader: Register Backend 'dotnet-latest'
+    Mod Loader->>.NET Backend: Request to Load 'Cool .NET Code Mod' (via 'dotnet-latest')
     .NET Backend->>Cool .NET Code Mod: Load the Mod
 ```
 
 The mod loader loads the mod. The backend mod uses a loader API to say 'hi, I can handle this [backend][backend]'.
 
-Down the road when the loader tries to load `Cool .NET Code Mod`, it sees it has backend `coreclr-latest` declared in its config and
+Down the road when the loader tries to load `Cool .NET Code Mod`, it sees it has backend `dotnet-latest` declared in its config and
 delegates loading to registered handler (`.NET Backend`).
 
 ### From Perspective of Layer 2 (Game Support) Mod

@@ -12,7 +12,7 @@
     - `linux-x86` really means `linux-x86-glibc`.
     - `dotnet-latest` really means `dotnet-latest-coreclr`.
 
-!!! tip "It is preferred to use universally recognisable names over internal ones"
+!!! tip "It is preferred to use universally recognisable names over internal ones."
 
     For example, prefer:
 

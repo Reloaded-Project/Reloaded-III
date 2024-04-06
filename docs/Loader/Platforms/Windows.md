@@ -54,6 +54,8 @@ unsafe {
     
     Always note that Wine is in constant development; in the future workarounds might become obsolete.
 
+    Note: User may [choose to hide this][hide-wine-version]. Don't bypass this, respect them.
+
 !!! important
 
     We really should open up tickets for this once the loader port is done.
@@ -128,3 +130,5 @@ if !console_exists() {
 |----------------|-------------|
 | WINE x86/x64   | ✅          |
 | Windows on ARM | ❓ Unknown. |
+
+[hide-wine-version]: https://github.com/wine-staging/wine-staging/blob/master/patches/ntdll-Hide_Wine_Exports/0001-ntdll-Add-support-for-hiding-wine-version-informatio.patch

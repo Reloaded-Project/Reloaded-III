@@ -73,9 +73,6 @@ nav:
         - .NET (CoreCLR):
           - About: Loader/Backends/CoreCLR.md
           - Dependency Injection: Loader/Backends/CoreCLR-Dependency-Injection.md
-    - Configurations:
-        - Mod Metadata: Loader/Configurations/Mod-Metadata.md
-        - Mod Configurations: Loader/Configurations/Mod-Configurations.md
     - Mod Configuration: Loader/Mod-Configurations.md
     - Adding Game Support: Loader/Game-Support.md
     - Handling Middleware: Loader/Middleware.md

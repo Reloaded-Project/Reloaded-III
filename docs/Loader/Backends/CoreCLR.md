@@ -41,8 +41,8 @@ from the main package to avoid spamming release versions.
 
 !!! info "To change runtime version, simply change the current version of the package."
 
-If they want to test the latest .NET nightly version, simply enable the package 
-`reloaded3.backend.coreclr.nightly`, this will use the [Deprecation System][deprecation-system] to 
+If they want to test the latest .NET nightly version, simply enable the package
+`reloaded3.backend.coreclr.nightly`, this will use the [Deprecation System][deprecation-system] to
 override the main `reloaded3.backend.coreclr` package.
 
 ### Feature Selection
@@ -51,7 +51,7 @@ override the main `reloaded3.backend.coreclr` package.
 
     We use the [Features][features] system to target the relevant package.
 
-These meta packages use features to target the actual required packages with the use 
+These meta packages use features to target the actual required packages with the use
 [default auto-enabled features][default-features].
 
 For example, if the features `win` and `x86` are set, the package `reloaded3.backend.coreclr.win-x86`
@@ -94,62 +94,11 @@ Implications of this include:
 
 !!! tip "This explains how we conditionally break isolation to allow mods to communicate."
 
-We do this by selectively sharing instances of `Assemblies` (DLLs), between mods.
-
-Mods can nominate which `Assemblies` (DLLs) they wish to share with other mods. If a mod contains 
-an assembly it wishes to share, the loader will:
-
-- Load that mod.
-- Load the shared assemblies into a shared `AssemblyLoadContext`.
-- Unload the mod. 
-
-When the Publisher and Subscriber mods are then loaded, the mod loader will force both of them to 
-use the already loaded `Assembly` instance from the **shared** `AssemblyLoadContext`.
-
-Thus both mods operate on the same instance of the `Assembly`.
-
-#### Step by Step Walkthrough
-
-![Example][dependency-injection-internal]
-
-1. Gathering Shared Assemblies  
-    1. Mod Loader loads `Redirector` (Publisher).  
-    2. Mod Loader loads all shared Assemblies into Shared `AssemblyLoadContext`  
-    3. Mod Loader unloads `Redirector` (Publisher).  
-
-2. Loading Mods  
-    1. Mod Loader loads `Redirector`, sharing its own `Assemblies` with itself (from 1.b).  
-    2. Mod Loader loads `RedirectorMonitor` (Consumer).  
-        1. `RedirectorMonitor` specified `Redirector` in its `ModDependencies` field.  
-        2. Therefore Mod Loader shares all of `Redirector`'s exports with `RedirectorMonitor`.  
-        
-3. Executing Mods  
-    1. Mod Loader rearranges mod load order to account for mod dependencies.  
-    2. `Redirector` code executes. Redirector publishes `IRedirectorController` (from Reloaded.Mod.Interfaces.IRedirector.dll) to Mod Loader.  
-    3. `Monitor` code executes. Monitor obtains `IRedirectorController` from Mod Loader.  
-
-#### How it Works (User Docs)
-
-!!! info "A publisher and subscriber share a common DLL containing only interfaces and no dependencies."
-
-The concept is that the backend mod acts as a middleman between .NET mods (like a DI container!). This middleman allows mods to communicate by passing implementations of interfaces between each other.
-
-Illustrated like so:
-
-![Example][dependency-injection]
-
-*An example with Reloaded-II's [File Redirector][file-redirector].*
-
-- Mod A (Redirector) publishes an interface `IRedirectorController` to the Mod Loader.
-- Mod B (Other Mod) asks the Mod Loader for the `IRedirectorController` interface.
-
-This is done via the backend mod's `IDependencyInjector` [TODO: NAME NOT FINAL] interface.
-
-!!! warning "TODO: Add Remaining Docs Here"
+[Moved to its own subsection.][dependency-injection-api-docs]
 
 ### Use Case: I want mods to communicate without breaking isolation.
 
-!!! info "Use the Dependency Injection mechanism described above"
+!!! info "Use the [Dependency Injection][dependency-injection-api-docs] mechanism described above."
 
 Essentially it boils down to following:
 
@@ -178,7 +127,7 @@ public interface IScanner : IDisposable
 - Producer shares `LibraryA`.
 
 ```csharp
-public class Exports : IExports 
+public class Exports : IExports
 {
     public Assembly[] GetSharedAssemblies() => new[] { typeof(SomeTypeFromInterfacesDllToShare).Assembly };
 }
@@ -186,16 +135,13 @@ public class Exports : IExports
 
 ```csharp
 var _scanner_ = new Scanner(); // Implements IScanner
-_loader.AddOrReplaceController<IScanner>(this, _scanner);
+_injector.AddOrReplaceService<IScanner>(this, _scanner);
 ```
 
 - Consumer uses `LibraryA`, and their instance at runtime is exactly same as producer's.
 
 ```csharp
-void GetController() 
-{
-    _scanner = _loader.GetController<IScanner>();
-}
+_scanner = _injector.GetService<IScanner>();
 ```
 
 For the exact details and caveats, please do read the docs.
@@ -209,7 +155,7 @@ For the exact details and caveats, please do read the docs.
     Use [public API analyzer][api-analyzer] to ensure no breaking changes are made.
 
 ```csharp
-public class Exports : IExports 
+public class Exports : IExports
 {
     public Assembly[] GetSharedAssemblies() => new[] { typeof(SomeTypeFromDllToShare).Assembly };
 }
@@ -219,7 +165,7 @@ To share a DLL, simply return the Assembly (DLL) you want to share as an export.
 
 !!! danger "Remember, that this also shares all dependencies transitively."
 
-    If `ModA` uses `Library 12.0.0` and `SomeTypeFromDllToShare` uses `Library 13.0.0`, then 
+    If `ModA` uses `Library 12.0.0` and `SomeTypeFromDllToShare` uses `Library 13.0.0`, then
     `ModA` will use `Library 13.0.0` as well.
 
     Extra special care must be taken to ensure that this does not happen. Therefore it's recommended
@@ -243,7 +189,7 @@ More reading:
 - [Conversation about ReadyToRun][conversation-about-r2r]
 - [ReadyToRun Compilation][r2r-compilation]
 
-## Assembly Trimming Support  
+## Assembly Trimming Support
 
 !!! warning "Trimming framework-dependent code is ***not an officially supported .NET feature***"
 
@@ -267,9 +213,9 @@ In Reloaded-II, both loader itself and all 1st party mods use trimming.
     This is part of the Reloaded-II mod template, and will likely be part of Reloaded3's as well.
 
 This script will fully wipe the mod output folder and build with trimming.
-When the build is done, go test your mod.  
+When the build is done, go test your mod.
 
-Sample output:  
+Sample output:
 ```
 Input Assembly: Reloaded.Hooks.Definitions [Mode: link]
 Input Assembly: Reloaded.Mod.Interfaces [Mode: link]
@@ -277,12 +223,12 @@ Input Assembly: Reloaded.Hooks.ReloadedII.Interfaces [Mode: link]
 Input Assembly: Reloaded.Mod.Template [Mode: link]
 ```
 
-`link` indicates the assembly is being trimmed.  
-`` (empty) means trim if `IsTrimmable` == true, else use default trimmer setting [copy].  
+`link` indicates the assembly is being trimmed.
+`` (empty) means trim if `IsTrimmable` == true, else use default trimmer setting [copy].
 
 ### Configuring Trimming
 
-Trimming can be configured by modifying your `.csproj` file. The following properties can be used to control the trimming process.  
+Trimming can be configured by modifying your `.csproj` file. The following properties can be used to control the trimming process.
 
 | Reloaded Property      | Purpose                                                   | Replacement for.      |
 | ---------------------- | --------------------------------------------------------- | --------------------- |
@@ -290,8 +236,8 @@ Trimming can be configured by modifying your `.csproj` file. The following prope
 | ReloadedLinkRoots      | Specifies a DLL/Assembly to be preserved in its entirety. | TrimmerRootAssembly   |
 | ReloadedLinkAssemblies | Specifies a DLL/Assembly to be force trimmed.             | ManagedAssemblyToLink |
 
-Other officially supported properties can be used. For example you could supply an 
-[XML Root Descriptor][xml-root-descriptor] with `TrimmerRootDescriptor` for more granular control.  
+Other officially supported properties can be used. For example you could supply an
+[XML Root Descriptor][xml-root-descriptor] with `TrimmerRootDescriptor` for more granular control.
 
 ### Default Trimming Behaviour
 
@@ -299,35 +245,35 @@ Other officially supported properties can be used. For example you could supply 
 
     And NOT .NET 7+. We instead choose to err on the side of caution.
 
-The following general rules apply:  
+The following general rules apply:
 
-- Only assemblies marked `IsTrimmable` are trimmed by default.  
-- Default trimming mode (`TrimMode`) is `link` (remove unused assemblies + code).  
+- Only assemblies marked `IsTrimmable` are trimmed by default.
+- Default trimming mode (`TrimMode`) is `link` (remove unused assemblies + code).
 
 ### General Trimming Guidance
 
 !!! tip
 
-    This is general guidance from personal experience with developing Reloaded.  
+    This is general guidance from personal experience with developing Reloaded.
 
-Doing the following steps is advised for enabling trimming:  
+Doing the following steps is advised for enabling trimming:
 
-- Build with `BuildLinked.ps1`.  
-- Add all assemblies with trim warnings to `ReloadedLinkAssemblies`.  
-- Build again and test.  
+- Build with `BuildLinked.ps1`.
+- Add all assemblies with trim warnings to `ReloadedLinkAssemblies`.
+- Build again and test.
 
 !!! note
 
     If you have marked an assembly to not be trimmed with `ReloadedLinkAssemblies`, but it still displays a trim warning, feel free to ignore the warning.
 
-Basic trimming now works. 
+Basic trimming now works.
 
 #### Trimming the Remainder
 
-To further optimise your mod, you can now force trimming on individual libraries.  
-To do so, perform the following.  
+To further optimise your mod, you can now force trimming on individual libraries.
+To do so, perform the following.
 
-- Inspect the build output:  
+- Inspect the build output:
 ```
 # Sample Output
 Input Assembly: Reloaded.Hooks.Definitions [Mode: link]
@@ -335,10 +281,10 @@ Input Assembly: Reloaded.Mod.Interfaces [Mode: link]
 Input Assembly: Deez.Nutz.Library [Mode: copy]
 ```
 
-- For each library where `Mode != link`.  
-  - Enable trimming for library (using `ReloadedLinkAssemblies`).  
-  - Build and test the mod.  
-  - If the mod does not run correctly, remove library from `ReloadedLinkAssemblies`.  
+- For each library where `Mode != link`.
+  - Enable trimming for library (using `ReloadedLinkAssemblies`).
+  - Build and test the mod.
+  - If the mod does not run correctly, remove library from `ReloadedLinkAssemblies`.
 
 ## Reloaded II
 
@@ -352,13 +298,11 @@ A mod translates Reloaded-II APIs to Reloaded3 APIs. That's about it.
 [api-analyzer]: https://github.com/dotnet/roslyn-analyzers/blob/main/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
 [conversation-about-r2r]: https://devblogs.microsoft.com/dotnet/conversation-about-ready-to-run/
 [default-features]: ../../Server/Features.md#default-features
-[dependency-injection]: ../../Images/DependencyInjection.png
-[dependency-injection-internal]: ../../Images/DependencyInjection-Internal.png
+[dependency-injection-api-docs]: ./CoreCLR-Dependency-Injection.md
 [deprecation-system]: ../../Server/Load-Ordering.md#mods-can-deprecate-other-mods-by-overriding-dependencies
 [dotnet-hosting-guide]: https://learn.microsoft.com/en-us/dotnet/core/tutorials/netcore-hosting
 [dotnet-sdk-download]: https://dotnet.microsoft.com/en-us/download/dotnet/7.0
 [features]: ../../Server/Features.md
-[file-redirector]: https://github.com/Reloaded-Project/reloaded.universal.redirector
 [native-hosting-locate-hostfxr]: https://github.com/dotnet/runtime/blob/main/docs/design/features/native-hosting.md#locate-hostfxr
 [package-id]: ../../Server/Configurations/Package-Metadata.md#id
 [reloaded-ii-nethost]: https://github.com/Reloaded-Project/Reloaded-II/tree/master/source/Reloaded.Mod.Loader.Bootstrapper/nethost

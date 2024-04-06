@@ -17,7 +17,7 @@ Covered in [Linux Preload Bootloader][linux-preload].
 
 ## Native Mods with Dynamic Linking
 
-Basically N/A. 
+Basically N/A.
 
 Almost nobody has been modding native Linux games before, aside some cross platform titles.
 
@@ -93,7 +93,7 @@ Here's some known options for console output below.
 Sometimes it's possible to get the game to boot with a terminal by adjusting the configuration
 of an external launcher.
 
-Say for instance, an older Linux game may need to be launched via the Steam Linux Runtime to run 
+Say for instance, an older Linux game may need to be launched via the Steam Linux Runtime to run
 at all on a modern distro.
 
 For Steam this can be solved by overwriting `Launch Options`:
@@ -172,7 +172,7 @@ fn main() {
     while buf[0] != b'\n' {
         xterm_file.read_exact(&mut buf).unwrap();
     }
-    
+ 
     // Redirect standard output and error to the pseudo terminal
     let stdout_fd = io::stdout().as_raw_fd();
     let stderr_fd = io::stderr().as_raw_fd();
@@ -200,7 +200,7 @@ fn main() {
 ```
 
 This gets us the behaviour of Windows' AllocConsole on Linux, but unfortunately not all terminal
-emulators allow us to specify a custom pseudoterminal. 
+emulators allow us to specify a custom pseudoterminal.
 
 #### Emulating AllocConsole (Alternative Method)
 

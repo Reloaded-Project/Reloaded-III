@@ -265,7 +265,7 @@ Repository Root
 !!! info
 
     The raw files specified in [schema](#schema) go through a 'build' process.
-    This build process converts the files to `.json` and spit it out in a format suitable for hosting on 
+    This build process converts the files to `.json` and spit it out in a format suitable for hosting on
     [GitHub Pages][github-pages].
 
 Output format:

@@ -3,7 +3,7 @@
 ## Native Mods with Dynamic Linking
 
 !!! info "Some older native mods might want to dynamically link to libraries (.dlls) they ship with their mods."
-    
+ 
     We need to register the mod's directory as a possible path for loading DLLs.
 
 ```csharp
@@ -51,7 +51,7 @@ unsafe {
 ## Wine
 
 !!! info "To detect wine, check if `ntdll` exports `wine_get_version`."
-    
+ 
     Always note that Wine is in constant development; in the future workarounds might become obsolete.
 
     Note: User may [choose to hide this][hide-wine-version]. Don't bypass this, respect them.

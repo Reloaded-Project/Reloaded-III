@@ -26,7 +26,7 @@ And unfortunately, naturally, that means sometimes copy protection gets in the w
 
 !!! info "Mods should always target DRM-Free version(s) of games if available."
 
-In some rare scenarios a game may be officially distributed in both 
+In some rare scenarios a game may be officially distributed in both
 DRM-Free and ***Defective by Design*** versions.
 
 Example: `Yakuza: Like a Dragon`
@@ -51,10 +51,10 @@ the joy of your childhood games.
 
 Likewise, many modders for old games usually make mods that target a specific region's release.
 
-To make things easier for end users, under ***very exceptional circumstances*** we may provide delta 
+To make things easier for end users, under ***very exceptional circumstances*** we may provide delta
 patches which transform regional releases of games to the preferred region.
 
-An example of 'exceptional circumstances' are SafeDisc games, which cannot be played ***AT ALL*** 
+An example of 'exceptional circumstances' are SafeDisc games, which cannot be played ***AT ALL***
 on Windows 7+ in their original form. (Modded or not modded)
 
 !!! failure "Redistribution of unmodified game files is prohibited."

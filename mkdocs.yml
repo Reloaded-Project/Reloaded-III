@@ -70,7 +70,9 @@ nav:
     - Backends:
         - About: Loader/Backends/About.md
         - Native: Loader/Backends/Native.md
-        - .NET (CoreCLR): Loader/Backends/CoreCLR.md
+        - .NET (CoreCLR):
+          - About: Loader/Backends/CoreCLR.md
+          - Dependency Injection: Loader/Backends/CoreCLR-Dependency-Injection.md
     - Configurations:
         - Mod Metadata: Loader/Configurations/Mod-Metadata.md
         - Mod Configurations: Loader/Configurations/Mod-Configurations.md
@@ -105,7 +107,7 @@ nav:
       - Windows:
         - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
         - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
-      - Linux: 
+      - Linux:
         - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
 
   - Wiki:

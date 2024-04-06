@@ -7,7 +7,7 @@
     Doing this in loader means reading info for all packages, which could be expensive for
     users with 2000+ packages installed. (Especially on Network Storage or HDDs)
 
-    Instead, we prepare and cache this on the server, which already has the info in memory 
+    Instead, we prepare and cache this on the server, which already has the info in memory
     and the loader does only what is needed.
 
     Doing this in server also allows for *better error handling*, and friendlier error

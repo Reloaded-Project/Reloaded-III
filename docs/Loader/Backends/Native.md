@@ -13,7 +13,7 @@ For example:
 | `linux-x64`   | Native x64 Support on Linux     |
 | `linux-arm64` | Native ARM64 Support on Linux   |
 
-This is the only backend that is directly implemented in the mod loader itself 
+This is the only backend that is directly implemented in the mod loader itself
 (as we are already in a native environment). All other backends are implemented as external mods.
 
 ## Configuration Fields
@@ -25,7 +25,7 @@ This is the only backend that is directly implemented in the mod loader itself
 | string | any  | Path to DLL. |
 
 For `any`, platform default extensions are assumed.
-For example, if the backend specified is `win-x64`, it is assumed the CPU supports SSE2; 
+For example, if the backend specified is `win-x64`, it is assumed the CPU supports SSE2;
 which is required by `x64` spec.
 
 ### Instruction Sets
@@ -44,12 +44,12 @@ Compilers based on LLVM (Clang, Rust etc.) can directly target these.
 
 !!! tip "This functionality is provided for high performance dependencies, where every fraction of a nanosecond counts."
 
-It is not expected that mod authors will manually leverage this functionality; that said; it is 
+It is not expected that mod authors will manually leverage this functionality; that said; it is
 hoped we can make it easy to use during the [publish process][mod-publishing] if possible.
 
 #### Determining Supported Instruction Set on Local Machine
 
-Start with [core-detect][core-detect] crate, and make a separate library with helper methods to 
+Start with [core-detect][core-detect] crate, and make a separate library with helper methods to
 determine which category the current CPU falls under.
 
 You can use `rustc --print=cfg -C target-cpu=x86-64-v3` to print the specific `target_feature`(s)

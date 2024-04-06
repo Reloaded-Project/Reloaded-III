@@ -10,7 +10,7 @@ For more details see: [Linux Preload][linux-preload].
 
 !!! error
 
-    Reportedly you may need to disable [System Integrity Protection][system-integrity-protection] 
+    Reportedly you may need to disable [System Integrity Protection][system-integrity-protection]
     (SIP) in order to use it in some cases (I believe only for binaries signed by Apple though).
 
 Unfortunately, I do not have an Apple machine.

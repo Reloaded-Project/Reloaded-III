@@ -37,12 +37,12 @@ Conceptually, it's similar to the issues and suggestions you get in your code ed
 
 !!! tip
 
-    This is a human friendly unique identifier for a given diagnostic type. 
+    This is a human friendly unique identifier for a given diagnostic type.
 
     Reloaded uses `hexatrigesimal` (base 36) for encoding the IDs i.e. `0-9` then `A-Z`.<br/>
     This allows for maximum of 1296 errors per source (category).
 
-This is similar to .NET's [Compiler Errors][compiler-errors] where each error type has it's 
+This is similar to .NET's [Compiler Errors][compiler-errors] where each error type has it's
 own Id, eg: `CS0027`.
 
 Diagnostics use the format `{GameId}.{TeamId}.{ModName}-Index`.
@@ -55,7 +55,7 @@ Diagnostics use the format `{GameId}.{TeamId}.{ModName}-Index`.
 This can be represented in code by:
 
 ```rust
-pub struct DiagnosticId 
+pub struct DiagnosticId
 {
     /// `{GameId}.{TeamId}.{ModName}`
     pub prefix: &'static str;
@@ -124,7 +124,7 @@ in any of its aspects. This includes the visuals, the performance, and even the 
 
 !!! tip "Sometimes Suggestions should be exposed as Warnings"
 
-    For example in a 32-bit game that's limited to 2GiB of RAM, having non-DDS high quality textures 
+    For example in a 32-bit game that's limited to 2GiB of RAM, having non-DDS high quality textures
     risks running out of memory.
 
     This should be reported as a warning, and if a crash is guaranteed, as an error.
@@ -174,7 +174,7 @@ This title will be constant for every diagnostic of the same type.
 
 !!! info "Basically the whole wiki page about the diagnostic."
 
-While the [summary](#summary) limited to a sentence, the Details should actually explain the 
+While the [summary](#summary) limited to a sentence, the Details should actually explain the
 diagnostic and how the user might be able to fix it in depth.
 
 ```markdown
@@ -258,13 +258,13 @@ This revert should be automated. An error dialog should then be displayed.
 
 !!! info "The Diagnostics system relies on Plugins, which use C exports."
 
-As the long term API of diagnostics is unclear, they should be initially implemented directly into 
+As the long term API of diagnostics is unclear, they should be initially implemented directly into
 the server.
 
 (We don't 100% know what APIs we need till we start writing actual diagnostics)
 
 After a while, and 3rd party mods are made, the existing used APIs could be stabilized, and the
-diagnostics should be moved out to separate plugins which would be dynamically enabled. 
+diagnostics should be moved out to separate plugins which would be dynamically enabled.
 
 !!! tip "Diagnostic Plugins, just like mods and everything else are regular packages."
 

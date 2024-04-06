@@ -255,7 +255,7 @@ There's no telling when a future Windows version may change something, as we're 
 3. Find the C# Class Name and DLL.
 4. Open the DLL in a decompiler (e.g. dnSpy).
 
-You should get some fairly readable C# code, so if the COM interface ever changes, 
+You should get some fairly readable C# code, so if the COM interface ever changes,
 you can find the new interface quickly.
 
 <!-- Links -->

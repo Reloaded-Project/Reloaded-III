@@ -13,7 +13,7 @@ The stub responsible for the decryption is likely written in x86/x64 Assembly.
 Resources:
 
 - [Technical Information about this DRM][steamstub-info].
-- [Official SteamWorks Documentation](steamstub-official-docs).
+- [Official SteamWorks Documentation][steamstub-official-docs].
 
 ### Dangers
 
@@ -109,3 +109,4 @@ This should only be done if ***DLL Injection is THE ONLY WAY*** to get the loade
 [reloaded-hooks]: https://github.com/Reloaded-Project/Reloaded.Hooks
 [steamless]: https://github.com/atom0s/Steamless
 [steamstub-info]: https://www.pcgamingwiki.com/wiki/User:Cyanic/Steam_DRM#Typical_reasons_for_using_Steam_DRM
+[steamstub-official-docs]: https://partner.steamgames.com/doc/features/drm

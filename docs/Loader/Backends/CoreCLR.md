@@ -304,7 +304,7 @@ A mod translates Reloaded-II APIs to Reloaded3 APIs. That's about it.
 [dotnet-sdk-download]: https://dotnet.microsoft.com/en-us/download/dotnet/7.0
 [features]: ../../Server/Features.md
 [native-hosting-locate-hostfxr]: https://github.com/dotnet/runtime/blob/main/docs/design/features/native-hosting.md#locate-hostfxr
-[package-id]: ../../Server/Configurations/Package-Metadata.md#id
+[package-id]: ../../Server/Packaging/Package-Metadata.md#id
 [reloaded-ii-nethost]: https://github.com/Reloaded-Project/Reloaded-II/tree/master/source/Reloaded.Mod.Loader.Bootstrapper/nethost
 [r2-alc]: https://reloaded-project.github.io/Reloaded-II/DependencyInjection_Consumer/
 [r2r-compilation]: https://docs.microsoft.com/en-us/dotnet/core/deploying/ready-to-run

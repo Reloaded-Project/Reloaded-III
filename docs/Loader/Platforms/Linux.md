@@ -172,7 +172,7 @@ fn main() {
     while buf[0] != b'\n' {
         xterm_file.read_exact(&mut buf).unwrap();
     }
- 
+
     // Redirect standard output and error to the pseudo terminal
     let stdout_fd = io::stdout().as_raw_fd();
     let stderr_fd = io::stderr().as_raw_fd();

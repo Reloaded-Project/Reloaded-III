@@ -2,20 +2,32 @@
 
 !!! info "Describes items common in all Reloaded3 packages"
 
-Inside each package folder is a file named `Package.toml`; which stores the metadata of each package.
+Inside each package folder is a file named `package.toml`; which stores the metadata of each package.
 
-| Type             | Name                             | Description                                                           |
-| ---------------- | -------------------------------- | --------------------------------------------------------------------- |
-| string           | [Id](#id)                        | A name that uniquely identifies the package.                          |
-| string           | Name                             | Human friendly name of the package.                                   |
-| string           | Author                           | Main author(s) of the package. Separate multiple authors with commas. |
-| string           | Summary                          | Short summary of the package. Max 2 sentences.                        |
-| SemVer           | [Version](#version)              | Semantic versioning version of the package.                           |
-| string[]         | [Tags](#tags)                    | Used to make searching easier within mod managers.                    |
-| UpdateData       | [UpdateData](#update-data)       | Stores package specific update information.                           |
-| DependencyInfo[] | [Dependencies](#dependency-info) | Stores information about this package's dependencies.                 |
-| string           | SourceUrl                        | Link to source code (if applicable).                                  |
-| string           | ProjectUrl                       | Link to website to learn more about the project.                      |
+| Type             | Name                             | Description                                                              |
+| ---------------- | -------------------------------- | ------------------------------------------------------------------------ |
+| string           | [Id](#id)                        | A name that uniquely identifies the package.                             |
+| string           | Name                             | Human friendly name of the package.                                      |
+| string           | Author                           | Main author of the package. (Individual or Team Name)                    |
+| string           | Summary                          | Short summary of the package. Max 2 sentences.                           |
+| string           | [DocsFile](#docsfile)            | [Optional] Entry point for this package documentation.                   |
+| SemVer           | [Version](#version)              | Semantic versioning version of the package.                              |
+| string[]         | [Tags](#tags)                    | Used to make searching easier within mod managers.                       |
+| Credit[]         | [Credits](#credits)              | [Optional] Stores information about who contributed what to the project. |
+| string?          | SourceUrl                        | [Optional] Link to source code (if applicable).                          |
+| string?          | ProjectUrl                       | [Optional] Link to website to learn more about the project.              |
+| UpdateData       | [UpdateData](#update-data)       | Stores package specific update information.                              |
+| DependencyInfo[] | [Dependencies](#dependency-info) | Stores information about this package's dependencies.                    |
+| DateTime         | [Published](#published)          | The time when this package was packed.                                   |
+
+## Implicit Fields
+
+Some items are stored as separate files:
+
+- [license][license]: License file, located in `package/license.md`.
+- [changelog][changelog]: Changelog file(s), located in `package/changelog/*.md`.
+- [description][description]: Description file, located in `package/description.md`.
+- [config][config]: Configuration schema for the package, located in `package/config.toml`.
 
 ## Package Types
 
@@ -34,15 +46,56 @@ Id = "reloaded3.gamesupport.p5rpc.s56"
 Name = "Persona 5 Royal Support"
 Summary = "Provides Essential Functionality for Persona 5 Royal."
 Author = "Sewer56"
+DocsFile = "index.html"
 Version = "1.0.1"
 Tags = ["Utility", "Library"]
 SourceUrl = "https://github.com/Sewer56/p5rpc.modloader"
 ProjectUrl = "https://sewer56.dev/p5rpc.modloader/"
+Published = 2023-06-08T12:34:56Z
+
+# Mod Fields
+Icon = "icon.jxl"
+IsLibrary = false
+SupportedGames = ["game1", "game2"]
+
+[[Credits]]
+Name = "Sewer56"
+Role = "Main Developer"
+Url = "https://github.com/Sewer56"
+
+[[Credits]]
+Name = "AnimatedSwine37"
+Role = "BF Emulator & Maintenance"
+Url = "https://github.com/AnimatedSwine37"
+
+[[Credits]]
+Name = "LTSophia"
+Role = "PAK Merging"
+Url = "https://github.com/LTSophia"
+
+[[Credits]]
+Name = "SecreC"
+Role = "SPD Merging Support"
+Url = "https://github.com/Secre-C"
+
+[[Credits]]
+Name = "berkayfeci"
+Role = "GamePass EXE Detection"
+Url = "https://github.com/berkayfeci"
+
+[[Credits]]
+Name = "SirGamers"
+Role = "Adding Missing Features to Documentation"
+Url = "https://github.com/SirGamers"
+
+[[Credits]]
+Name = "Atlus"
+Role = "Original Game Developer"
 
 [UpdateData]
 [UpdateData.GameBanana]
 ItemType = "Mod"
-ItemId = 123456
+ItemId = 408376
 
 [UpdateData.GitHub]
 UserName = "Sewer56"
@@ -54,18 +107,18 @@ Id = 789012
 
 [UpdateData.NuGet]
 DefaultRepositoryUrls = [
-    "http://packages.sewer56.moe:5000/v3/index.json"
+   "http://packages.sewer56.moe:5000/v3/index.json"
 ]
 AllowUpdateFromAnyRepository = false
 
 [[Dependencies]]
-Id = "reloaded3.utility.reloadedhooksrs.s56"
+Id = "reloaded3.utility.reloadedhooks.s56"
 Name = "Reloaded3 Hooking Library"
 Author = "Sewer56"
 [Dependencies.UpdateData]
 [Dependencies.UpdateData.GitHub]
 UserName = "Reloaded-Project"
-RepositoryName = "reloaded3.utility.reloadedhooksrs"
+RepositoryName = "reloaded3.utility.reloadedhooks"
 
 [[Dependencies]]
 Id = "reloaded3.utility.sigscan.s56"
@@ -84,6 +137,21 @@ Author = "Sewer56"
 [Dependencies.UpdateData.GitHub]
 UserName = "Sewer56"
 RepositoryName = "reloaded3.api.crimiddleware.filesystemv2.modloader"
+
+# Mod Structs
+[[Gallery]]
+FileName = "screenshot1.jxl"
+Caption = "Gameplay screenshot 1"
+
+[[Gallery]]
+FileName = "screenshot2.jxl"
+Caption = "Gameplay screenshot 2"
+
+[Targets]
+[Targets."win-x64"]
+any = "reloaded3.gamesupport.p5rpc.dll"
+x64-v2 = "reloaded3.gamesupport.p5rpc.v2.dll"
+x64-v3 = "reloaded3.gamesupport.p5rpc.v3.dll"
 ```
 
 ## Id
@@ -134,6 +202,12 @@ Server can choose whether to show non game-specific mods (`reloaded3` id) on a s
 | ---------- | ------------------------------- | ----------------------------------------------------- |
 | diagnostic | For [diagnostics][diagnostics]. | `reloaded3server.diagnostic.general.textureoptimizer` |
 
+## DocsFile
+
+!!! info "Stores the documentation entry point in `package/docs` folder."
+
+See [Docs][docs] for more details.
+
 ## Version
 
 !!! info "Reloaded Packages use [Semantic Versioning][semantic-versioning]."
@@ -165,6 +239,22 @@ The default set of suggested tags include:
 | Sound Effect | Sound effects.                |
 | Music        | Music to enjoy.               |
 | Texture      | Texture overhauls.            |
+| NSFW         | Not safe for work.            |
+
+## Credits
+
+!!! info "Stores information about who contributed what to the project."
+
+    This field may also include credits to the original devs for ported content,
+    and/or any other relevant information.
+
+Each credit uses a `Credit` structure with following fields:
+
+| Type   | Field | Name Description                                    |
+| ------ | ----- | --------------------------------------------------- |
+| string | Name  | Name of the person or group.                        |
+| string | Role  | What the person or group did.                       |
+| string | Url   | [Optional] Link to the person's website or profile. |
 
 ## Update Data
 
@@ -244,14 +334,29 @@ The field `AssetFileName` is provided for backwards compatibility only. e.g. `*u
 
 All of these fields are copied from the dependency packages.
 
+This struct contains only the info needed to locate the dependency, and troubleshoot if a dependency is missing.
+
+## Published
+
+!!! info "This is the time in which the package containing this mod was compressed."
+
+!!! warning "This value is autogenerated when packing file."
+
+This is used to show when the package was last updated in mod managers and other visual applications.
+
 <!-- Links -->
 [app-metadata-id]: ../../Server/Configurations/App-Metadata.md#id
 [backend]: ../../Loader/Backends/About.md
+[changelog]: ./About.md#changelog
+[config]: ./About.md#config
 [community-repository]: ../../Services/Community-Repository.md
 [coreclr-backend]: ../../Loader/Backends/CoreCLR.md
+[description]: ./About.md#description
+[docs]: ./About.md#docs
 [diagnostics]: ../Diagnostics.md
 [gamebanana]: https://gamebanana.com
 [game-support]: ../../Loader/Core-Architecture.md#game-support-layer-2
+[license]: ./About.md#license
 [middleware-api-hooks]: ../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
 [mod-configurations]: ./Mod-Configurations.md
 [mod-metadata]: ../Configurations/Mod-Metadata.md

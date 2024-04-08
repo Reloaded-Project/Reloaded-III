@@ -36,9 +36,9 @@ We use [microarchitecture levels][microarchitecture-levels] to define the suppor
 
 | Type   | Name   | Description                     |
 | ------ | ------ | ------------------------------- |
-| string | x86-v2 | Path to DLL targeting x86-64-v2 |
-| string | x86-v3 | Path to DLL targeting x86-64-v3 |
-| string | x86-v4 | Path to DLL targeting x86-64-v4 |
+| string | x64-v2 | Path to DLL targeting x86-64-v2 |
+| string | x64-v3 | Path to DLL targeting x86-64-v3 |
+| string | x64-v4 | Path to DLL targeting x86-64-v4 |
 
 Compilers based on LLVM (Clang, Rust etc.) can directly target these.
 
@@ -83,10 +83,10 @@ From there, we have to filter out features which are not available in 32-bit mod
 
 Therefore we can derive the following:
 
-| Type   | Name    | Features                                                                       |
-| ------ | ------- | ------------------------------------------------------------------------------ |
-| string | i686-v2 | `fxsr` `lahfsahf` `popcnt` `sse` `sse2` `sse3` `sse4.1` `sse4.2` `ssse3`       |
-| string | i686-v3 | all previous + `avx` `avx2` `bmi1` `bmi2` `f16c` `fma` `lzcnt` `movbe` `xsave` |
+| Type   | Name   | Features                                                                       |
+| ------ | ------ | ------------------------------------------------------------------------------ |
+| string | x86-v2 | `fxsr` `lahfsahf` `popcnt` `sse` `sse2` `sse3` `sse4.1` `sse4.2` `ssse3`       |
+| string | x86-v3 | all previous + `avx` `avx2` `bmi1` `bmi2` `f16c` `fma` `lzcnt` `movbe` `xsave` |
 
 The microarch level `i686-v4` is redundant, because all new features in `x86-64-v4` are not
 supported in 32-bit mode.

@@ -21,7 +21,7 @@ a game as Denuvo protected.
 !!! note "Some extra optional steps"
 
     After that URL you get 4 bytes (unknown purpose) and (in all my samples) `01 00 00 00 66 66 66 2E 0F 1F 84 00 00 00 00 00`.
- 
+
     Following that is another null terminated string which contains the specific product ID. For example, in `Persona 5 Royal`, this is `P5R_9AG4H12`.
 
     Combine the two, you get `https://support.codefusion.technology/P5R_9AG4H12`.

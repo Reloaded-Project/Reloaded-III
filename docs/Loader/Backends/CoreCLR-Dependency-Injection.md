@@ -30,7 +30,7 @@ Thus both mods operate on the same instance of the `Assembly`.
     2. Backend loads `RedirectorMonitor` (Consumer).
         1. `RedirectorMonitor` specified `Redirector` in its `ModDependencies` field.
         2. Therefore Backend shares all of `Redirector`'s exports with `RedirectorMonitor`.
-     
+ 
 3. Executing Mods
     1. ***Mod Loader*** rearranges mod load order to account for mod dependencies.
     2. `Redirector` code executes. Redirector publishes `IRedirector` (from Reloaded.Mod.Interfaces.IRedirector.dll) to Backend.
@@ -119,7 +119,7 @@ void DoSomethingWithService()
 !!! info "Some Reloaded mods support real-time loading and unloading."
 
     As such, you must be careful with how you consume interfaces from other mods.
- 
+
 !!! note "You can find out if a mod is unloadable by checking that mod's config file."
 
 In order to ensure unloading of publishers can correctly happen in the runtime, Reloaded uses "Weak References" (`WeakReference<T>`).
@@ -180,7 +180,7 @@ Your `Solution Explorer` (or equivalent) should look something like this:
 
     You can only hide it from search results.
 
-To make your interfaces library more accessible, it is preferable to make it a NuGet package 
+To make your interfaces library more accessible, it is preferable to make it a NuGet package
 and publish it to NuGet.org.
 
 To do so, add and fill the following lines to your interface project's `.csproj` file (inside the first `PropertyGroup`):
@@ -293,7 +293,7 @@ You can however, still manually (if desired) dispose/replace your dependency ins
 ```csharp
 void Unload()
 {
-    _injector.RemoveService<IScanner>(); 
+    _injector.RemoveService<IScanner>();
 }
 ```
 

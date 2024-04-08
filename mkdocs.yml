@@ -84,8 +84,8 @@ nav:
   - Server (Manager Backend):
     - Diagnostics: Server/Diagnostics.md
     - Packaging:
-        - About: Server/Packages/About.md
-        - Package Metadata: Server/Packages/Package-Metadata.md
+        - About: Server/Packaging/About.md
+        - Package Metadata: Server/Packaging/Package-Metadata.md
     - Configurations:
         - Mod Metadata: Server/Configurations/Mod-Metadata.md
         - App Metadata: Server/Configurations/App-Metadata.md

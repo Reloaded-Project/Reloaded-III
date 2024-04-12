@@ -77,7 +77,7 @@ This is a multi-step process which involves:
 
 - Finding `AppxManifest.xml`, which may be in EXE folder or in some folder above.
 - Parsing `AppxManifest.xml` to extract `Application.Id` and `PackageFamilyName`.
-    - `PackageFamilyName` is generally derived as `{Identity.Name}-{hash(Identity.Publisher)}`.
+    - `PackageFamilyName` is generally derived as `{Identity.Name}_{hash(Identity.Publisher)}`.
     - Consider using [package-family-name][package-family-name] library directly.
 - Finding all unreadable files (just `.exe` files currently).
 - Launching a custom EXE inside the AppX container which does a copy onto itself (this decrypts).

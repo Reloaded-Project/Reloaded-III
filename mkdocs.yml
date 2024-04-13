@@ -53,70 +53,63 @@ theme:
     - content.action.edit
 
 nav:
-  - Home: index.md
-  - Mod Loader:
-    - Core Architecture: Loader/Core-Architecture.md
-    - Platform Support:
-        - About: Loader/Platforms/About.md
-        - Windows: Loader/Platforms/Windows.md
-        - Linux: Loader/Platforms/Linux.md
-        - OSX: Loader/Platforms/OSX.md
-        - Other: Loader/Platforms/Other.md
-    - Copy Protection:
-        - About: Loader/Copy-Protection/About.md
-        - Windows - Denuvo: Loader/Copy-Protection/Windows-Denuvo.md
-        - Windows - MS Store: Loader/Copy-Protection/Windows-MSStore.md
-        - Windows - SafeDisc: Loader/Copy-Protection/Windows-SafeDisc.md
-        - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
-    - Backends:
-      - About: Loader/Backends/About.md
-      - Native: Loader/Backends/Native.md
-      - .NET (CoreCLR):
-        - About: Loader/Backends/CoreCLR.md
-        - Dependency Injection: Loader/Backends/CoreCLR-Dependency-Injection.md
-    - Dependency Injection: Loader/Dependency-Injection.md
-    - Loader Deployment: Loader/Deployment.md
-    - Breaking Changes: Loader/Breaking-Changes.md
-
-  - Server (Manager Backend):
-    - Packaging:
-      - About: Server/Packaging/About.md
-      - Package Metadata: Server/Packaging/Package-Metadata.md
-    - Configurations:
-      - Mod Metadata: Server/Configurations/Mod-Metadata.md
-      - Mod Configuration: Server/Configurations/Mod-Configurations.md
-      - App Metadata: Server/Configurations/App-Metadata.md
-    - Diagnostics: Server/Diagnostics.md
-    - Load Ordering: Server/Load-Ordering.md
-    - Mod Publishing: Server/Mod-Publishing.md
-
-  - Launcher (Manager Frontend):
-    - Best Practices: Launcher/Best Practices.md
-
-  - Mods:
-    - Essentials:
-      - Virtual FileSystem: 
-        - About: Mods/Essentials/Virtual-FileSystem/About.md
-    - Guidelines:
-      - Game Support Mods: Mods/Guidelines/Game-Support.md
-      - Middleware Mods: Mods/Guidelines/Middleware.md
-
-  - Online Services:
-    - Community Repository: Services/Community-Repository.md
-
-  - FAQ: FAQ.md
-
-  - Research & Explanations:
-    - Bootloaders:
-      - About: Research/Bootloaders/About.md
-      - Windows:
-        - Windows - DLL Hijack: Research/Bootloaders/Windows-DllHijack.md
-        - Windows - Inject Into Suspended Process: Research/Bootloaders/Windows-InjectIntoSuspended.md
-      - Linux:
-        - Linux - Preload: Research/Bootloaders/Linux-Preload.md
-      - macOS:
-        - OSX - Preload: Research/Bootloaders/OSX-Preload.md
-
-  - Wiki:
-    - Contributing Locally: Contributing-Locally.md
-    - Contributing Online: Contributing-Online.md
+ - Home: index.md
+ - Mod Loader:
+   - Backends:
+     - About: Loader/Backends/About.md
+     - Native: Loader/Backends/Native.md
+     - .NET (CoreCLR):
+       - About: Loader/Backends/CoreCLR.md
+       - Dependency Injection: Loader/Backends/CoreCLR-Dependency-Injection.md
+   - Breaking Changes: Loader/Breaking-Changes.md
+   - Copy Protection:
+       - About: Loader/Copy-Protection/About.md
+       - Windows - Denuvo: Loader/Copy-Protection/Windows-Denuvo.md
+       - Windows - MS Store: Loader/Copy-Protection/Windows-MSStore.md
+       - Windows - SafeDisc: Loader/Copy-Protection/Windows-SafeDisc.md
+       - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
+   - Core Architecture: Loader/Core-Architecture.md
+   - Dependency Injection: Loader/Dependency-Injection.md
+   - Loader Deployment: Loader/Deployment.md
+   - Platform Support:
+       - About: Loader/Platforms/About.md
+       - Linux: Loader/Platforms/Linux.md
+       - OSX: Loader/Platforms/OSX.md
+       - Other: Loader/Platforms/Other.md
+       - Windows: Loader/Platforms/Windows.md
+ - Server (Manager Backend):
+   - Configurations:
+     - App Metadata: Server/Configurations/App-Metadata.md
+     - Mod Configuration: Server/Configurations/Mod-Configurations.md
+     - Mod Metadata: Server/Configurations/Mod-Metadata.md
+   - Diagnostics: Server/Diagnostics.md
+   - Load Ordering: Server/Load-Ordering.md
+   - Mod Publishing: Server/Mod-Publishing.md
+   - Packaging:
+     - About: Server/Packaging/About.md
+     - Package Metadata: Server/Packaging/Package-Metadata.md
+ - Launcher (Manager Frontend):
+   - Best Practices: Launcher/Best Practices.md
+ - Mods:
+   - Essentials:
+     - Virtual FileSystem: 
+       - About: Mods/Essentials/Virtual-FileSystem/About.md
+   - Guidelines:
+     - Game Support Mods: Mods/Guidelines/Game-Support.md
+     - Middleware Mods: Mods/Guidelines/Middleware.md
+ - Online Services:
+   - Community Repository: Services/Community-Repository.md
+ - FAQ: FAQ.md
+ - Research & Explanations:
+   - Bootloaders:
+     - About: Research/Bootloaders/About.md
+     - Linux:
+       - Linux - Preload: Research/Bootloaders/Linux-Preload.md
+     - macOS:
+       - OSX - Preload: Research/Bootloaders/OSX-Preload.md
+     - Windows:
+       - Windows - DLL Hijack: Research/Bootloaders/Windows-DllHijack.md
+       - Windows - Inject Into Suspended Process: Research/Bootloaders/Windows-InjectIntoSuspended.md
+ - Wiki:
+   - Contributing Locally: Contributing-Locally.md
+   - Contributing Online: Contributing-Online.md

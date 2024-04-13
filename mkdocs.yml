@@ -55,6 +55,7 @@ theme:
 nav:
  - Home: index.md
  - Mod Loader:
+   - About (Overview): Loader/About.md
    - Backends:
      - About: Loader/Backends/About.md
      - Native: Loader/Backends/Native.md
@@ -70,6 +71,7 @@ nav:
        - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
    - Core Architecture: Loader/Core-Architecture.md
    - Dependency Injection: Loader/Dependency-Injection.md
+   - Loader API: Loader/Loader-API.md
    - Loader Deployment: Loader/Deployment.md
    - Platform Support:
        - About: Loader/Platforms/About.md
@@ -89,10 +91,10 @@ nav:
      - About: Server/Packaging/About.md
      - Package Metadata: Server/Packaging/Package-Metadata.md
  - Launcher (Manager Frontend):
-   - Best Practices: Launcher/Best Practices.md
+   - Best Practices: Launcher/Best-Practices.md
  - Mods:
    - Essentials:
-     - Virtual FileSystem: 
+     - Virtual FileSystem:
        - About: Mods/Essentials/Virtual-FileSystem/About.md
    - Guidelines:
      - Game Support Mods: Mods/Guidelines/Game-Support.md

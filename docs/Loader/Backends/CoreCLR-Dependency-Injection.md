@@ -30,7 +30,7 @@ Thus both mods operate on the same instance of the `Assembly`.
     2. Backend loads `RedirectorMonitor` (Consumer).
         1. `RedirectorMonitor` specified `Redirector` in its `ModDependencies` field.
         2. Therefore Backend shares all of `Redirector`'s exports with `RedirectorMonitor`.
- 
+
 3. Executing Mods
     1. ***Mod Loader*** rearranges mod load order to account for mod dependencies.
     2. `Redirector` code executes. Redirector publishes `IRedirector` (from Reloaded.Mod.Interfaces.IRedirector.dll) to Backend.

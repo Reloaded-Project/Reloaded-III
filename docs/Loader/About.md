@@ -2,7 +2,7 @@
 
 !!! info "These sections cover all information related to the design of the mod loader."
 
-Specifically, these sections focus on everything related to the actual 'mod loader' lives inside of 
+Specifically, these sections focus on everything related to the actual 'mod loader' lives inside of
 the game process and powers your mods.
 
 From getting it running, to how mods are booted up.
@@ -26,11 +26,18 @@ Other sections:
 | [Loader Deployment][loader-deployment] | How the actual loader DLL is deployed to game folder.          |
 | [Breaking Changes][breaking-changes]   | Things Reloaded3 fundamentally does different to Reloaded-II.  |
 
+Important Reads:
+
+| Section                        | Description                                                                      |
+| ------------------------------ | -------------------------------------------------------------------------------- |
+| [Load Ordering][load-ordering] | Rules used for deprecation & automatic reordering of mods based on dependencies. |
+
 <!-- Links -->
 [backends]: ./Backends/About.md
 [breaking-changes]: ./Breaking-Changes.md
 [copy-protection]: ./Copy-Protection/About.md
 [core-architecture]: ./Core-Architecture.md
 [loader-api]: ./Loader-API/About.md
+[load-ordering]: ../Server/Load-Ordering.md
 [loader-deployment]: ./Deployment.md
 [platform-support]: ./Platforms/About.md

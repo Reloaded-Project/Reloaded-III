@@ -1,8 +1,8 @@
 ﻿# Mod Metadata
 
-!!! warning "Work in Progress"
+!!! info "The format of ([package.toml][package-toml]) used to describe every mod package."
 
-Mod Metadata extends from standard package metadata ([package.toml][package-toml]).
+Mod Metadata extends from standard ([package.toml][package-toml]).
 
 | Type                             | Name                               | Description                                                   |
 | -------------------------------- | ---------------------------------- | ------------------------------------------------------------- |

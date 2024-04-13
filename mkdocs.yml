@@ -70,7 +70,7 @@ nav:
       - Windows - SafeDisc: Loader/Copy-Protection/Windows-SafeDisc.md
       - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
     - Core Architecture: Loader/Core-Architecture.md
-    - Loader API: 
+    - Loader API:
       - About: Loader/Loader-API/About.md
     - Platform Support:
       - About: Loader/Platforms/About.md
@@ -79,16 +79,18 @@ nav:
       - Other: Loader/Platforms/Other.md
       - Windows: Loader/Platforms/Windows.md
   - Server (Manager Backend):
+    - About (Overview): Server/About.md
     - Configurations:
+      - About: Server/Configurations/About.md
       - App Metadata: Server/Configurations/App-Metadata.md
       - Mod Configuration: Server/Configurations/Mod-Configurations.md
       - Mod Metadata: Server/Configurations/Mod-Metadata.md
     - Diagnostics: Server/Diagnostics.md
     - Load Ordering: Server/Load-Ordering.md
-    - Mod Publishing: Server/Mod-Publishing.md
     - Packaging:
       - About: Server/Packaging/About.md
       - Package Metadata: Server/Packaging/Package-Metadata.md
+      - Publishing Packages: Server/Packaging/Publishing-Packages.md
   - Launcher (Manager Frontend):
     - Best Practices: Launcher/Best-Practices.md
   - Mods:

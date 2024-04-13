@@ -66,50 +66,56 @@ nav:
         - About: Loader/Copy-Protection/About.md
         - Windows - Denuvo: Loader/Copy-Protection/Windows-Denuvo.md
         - Windows - MS Store: Loader/Copy-Protection/Windows-MSStore.md
+        - Windows - SafeDisc: Loader/Copy-Protection/Windows-SafeDisc.md
         - Windows - Steam: Loader/Copy-Protection/Windows-Steam.md
     - Backends:
-        - About: Loader/Backends/About.md
-        - Native: Loader/Backends/Native.md
-        - .NET (CoreCLR):
-          - About: Loader/Backends/CoreCLR.md
-          - Dependency Injection: Loader/Backends/CoreCLR-Dependency-Injection.md
-    - Mod Configuration: Loader/Mod-Configurations.md
-    - Adding Game Support: Loader/Game-Support.md
-    - Handling Middleware: Loader/Middleware.md
+      - About: Loader/Backends/About.md
+      - Native: Loader/Backends/Native.md
+      - .NET (CoreCLR):
+        - About: Loader/Backends/CoreCLR.md
+        - Dependency Injection: Loader/Backends/CoreCLR-Dependency-Injection.md
     - Dependency Injection: Loader/Dependency-Injection.md
-    - Mod Publishing: Loader/Build-System.md
     - Loader Deployment: Loader/Deployment.md
     - Breaking Changes: Loader/Breaking-Changes.md
 
   - Server (Manager Backend):
-    - Diagnostics: Server/Diagnostics.md
     - Packaging:
-        - About: Server/Packaging/About.md
-        - Package Metadata: Server/Packaging/Package-Metadata.md
+      - About: Server/Packaging/About.md
+      - Package Metadata: Server/Packaging/Package-Metadata.md
     - Configurations:
-        - Mod Metadata: Server/Configurations/Mod-Metadata.md
-        - App Metadata: Server/Configurations/App-Metadata.md
+      - Mod Metadata: Server/Configurations/Mod-Metadata.md
+      - Mod Configuration: Server/Configurations/Mod-Configurations.md
+      - App Metadata: Server/Configurations/App-Metadata.md
+    - Diagnostics: Server/Diagnostics.md
     - Load Ordering: Server/Load-Ordering.md
+    - Mod Publishing: Server/Mod-Publishing.md
+
+  - Launcher (Manager Frontend):
+    - Best Practices: Launcher/Best Practices.md
+
+  - Mods:
+    - Essentials:
+      - Virtual FileSystem: 
+        - About: Mods/Essentials/Virtual-FileSystem/About.md
+    - Guidelines:
+      - Game Support Mods: Mods/Guidelines/Game-Support.md
+      - Middleware Mods: Mods/Guidelines/Middleware.md
 
   - Online Services:
-      - Community Repository: Services/Community-Repository.md
-
-  - Backwards Compatibility:
-      - About: BackCompat/00_About.md
-      - Reloaded II: BackCompat/Reloaded-II.md
-      - HedgeModManager: BackCompat/HedgeModManager.md
+    - Community Repository: Services/Community-Repository.md
 
   - FAQ: FAQ.md
-  - Best Practices: Best Practices.md
 
   - Research & Explanations:
     - Bootloaders:
-      - About: Loader/Bootloaders/About.md
+      - About: Research/Bootloaders/About.md
       - Windows:
-        - Windows - DLL Hijack: Loader/Bootloaders/Windows-DllHijack.md
-        - Windows - Inject Into Suspended Process: Loader/Bootloaders/Windows-InjectIntoSuspended.md
+        - Windows - DLL Hijack: Research/Bootloaders/Windows-DllHijack.md
+        - Windows - Inject Into Suspended Process: Research/Bootloaders/Windows-InjectIntoSuspended.md
       - Linux:
-        - Linux - Preload: Loader/Bootloaders/Linux-Preload.md
+        - Linux - Preload: Research/Bootloaders/Linux-Preload.md
+      - macOS:
+        - OSX - Preload: Research/Bootloaders/OSX-Preload.md
 
   - Wiki:
     - Contributing Locally: Contributing-Locally.md

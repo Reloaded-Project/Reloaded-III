@@ -22,6 +22,7 @@ Some use cases include:
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
 - Auto assign Game IDs in [Application Configurations][app-metadata].
 - Updating [Mod Configurations][mod-metadata] with correct [App ID][app-metadata-id]s marking which games an app supports.
+- Images for in-app game icons, banners, etc.
 
 ## Schema
 
@@ -387,16 +388,34 @@ host the repository.
 
 The repository is set up in such a way that any HTTP server with downloads can host it.
 
+### Bandwidth Numbers
+
+!!! info "GitHub pages sites are limited to [100GB of bandwidth per month][pages-limits]."
+
+Expected sizes:
+
+- `30KB`: Index.msgpack.zst (~100 games)
+- `1KB`: App.msgpack.zst
+- `300KB`: BannerH.jxl
+- `300KB`: BannerV.jxl
+
+Approximately 500-700KB per user.
+This makes for 142857 queries per month, with each user having 1 known game.
+Or ~40000 users/month with 3 games each.
+
+Should fit within the soft limit, outside of risks with new game releases.
+
 <!-- Links -->
 [app-metadata]: ../Server/Configurations/App-Metadata.md
 [app-metadata-id]: ../Server/Configurations/App-Metadata.md#id
 [appx-manifest-identity]: https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity
+[diagnostics]: ../Server/Diagnostics.md#file-based-diagnostics
 [ea-desktop]: https://www.ea.com/en-gb/news/ea-app
 [ea-desktop-docs]: https://github.com/erri120/GameFinder/wiki/EA-Desktop
 [gamefinder]: https://github.com/erri120/GameFinder
 [github-pages]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
 [gog-db]: https://www.gogdb.org/
 [mod-metadata]: ../Server/Configurations/Mod-Metadata.md
+[pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
 [steamdb]: https://steamdb.info/
-[diagnostics]: ../Server/Diagnostics.md#file-based-diagnostics

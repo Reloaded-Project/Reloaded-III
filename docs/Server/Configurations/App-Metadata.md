@@ -6,9 +6,9 @@
 
     Describes the syntax of the minimal config file used to store application data.
 
-| Type   | Name           | Description                              |
-|--------|----------------|------------------------------------------|
-| string | [Id](#id)      | A name that uniquely identifies the app. |
+| Type    | Name      | Description                                                       |
+| ------- | --------- | ----------------------------------------------------------------- |
+| string? | [Id](#id) | A name that uniquely identifies the app. Should be user friendly. |
 
 ## Id
 

@@ -160,6 +160,8 @@ when the user is in a very specific situation, are equal in severity.
   <figcaption>A mockup of 'details view'.</figcaption>
 </figure>
 
+Below `Details` (Title and Details) are written as a single Markdown file.
+
 ### Title
 
 !!! info "Page Title for the Diagnostic"
@@ -183,8 +185,6 @@ This will cause a runtime exception when loading the game.
 
 You can fix this issue by not allowing {ModA} to overwrite {FileA}.
 ```
-
-The `Details` are written in Markdown.
 
 ## Fixes Rules
 
@@ -347,8 +347,41 @@ Use this information as the 'key' to your cache.
 
 TODO: How we implement this is currently undecided.
 
-<!-- Forked from: https://github.com/Nexus-Mods/NexusMods.App/blob/main/docs/development-guidelines/Diagnostics.md -->
+## File Based Diagnostics
 
+!!! info "[Mods][mods] and some other packages may emit diagnostics based on files contained in the game folder."
+
+!!! tip "These diagnostics are primarily used to detect external changes."
+
+    Unclean game state. Old DLL mods incompatible with Reloaded, Steam API Emulator DLLs, etc.
+
+These diagnostics are handled by the server directly, and are stored as part of config files in the
+following way.
+
+| Type             | Item                        | Description                                            |
+| ---------------- | --------------------------- | ------------------------------------------------------ |
+| string           | [Id](#id)                   | Unique identifier for the diagnostic.                  |
+| string?          | [Summary](#summary)         | A short one sentence description of diagnostic.        |
+| string?          | [Body](#diagnostic-details) | Path to file with full diagnostic text.                |
+| Severity         | [Severity](#severity)       | How critical this diagnostic is. (Info/Warning/Error). |
+| DiagnosticFile[] | [Items](#diagnosticfile)    | Files that trigger this diagnostic.                    |
+
+#### DiagnosticFile
+
+| Type    | Item         | Description                                                                              |
+| ------- | ------------ | ---------------------------------------------------------------------------------------- |
+| string? | Hash         | [Optional] xxHash3_128 expressed as a string.                                            |
+| string  | RelativePath | Path of the file relative to the folder in which the main binary (EXE/ELF) is contained. |
+
+If hash is present, diagnostic will only ever be emitted if the hash matches.
+
+
+#### File Based Diagnostic Fixes
+
+!!! warning "TODO: Implement a way to fix file based diagnostics"
+
+<!-- Initially forked from: https://github.com/Nexus-Mods/NexusMods.App/blob/main/docs/development-guidelines/Diagnostics.md -->
 <!-- Links -->
 [compiler-errors]: https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0027
 [diagnostic-id]: https://github.com/Nexus-Mods/NexusMods.App/blob/main/src/Abstractions/NexusMods.Abstractions.Games.Diagnostics/DiagnosticId.cs
+[mods]: ./Configurations/Mod-Metadata.md

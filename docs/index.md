@@ -45,14 +45,14 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 {% import "Templates/Card.html" as macros %} <!-- Jinja2 Macro  -->
 <div class="pillarwrapper">
 	{{ macros.card(
-		"Svg/linux.svg", 
-		"Portable", 
+		"Svg/linux.svg",
+		"Portable",
 		"Supports a variety of platforms.<br/>Native x86, x64, Switch ARM, .NET 7+ etc."
 	)}}
 
 	{{ macros.card(
-		"Svg/settings.svg", 
-		"Modular & Extensible", 
+		"Svg/settings.svg",
+		"Modular & Extensible",
 		"Minimal core. Does nothing unnecessary.<br/>
 		All game modifications performed via mods."
 	)}}
@@ -61,15 +61,15 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 <!-- Rust/C# & Perf -->
 <div class="pillarwrapper">
 	{{ macros.card(
-		"Svg/language-csharp.svg", 
-		"Write Memory Safe Mods", 
+		"Svg/language-csharp.svg",
+		"Write Memory Safe Mods",
 		"Fast development time with easy to learn C#.<br/>
         Or Rust for wider platform support."
 	)}}
 
 	{{ macros.card(
-		"Svg/speedometer.svg", 
-		"High Performance", 
+		"Svg/speedometer.svg",
+		"High Performance",
 		"Lightweight and fast as fuck.<br/>
 		Optimized for <b>your CPU</b> and with PGO."
 	)}}
@@ -78,15 +78,15 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 <!-- Logging & Dependencies -->
 <div class="pillarwrapper">
 	{{ macros.card(
-		"Svg/book-heart-outline.svg", 
-		"Integrated Logging", 
+		"Svg/book-heart-outline.svg",
+		"Integrated Logging",
 		"Logs to console and file in real time.<br/>
 		And perhaps with a universal mod, to the screen too!"
 	)}}
 
 	{{ macros.card(
-		"Svg/package-dependencies-16.svg", 
-		"Dependency System", 
+		"Svg/package-dependencies-16.svg",
+		"Dependency System",
 		"Mods can set requirements on other mods.<br/>
 		The loader will ensure they're loaded before your mod."
 	)}}
@@ -95,15 +95,15 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 <!-- Early Hook & Hot Reload -->
 <div class="pillarwrapper">
 	{{ macros.card(
-		"Svg/run-fast.svg", 
-		"Early Hook", 
+		"Svg/run-fast.svg",
+		"Early Hook",
 		"Your code executes before the game<br/>
 		runs a single line of code."
 	)}}
 
 	{{ macros.card(
-		"Svg/fire.svg", 
-		"Hot Reload", 
+		"Svg/fire.svg",
+		"Hot Reload",
 		"Load & Unload supported mods at runtime.<br/>
 		Or even remotely, APIs available!"
 	)}}
@@ -112,15 +112,15 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 <!-- Debugging & Code Safety -->
 <div class="pillarwrapper">
 	{{ macros.card(
-		"Svg/debug-step-over.svg", 
-		"Debugging Support", 
+		"Svg/debug-step-over.svg",
+		"Debugging Support",
 		"Debug &amp; Profile your code in Major IDEs<br/>
 		Including Edit &amp; Continue Support<sup id=\"fnref:1\"><a class=\"footnote-ref\" href=\"#fn:1\">1</a></sup>."
 	)}}
 
 	{{ macros.card(
-		"Svg/security.svg", 
-		"Library Conflict Safety", 
+		"Svg/security.svg",
+		"Library Conflict Safety",
 		"Mods are stored and executed in isolation.<br/>
 		Use dynamically linked 3rd party libraries without worrying."
 	)}}
@@ -129,15 +129,15 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 <!-- Any Language, Any Game -->
 <div class="pillarwrapper">
 	{{ macros.card(
-		"Svg/code-tags.svg", 
-		"Use Any Language", 
+		"Svg/code-tags.svg",
+		"Use Any Language",
 		"Can your language interop with C?<br/>
 		Congrats, you're 100% supported."
 	)}}
 
 	{{ macros.card(
-		"Svg/gamepad-variant-outline.svg", 
-		"Add Mod Support Fast", 
+		"Svg/gamepad-variant-outline.svg",
+		"Add Mod Support Fast",
 		"New game? Don't make a loader from scratch.<br/>
 		Your game engine might already have modules ready to go."
 	)}}
@@ -146,8 +146,8 @@ Don't waste time making a whole infrastructure for your game; *go mod stuff inst
 <!-- Any Language, Any Game -->
 <div class="pillarwrapper">
     {{ macros.card(
-		"Svg/book-open.svg", 
-		"Rich Documentation", 
+		"Svg/book-open.svg",
+		"Rich Documentation",
 		"Writing mods should be easy!<br/>
 		Think <a href=\"https://reloaded-project.github.io/Reloaded-II/DevelopmentEnvironmentSetup/\">Reloaded II Docs</a> but for all languages."
 	)}}
@@ -164,15 +164,15 @@ The goal is to create a world where modders can focus on actually *modding* the 
 <!-- Clean Install & 1-Click -->
 <div class="pillarwrapper">
     {{ macros.card(
-		"Svg/floppy.svg", 
-		"Clean Installation", 
+		"Svg/floppy.svg",
+		"Clean Installation",
 		"Doesn't modify game's existing files.<br/>
 		Self contained. Remove R3 folder and it's gone."
 	)}}
 
 	{{ macros.card(
-		"Svg/desktop-download-24.svg", 
-		"1-Click Downloads", 
+		"Svg/desktop-download-24.svg",
+		"1-Click Downloads",
 		"Supports 1-click downloads on supported websites.<br/>
         With backwards compatibility for games' legacy protocols."
 	)}}
@@ -181,15 +181,15 @@ The goal is to create a world where modders can focus on actually *modding* the 
 <!-- Dependency Resolution & Configuration -->
 <div class="pillarwrapper">
     {{ macros.card(
-		"Svg/package-dependencies-16.svg", 
-		"Dependency Resolution", 
+		"Svg/package-dependencies-16.svg",
+		"Dependency Resolution",
 		"If a mod requires another mod to function,<br/>
 		it will be automatically downloaded."
 	)}}
 
 	{{ macros.card(
-		"Svg/update.svg", 
-		"Automatic Updates", 
+		"Svg/update.svg",
+		"Automatic Updates",
 		"For everything: Launcher, Loader &amp; Mods.<br/>
 		Includes super cool <a href=\"https://reloaded-project.github.io/Reloaded-II/CreatingRelease/#add-delta-update\">Delta Update</a> technology."
 	)}}
@@ -198,15 +198,15 @@ The goal is to create a world where modders can focus on actually *modding* the 
 <!-- Multi-Game Launcher -->
 <div class="pillarwrapper">
 	{{ macros.card(
-		"Svg/settings.svg", 
-		"Built-in Mod Configuration", 
+		"Svg/settings.svg",
+		"Built-in Mod Configuration",
 		"Unified schema for configuring mods.<br/>
         Works with any language; changes apply in real time!"
 	)}}
 
     {{ macros.card(
-		"Svg/gamepad-outline.svg", 
-		"Multi-Game Manager", 
+		"Svg/gamepad-outline.svg",
+		"Multi-Game Manager",
 		"Supports multiple games at once.<br/>
 		Only one copy of Mod Manager needed."
 	)}}
@@ -215,8 +215,8 @@ The goal is to create a world where modders can focus on actually *modding* the 
 <!-- Installer -->
 <div class="pillarwrapper">
     {{ macros.card(
-		"Svg/download-outline.svg", 
-		"Download From Anywhere", 
+		"Svg/download-outline.svg",
+		"Download From Anywhere",
 		"Full support for various download sources, download and update!<br/>
         GameBanana, Nexus, GitHub, NuGet and More!"
 	)}}

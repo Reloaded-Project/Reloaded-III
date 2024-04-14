@@ -11,7 +11,7 @@
 
 The `Community Repository` contains game-specific information for the Reloaded3 backend server.
 
-The idea is we can update the information we know about various games without ever having to 
+The idea is we can update the information we know about various games without ever having to
 update the actual server itself. This is sometimes called 'out of band' information.
 
 Some use cases include:
@@ -148,7 +148,7 @@ Message = "This executable is the launcher for this game. Would you like to sele
 
 The intent of this field is to disambiguate games that share the same executable name.
 
-For example if two games have `Engine.exe`, AND `Engine.exe` does not have a known hash, we can use 
+For example if two games have `Engine.exe`, AND `Engine.exe` does not have a known hash, we can use
 this field to disambiguate the two games.
 
 !!! tip "Prefer longer file paths, to game files unlikely to change between updates."
@@ -366,8 +366,8 @@ Therefore, we will use `ETag`(s) to cache the index if possible.
 | string | FilePath | Relative path to this `.toml` file to the game [Schema](#schema). |
 
 Note that there can be cases where there may be duplicates. In terms of `ExeToApps` it's quite
-obvious, but in terms of `HashToApps` it's less so. In some rare cases of game engines, it's 
-technically possible to reuse the EXE, if it's just some bootstrapper to the proper DLL etc. 
+obvious, but in terms of `HashToApps` it's less so. In some rare cases of game engines, it's
+technically possible to reuse the EXE, if it's just some bootstrapper to the proper DLL etc.
 containing the code.
 
 On the other hand, the `ExeToApps` field is for handling unknown game versions. In those cases,

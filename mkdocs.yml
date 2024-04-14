@@ -41,6 +41,8 @@ extra_css:
 
 plugins:
   - search
+  - macros:
+      include_dir: docs/Custom
 
 theme:
   name: material

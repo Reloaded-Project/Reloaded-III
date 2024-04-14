@@ -1,0 +1,15 @@
+<!-- Contains a single 'Card' Element -->
+{% macro card(icon_path, title, content) %}
+<div class="pillarcard">
+  <p class="pillartitle">
+    <span class="twemoji">
+      {% include icon_path %}
+    </span>
+    <strong>{{ title }}</strong>
+  </p>
+  <hr class="pillarseparator" />
+  <p>
+    {{ content }}
+  </p>
+</div>
+{% endmacro %}

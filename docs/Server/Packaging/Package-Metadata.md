@@ -4,21 +4,22 @@
 
 Inside each package folder is a file named `package.toml`; which stores the metadata of each package.
 
-| Type             | Name                             | Description                                                              |
-| ---------------- | -------------------------------- | ------------------------------------------------------------------------ |
-| string           | [Id](#id)                        | A name that uniquely identifies the package.                             |
-| string           | Name                             | Human friendly name of the package.                                      |
-| string           | Author                           | Main author of the package. (Individual or Team Name)                    |
-| string           | Summary                          | Short summary of the package. Max 2 sentences.                           |
-| string           | [DocsFile](#docsfile)            | [Optional] Entry point for this package documentation.                   |
-| SemVer           | [Version](#version)              | Semantic versioning version of the package.                              |
-| string[]         | [Tags](#tags)                    | Used to make searching easier within mod managers.                       |
-| Credit[]         | [Credits](#credits)              | [Optional] Stores information about who contributed what to the project. |
-| string?          | SourceUrl                        | [Optional] Link to source code (if applicable).                          |
-| string?          | ProjectUrl                       | [Optional] Link to website to learn more about the project.              |
-| UpdateData       | [UpdateData](#update-data)       | Stores package specific update information.                              |
-| DependencyInfo[] | [Dependencies](#dependency-info) | Stores information about this package's dependencies.                    |
-| DateTime         | [Published](#published)          | The time when this package was packed.                                   |
+| Type             | Name                             | Description                                                               |
+| ---------------- | -------------------------------- | ------------------------------------------------------------------------- |
+| string           | [Id](#id)                        | A name that uniquely identifies the package.                              |
+| string           | Name                             | Human friendly name of the package.                                       |
+| string           | Author                           | Main author of the package. (Individual or Team Name)                     |
+| string           | Summary                          | Short summary of the package. Max 2 sentences.                            |
+| PackageType      | [PackageType](#packagetype)      | Type of the package. See [PackageType](#packagetype) for possible values. |
+| string           | [DocsFile](#docsfile)            | [Optional] Entry point for this package documentation.                    |
+| SemVer           | [Version](#version)              | Semantic versioning version of the package.                               |
+| string[]         | [Tags](#tags)                    | Used to make searching easier within mod managers.                        |
+| Credit[]         | [Credits](#credits)              | [Optional] Stores information about who contributed what to the project.  |
+| string?          | SourceUrl                        | [Optional] Link to source code (if applicable).                           |
+| string?          | ProjectUrl                       | [Optional] Link to website to learn more about the project.               |
+| UpdateData       | [UpdateData](#update-data)       | Stores package specific update information.                               |
+| DependencyInfo[] | [Dependencies](#dependency-info) | Stores information about this package's dependencies.                     |
+| DateTime         | [Published](#published)          | The time when this package was packed.                                    |
 
 ## Implicit Fields
 
@@ -28,12 +29,6 @@ Some items are stored as separate files:
 - [changelog][changelog]: Changelog file(s), located in `package/changelog/*.md`.
 - [description][description]: Description file, located in `package/description.md`.
 - [config][config]: Configuration schema for the package, located in `package/config.toml`.
-
-## Package Types
-
-!!! info "These are the types whose configurations extend from the base package configuration."
-
-- [Mod Metadata][mod-metadata]
 
 ## Example Config
 
@@ -158,6 +153,8 @@ x64-v3 = "reloaded3.gamesupport.p5rpc.v3.dll"
 
 !!! info "A name that uniquely identifies the package."
 
+!!! warning "Must be a valid Windows & Unix file name."
+
 This format is designed to minimize collisions while providing a human-readable name.
 
 The suggested format to use for names is `game.type.subtype.name.author`.
@@ -196,11 +193,35 @@ Server can choose whether to show non game-specific mods (`reloaded3` id) on a s
 
 ### Diagnostics
 
-!!! info "For diagnostics, use the format: `reloaded3server.diagnostic.game.name`"
+!!! info "For diagnostics, use the format: `reloaded3server.diagnostic.game.name.author`"
 
-| Type       | Description                     | Example                                               |
-| ---------- | ------------------------------- | ----------------------------------------------------- |
-| diagnostic | For [diagnostics][diagnostics]. | `reloaded3server.diagnostic.general.textureoptimizer` |
+| Type       | Description                     | Example                                                   |
+| ---------- | ------------------------------- | --------------------------------------------------------- |
+| diagnostic | For [diagnostics][diagnostics]. | `reloaded3server.diagnostic.general.textureoptimizer.s56` |
+
+### Translations
+
+!!! info "For [translations][overriding-translations], append the [language code][language-code] to the package name."
+
+In the form `tl-{code}`.
+
+For example, for the package name `reloaded3server.diagnostic.general`, use the name 
+`reloaded3server.diagnostic.general.tl-de`.
+
+## PackageType
+
+!!! info "Represents the type of the package."
+
+`PackageType` is an enumerable with the following possible values:
+
+- `Profile`: Stores user profile.
+- [Mod][mod-metadata]: Stores a game modification. 
+- `Translation`: Stores a [translation for another package][overriding-translations].
+- `Tool`: Represents a modding tool.
+
+This field helps identify the purpose and nature of the package.
+
+!!! warning "TODO: Link the other package type pages when complete."
 
 ## DocsFile
 
@@ -356,12 +377,14 @@ This is used to show when the package was last updated in mod managers and other
 [diagnostics]: ../Diagnostics.md
 [gamebanana]: https://gamebanana.com
 [game-support]: ../../Loader/Core-Architecture.md#game-support-layer-2
+[language-code]: ../../Common/Localisation/Adding-Localisations.md#language-naming-convention
 [license]: ./About.md#license
 [middleware-api-hooks]: ../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
 [mod-configurations]: ./Mod-Configurations.md
 [mod-metadata]: ../Configurations/Mod-Metadata.md
 [nexus-mods]: https://www.nexusmods.com
 [native-backend]: ../../Loader/Backends/Native.md
+[overriding-translations]: ../../Common/Localisation/Adding-Localisations.md#sideloading-translations
 [ready-to-run]: ../../Loader/Backends/CoreCLR.md#ready-to-run
 [reloaded2-backend]: ../../Loader/Backends/CoreCLR.md#reloaded-ii
 [semantic-versioning]: https://semver.org

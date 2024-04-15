@@ -95,6 +95,13 @@ nav:
       - Publishing Packages: Server/Packaging/Publishing-Packages.md
   - Launcher (Manager Frontend):
     - Best Practices: Launcher/Best-Practices.md
+  - Common:
+    - Localisation:
+      - About: Common/Localisation/About.md
+      - File Format: Common/Localisation/File-Format.md
+      - Adding Localisations: Common/Localisation/Adding-Localisations.md
+      - Loading Localisations: Common/Localisation/Loading-Localisations.md
+      - Implementation Details: Common/Localisation/Implementation-Details.md
   - Mods:
     - Essentials:
       - Virtual FileSystem:

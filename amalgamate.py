@@ -1,4 +1,5 @@
 import os
+import sys
 
 def process_files(directory, output_file):
     for root, dirs, files in os.walk(directory):
@@ -16,7 +17,8 @@ def process_files(directory, output_file):
                 output_file.write("\n\n")
 
 # Directory to start the search from
-directory = '.'
+# Default to '.' if no argument is provided
+directory = sys.argv[1] if len(sys.argv) > 1 else '.'
 
 # Output file name
 output_filename = 'concatenated_docs.txt'

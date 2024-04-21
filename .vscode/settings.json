@@ -159,5 +159,11 @@
         "xsave",
         "Yakuza",
         "Yeppers"
-    ]
+    ],
+    // Using 'Trigger Task on Save' Extension
+    "triggerTaskOnSave.tasks": {
+        "Strip Whitespace": [
+            "docs/**/*.md"
+        ],
+    }
 }

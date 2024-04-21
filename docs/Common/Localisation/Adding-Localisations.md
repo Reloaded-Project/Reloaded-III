@@ -26,7 +26,7 @@ Here the languages are:
 
 !!! tip "Some packages may have multiple localizable components."
 
-For example, a localisable config and `DLL` code loaded at runtime. 
+For example, a localisable config and `DLL` code loaded at runtime.
 
 ```
 reloaded3.utility.examplemod.s56
@@ -44,7 +44,7 @@ reloaded3.utility.examplemod.s56
 
 In this case, translations may be split into separate folders:
 
-- `mod.dll` will reference the languages from `languages/dll` 
+- `mod.dll` will reference the languages from `languages/dll`
 - `config.toml` will reference the languages from `languages/config`
 
 ## Language Naming Convention
@@ -75,7 +75,7 @@ Alternatively, you can use more specific culture names
 
 Where `{iso3166alpha2}` is the [two letter ISO 3166 alpha-2 country code][iso3166-alpha2].
 
-Example: 
+Example:
 
 - `en-GB.toml` (English, British)
 - `en-US.toml` (English, American)

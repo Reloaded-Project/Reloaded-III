@@ -205,7 +205,7 @@ Server can choose whether to show non game-specific mods (`reloaded3` id) on a s
 
 In the form `tl-{code}`.
 
-For example, for the package name `reloaded3server.diagnostic.general`, use the name 
+For example, for the package name `reloaded3server.diagnostic.general`, use the name
 `reloaded3server.diagnostic.general.tl-de`.
 
 ## PackageType
@@ -215,7 +215,7 @@ For example, for the package name `reloaded3server.diagnostic.general`, use the 
 `PackageType` is an enumerable with the following possible values:
 
 - `Profile`: Stores user profile.
-- [Mod][mod-metadata]: Stores a game modification. 
+- [Mod][mod-metadata]: Stores a game modification.
 - `Translation`: Stores a [translation for another package][overriding-translations].
 - `Tool`: Represents a modding tool.
 

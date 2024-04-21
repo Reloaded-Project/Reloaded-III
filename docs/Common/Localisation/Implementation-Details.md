@@ -43,21 +43,21 @@ function FastFindKeys(data):
         substring = data[i : i + REGISTER_LENGTH]
         comparison = CompareStringSIMD(substring, simd_register)
         mask = MoveMask(comparison)
-        
+
         if mask == 0:
             i += REGISTER_LENGTH
         else:
             while mask != 0:
                 trailing_zeroes = CountTrailingZeroes(mask)
                 i += trailing_zeroes
-                
+
                 if (mask & 0b111) == 0b111:
                     # Found a key at index i
                     ProcessKey(data, i)
                     # Move past the found pattern.
                     i += 3
                     break
-                
+
                 # Else if not all match, shift to next bit.
                 # On next loop, we'll try from first match again
                 mask >>= 1
@@ -73,9 +73,9 @@ function FastFindKeys(data):
 
     This is done by computing the hash of every key at compile time, and looking up
     the value by key at runtime.
-    
-    Requirements: 
-    
+
+    Requirements:
+
     - Endian Agnostic
     - Stable/Same Hash
     - Fast
@@ -100,7 +100,7 @@ Chances are most translation files will have <100 keys, and bigger projects <100
 You could store every localizable string as such:
 
 ```rust
-pub struct TableEntry 
+pub struct TableEntry
 {
     pub key: u64,
     pub value: &str

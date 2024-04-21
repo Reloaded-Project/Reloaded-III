@@ -83,7 +83,7 @@ this would be `string.Format(text(KEY), value1, value2)`.
 For some languages, it may be necessary to manipulate the returned string to match the native format
 upon initial file read. For example, a C# implementation might want to replace first `{}` with `{0}`.
 
-!!! tip 
+!!! tip
 
     An implementing library may also provide an export like `get_text_formatted(KEY, values)`, where
     `values` is a list of strings to be inserted into the placeholders.
@@ -124,4 +124,4 @@ Here is the error returned from your OS {}
 
 !!! tip "You may be able to get good syntax highlighting by setting your language as TOML."
 
-This is what this wiki page does 😉 
+This is what this wiki page does 😉

@@ -1,4 +1,4 @@
-import sys
+import os
 
 def strip_whitespace(file_path):
     if file_path.endswith('.md'):
@@ -19,10 +19,13 @@ def strip_whitespace(file_path):
 
                 file.write(line)
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usage: python strip_whitespace.py <file_path>")
-        sys.exit(1)
+def main():
+    git_root = os.popen('git rev-parse --show-toplevel').read().strip()
+    docs_dir = os.path.join(git_root, 'docs')
+    for dirpath, dirnames, filenames in os.walk(docs_dir):
+        for filename in filenames:
+            file_path = os.path.join(dirpath, filename)
+            strip_whitespace(file_path)
 
-    file_path = sys.argv[1]
-    strip_whitespace(file_path)
+if __name__ == '__main__':
+    main()

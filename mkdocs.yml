@@ -106,15 +106,19 @@ nav:
     - Essentials:
       - Virtual FileSystem:
         - About: Mods/Essentials/Virtual-FileSystem/About.md
-    - Guidelines:
-      - Game Support Mods: Mods/Guidelines/Game-Support.md
-      - Middleware Mods: Mods/Guidelines/Middleware.md
-    - Libraries:
+    - Essentials (Libraries):
+      - Merged File Cache:
+        - About: Mods/Libraries/Merged-File-Cache/About.md
+        - Requirements: Mods/Libraries/Merged-File-Cache/Requirements.md
+        - Implementation Details: Mods/Libraries/Merged-File-Cache/Implementation-Details.md
       - Signature Scanner:
         - About: Mods/Libraries/Signature-Scanner/About.md
         - Requirements: Mods/Libraries/Signature-Scanner/Requirements.md
         - Creating Signatures: Mods/Libraries/Signature-Scanner/Creating-Signatures.md
         - Scanning For Signatures: Mods/Libraries/Signature-Scanner/Scanning-For-Signatures.md
+    - Guidelines:
+      - Game Support Mods: Mods/Guidelines/Game-Support.md
+      - Middleware Mods: Mods/Guidelines/Middleware.md
   - Online Services:
     - Community Repository: Services/Community-Repository.md
   - FAQ: FAQ.md

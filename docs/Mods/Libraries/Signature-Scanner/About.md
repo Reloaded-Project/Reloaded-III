@@ -73,12 +73,14 @@ Some tricks from [Pattern16][pattern16] may also be used to improve performance 
 ## Overview
 
 - [Requirements][requirements]: Requirements & Goals for Reloaded3's signature scanning library & mod.
-- [Creating Signatures](Creating-Signatures.md): [User Docs] Learn how to create signatures for code and data patterns.
-- [Scanning for Signatures](Scanning-for-Signatures.md): [User Docs] Discover how to use Reloaded3's Signature Scanner library to locate patterns in game memory.
+- [Creating Signatures][creating-signatures]: [User Docs] Learn how to create signatures for code and data patterns.
+- [Scanning for Signatures][scanning-for-signatures]: [User Docs] Discover how to use Reloaded3's Signature Scanner library to locate patterns in game memory.
 
 [arcropolis]: https://github.com/Raytwo/ARCropolis
+[creating-signatures]: Creating-Signatures.md
 [lazysimd]: https://github.com/Raytwo/lazysimd
 [pattern16]: https://github.com/Dasaav-dsv/Pattern16
 [requirements]: Requirements.md
 [reloaded-memory-sigscan]: https://github.com/Reloaded-Project/Reloaded.Memory.SigScan
+[scanning-for-signatures]: Scanning-For-Signatures.md
 [r2-sigscan-mod]: https://github.com/Reloaded-Project/Reloaded.Memory.SigScan/blob/master/External/Reloaded.Memory.SigScan.ReloadedII/StartupScanner.cs

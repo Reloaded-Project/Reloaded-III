@@ -12,7 +12,7 @@ All numbers were obtained on a stock clock AMD Ryzen 5900X and 3000MHz CL16 RAM.
 
 !!! note "These are numbers from the original C# version."
 
-    We can save some additional memory in Rust with clever use of custom string packing.<br/>
+    We can save some additional memory in Rust with clever use of [custom string pooling][string-pooling].<br/>
     AHash is also a better hash algorithm. Expect both memory and speed numbers to improve a tiny bit.
 
 !!! info "This section describes how long it takes to create a file map."
@@ -83,10 +83,11 @@ A lot of microbenchmarks are available in the original C# project under the
 
 [ahash]: https://github.com/tkaitchuck/aHash
 [equivalent]: https://docs.rs/hashbrown/latest/hashbrown/trait.Equivalent.html
-[lookup-tree]: ./Implementation-Details.md#lookup-tree
+[lookup-tree]: ./Implementation-Details/Trees.md#lookup-tree
 [make-ascii-uppercase]: https://github.com/rust-lang/rust/blob/80d1c8349ab7f1281b9e2f559067380549e2a4e6/library/core/src/num/mod.rs#L627
 [microbenchmarks]: https://github.com/Reloaded-Project/reloaded.universal.redirector/tree/rewrite-usvfs-read-features/Reloaded.Universal.Redirector.Benchmarks
-[redirection-tree]: ./Implementation-Details.md#redirection-tree
+[redirection-tree]: ./Implementation-Details/Trees.md#redirection-tree
 [reloaded-memory-hash]: https://github.com/Reloaded-Project/Reloaded.Memory/blob/5d13b256c89ffa2b18bf430b6ef39925e4324412/src/Reloaded.Memory/Internals/Algorithms/UnstableStringHash.cs#L16
-[smhasher]: https://github.com/rurban/smhasher
 [reloaded-memory-toupper]: https://github.com/Reloaded-Project/Reloaded.Memory/blob/5d13b256c89ffa2b18bf430b6ef39925e4324412/src/Reloaded.Memory/Internals/Backports/System/Globalization/TextInfo.cs#L79
+[string-pooling]: ./Implementation-Details/Optimizations.md#string-pooling
+[smhasher]: https://github.com/rurban/smhasher

@@ -3,6 +3,8 @@
 The actual struct definitions here are valid for the original C# implementation, but will differ a
 tiny bit in the Rust implementation. We still show the C# ones for simplicity, to help understanding.
 
+For more information on Rust strings, see [String Pooling][string-pooling].
+
 ## Redirection Tree
 
 !!! info "About the 'Redirection Tree'"
@@ -134,6 +136,11 @@ flowchart LR
     data_2.pak --> f[FULL_PATH_TO_NEW_FILE 'isDirectory: false']
 ```
 
+!!! note "There may (rarely) sometimes be more than 1 common prefix."
+
+    Sometimes there may be 2/3 if we're redirecting things like saves,
+    or doing emulation within mod folders.
+
 ### In Code
 
 ```csharp
@@ -154,3 +161,5 @@ public struct LookupTree<TTarget>
     public SpanOfCharDict<SpanOfCharDict<TTarget>> SubfolderToFiles { get; private set; }
 }
 ```
+
+[string-pooling]: ./Optimizations.md#pooled-strings-in-hashtables

@@ -81,7 +81,9 @@ in the [smhasher][smhasher] benchmark suite for hashtables.
 In original C# implementation, it was necessary to use a custom dictionary that could query string
 slices as keys, due to limitation of the built in one.
 
-In Rust, this won't be needed; as thanks to the [Equivalent][equivalent] trait.
+In Rust, this won't be needed; as thanks to the [Equivalent][equivalent] trait. Or using the
+`HashTable` API raw.
+
 Hashbrown (Swisstable) is also faster.
 
 ### Memory Storage
@@ -122,21 +124,57 @@ pub struct StringEntry
 }
 ```
 
-String Widen is Cheap !!
+In 99% of cases, file paths will map to ASCII, meaning we only need 1 byte per character.
 
-### awa
+On Windows, where paths are internally UTF-16, we can then dynamically widen these paths to
+UTF-16 when needed, as that operation is very cheap for ASCII strings.
+
+[Godbolt example][godbolt-string-widen].
+
+```rust
+#[no_mangle]
+pub fn ascii_to_utf16(ascii_str: &str, buffer: &mut [u16]) {
+    let bytes = ascii_str.as_bytes();
+    let len = bytes.len();
+    for i in 0..len {
+        buffer[i] = bytes[i] as u16;
+    }
+}
+```
+
+Auto-vectorizes nicely, thanks to LLVM.
+
+#### Pooled Strings in HashTables
 
 !!! tip "And for `Hashbrown`'s low level [HashTable][hashtable] primitive."
 
 ```rust
+// 16 bytes, nicely aligns with cache lines
 pub struct TableEntry
 {
+    // 64-bit key
     pub key: u64,
-    pub value: &str
+
+    // Offset for directory string in pool.
+    // We deduplicate strings by directory, reducing memory usage further.
+    // On average there's typically 7 files per 1 folder in Sewer's Steam folder.
+    pub dir: u32,
+
+    // Offset for file string in the pool.
+    pub file: u32,
 }
 
+// If additional metadata is required, trim `dir` and `file` to 30 bits,
+// and use remaining space for metadata.
+```
+
+And to search, we should compare key at minimum
+
+```rust
 // To search (hash at minimum, as shown here)
 table.find(KEY_HASH, |&val| val.key == KEY_HASH);
+
+// TODO: Add string comparison here.
 ```
 
 ## Lookup Tree
@@ -149,10 +187,11 @@ The `LookupTree` allows us to resolve file paths in O(3) time, at expense of som
 
 [ahash]: https://github.com/tkaitchuck/aHash
 [equivalent]: https://docs.rs/hashbrown/latest/hashbrown/trait.Equivalent.html
+[godbolt-string-widen]: https://godbolt.org/z/K18b81rE8
+[hashtable]: https://docs.rs/hashbrown/latest/hashbrown/struct.HashTable.html#method.find
 [lookup-tree]: ./Trees.md#lookup-tree
 [make-ascii-uppercase]: https://github.com/rust-lang/rust/blob/80d1c8349ab7f1281b9e2f559067380549e2a4e6/library/core/src/num/mod.rs#L627
 [original-impl]: https://github.com/Reloaded-Project/reloaded.universal.redirector/tree/rewrite-usvfs-read-features
-[redirection-tree]: ./Trees.md#redirection-tree
 [reloaded-memory-hash]: https://github.com/Reloaded-Project/Reloaded.Memory/blob/5d13b256c89ffa2b18bf430b6ef39925e4324412/src/Reloaded.Memory/Internals/Algorithms/UnstableStringHash.cs#L16
-[smhasher]: https://github.com/rurban/smhasher
 [reloaded-memory-toupper]: https://github.com/Reloaded-Project/Reloaded.Memory/blob/5d13b256c89ffa2b18bf430b6ef39925e4324412/src/Reloaded.Memory/Internals/Backports/System/Globalization/TextInfo.cs#L79
+[smhasher]: https://github.com/rurban/smhasher

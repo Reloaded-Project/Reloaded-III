@@ -1,5 +1,10 @@
-
 # Programmer Usage
+
+!!! warning "The presented API is just for reference."
+
+    It may be modified ahead of release.
+
+## Using the API
 
 The Redirector uses [Reloaded Dependency Injection](https://reloaded-project.github.io/Reloaded-II/DependencyInjection_HowItWork/) to expose an API.
 

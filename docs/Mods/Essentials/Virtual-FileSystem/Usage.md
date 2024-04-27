@@ -1,23 +1,29 @@
-
 # Basic Usage
+
+!!! info "This will nee updating."
+
+    This is the original Reloaded-II documentation from the scrapped C# version which couldn't be
+    released due to teechnical runtime limitations.
+
+    This guide is just for reference and will need to be rewritten.
 
 ## Download the Mod
 
 First, download the `Reloaded File Redirector` mod which provides the virtual filesystem functionality.
 
-![DownloadMod](https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/DownloadMod.png)
+![DownloadMod][download-mod]
 
 ## Add Dependency to Redirector
 
 In the `Edit Mod` menu, add `Reloaded File Redirector` as a dependency to your mod.
 
-![AddDependency](https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/AddDependency.png)
+![AddDependency][add-dependency]
 
 This will ensure the `Reloaded File Redirector` mod is always loaded when your mod is loaded.
 
 ### Opening the Mod Folder
 
-![OpenModFolder](https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/OpenModFolder.png)
+![OpenModFolder][open-mod-folder]
 
 Go to the folder where your mod is stored by clicking the `Open Folder` button.
 
@@ -25,7 +31,7 @@ Go to the folder where your mod is stored by clicking the `Open Folder` button.
 
 Make a folder called `Redirector`. Inside it, place files that you want to be replaced.
 
-![FileRedirectorFolder](https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/FileRedirectorFolder.png)
+![FileRedirectorFolder][file-redirector-folder]
 
 Files are mapped by their location relative to the EXE of the application.
 
@@ -52,7 +58,7 @@ The connectors `└─` represent folders.
 
 ## Debugging
 
-![DebugMod](https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/DebugMod.png)
+![DebugMod](https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/rewrite-usvfs-read-features/docs/images/DebugMod.png)
 
 To debug the mod, highlight the `Reloaded File Redirector` mod in your mod manager and click `Configure Mod`.
 
@@ -60,3 +66,9 @@ The following settings are available:
 - `Log Open Files`: Prints a message to `Console` when a new file is being opened.
 - `Log Redirections`: Prints a message when a custom file is loaded from your or another mod.
 - `Log Attribute Fetches`: Prints a message when game gets file properties such as file size.
+
+<!-- Links -->
+[add-dependency]: https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/AddDependency.png
+[download-mod]: https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/DownloadMod.png
+[file-redirector-folder]: https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/FileRedirectorFolder.png
+[open-mod-folder]: https://raw.githubusercontent.com/Reloaded-Project/reloaded.universal.redirector/master/docs/images/OpenModFolder.png

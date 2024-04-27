@@ -106,11 +106,14 @@ nav:
     - Essentials:
       - Virtual FileSystem:
         - About: Mods/Essentials/Virtual-FileSystem/About.md
+        - Behaviours & Limitations: Mods/Essentials/Virtual-FileSystem/Behaviours-Limitations.md
         - Usage: Mods/Essentials/Virtual-FileSystem/Usage.md
         - Programmer Usage: Mods/Essentials/Virtual-FileSystem/Programmer-Usage.md
-        - Implementing Redirection: Mods/Essentials/Virtual-FileSystem/Implementing-Redirection.md
-        - Implementation Details: Mods/Essentials/Virtual-FileSystem/Implementation-Details.md
-        - Performance: Mods/Essentials/Virtual-FileSystem/Performance.md
+        - Implementation Details: 
+          - Hooks: Mods/Essentials/Virtual-FileSystem/Implementation-Details/Hooks.md
+          - Optimizations: Mods/Essentials/Virtual-FileSystem/Implementation-Details/Optimizations.md
+          - Trees: Mods/Essentials/Virtual-FileSystem/Implementation-Details/Trees.md
+        - Reference Performance Numbers: Mods/Essentials/Virtual-FileSystem/Performance.md
     - Essentials (Libraries):
       - Merged File Cache:
         - About: Mods/Libraries/Merged-File-Cache/About.md

@@ -10,15 +10,17 @@ To use the Redirector API:
 
 2. Add the dependency `reloaded3.api.windows.vfs.s56` to your mod's dependencies.
 
-3. In your mod's entry point, acquire the Controller:
+3. In your mod's entry point, acquire the necessary services:
 
 === "C#"
     ```csharp
     IRedirectorController _redirectorController;
+    IVirtualFileSystem _vfsController;
 
     public void Start(IModLoaderV1 loader)
     {
         _redirectorController = _modLoader.GetService<IRedirectorController>();
+        _vfsController = _modLoader.GetService<IVirtualFileSystem>();
     }
     ```
 
@@ -26,12 +28,14 @@ To use the Redirector API:
     ```rust
     struct MyMod {
         redirector_controller: Option<IRedirectorController>,
+        vfs_controller: Option<IVirtualFileSystem>,
     }
 
     impl MyMod {
         fn new(loader: &mut IModLoader) -> Self {
             Self {
                 redirector_controller: loader.get_service::<IRedirectorController>().ok(),
+                vfs_controller: loader.get_service::<IVirtualFileSystem>().ok(),
             }
         }
     }
@@ -42,11 +46,13 @@ To use the Redirector API:
     class MyMod {
     private:
         IRedirectorController* _redirectorController;
+        IVirtualFileSystem* _vfsController;
 
     public:
         MyMod(IModLoader* loader)
         {
             _redirectorController = loader->GetService<IRedirectorController>();
+            _vfsController = loader->GetService<IVirtualFileSystem>();
         }
     };
     ```
@@ -55,22 +61,23 @@ To use the Redirector API:
 
 !!! info "Using basic C# types for easier understanding. Actual types may vary."
 
-
 ### Redirecting Individual Files
 
-- `AddRedirect(string sourcePath, string targetPath)`: Redirects an individual file path from
-  `sourcePath` (original game path) to `targetPath` (mod file path).
+- `RedirectHandle AddRedirect(string sourcePath, string targetPath)`: Redirects an individual file path from
+  `sourcePath` (original game path) to `targetPath` (mod file path). Returns a handle to the redirection.
 
-- `RemoveRedirect(string sourcePath, string targetPath)`: Removes redirection for an individual file
-  path from `sourcePath` to `targetPath`.
+- `void RemoveRedirect(RedirectHandle handle)`: Removes the redirection associated with the given `handle`.
 
 ### Redirecting All Files in Folder
 
-- `AddRedirectFolder(string sourceFolder, string targetFolder)`: Adds a new redirect folder.
-  Files in `targetFolder` will overlay files in `sourceFolder`.
+- `RedirectFolderHandle AddRedirectFolder(string sourceFolder, string targetFolder)`: Adds a new redirect folder.
+  Files in `targetFolder` will overlay files in `sourceFolder`. Returns a handle to the redirect folder.
 
-- `RemoveRedirectFolder(string sourceFolder, string targetFolder)`: Removes a redirect folder where
-  files in `targetFolder` were overlaying `sourceFolder`.
+- `void RemoveRedirectFolder(RedirectFolderHandle handle)`: Removes the redirect folder associated with the given `handle`.
+
+## IVirtualFileSystem API
+
+!!! info "Using basic C# types for easier understanding. Actual types may vary."
 
 ### Registering Virtual Files
 
@@ -79,10 +86,11 @@ To use the Redirector API:
     These APIs allow you to inject virtual files into search results, such that they appear
     alongside real files when game folders are being searched.
 
-- `RegisterVirtualFile(string filePath, VirtualFileMetadata metadata)`: Registers a new virtual
+- `VirtualFileHandle RegisterVirtualFile(string filePath, VirtualFileMetadata metadata)`: Registers a new virtual
   file at `filePath` with the provided metadata. This allows the virtual file to be seen during file searches.
+  Returns a handle to the virtual file.
 
-- `UnregisterVirtualFile(string filePath)`: Unregisters a previously registered virtual file at `filePath`.
+- `void UnregisterVirtualFile(VirtualFileHandle handle)`: Unregisters the virtual file associated with the given `handle`.
 
 The `VirtualFileMetadata` structure should look something like:
 
@@ -107,14 +115,25 @@ Actually reading the files etc. is handled by the file emulation framework itsel
     And not by individual 'File Emulators' using the framework.
     i.e. The end user of the framework should not be calling this API.
 
-### Setting Adjustment
+### VFS Settings
 
-!!! info "Toggling settings flags."
-
-- `GetRedirectorSetting(VfsSettings setting)`: Gets the current value of a redirector setting.
+- `GetVfsSetting(VfsSettings setting)`: Gets the current value of a VFS setting.
   See `VfsSettings` enum for options.
 
-- `SetRedirectorSetting(bool enable, VfsSettings setting)`: Enables or disables a specific redirector setting.
+- `SetVfsSetting(bool enable, VfsSettings setting)`: Enables or disables a specific VFS setting.
+
+The `VfsSettings` enum provides the following options:
+
+```csharp
+public enum VfsSettings
+{
+    None = 0,                   // Default value.
+    PrintRedirect = 1 << 0,     // Prints when a file redirect is performed.
+    PrintOpen = 1 << 1,         // Prints file open operations. (debug setting)
+    DontPrintNonFiles = 1 << 2, // Skips printing non-files to the console.
+    PrintGetAttributes = 1 << 3 // Prints operations that get file attributes (debug setting)
+}
+```
 
 ### Debugging
 
@@ -126,34 +145,46 @@ Redirect an individual file:
 
 === "C#"
     ```csharp
-    _redirectorController.AddRedirect(@"dvdroot\bgm\SNG_STG26.adx", @"mods\mybgm.adx");
+    var handle = _redirectorController.AddRedirect(@"dvdroot\bgm\SNG_STG26.adx", @"mods\mybgm.adx");
+    // ...
+    _redirectorController.RemoveRedirect(handle);
     ```
 
 === "Rust"
     ```rust
-    redirector_controller.add_redirect(r"dvdroot\bgm\SNG_STG26.adx", r"mods\mybgm.adx");
+    let handle = redirector_controller.add_redirect(r"dvdroot\bgm\SNG_STG26.adx", r"mods\mybgm.adx");
+    // ...
+    redirector_controller.remove_redirect(handle);
     ```
 
 === "C++"
     ```cpp
-    _redirectorController->AddRedirect(R"(dvdroot\bgm\SNG_STG26.adx)", R"(mods\mybgm.adx)");
+    auto handle = _redirectorController->AddRedirect(R"(dvdroot\bgm\SNG_STG26.adx)", R"(mods\mybgm.adx)");
+    // ...
+    _redirectorController->RemoveRedirect(handle);
     ```
 
 Add a new redirect folder:
 
 === "C#"
     ```csharp
-    _redirectorController.AddRedirectFolder(@"game\data", @"mods\mymod\data");
+    var handle = _redirectorController.AddRedirectFolder(@"game\data", @"mods\mymod\data");
+    // ...
+    _redirectorController.RemoveRedirectFolder(handle);
     ```
 
 === "Rust"
     ```rust
-    redirector_controller.add_redirect_folder(r"game\data", r"mods\mymod\data");
+    let handle = redirector_controller.add_redirect_folder(r"game\data", r"mods\mymod\data");
+    // ...
+    redirector_controller.remove_redirect_folder(handle);
     ```
 
 === "C++"
     ```cpp
-    _redirectorController->AddRedirectFolder(R"(game\data)", R"(mods\mymod\data)");
+    auto handle = _redirectorController->AddRedirectFolder(R"(game\data)", R"(mods\mymod\data)");
+    // ...
+    _redirectorController->RemoveRedirectFolder(handle);
     ```
 
 Register a virtual file (dummy example):
@@ -171,7 +202,9 @@ Register a virtual file (dummy example):
         FileAttributes = FileAttributes.Normal
     };
 
-    _redirectorController.RegisterVirtualFile(@"game\virtualfile.txt", metadata);
+    var handle = _vfsController.RegisterVirtualFile(@"game\virtualfile.txt", metadata);
+    // ...
+    _vfsController.UnregisterVirtualFile(handle);
     ```
 
 === "Rust"
@@ -186,7 +219,9 @@ Register a virtual file (dummy example):
         file_attributes: FileAttributes::Normal,
     };
 
-    redirector_controller.register_virtual_file(r"game\virtualfile.txt", metadata);
+    let handle = vfs_controller.register_virtual_file(r"game\virtualfile.txt", metadata);
+    // ...
+    vfs_controller.unregister_virtual_file(handle);
     ```
 
 === "C++"
@@ -200,22 +235,24 @@ Register a virtual file (dummy example):
     metadata.AllocationSize = 1024;
     metadata.FileAttributes = FileAttributes::Normal;
 
-    _redirectorController->RegisterVirtualFile(R"(game\virtualfile.txt)", metadata);
+    auto handle = _vfsController->RegisterVirtualFile(R"(game\virtualfile.txt)", metadata);
+    // ...
+    _vfsController->UnregisterVirtualFile(handle);
     ```
 
 Print file redirections to console:
 
 === "C#"
     ```csharp
-    _redirectorController.SetRedirectorSetting(true, VfsSettings.PrintRedirect);
+    _vfsController.SetVfsSetting(true, VfsSettings.PrintRedirect);
     ```
 
 === "Rust"
     ```rust
-    redirector_controller.set_redirector_setting(true, VfsSettings::PrintRedirect);
+    vfs_controller.set_vfs_setting(true, VfsSettings::PrintRedirect);
     ```
 
 === "C++"
     ```cpp
-    _redirectorController->SetRedirectorSetting(true, VfsSettings::PrintRedirect);
+    _vfsController->SetVfsSetting(true, VfsSettings::PrintRedirect);
     ```

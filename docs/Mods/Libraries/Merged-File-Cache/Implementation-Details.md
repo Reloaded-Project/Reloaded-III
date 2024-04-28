@@ -140,7 +140,7 @@ This creates an [IMergedFileCache](#imergedfilecache-interface).
 
 ### `IMergedFileCache` Interface
 
-!!! info "This is an abstraction over [Caches.bin](#cachebin)"
+!!! info "This is an abstraction over [Cache.bin](#cachebin)"
 
 !!! info "Returned from [ICacheFactory](#icachefactory-interface)"
 

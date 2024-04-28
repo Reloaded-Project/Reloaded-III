@@ -14,28 +14,32 @@ To use the Redirector API:
 
 === "C#"
     ```csharp
-    IRedirectorController _redirectorController;
-    IVirtualFileSystem _vfsController;
+    IRedirectorService _redirectorService;
+    IVfsService _vfsService;
+    IVfsSettingsService _vfsSettingsService;
 
     public void Start(IModLoaderV1 loader)
     {
-        _redirectorController = _modLoader.GetService<IRedirectorController>();
-        _vfsController = _modLoader.GetService<IVirtualFileSystem>();
+        _redirectorService = _modLoader.GetService<IRedirectorService>();
+        _vfsService = _modLoader.GetService<IVfsService>();
+        _vfsSettingsService = _modLoader.GetService<IVfsSettingsService>();
     }
     ```
 
 === "Rust"
     ```rust
     struct MyMod {
-        redirector_controller: Option<IRedirectorController>,
-        vfs_controller: Option<IVirtualFileSystem>,
+        redirector_service: Option<IRedirectorService>,
+        vfs_service: Option<IVfsService>,
+        vfs_settings_service: Option<IVfsSettingsService>,
     }
 
     impl MyMod {
         fn new(loader: &mut IModLoader) -> Self {
             Self {
-                redirector_controller: loader.get_service::<IRedirectorController>().ok(),
-                vfs_controller: loader.get_service::<IVirtualFileSystem>().ok(),
+                redirector_service: loader.get_service::<IRedirectorService>().ok(),
+                vfs_service: loader.get_service::<IVfsService>().ok(),
+                vfs_settings_service: loader.get_service::<IVfsSettingsService>().ok(),
             }
         }
     }
@@ -45,19 +49,21 @@ To use the Redirector API:
     ```cpp
     class MyMod {
     private:
-        IRedirectorController* _redirectorController;
-        IVirtualFileSystem* _vfsController;
+        IRedirectorService* _redirectorService;
+        IVfsService* _vfsService;
+        IVfsSettingsService* _vfsSettingsService;
 
     public:
         MyMod(IModLoader* loader)
         {
-            _redirectorController = loader->GetService<IRedirectorController>();
-            _vfsController = loader->GetService<IVirtualFileSystem>();
+            _redirectorService = loader->GetService<IRedirectorService>();
+            _vfsService = loader->GetService<IVfsService>();
+            _vfsSettingsService = loader->GetService<IVfsSettingsService>();
         }
     };
     ```
 
-## IRedirectorController API
+## IRedirectorService API
 
 !!! info "Using basic C# types for easier understanding. Actual types may vary."
 
@@ -75,7 +81,7 @@ To use the Redirector API:
 
 - `void RemoveRedirectFolder(RedirectFolderHandle handle)`: Removes the redirect folder associated with the given `handle`.
 
-## IVirtualFileSystem API
+## IVfsService API
 
 !!! info "Using basic C# types for easier understanding. Actual types may vary."
 
@@ -115,6 +121,10 @@ Actually reading the files etc. is handled by the file emulation framework itsel
     And not by individual 'File Emulators' using the framework.
     i.e. The end user of the framework should not be calling this API.
 
+## IVfsSettingsService API
+
+!!! info "Using basic C# types for easier understanding. Actual types may vary."
+
 ### VFS Settings
 
 - `GetVfsSetting(VfsSettings setting)`: Gets the current value of a VFS setting.
@@ -125,6 +135,7 @@ Actually reading the files etc. is handled by the file emulation framework itsel
 The `VfsSettings` enum provides the following options:
 
 ```csharp
+[Flags]
 public enum VfsSettings
 {
     None = 0,                   // Default value.
@@ -139,52 +150,56 @@ public enum VfsSettings
 
 - `Enable()` / `Disable()`: Enables or disables the VFS entirely.
 
+Sure, here are the updated examples sections for both the VFS and Signature Scanner documentation:
+
+Examples for VFS:
+
 ## Examples
 
 Redirect an individual file:
 
 === "C#"
     ```csharp
-    var handle = _redirectorController.AddRedirect(@"dvdroot\bgm\SNG_STG26.adx", @"mods\mybgm.adx");
+    var handle = _redirectorService.AddRedirect(@"dvdroot\bgm\SNG_STG26.adx", @"mods\mybgm.adx");
     // ...
-    _redirectorController.RemoveRedirect(handle);
+    _redirectorService.RemoveRedirect(handle);
     ```
 
 === "Rust"
     ```rust
-    let handle = redirector_controller.add_redirect(r"dvdroot\bgm\SNG_STG26.adx", r"mods\mybgm.adx");
+    let handle = redirector_service.add_redirect(r"dvdroot\bgm\SNG_STG26.adx", r"mods\mybgm.adx");
     // ...
-    redirector_controller.remove_redirect(handle);
+    redirector_service.remove_redirect(handle);
     ```
 
 === "C++"
     ```cpp
-    auto handle = _redirectorController->AddRedirect(R"(dvdroot\bgm\SNG_STG26.adx)", R"(mods\mybgm.adx)");
+    auto handle = _redirectorService->AddRedirect(R"(dvdroot\bgm\SNG_STG26.adx)", R"(mods\mybgm.adx)");
     // ...
-    _redirectorController->RemoveRedirect(handle);
+    _redirectorService->RemoveRedirect(handle);
     ```
 
 Add a new redirect folder:
 
 === "C#"
     ```csharp
-    var handle = _redirectorController.AddRedirectFolder(@"game\data", @"mods\mymod\data");
+    var handle = _redirectorService.AddRedirectFolder(@"game\data", @"mods\mymod\data");
     // ...
-    _redirectorController.RemoveRedirectFolder(handle);
+    _redirectorService.RemoveRedirectFolder(handle);
     ```
 
 === "Rust"
     ```rust
-    let handle = redirector_controller.add_redirect_folder(r"game\data", r"mods\mymod\data");
+    let handle = redirector_service.add_redirect_folder(r"game\data", r"mods\mymod\data");
     // ...
-    redirector_controller.remove_redirect_folder(handle);
+    redirector_service.remove_redirect_folder(handle);
     ```
 
 === "C++"
     ```cpp
-    auto handle = _redirectorController->AddRedirectFolder(R"(game\data)", R"(mods\mymod\data)");
+    auto handle = _redirectorService->AddRedirectFolder(R"(game\data)", R"(mods\mymod\data)");
     // ...
-    _redirectorController->RemoveRedirectFolder(handle);
+    _redirectorService->RemoveRedirectFolder(handle);
     ```
 
 Register a virtual file (dummy example):
@@ -202,9 +217,9 @@ Register a virtual file (dummy example):
         FileAttributes = FileAttributes.Normal
     };
 
-    var handle = _vfsController.RegisterVirtualFile(@"game\virtualfile.txt", metadata);
+    var handle = _vfsService.RegisterVirtualFile(@"game\virtualfile.txt", metadata);
     // ...
-    _vfsController.UnregisterVirtualFile(handle);
+    _vfsService.UnregisterVirtualFile(handle);
     ```
 
 === "Rust"
@@ -219,9 +234,9 @@ Register a virtual file (dummy example):
         file_attributes: FileAttributes::Normal,
     };
 
-    let handle = vfs_controller.register_virtual_file(r"game\virtualfile.txt", metadata);
+    let handle = vfs_service.register_virtual_file(r"game\virtualfile.txt", metadata);
     // ...
-    vfs_controller.unregister_virtual_file(handle);
+    vfs_service.unregister_virtual_file(handle);
     ```
 
 === "C++"
@@ -235,24 +250,36 @@ Register a virtual file (dummy example):
     metadata.AllocationSize = 1024;
     metadata.FileAttributes = FileAttributes::Normal;
 
-    auto handle = _vfsController->RegisterVirtualFile(R"(game\virtualfile.txt)", metadata);
+    auto handle = _vfsService->RegisterVirtualFile(R"(game\virtualfile.txt)", metadata);
     // ...
-    _vfsController->UnregisterVirtualFile(handle);
+    _vfsService->UnregisterVirtualFile(handle);
     ```
 
-Print file redirections to console:
+Change VFS settings:
 
 === "C#"
     ```csharp
-    _vfsController.SetVfsSetting(true, VfsSettings.PrintRedirect);
+    // Enable printing of file redirects
+    _vfsSettingsService.SetVfsSetting(true, VfsSettings.PrintRedirect);
+
+    // Disable the VFS entirely
+    _vfsSettingsService.Disable();
     ```
 
 === "Rust"
     ```rust
-    vfs_controller.set_vfs_setting(true, VfsSettings::PrintRedirect);
+    // Enable printing of file redirects
+    vfs_settings_service.set_vfs_setting(true, VfsSettings::PrintRedirect);
+
+    // Disable the VFS entirely
+    vfs_settings_service.disable();
     ```
 
 === "C++"
     ```cpp
-    _vfsController->SetVfsSetting(true, VfsSettings::PrintRedirect);
+    // Enable printing of file redirects
+    _vfsSettingsService->SetVfsSetting(true, VfsSettings::PrintRedirect);
+
+    // Disable the VFS entirely
+    _vfsSettingsService->Disable();
     ```

@@ -114,7 +114,7 @@ void DoSomethingWithService()
 }
 ```
 
-#### Life Cycle & Disposal
+#### Life Cycle and Disposal
 
 !!! info "Some Reloaded mods support real-time loading and unloading."
 
@@ -347,9 +347,9 @@ The following (Reloaded-II) mods can be used as examples.
 - [ ] Add Link to 'Mod Configuration' Page when ready. [here](#set-a-dependency-on-the-other-mod)
 - [ ] Add instructions on setting a dependency in Reloaded3. [here](#set-a-dependency-on-the-other-mod)
 - [ ] Update Diagrams with Reloaded-III Examples.
-- [ ] Update linked mods in [Add NuGet Reference to Other Mod](#how-to-use-library) with Reloaded-III Examples.
+- [ ] Update linked mods in [Add NuGet Reference to Other Mod](#add-nuget-reference-to-other-mod) with Reloaded-III Examples.
 - [ ] Rename `IDependencyInjector` (based on feedback).
-- [ ] Show which field to check in [Life Cycle & Disposal](#life-cycle--disposal) for determining if unloadable.
+- [ ] Show which field to check in [Life Cycle & Disposal](#life-cycle-and-disposal) for determining if unloadable.
 
 [coreclr-backend]: ./CoreCLR.md#assembly-load-contexts
 [dependency-injection]: ../../Images/DependencyInjection.png

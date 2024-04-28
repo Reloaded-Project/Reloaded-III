@@ -89,5 +89,5 @@ A lot of microbenchmarks are available in the original C# project under the
 [redirection-tree]: ./Implementation-Details/Trees.md#redirection-tree
 [reloaded-memory-hash]: https://github.com/Reloaded-Project/Reloaded.Memory/blob/5d13b256c89ffa2b18bf430b6ef39925e4324412/src/Reloaded.Memory/Internals/Algorithms/UnstableStringHash.cs#L16
 [reloaded-memory-toupper]: https://github.com/Reloaded-Project/Reloaded.Memory/blob/5d13b256c89ffa2b18bf430b6ef39925e4324412/src/Reloaded.Memory/Internals/Backports/System/Globalization/TextInfo.cs#L79
-[string-pooling]: ./Implementation-Details/Optimizations.md#string-pooling
+[string-pooling]: ./Implementation-Details/Optimizations.md#memory-storage
 [smhasher]: https://github.com/rurban/smhasher

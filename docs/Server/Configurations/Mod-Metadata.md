@@ -53,7 +53,7 @@ x64-v2 = "reloaded3.gamesupport.p5rpc.v2.dll"
 x64-v3 = "reloaded3.gamesupport.p5rpc.v3.dll"
 ```
 
-!!! note "It's not expected for mod authors to ship with multiple [instruction sets](#instruction-sets) outside of super high perf scenarios. This is just for example."
+!!! note "It's not expected for mod authors to ship with multiple [instruction sets][instruction-sets] outside of super high perf scenarios. This is just for example."
 
 [.NET CoreCLR Mod][coreclr-backend]:
 
@@ -90,6 +90,7 @@ Mod managers will automatically update this to appropriate ID during process of 
 [backend]: ../../Loader/Backends/About.md
 [community-repository]: ../../Services/Community-Repository.md
 [coreclr-backend]: ../../Loader/Backends/CoreCLR.md
+[instruction-sets]: ../../Loader/Backends/Native.md#instruction-sets
 [mod-configurations]: ./Mod-Configurations.md
 [native-backend]: ../../Loader/Backends/Native.md
 [package-toml]: ../Packaging/Package-Metadata.md

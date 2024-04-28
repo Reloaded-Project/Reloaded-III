@@ -282,7 +282,7 @@ sequenceDiagram
 <!-- Links -->
 [backends]: ./Backends/About.md
 [backend]: ./Backends/About.md#custom-backends
-[create-minidump]: ./Platforms/Windows.md#error-reporting
+[create-minidump]: ./Platforms/Windows.md#crash-handler
 [diagnostics]: ../Server/Diagnostics.md
 [drm]: ./Copy-Protection/About.md
 [layer-1]: #middlewareos-handling-mods-layer-1

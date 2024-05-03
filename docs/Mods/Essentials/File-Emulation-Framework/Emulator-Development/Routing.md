@@ -558,5 +558,11 @@ mod tests {
         );
     }
 }
-
 ```
+
+The algorithm below is technically O(n^2), however in practice it's O(n) because the number of directory
+separarators which we test against is 1, or very close to 1.
+
+When ported over to the actual emulator implementation, this should be benched, because with short
+strings used for directory names (likely <8 chars), doing a byte by byte check may be faster latency
+wise. (`memchr` is more optimised for throughput)

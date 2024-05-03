@@ -114,12 +114,13 @@ nav:
           - Optimizations: Mods/Essentials/Virtual-FileSystem/Implementation-Details/Optimizations.md
           - Trees: Mods/Essentials/Virtual-FileSystem/Implementation-Details/Trees.md
         - Reference Performance Numbers: Mods/Essentials/Virtual-FileSystem/Performance.md
-
       - File Emulation Framework:
         - About: Mods/Essentials/File-Emulation-Framework/About.md
         - Read Performance of Solid Files: Mods/Essentials/File-Emulation-Framework/Read-Performance.md
         - Emulator Development Info:
+          - Implementing an Emulator: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Implementing-Emulator.md
           - Guidelines: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Guidelines.md
+          - Emulator API: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Emulator-API.md
     - Essentials (Libraries):
       - Merged File Cache:
         - About: Mods/Libraries/Merged-File-Cache/About.md

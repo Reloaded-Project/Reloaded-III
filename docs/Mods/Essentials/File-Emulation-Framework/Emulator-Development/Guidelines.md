@@ -87,4 +87,4 @@ require multiple calls to your own implementation of `Read()`.
 
     e.g. Source folders.
 
-[multistream]: ./implementation-utilities.md#multi-stream
+[multistream]: ./Emulator-API.md#multistream

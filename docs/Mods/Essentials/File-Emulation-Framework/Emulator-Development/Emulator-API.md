@@ -1,96 +1,157 @@
-## High Performance Logging
+!!! warning "This documentation is a translation of the existing C# documentation into Rust"
 
-!!! tip
+    Final APIs may slightly differ. The translation was done by an LLM.
 
-    The `Logger` class in `FileEmulationFramework.Lib` provides an abstraction over Reloaded's
-    `ILogger` that allows you to conditionally make log messages without the need for memory allocation.
+## Core API
 
-```csharp
-_log = new Logger(_logger, _configuration.LogLevel);
+!!! info "This is the API that's most commonly used inside emulator implementations."
+
+### Streams
+
+#### MultiStream
+
+!!! info "`MultiStream` combines multiple streams into a single stream with read and seek support."
+
+The `MultiStream` is the primary abstraction used in building emulators. Most emulators simply
+build a `MultiStream` and use that to resolve read calls directly.
+
+This abstraction is very highly optimised, and is the recommended way to build emulators.
+
+```rust
+// Build a Stream.
+let streams = vec![
+    StreamOffsetPair::new(File::open("file1.bin").unwrap(), OffsetRange::from_start_and_length(0, 1024)),
+    StreamOffsetPair::new(File::open("file2.bin").unwrap(), OffsetRange::from_start_and_length(1024, 2048)),
+];
+
+let multi_stream = MultiStream::new(streams);
+
+// Read data spanning both streams
+let mut data = vec![0; 2048];
+multi_stream.read(&mut data).unwrap();
 ```
 
-Methods such as `_log.Info` will only create the string and log it if that specific log level
-is enabled; provided you use the various overloads that accept generics e.g. `Info<T1>(string format, T1 item1)`.
+#### PaddingStream
 
-Avoid the overloads with single message parameter unless you require custom formatting;
-in which case you should add manual guards via `if (_log.IsEnabled(level))`.
+!!! info "Stream that fills the read buffer with a single, user specified byte."
 
-## File Slices
+Emulated files will very often have padding bytes, for example, padding between the end of one file
+and the start of another file.
 
-!!! info
+`PaddingStream` is used to supply that padding, when used in conjunction with [MultiStream](#multistream).
 
-    The `FileSlice` class can be used to provide an abstraction that allows you to read a region of a given file.
+```rust
+// Create 1024 bytes of 0x00 padding
+let padding_stream = PaddingStream::new(0x00, 1024);
+```
 
-When building Stream based emulators, you will often provide a mixture of the original data and
-new data. This class will allow you to more easily fetch the original data when needed.
+#### FileSliceStream
 
-### Merging File Slices
+!!! info "A `Stream` abstraction that wraps a [FileSlice](#fileslice)."
 
-!!! info
+These structs allow you to read data from a [FileSlice](#fileslice) as if it were a stream.
 
-    Slices of the same file that touch each other (e.g. `0-4095` + `4096-65536`) can be merged into singular, larger slices.
+Example:
 
-    This is sometimes possible when working with archives containing file data whereby multiple files are laid out side by side.
+```rust
+let slice = FileSlice::new(1024, 4096, "file.bin");
+let stream = FileSliceStream::new(slice);
+```
 
-!!! tip
+### Primitives
 
-    Merging can help improve performance of resolving `Read` requests (i.e. `IEmulator.ReadData`). Specifically the performance of [StreamMixer](#streammixer)
+#### FileSlice
 
-Try using the `FileSlice.TryMerge` API.
+!!! info "An abstraction that allows you to read a region of a given file."
 
-If you are using streams backed by `FileSlice` (that use `IFileSliceStream`), you can merge them using `FileSliceStreamExtensions.TryMerge` for individual streams or `FileSliceStreamExtensions.MergeStreams` for collections.
+When building emulators, you will often provide a mixture of the original data and new data.
+This struct will allow you to more easily fetch the original data when needed.
 
-## File Slice Stream
+```rust
+// Create a slice for the first 1024 bytes of a file
+let slice = FileSlice::new(0, 1024, "path/to/file.bin");
+```
 
-!!! info
+##### Merging File Slices
 
-    The `FileSliceStream` classes provide an abstraction that wrap `FileSlice`(s).
-    Currently two implementations exist, `FileSliceStreamFs` and `FileSliceStreamW32`.
+!!! tip "Slices of the same file that touch each other can be merged into singular, larger slices."
 
-!!! tip
+!!! tip "This is usually automatically handled by [MultiStream](#multistream) under the hood."
 
-    `FileSliceStreamFs` is backed by FileStream. Use this class if application makes many reads with small amount of data (e.g. <= 256 byte reads.)
+For example, `0-4095` and `4096-65536` can be merged into a single slice of `0-65536`.
 
-!!! tip
+In practice, this is sometimes possible when working with archives containing
+file data whereby multiple files are laid out side by side.
 
-    `FileSliceStreamW32` is backed by Windows API. Use this class if reads above 4096 bytes are expected.
+```rust
+let first = FileSlice::new(0, 4096, "file.bin");
+let second = FileSlice::new(4096, 4096, "file.bin");
 
-Should be simple enough.
+if let Some(merged) = FileSlice::try_merge(first, second) {
+    // Successfully merged into 'merged'
+}
+```
 
-## OffsetRange
+If you are using streams backed by `FileSlice`, you can merge them
+using `FileSliceStream::try_merge` for individual streams or
+`FileSliceStream::merge_streams` when you have multiple streams.
 
-A utility class that stores a start and end offset [inclusive]. Can be used for testing for overlaps, testing of address is in range, etc.
+#### OffsetRange
 
-## Multi Stream
+!!! info "A utility struct that stores a start and end offset [inclusive]."
 
-!!! info
+Can be used for testing for overlaps, testing if an address is in range, etc.
 
-    `MultiStream` combines multiple streams into a single stream with read and seek support. Highly optimised.
+```rust
+let range = OffsetRange::from_start_and_length(1024, 512);
+let is_in_range = OffsetRange::contains_point(&range, 1536); // true
+```
 
-!!! tip
+##### `OffsetRangeSelector`
 
-    It is possible to build entire files using this stream and just resolve read requests `IEmulator.ReadData` by seeking and reading from this stream. This is a recommended approach.
+!!! info "Utility for quickly finding the offset range that contains a given offset."
 
-## Padding Stream
+The `OffsetRangeSelector` is used to quickly find the index of an `OffsetRange` that contains a
+given offset. It assumes that the provided `OffsetRange`s are sorted in ascending order and
+without gaps.
 
-!!! info
+Internally, the selector uses binary search to efficiently locate the correct range index.
 
-    Stream that fills the read buffer with a single, user specified byte.
+Example usage:
 
-This can be used in conjunction with [MultiStream](#multistream) to provide padding for emulated files.
+```rust
+let ranges = vec![
+    OffsetRange::from_start_and_length(0, 1024),
+    OffsetRange::from_start_and_length(1024, 2048),
+    OffsetRange::from_start_and_length(2048, 4096),
+];
 
-## Mathematics
+let selector = OffsetRangeSelector::new(ranges);
+let index = selector.select(1500); // Returns 1
+```
 
-!!! info
+The data should be internally represented as `0`, `1024`, `2048`, `4096`,
+with the ranges joined.
 
-    This class has some common mathematics related operations, such as rounding up numbers to add padding to files.
+## Utility API
 
-## Fast Directory Searcher
+### `Mathematics` Struct
 
-!!! tip
+This struct has some common mathematics related operations, such as rounding up numbers to add padding to files.
 
-    The `WindowsDirectorySearcher` class can be used for extremely fast searching of files on the filesystem.
+```rust
+let rounded_up = Mathematics::round_up(1234, 512); // 1536
+```
 
-This implementation is around 3.5x faster than the built in .NET one at the time of writing; using the innermost `NtQueryDirectoryFile` API for fetching files.
+### `DirectorySearcher` Struct
 
-It's forked from the implementation in `Reloaded.Mod.Loader.IO`; with Multithreading removed since it wouldn't be helpful with our too small data/file sets.
+!!! info "The `DirectorySearcher` struct can be used for extremely fast searching of files on the filesystem."
+
+On Windows, this uses a custom implementation which uses the `NtQueryDirectoryFile` under the hood.
+For Linux, this uses the standard Rust library as that is already efficient.
+
+Expect a considerable speedup over the built-in Rust implementation.
+
+```rust
+let (files, directories) = DirectorySearcher::get_directory_contents_recursive("C:/MyFolder");
+```

@@ -43,26 +43,31 @@ This binary is responsible for, among other things, syncing cloud saves. Therefo
 !!! info "Or at least the possible ones I can think of"
 
 **1. Dumping the EXE from memory of a running game:**
+
 - We could do this, but it'd be very poor User Experience.
 
 **2. Using a known DLL name with [DLL Hijacking][dll-hijacking]:**
+
 - Possible via [Community Repository][community-repository], but this is not a good solution for unknown apps.
 - Possible via dumping the EXE from memory, but leads to poor UX.
 - Does not fix the issue of the binary being encrypted, leading to limited functionality.
 
 **3. DLL Injection into Suspended Process**
+
 - i.e. Force skipping `gamelaunchhelper.exe` to boot into the game directly.
 - Can be done via `Invoke-CommandInDesktopPackage` in PowerShell.
 - Does not fix the issue of the binary being encrypted, leading to limited functionality.
 - Causes issues with cloud saves.
 
 **4. Replacing the main game EXE with DLL Injector Stub**
+
 - DLL Injection by renaming `P5R.exe` to `P5R-orig.exe` and placing DLL Injector as `P5R.exe`, which then runs and injects into `P5R-orig.exe`.
 - Basically it leads to `gamelaunchhelper.exe` running our injector.
 - Fixes cloud save issue.
 - Does not fix the issue of the binary being encrypted, leading to limited functionality.
 
 **5. Decrypting the EXE**
+
 - Basically removing the leftover UWP security model functionality.
 - When executing code inside the AppX container, the EXE can be read decrypted.
 - So when we make a copy of the EXE inside the game, the copied file is decrypted.

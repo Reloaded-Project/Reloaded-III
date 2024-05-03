@@ -6,7 +6,7 @@
 
 !!! note "`route.Matches` checks if the route ends with `input`."
 
-    So if the full path is `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS`,
+    So if the route is `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS`,
     `route.Matches` will return `true` for `EVENT_ADX_E.AFS` because it ends with
     `EVENT_ADX_E.AFS`.
 

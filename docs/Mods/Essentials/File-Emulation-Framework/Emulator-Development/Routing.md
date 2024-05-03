@@ -92,3 +92,26 @@ to `parent.bin`.
 | parent.bin        | parent.bin_suffix/child        | false                      | `parent.bin` is not a prefix of `parent.bin_suffix`.               |
 | folder/parent.bin | folder/parent.bin_suffix/child | false                      | `folder/parent.bin` is not a prefix of `folder/parent.bin_suffix`. |
 
+The (untested) code for this is:
+
+```csharp
+public static bool RouteMatches(ReadOnlySpan<char> route, ReadOnlySpan<char> group)
+{
+    int routeIndex = route.Length - 1;
+    int groupIndex = group.Length - 1;
+
+    // Find the matching part of the route
+    while (routeIndex >= 0 && groupIndex >= 0 && route[routeIndex] == group[groupIndex])
+    {
+        routeIndex--;
+        groupIndex--;
+    }
+
+    // Check if the entire group was matched
+    if (groupIndex >= 0)
+        return false;
+
+    // Check if the matched part in route is preceded by a directory separator or is at the start of the route
+    return routeIndex < 0 || route[routeIndex] == Path.DirectorySeparatorChar;
+}
+```

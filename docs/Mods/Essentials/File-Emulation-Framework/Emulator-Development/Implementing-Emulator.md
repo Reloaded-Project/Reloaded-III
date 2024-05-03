@@ -190,7 +190,7 @@ These are then added to the `_routeGroupTuples` list, with the `route`(s) being
 /// <param name="route">The route to create AFS Builder for.</param>
 /// <param name="builder">The created builder.</param>
 /// <returns>True if a builder could be made, else false (if there are no files to modify this AFS).</returns>
-public bool TryCreateFromPath(Route route, out AfsBuilder builder)
+public bool TryCreateFromRoute(Route route, out AfsBuilder builder)
 {
     builder = new AfsBuilder();
     foreach (var group in _routeGroupTuples)
@@ -213,7 +213,7 @@ public bool TryCreateFromPath(Route route, out AfsBuilder builder)
 The logic here is pretty simple.
 
 Suppose a file with path `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS` is being opened.
-This will be our `route` parameter, in `TryCreateFromPath`.
+This will be our `route` parameter, in `TryCreateFromRoute`.
 
 We loop over our routes (listed below) and check which match the requested path.
 

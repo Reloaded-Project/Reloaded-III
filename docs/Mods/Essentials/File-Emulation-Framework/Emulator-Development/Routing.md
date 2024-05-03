@@ -23,12 +23,21 @@ Standard routes:
 
 Nested files of same type:
 
-| route                                | group.Route               | route.Matches(group.Route) | Description                                     |
-| ------------------------------------ | ------------------------- | -------------------------- | ----------------------------------------------- |
-| parent.bin/child.bin                 | child.bin                 | true                       | Matches `child.bin` at end.                     |
-| parent.bin/child.bin                 | parent.bin/child.bin      | true                       | Matches `parent.bin/child.bin` at end.          |
-| parent.bin/parentSubfolder/child.bin | parent.bin/child.bin      | false                      | Not direct descendant of `parent.bin`.          |
-| parent.bin/parentSubfolder/child.bin | parentSubfolder/child.bin | true                       | Matches `child.bin` at end. May match multiple. |
+| route                                | group.Route               | route.Matches(group.Route) | Description                                                             |
+| ------------------------------------ | ------------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| parent.bin/child.bin                 | child.bin                 | true                       | Matches `child.bin` at end.                                             |
+| parent.bin/child.bin                 | parent.bin/child.bin      | true                       | Matches `parent.bin/child.bin` at end.                                  |
+| parent.bin/parentSubfolder/child.bin | parent.bin/child.bin      | false                      | Not direct descendant of `parent.bin`.                                  |
+| parent.bin/parentSubfolder/child.bin | parentSubfolder/child.bin | true                       | Matches `child.bin` at end. May match multiple parent folders/archives. |
+
+Nested files of different type:
+
+| route                                | group.Route               | route.Matches(group.Route) | Description                                                             |
+| ------------------------------------ | ------------------------- | -------------------------- | ----------------------------------------------------------------------- |
+| parent.bin/child.dds                 | child.dds                 | true                       | Matches `child.dds` at end.                                             |
+| parent.bin/child.bin                 | parent.bin/child.dds      | true                       | Matches `parent.bin/child.dds` at end.                                  |
+| parent.bin/parentSubfolder/child.dds | parent.bin/child.dds      | false                      | Not direct descendant of `parent.bin`.                                  |
+| parent.bin/parentSubfolder/child.dds | parentSubfolder/child.dds | true                       | Matches `child.dds` at end. May match multiple parent folders/archives. |
 
 Unintended Actions / Collateral Damage:
 

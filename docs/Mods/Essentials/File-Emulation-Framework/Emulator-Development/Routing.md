@@ -6,19 +6,19 @@
 
 ## Route.Matches
 
-!!! note "`route.Matches` checks if the route ends with `input`."
+!!! note "`route.matches_no_subfolder` checks if the route ends with `input`."
 
     While also accounting for subfolders.
 
     So if the route is `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS`,
-    `route.Matches` will return `true` for `EVENT_ADX_E.AFS` because it ends with
+    `route.matches_no_subfolder` will return `true` for `EVENT_ADX_E.AFS` because it ends with
     `EVENT_ADX_E.AFS`.
 
-!!! info "A Truth table for `route.Matches(group.Route)`."
+!!! info "A Truth table for `route.matches_no_subfolder(group.Route)`."
 
 Standard routes:
 
-| route        | group.Route | route.Matches(group.Route) | Description                          |
+| route        | group.Route | route.matches(group.Route) | Description                          |
 | ------------ | ----------- | -------------------------- | ------------------------------------ |
 | a.bin        | b.bin       | false                      | `b.bin` not at end of `a.bin`        |
 | b.bin        | b.bin       | true                       | Direct match.                        |
@@ -27,7 +27,7 @@ Standard routes:
 
 Nested files of same type:
 
-| route                                | group.Route               | route.Matches(group.Route) | Description                                                             |
+| route                                | group.Route               | route.matches(group.Route) | Description                                                             |
 | ------------------------------------ | ------------------------- | -------------------------- | ----------------------------------------------------------------------- |
 | parent.bin/child.bin                 | child.bin                 | true                       | Matches `child.bin` at end.                                             |
 | parent.bin/child.bin                 | parent.bin/child.bin      | true                       | Matches `parent.bin/child.bin` at end.                                  |
@@ -36,7 +36,7 @@ Nested files of same type:
 
 Nested files of different type:
 
-| route                                | group.Route               | route.Matches(group.Route) | Description                                                             |
+| route                                | group.Route               | route.matches(group.Route) | Description                                                             |
 | ------------------------------------ | ------------------------- | -------------------------- | ----------------------------------------------------------------------- |
 | parent.bin/child.dds                 | child.dds                 | true                       | Matches `child.dds` at end.                                             |
 | parent.bin/child.dds                 | parent.bin/child.dds      | true                       | Matches `parent.bin/child.dds` at end.                                  |
@@ -45,7 +45,7 @@ Nested files of different type:
 
 Unintended Actions / Collateral Damage:
 
-| route                        | group.Route | route.Matches(group.Route) | Description                                                               |
+| route                        | group.Route | route.matches(group.Route) | Description                                                               |
 | ---------------------------- | ----------- | -------------------------- | ------------------------------------------------------------------------- |
 | ModBFolder/child.bin         | child.bin   | true                       | Overrides file `child.bin` in another folder. ❌ Potentially Undesireable. |
 | child.bin/.../ModBFolder/... | child.bin   | false                      | ModBFolder doesn't end with `child.bin`.                                  |
@@ -80,7 +80,9 @@ For example, an archive may have multiple nested folders.
 For example, a mod may have the path `parent.bin/child/child.dds`, which should add `child/child.dds`
 to `parent.bin`.
 
-| route             | group.Route                             | route.Matches(group.Route) | Description                                                        |
+For this we provide specialised method `matches_with_subfolder`.
+
+| route             | group.Route                             | route.matches(group.Route) | Description                                                        |
 | ----------------- | --------------------------------------- | -------------------------- | ------------------------------------------------------------------ |
 | parent.bin        | parent.bin/child                        | true                       | Matched via `parent.bin` in front.                                 |
 | parent.bin        | parent.bin/child/child2                 | true                       | Matched via `parent.bin` in front.                                 |
@@ -96,7 +98,8 @@ to `parent.bin`.
 
 ### Code
 
-The algorithm for this is nontrivial, so here is a reference implementation.
+The algorithm for this is nontrivial, so here is a reference implementation
+for `matches_with_subfolder`
 
 ```rust
 use std::path::MAIN_SEPARATOR;

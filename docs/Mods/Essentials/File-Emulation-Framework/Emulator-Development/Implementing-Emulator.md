@@ -197,7 +197,7 @@ public bool TryCreateFromRoute(Route route, out AfsBuilder builder)
     {
         // group.Route is "EVENT_ADX_E.AFS" or "EVENT_ADX_J.AFS" in this example.
         // it is NOT the full file path
-        if (!route.Matches(group.Route))
+        if (!route.MatchesNoSubfolder(group.Route))
             continue;
 
         // Add files to builder.
@@ -222,16 +222,20 @@ EVENT_ADX_J.AFS
 EVENT_ADX_E.AFS
 ```
 
-`route.Matches` will test the `route` parameter against both of these. In this case, `EVENT_ADX_E.AFS`
+`route.MatchesNoSubfolder` will test the `route` parameter against both of these. In this case, `EVENT_ADX_E.AFS`
 will match, so we will add the files from that folder into the Builder's Input.
 
-!!! note "`route.Matches` checks if the route ends with `input`."
+!!! note "`route.MatchesNoSubfolder` checks if the route ends with `input`."
 
     So if the full path is `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS`,
     `route.Matches` will return `true` for `EVENT_ADX_E.AFS` because it ends with
     `EVENT_ADX_E.AFS`.
 
+There is also `route.MatchesWithSubfolder`, which will allow for use of subfolders, at the cost of some speed.
+
 See also: [Route.Matches truth table.][route-matches]
+
+### Handling Events from the Emulator
 
 [afs-emulator]: https://github.com/Sewer56/FileEmulationFramework/tree/main/Emulator/AFS.Stream.Emulator
 [route-matches]: ./Routing.md#routematches

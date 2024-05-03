@@ -2,9 +2,13 @@
 
 !!! info "This contains additional information on routing for developers."
 
+    It may also provide insight on how a function should be implemented.
+
 ## Route.Matches
 
 !!! note "`route.Matches` checks if the route ends with `input`."
+
+    While also accounting for subfolders.
 
     So if the route is `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS`,
     `route.Matches` will return `true` for `EVENT_ADX_E.AFS` because it ends with
@@ -65,3 +69,26 @@ This allows for recursive emulation of files.
     We should avoid overriding files outside of game folders when that is not desireable.
     To avoid this, we should write a diagnostic to ensure people specify top level archives
     as `GameFolderName/file.afs` or `GameFolderName/data/file.afs` rather than just `file.afs`.
+
+### Handling Subfolders
+
+!!! info "This is a special case."
+
+Sometimes an emulated file may have a hierarchy of internal files.
+For example, an archive may have multiple nested folders.
+
+For example, a mod may have the path `parent.bin/child/child.dds`, which should add `child/child.dds`
+to `parent.bin`.
+
+| route             | group.Route                    | route.Matches(group.Route) | Description                                                        |
+| ----------------- | ------------------------------ | -------------------------- | ------------------------------------------------------------------ |
+| parent.bin        | parent.bin/child               | true                       | Matched via `parent.bin` in front.                                 |
+| parent.bin        | parent.bin/child/child2        | true                       | Matched via `parent.bin` in front.                                 |
+| folder/parent.bin | parent.bin/child               | true                       | Matched via `parent.bin` in front.                                 |
+| folder/parent.bin | parent.bin/child/child2        | true                       | Matched via `parent.bin` in front.                                 |
+| folder/parent.bin | folder/parent.bin/child        | true                       | Matched via `folder/parent.bin` in front.                          |
+| folder/parent.bin | folder/parent.bin/child/child2 | true                       | Matched via `folder/parent.bin` in front.                          |
+| folder/parent.bin | folder/other/parent.bin/child  | false                      | `folder/parent.bin` != `folder/other`                              |
+| parent.bin        | parent.bin_suffix/child        | false                      | `parent.bin` is not a prefix of `parent.bin_suffix`.               |
+| folder/parent.bin | folder/parent.bin_suffix/child | false                      | `folder/parent.bin` is not a prefix of `folder/parent.bin_suffix`. |
+

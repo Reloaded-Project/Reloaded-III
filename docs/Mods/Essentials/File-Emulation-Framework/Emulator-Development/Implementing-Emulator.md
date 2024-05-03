@@ -225,27 +225,13 @@ EVENT_ADX_E.AFS
 `route.Matches` will test the `route` parameter against both of these. In this case, `EVENT_ADX_E.AFS`
 will match, so we will add the files from that folder into the Builder's Input.
 
-!!! note "`route.Matches` checks if the input is a substring of the route."
+!!! note "`route.Matches` checks if the route ends with `input`."
 
     So if the full path is `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS`,
-    `route.Matches` will return `true` for `EVENT_ADX_E.AFS`.
+    `route.Matches` will return `true` for `EVENT_ADX_E.AFS` because it ends with
+    `EVENT_ADX_E.AFS`.
 
-!!! danger "By extension, there is a risk of false positives"
-
-    If the user's game folder is in a path like `C:/Users/Username/Desktop/EVENT_ADX_E.AFS/GameName/dvdroot/BGM/EVENT_ADX_E.AFS`,
-    then the route will still match, even for unrelated AFS files because it's an earlier part of the
-    path.
-
-Route truth table:
-
-| Route        | group.Route | Matches | Description                          |
-| ------------ | ----------- | ------- | ------------------------------------ |
-| a.bin        | b.bin       | false   | `b.bin` not at end of `a.bin`        |
-| b.bin        | b.bin       | true    | Direct match.                        |
-| folder/a.bin | a.bin       | true    | Matches `a.bin` at end.              |
-| folder/a.bin | b.bin       | false   | `b.bin` not at end of `folder/a.bin` |
-
-### Emulator Implementation
-
+See also: [Route.Matches truth table.][route-matches]
 
 [afs-emulator]: https://github.com/Sewer56/FileEmulationFramework/tree/main/Emulator/AFS.Stream.Emulator
+[route-matches]: ./Routing.md#routematches

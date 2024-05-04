@@ -119,6 +119,7 @@ nav:
         - Read Performance of Solid Files: Mods/Essentials/File-Emulation-Framework/Read-Performance.md
         - Emulator Development Info:
           - Implementing an Emulator: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Implementing-Emulator.md
+          - Emulator Cookbook: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Emulator-Cookbook.md
           - Routing: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Routing.md
           - Guidelines: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Guidelines.md
           - Emulator API: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Emulator-API.md

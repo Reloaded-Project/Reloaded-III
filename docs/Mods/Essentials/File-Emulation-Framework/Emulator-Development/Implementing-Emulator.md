@@ -9,6 +9,11 @@
 
     This code was translated to Rust via an LLM, and then updated by hand.
 
+!!! note "The code below uses `format!` for clarity."
+
+    In the real code, a different API should be used to avoid increasing the binary size
+    by unreasonable amounts.
+
 Use this page as a general guide to the process of creating a new emulator.
 
 Once your emulator is done, make sure it adheres to the [Guidelines][guidelines].

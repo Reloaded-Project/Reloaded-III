@@ -11,7 +11,7 @@
 
 Use this page as a general guide to the process of creating a new emulator.
 
-Once your emulator is done, make sure it adheres for the [Guidelines][guidelines].
+Once your emulator is done, make sure it adheres to the [Guidelines][guidelines].
 And for more advanced interactions and use cases, see [Emulator Cookbook][emulator-cookbook].
 
 ## Initialization
@@ -26,55 +26,55 @@ sequenceDiagram
     participant Emulator Mod
     participant FileEmulationFramework
 
-    Emulator Mod->>Mod Loader: Register 'Mod.OnModLoading' callback
-    Emulator Mod->>Mod Loader: Register 'Mod.OnLoaderInitialized' callback
-    Emulator Mod->>FileEmulationFramework: Register trait implementing 'IEmulator' callback
+    Emulator Mod->>Mod Loader: Register 'Mod.on_mod_loading' callback
+    Emulator Mod->>Mod Loader: Register 'Mod.on_loader_initialized' callback
+    Emulator Mod->>FileEmulationFramework: Register struct implementing 'IEmulator' trait
 ```
 
-A Reloaded-II example:
+A Reloaded-II example in Rust:
 
-```csharp
-_modLoader.ModLoading += OnModLoading;
-_modLoader.OnModLoaderInitialized += OnModLoaderInitialized;
-_emulator = new AfsEmulator();
+```rust
+mod_loader.on_mod_loading(on_mod_loading);
+mod_loader.on_mod_loader_initialized(on_mod_loader_initialized);
+let emulator = AfsEmulator::new();
 
 // Get emulation framework API and register our emulator
-_modLoader.GetService<IEmulationFramework>().TryGetTarget(out var framework);
-framework!.Register(_emulator);
+let framework = mod_loader.get_service::<IEmulationFramework>().unwrap();
+framework.register(Box::new(emulator));
 ```
 
 There are 2 callbacks involved here.
 
-### OnModLoading
+### on_mod_loading
 
 !!! info "This is called when the mod loader is intializing a mod."
 
 In this callback, you inspect the other mods' files and add them to the emulator input.
 
-```csharp
-public void OnModLoading(string modFolder)
-{
-    // 'Constants.inputFolder' is 'AFS' in this case,
+```rust
+fn on_mod_loading(mod_folder: &str) {
+    // 'Constants.input_folder' is 'AFS' in this case,
     // i.e. folder 'AFS' in the other mod's folder.
-    var inputFolder = $"{modFolder}/{Constants.inputFolder}";
+    let input_folder = format!("{}/{}", mod_folder, Constants.input_folder);
 
-    if (Directory.Exists(inputFolder))
-        _builderFactory.AddFromFolders(inputFolder);
+    if Path::new(&input_folder).is_dir() {
+        builder_factory.add_from_folders(&input_folder);
+    }
 }
 ```
 
 We use the 'builder' pattern to create emulators.
 The significance of which will be explained in [Building Emulated Files](#building-emulated-files).
 
-### OnModLoaderInitialized
+### on_mod_loader_initialized
 
 !!! info "This is called after all mods have finished initializing."
 
-In this callback, unsubscribe `OnModLoading` to stop receiving runtime loaded mods.
+In this callback, unsubscribe `on_mod_loading` to stop receiving runtime loaded mods.
 
-```csharp
-_modLoader.ModLoading -= OnModLoading;
-_modLoader.OnModLoaderInitialized -= OnModLoaderInitialized;
+```rust
+mod_loader.on_mod_loading(None);
+mod_loader.on_mod_loader_initialized(None);
 ```
 
 ## Building Emulated Files
@@ -87,7 +87,7 @@ Emulated files are lazily built 'Just in Time' (JIT) as the original files are a
 flowchart TD
     A(FileEmulationFramework loads file with route 'BGM.AFS')
     A --> B(AfsEmulator loads file with route 'BGM.AFS')
-    B --> C(AfsBuilderFactory creates AfsBuilder for 'BGM.AFS', adds input info, and calls AfsBuilder.Build)
+    B --> C(AfsBuilderFactory creates AfsBuilder for 'BGM.AFS', adds input info, and calls AfsBuilder.build)
 ```
 
 Once all mods load, and the game logic begins, the game will eventually try to access
@@ -106,33 +106,36 @@ but usually follow a pattern described below.
 
 #### Collecting Input Data
 
-!!! info "This is called from your [OnModLoading](#onmodloading) callback."
+!!! info "This is called from your [on_mod_loading](#on_mod_loading) callback."
 
-```csharp
-private List<RouteGroupTuple> _routeGroupTuples = new();
+```rust
+struct RouteGroupTuple {
+    route: Route,
+    files: FileGroup,
+}
 
-/// <summary>
-/// Adds all available routes from an input folder.
-/// </summary>
-/// <param name="inputFolder">Folder containing the redirector's files.</param>
-public void AddFromFolders(string inputFolder)
-{
-    // Get contents of folder. These return files grouped by directory.
-    DirectorySearcher.GetDirectoryContentsRecursiveGrouped(inputFolder, out var groups);
+struct AfsBuilderFactory {
+    route_group_tuples: Vec<RouteGroupTuple>,
+}
 
-    // Find matching folders.
-    foreach (var group in groups)
-    {
-        if (group.Files.Length <= 0)
-            continue;
+impl AfsBuilderFactory {
+    /// Adds all available routes from an input folder.
+    pub fn add_from_folders(&mut self, input_folder: &OsStr) {
+        // Get contents of folder. These return files grouped by directory.
+        let groups = DirectorySearcher::get_directory_contents_recursive_grouped(input_folder);
 
-        var route = Route.GetRoute(inputFolder, group.Directory.FullPath);
+        // Find matching folders.
+        for group in groups {
+            if !group.has_files() {
+                continue;
+            }
 
-        _routeGroupTuples.Add(new RouteGroupTuple()
-        {
-            Route = new Route(route),
-            Files = group
-        });
+            let route = Route::get_route(input_folder, group.get_directory_full_path());
+            self.route_group_tuples.push(RouteGroupTuple {
+                route: Route::new(route),
+                files: group,
+            });
+        }
     }
 }
 ```
@@ -156,7 +159,7 @@ ModFolder
 ```
 
 We get `inputFolder` pointing to the full path of `ModFolder/FEmulator/AFS`.
-The call to `GetDirectoryContentsRecursiveGrouped` will return us 2 groups (folders) with
+The call to `get_directory_contents_recursive_grouped` will return us 2 groups (folders) with
 
 ```
 EVENT_ADX_E.AFS
@@ -174,7 +177,7 @@ EVENT_ADX_J.AFS
 └── 2_jumpu.adx
 ```
 
-These are then added to the `_routeGroupTuples` list, with the `route`(s) being
+These are then added to the `route_group_tuples` list, with the `route`(s) being
 `EVENT_ADX_E.AFS` and `EVENT_ADX_J.AFS`.
 
 !!! note "The routes for each folder is the path following `ModFolder/FEmulator/AFS`"
@@ -186,37 +189,38 @@ These are then added to the `_routeGroupTuples` list, with the `route`(s) being
 
 !!! info "This is called when the game [tries to access the file](#building-emulated-files)."
 
-```csharp
-/// <summary>
-/// Tries to create an AFS from a given route.
-/// </summary>
-/// <param name="route">The route to create AFS Builder for.</param>
-/// <param name="builder">The created builder.</param>
-/// <returns>True if a builder could be made, else false (if there are no files to modify this AFS).</returns>
-public bool TryCreateFromRoute(Route route, out AfsBuilder builder)
-{
-    builder = new AfsBuilder();
-    foreach (var group in _routeGroupTuples)
-    {
-        // group.Route is "EVENT_ADX_E.AFS" or "EVENT_ADX_J.AFS" in this example.
-        // it is NOT the full file path
-        if (!route.MatchesNoSubfolder(group.Route))
-            continue;
+```rust
+impl AfsBuilderFactory {
+    /// Tries to create an AFS from a given route.
+    /// # Arguments
+    /// * `route` - The route to create AFS Builder for.
+    /// # Returns
+    /// * A builder which may or may not have files added to it
+    pub fn try_create_from_route(&mut self, route: &Route) -> AfsBuilder {
+        let mut builder = AfsBuilder::new();
+        for group in &self.route_group_tuples {
+            // group.route is "EVENT_ADX_E.AFS" or "EVENT_ADX_J.AFS" in this example.
+            // it is NOT the full file path
+            if !route.matches_no_subfolder(&group.route) {
+                continue;
+            }
 
-        // Add files to builder.
-        var dir = group.Files.Directory.FullPath;
-        foreach (var file in group.Files.Files)
-            builder.AddOrReplaceFile(Path.Combine(dir, file));
+            // Add files to builder.
+            let dir = &group.get_directory_full_path();
+            for file in &group.get_files() {
+                builder.add_or_replace_file(Path::new(dir).join(file));
+            }
+        }
+
+        builder
     }
-
-    return builder != null;
 }
 ```
 
 The logic here is pretty simple.
 
 Suppose a file with path `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS` is being opened.
-This will be our `route` parameter, in `TryCreateFromRoute`.
+This will be our `route` parameter, in `try_create_from_route`.
 
 We loop over our routes (listed below) and check which match the requested path.
 
@@ -225,18 +229,18 @@ EVENT_ADX_J.AFS
 EVENT_ADX_E.AFS
 ```
 
-`route.MatchesNoSubfolder` will test the `route` parameter against both of these. In this case, `EVENT_ADX_E.AFS`
+`route.matches_no_subfolder` will test the `route` parameter against both of these. In this case, `EVENT_ADX_E.AFS`
 will match, so we will add the files from that folder into the Builder's Input.
 
-!!! note "`route.MatchesNoSubfolder` checks if the route ends with `input`."
+!!! note "`route.matches_no_subfolder` checks if the route ends with `input`."
 
     So if the full path is `<PATH_TO_GAME_FOLDER>/dvdroot/BGM/EVENT_ADX_E.AFS`,
-    `route.Matches` will return `true` for `EVENT_ADX_E.AFS` because it ends with
+    `route.matches` will return `true` for `EVENT_ADX_E.AFS` because it ends with
     `EVENT_ADX_E.AFS`.
 
-There is also `route.MatchesWithSubfolder`, which will allow for use of subfolders, at the cost of some speed.
+There is also `route.matches_with_subfolder`, which will allow for use of subfolders, at the cost of some speed.
 
-See also: [Route.Matches truth table.][route-matches]
+See also: [route.matches truth table.][route-matches]
 
 ### Handling File Open Requests from FileEmulationFramework
 
@@ -248,64 +252,67 @@ See also: [Route.Matches truth table.][route-matches]
 This is handled by your `IEmulator` that was registered during [initialization](#initialization).
 Below is a sample implementation of an `IEmulator` that handles AFS files (`AfsEmulator`).
 
-```csharp
-private readonly AfsBuilderFactory _builderFactory = new();
-private Dictionary<string, MultiStream?> _pathToStream = new(StringComparer.OrdinalIgnoreCase);
-
-public bool TryCreateFile(IntPtr handle, string filepath, Route route, out IEmulatedFile emulatedFile)
-{
-    // Check if we already made a custom AFS for this file.
-    emulatedFile = null!;
-
-    // Check extension.
-    // This is a quick filter to prevent unnecesarily reading from disk in actual file check.
-    if (!filepath.EndsWith(Constants.AfsExtension, StringComparison.OrdinalIgnoreCase))
-        return false;
-
-    // Check if we've previously created an emulated file.
-    if (_pathToStream.TryGetValue(filepath, out var multiStream))
-    {
-        // We temporarily set to `null` during building to avoid recursion into same file.
-        if (multiStream == null)
-            return false;
-
-        emulatedFile = new EmulatedFile<MultiStream>(multiStream);
-        return true;
-    }
-
-    return TryCreateEmulatedFile(handle, filepath, route, ref emulatedFile);
+```rust
+struct AfsEmulator {
+    builder_factory: AfsBuilderFactory,
+    path_to_stream: HashMap<String, Option<MultiStream>>,
 }
 
-public bool TryCreateEmulatedFile(IntPtr handle, string filepath, Route route, ref IEmulatedFile emulatedFile)
-{
-    // Create a builder for the requested route.
-    if (!_builderFactory.TryCreateFromPath(route, out var builder))
-        return false;
+impl IEmulator for AfsEmulator {
+    fn try_create_file(&mut self, handle: RawHandle, filepath: &OsStr, route: &Route) -> Option<Box<dyn IEmulatedFile>> {
+        // Check extension.
+        // This is a quick filter to prevent unnecesarily reading from disk in actual file check.
+        if !filepath.to_str().map(|s| s.to_lowercase().ends_with(Constants.afs_extension)).unwrap_or(false) {
+            return None;
+        }
 
-    // Check file type by reading actual file header.
-    if (!AfsChecker.IsAfsFile(handle))
-        return false;
+        // Check if we've previously created an emulated file.
+        if let Some(multi_stream) = self.path_to_stream.get(filepath.to_str().unwrap()) {
+            // We temporarily set to `None` during building to avoid recursion into same file.
+            if multi_stream.is_none() {
+                return None;
+            }
 
-    // Avoid recursion into same file for when `Build` reads from original file.
-    _pathToStream[filepath] = null;
+            return Some(Box::new(EmulatedFile::new(multi_stream.clone())));
+        }
 
-    // Make the emulated file.
-    var stream = builder!.Build(handle, filepath, _log);
-    _pathToStream[filepath] = stream;
-    emulatedFile = new EmulatedFile<MultiStream>(stream);
-    return true;
+        self.try_create_emulated_file(handle, filepath, route)
+    }
+
+    fn try_create_emulated_file(&mut self, handle: RawHandle, filepath: &OsStr, route: &Route) -> Option<Box<dyn IEmulatedFile>> {
+        // Create a builder for the requested route.
+        let builder = match self.builder_factory.try_create_from_route(route);
+        if builder.is_empty() {
+            return None;
+        }
+
+        // Check file type by reading actual file header.
+        if !is_afs_file(handle) {
+            return None;
+        }
+
+        // Avoid recursion into same file for when `build` reads from original file.
+        let file_path_str = filepath.to_string();
+        self.path_to_stream.insert(file_path_str, None);
+
+        // Make the emulated file.
+        let stream = builder.build(handle, filepath, None);
+        self.path_to_stream.insert(file_path_str, Some(stream.clone()));
+
+        Some(Box::new(EmulatedFile::new(stream)))
+    }
 }
 ```
 
 Most emulators follow this pattern closely, with the framework calling your
-`TryCreateFile` for every file it opens.
+`try_create_file` for every file it opens.
 
 The implementation of this method is split into the following parts:
 
 - A quick extension check, in this case, `.afs`.
-    - This allows us to quickly return in case our emulator isn't the right now.
+    - This allows us to quickly return in case our emulator isn't the right one.
 - A recursion lock.
-    - In case `Build` reads from the original file, we must not recursively create an emulator.
+    - In case `build` reads from the original file, we must not recursively create an emulator.
 - A call to [BuilderFactory](#builder-factory).
 - A concrete check for file type.
     - This involves reading disk, so is the 'final check'.
@@ -313,32 +320,27 @@ The implementation of this method is split into the following parts:
 - [Building the emulated file.](#building-the-emulated-file)
     - Assemble the emulated file from the original file and inputs added via [AfsBuilderFactory](#builder-factory)
 
-!!! question "Why is `TryCreateFile` split into two methods?"
+!!! question "Why is `try_create_file` split into two methods?"
 
     APIs! Emulators can expose APIs that mods can use to create emulated files on the fly.
 
-    A useful use case for this feature is when you have an huge archive, and want to emulate a sub
+    A useful use case for this feature is when you have a huge archive, and want to emulate a sub
     archive within that archive without extracting it.
 
 #### File Type Checking
 
 !!! info "As last sanity check, look at the header of the file to check the magic bytes."
 
-```csharp
-public static bool IsAfsFile(IntPtr handle)
-{
-    var fileStream = new FileStream(new SafeFileHandle(handle, false), FileAccess.Read);
-    var pos = fileStream.Position;
+```rust
+pub fn is_afs_file(handle: RawHandle) -> bool {
+    let mut file_stream = unsafe { File::from_raw_handle(handle) };
+    let pos = file_stream.seek(SeekFrom::Current(0)).expect("Failed to get current position");
 
-    try
-    {
-        return Read<int>(fileStream) == 0x534641; // 'AFS'
-    }
-    finally
-    {
-        fileStream.Dispose();
-        Native.SetFilePointerEx(handle, pos, IntPtr.Zero, 0);
-    }
+    let result = file_stream.read_u32::<LittleEndian>().expect("Failed to read file") == 0x534641; // 'AFS'
+
+    file_stream.seek(SeekFrom::Start(pos)).expect("Failed to reset position");
+
+    result
 }
 ```
 
@@ -357,96 +359,105 @@ public static bool IsAfsFile(IntPtr handle)
 
 Below is a slightly simplified example from a real emulator.
 
-```csharp
-public unsafe MultiStream Build(IntPtr handle, string filepath, Logger? logger = null)
-{
-    // Insert a link to the File Specification/layout here.
-    // Spec: http://wiki.xentax.com/index.php/GRAF:AFS_AFS
-    logger?.Info($"[{nameof(AfsBuilder)}] Building AFS File | {{0}}", filepath);
+```rust
+impl AfsBuilder {
+    pub fn build(&self, handle: RawHandle, filepath: &OsStr, logger: &Logger) -> MultiStream {
+        // Insert a link to the File Specification/layout here.
+        // Spec: http://wiki.xentax.com/index.php/GRAF:AFS_AFS
+        logger.info(&format!("[AfsBuilder] Building AFS File | {}", filepath));
 
-    // Get original file's entries.
-    var entries = GetEntriesFromFile(handle);
+        // Get original file's entries.
+        let entries = self.get_entries_from_file(handle);
 
-    // Maximum ID of AFS file.
-    // In this archive format, items are accessed by number, rather than name.
-    var customFilesLength = _customFiles.Count > 0 ? _customFiles.Max(x => x.Key) + 1 : 0;
-    var numFiles = Math.Max(customFilesLength, entries.Length);
+        // Maximum ID of AFS file.
+        // In this archive format, items are accessed by number, rather than name.
+        let custom_files_length = if !self.custom_files.is_empty() {
+            *self.custom_files.keys().max().unwrap() + 1
+        } else {
+            0
+        };
 
-    // Allocate Header
-    // Note: We do not emit optional pointer to file metadata, but must reserve space for its null pointer, hence +1
-    var headerLength = sizeof(AfsHeader) + (sizeof(AfsFileEntry) * (numFiles + 1));
-    headerLength = Mathematics.RoundUp(headerLength, AfsAlignment);
-    var headerStream = new MemoryStream(headerLength);
-    headerStream.SetLength(headerLength);
+        let num_files = custom_files_length.max(entries.len());
 
-    // Write header magic and file count
-    headerStream.Write(0x00534641); // 'AFS '
-    headerStream.Write(numFiles);
+        // Allocate Header
+        // Note: We do not emit optional pointer to file metadata, but must reserve space for its null pointer, hence +1
+        let mut header_length = size_of::<AfsHeader>() + (size_of::<AfsFileEntry>() * (num_files + 1));
+        header_length = Mathematics::round_up(header_length, AfsAlignment);
+        let mut header_stream = MemoryStream::with_capacity(header_length);
+        header_stream.set_length(header_length);
 
-    // Make MultiStream with Header
-    var pairs = new List<StreamOffsetPair<Stream>>()
-    {
-        // Header
-        new (headerStream, OffsetRange.FromStartAndLength(0, headerStream.Length))
-    };
+        // Write header magic and file count
+        header_stream.write_u32::<LittleEndian>(0x00534641).expect("Failed to write magic"); // 'AFS '
+        header_stream.write_u32::<LittleEndian>(num_files as u32).expect("Failed to write file count");
 
-    var currentOffset = headerLength;
-    for (int x = 0; x < numFiles; x++)
-    {
-        int length = 0;
-        int lengthWithPadding = 0;
+        // Make MultiStream with Header
+        let mut pairs = vec![
+            StreamOffsetPair::new(Box::new(header_stream), OffsetRange::from_start_and_length(0, header_length))
+        ];
 
-        // Add a file to the stream-offset pair list.
-        // Either custom, or from original archive.
-        if (_customFiles.TryGetValue(x, out var overwrittenFile))
-        {
-            logger?.Info($"{nameof(AfsBuilder)} | Injecting {{0}}, in slot {{1}}", overwrittenFile.FilePath, x);
+        let mut current_offset = header_length as u64;
+        for x in 0..num_files {
+            let (length, length_with_padding) = if let Some(overwritten_file) = self.custom_files.get(&x) {
+                logger.info(&format!("AfsBuilder | Injecting {}, in slot {}", overwritten_file.filepath, x));
 
-            // For custom files, add to pairs directly.
-            length = overwrittenFile.Length;
-            pairs.Add(new (new FileSliceStream(overwrittenFile, logger), OffsetRange.FromStartAndLength(currentOffset, length)));
+                // For custom files, add to pairs directly.
+                let length = overwritten_file.length as u64;
+                pairs.push(StreamOffsetPair::new(
+                    Box::new(FileSliceStream::new(overwritten_file.clone(), logger)),
+                    OffsetRange::from_start_and_length(current_offset, length)
+                ));
 
-            // And add padding if necessary.
-            lengthWithPadding = Mathematics.RoundUp(length, AfsAlignment);
-            var paddingBytes = lengthWithPadding - length;
-            if (paddingBytes > 0)
-                pairs.Add(new (new PaddingStream(0, paddingBytes), OffsetRange.FromStartAndLength(currentOffset + length, paddingBytes)));
+                // And add padding if necessary.
+                let length_with_padding = Mathematics::round_up(length, AfsAlignment);
+                let padding_bytes = length_with_padding - length;
+                if padding_bytes > 0 {
+                    pairs.push(StreamOffsetPair::new(
+                        Box::new(PaddingStream::new(0, padding_bytes)),
+                        OffsetRange::from_start_and_length(current_offset + length, padding_bytes)
+                    ));
+                }
+
+                (length, length_with_padding)
+            } else if x < entries.len() {
+                // Data in official archives use 2048 byte padding. We will assume that padding is there.
+                // If it is not, well, next file will be used as padding.
+                // This is to allow merging of the streams for performance.
+                let length = entries[x].length as u64;
+                let length_with_padding = Mathematics::round_up(length, AfsAlignment);
+
+                let original_entry = FileSlice::new(entries[x].offset, length_with_padding, filepath);
+                let stream = FileSliceStream::new(original_entry, logger);
+                pairs.push(StreamOffsetPair::new(
+                    Box::new(stream),
+                    OffsetRange::from_start_and_length(current_offset, length_with_padding)
+                ));
+
+                (length, length_with_padding)
+            } else {
+                // Otherwise have dummy file (no-op!)
+                (0, 0)
+            };
+
+            // Write offset + length to header.
+            let offset_to_write = if length != 0 { current_offset as u32 } else { 0 };
+            header_stream.write_u32::<LittleEndian>(offset_to_write).expect("Failed to write offset");
+            header_stream.write_u32::<LittleEndian>(length as u32).expect("Failed to write length");
+
+            // Advance offset.
+            current_offset += length_with_padding;
         }
-        else if (x < entries.Length)
-        {
-            // Data in official archives use 2048 byte padding. We will assume that padding is there.
-            // If it is not, well, next file will be used as padding.
-            // This is to allow merging of the streams for performance.
-            length = entries[x].Length;
-            lengthWithPadding = Mathematics.RoundUp(length, AfsAlignment);
 
-            var originalEntry = new FileSlice(entries[x].Offset, lengthWithPadding, filepath);
-            var stream = new FileSliceStream(originalEntry, logger);
-            pairs.Add(new(stream, OffsetRange.FromStartAndLength(currentOffset, lengthWithPadding)));
-        }
-        else
-        {
-            // Otherwise have dummy file (no-op!)
-        }
-
-        // Write offset + length to header.
-        headerStream.Write(length != 0 ? currentOffset : 0);
-        headerStream.Write(length);
-
-        // Advance offset.
-        currentOffset += lengthWithPadding;
+        // Return MultiStream
+        // This automatically merges 'pairs' under the hood.
+        MultiStream::new(pairs, logger.cloned())
     }
-
-    // Return MultiStream
-    // This automatically merges 'pairs' under the hood.
-    return new MultiStream(pairs, logger);
 }
 ```
 
-The jist is that you create a `List<StreamOffsetPair<Stream>>`.
+The gist is that you create a `Vec<StreamOffsetPair<Box<dyn Stream>>>`.
 
-This list contains tuples of a stream, and the range of bytes (`min`, `max`) that the stream
-represents in the final, file. i.e. Offset 0 of stream is at `min`, and stream ends at `max`.
+This vector contains tuples of a stream, and the range of bytes (`min`, `max`) that the stream
+represents in the final file. i.e. Offset 0 of stream is at `min`, and stream ends at `max`.
 
 !!! warning "The streams should all form a complete file, with no gaps in the offsets."
 

@@ -203,6 +203,8 @@ impl AfsBuilderFactory {
     /// * A builder which may or may not have files added to it
     pub fn try_create_from_route(&mut self, route: &Route) -> AfsBuilder {
         let mut builder = AfsBuilder::new();
+        // TODO: Optimize this search by using a hashmap of
+        // the last element the path ends with (whatever is after '/' separator)
         for group in &self.route_group_tuples {
             // group.route is "EVENT_ADX_E.AFS" or "EVENT_ADX_J.AFS" in this example.
             // it is NOT the full file path

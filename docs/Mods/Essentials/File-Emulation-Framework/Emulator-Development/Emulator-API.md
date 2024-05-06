@@ -93,6 +93,44 @@ println!("Current file pointer: {}", current_position);
 let file_handle = open_file("path/to/file.bin").unwrap();
 ```
 
+### Route
+
+!!! info "A utility struct that represents a path to a file within the context of the FileEmulationFramework."
+
+The `Route` struct is used to match files that should be emulated based on their paths.
+It provides methods to check if a given path matches the route.
+
+```rust
+let route = Route::new("path/to/file.bin");
+```
+
+#### matches_no_subfolder
+
+!!! info "Checks if the given `group.Route` matches the end of the current `Route`, without considering subfolders."
+
+This method is commonly used when checking if a file should be emulated based on its path.
+
+```rust
+let route = Route::new("path/to/file.bin");
+let group_route = Route::new("file.bin");
+let matches = route.matches_no_subfolder(&group_route); // true
+```
+
+#### matches_with_subfolder
+
+!!! info "Checks if the given `group.Route` matches the current `Route`, considering subfolders."
+
+This method is used when dealing with emulated files that have a hierarchy of internal files or nested folders.
+
+```rust
+let route = Route::new("parent.bin");
+let group_route = Route::new("parent.bin/child/child.dds");
+let matches = route.matches_with_subfolder(&group_route); // true
+```
+
+For more detailed information on how the `Route` struct and its methods work, please refer
+to the [Routing][routing] page.
+
 ### Streams
 
 #### MultiStream
@@ -242,3 +280,5 @@ Expect a considerable speedup over the built-in Rust implementation.
 ```rust
 let (files, directories) = DirectorySearcher::get_directory_contents_recursive("C:/MyFolder");
 ```
+
+[routing]: ./Routing.md

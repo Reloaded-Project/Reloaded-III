@@ -151,7 +151,7 @@ For a given mod folder with the layout:
 
 ```
 ModFolder
-└── FEmulator
+└── FileEmulationFramework
     └── AFS
         ├── EVENT_ADX_E.AFS
         │   ├── 0_yahoo!.adx
@@ -163,7 +163,7 @@ ModFolder
             └── 2_jumpu.adx
 ```
 
-We get `inputFolder` pointing to the full path of `ModFolder/FEmulator/AFS`.
+We get `inputFolder` pointing to the full path of `<ModFolder>/FileEmulationFramework/AFS`.
 The call to `get_directory_contents_recursive_grouped` will return us 2 groups (folders) with
 
 ```
@@ -185,9 +185,9 @@ EVENT_ADX_J.AFS
 These are then added to the `route_group_tuples` list, with the `route`(s) being
 `EVENT_ADX_E.AFS` and `EVENT_ADX_J.AFS`.
 
-!!! note "The routes for each folder is the path following `ModFolder/FEmulator/AFS`"
+!!! note "The routes for each folder is the path following `<ModFolder>/FileEmulationFramework/AFS`"
 
-    So if you had a nested folder, e.g. `ModFolder/FEmulator/AFS/EVENT_ADX_E.AFS/EVENT_MUSIC.AFS`,
+    So if you had a nested folder, e.g. `<ModFolder>/FileEmulationFramework/AFS/EVENT_ADX_E.AFS/EVENT_MUSIC.AFS`,
     its route would be `EVENT_ADX_E.AFS/EVENT_MUSIC.AFS`.
 
 #### Creating Emulated File Builder

@@ -116,6 +116,7 @@ nav:
         - Reference Performance Numbers: Mods/Essentials/Virtual-FileSystem/Performance.md
       - File Emulation Framework:
         - About: Mods/Essentials/File-Emulation-Framework/About.md
+        - Routing: Mods/Essentials/File-Emulation-Framework/Routing.md
         - Read Performance of Solid Files: Mods/Essentials/File-Emulation-Framework/Read-Performance.md
         - Emulator Development Info:
           - Implementing an Emulator: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Implementing-Emulator.md

@@ -6,6 +6,93 @@
 
 !!! info "This is the API that's most commonly used inside emulator implementations."
 
+### File I/O APIs
+
+!!! info "FileEmulatorFramework provides a very minimal, simple API for reading existing file content"
+
+!!! Note "`POSIX` covers Linux, macOS, and other Unix-like systems."
+
+These APIs abstract away the platform-specific details and provide a consistent interface for file
+I/O operations that map to low level native API calls.
+
+!!! tip "By using these functions, emulator code can be written in a platform-independent manner."
+
+    So you can write and test your emulator on Linux, and it'll automatically work on Windows
+    (and vice versa).
+
+#### read_file
+
+!!! info "Reads data from a file, advancing the current file pointer by the number of bytes read."
+
+It maps to different APIs depending on the platform:
+
+| Platform | API                                                 |
+| -------- | --------------------------------------------------- |
+| Windows  | `ReadFile`                                          |
+| POSIX    | `read` from `libc`                                  |
+
+```rust
+let mut buffer = vec![0; 1024];
+let bytes_read = read_file(file_handle, &mut buffer).unwrap();
+```
+
+#### read_struct
+
+!!! info "Reads a struct from the current position of the file handle."
+
+This function provides a convenient way to read a struct directly from a file handle.
+
+```rust
+#[repr(C)]
+struct MyStruct {
+    field1: u32,
+    field2: u16,
+}
+
+let my_struct: MyStruct = read_struct(file_handle).unwrap();
+```
+
+#### seek_file
+
+!!! info "Changes the file pointer (offset) of the specified file handle."
+
+| Platform | API                                                 |
+| -------- | --------------------------------------------------- |
+| Windows  | `SetFilePointerEx`                                  |
+| POSIX    | `lseek` from `libc`                                 |
+
+```rust
+// Seek to the beginning of the file
+seek_file(file_handle, 0, SeekOrigin::Start).unwrap();
+```
+
+#### get_file_pointer
+
+!!! info "Retrieves the current value of the file pointer (position) of the specified file handle."
+
+| Platform | API                                                 |
+| -------- | --------------------------------------------------- |
+| Windows  | `SetFilePointerEx` with `FILE_CURRENT`              |
+| POSIX    | `lseek` from `libc` with `SEEK_CUR`                 |
+
+```rust
+let current_position = get_file_pointer(file_handle).unwrap();
+println!("Current file pointer: {}", current_position);
+```
+
+#### open_file
+
+!!! info "Opens a file for reading and returns a file handle."
+
+| Platform | API                                                 |
+| -------- | --------------------------------------------------- |
+| Windows  | `CreateFileW`                                       |
+| POSIX    | `open` from `libc`                                  |
+
+```rust
+let file_handle = open_file("path/to/file.bin").unwrap();
+```
+
 ### Streams
 
 #### MultiStream

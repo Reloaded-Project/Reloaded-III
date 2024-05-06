@@ -44,7 +44,7 @@ mod_loader.on_mod_loader_initialized(on_mod_loader_initialized);
 let emulator = AfsEmulator::new();
 
 // Get emulation framework API and register our emulator
-let framework = mod_loader.get_service::<IEmulationFramework>().unwrap();
+let framework = mod_loader.get_service::<IFileEmulationFramework>().unwrap();
 framework.register(Box::new(emulator));
 ```
 
@@ -332,19 +332,18 @@ The implementation of this method is split into the following parts:
     A useful use case for this feature is when you have a huge archive, and want to emulate a sub
     archive within that archive without extracting it.
 
+!!! warning "`try_create_emulated_file` must not move the file pointer."
+
+    If you move the file pointer, the caller, will end up reading from the wrong position.
+
 #### File Type Checking
 
 !!! info "As last sanity check, look at the header of the file to check the magic bytes."
 
 ```rust
 pub fn is_afs_file(handle: RawHandle) -> bool {
-    let mut file_stream = unsafe { File::from_raw_handle(handle) };
-    let pos = file_stream.seek(SeekFrom::Current(0)).expect("Failed to get current position");
-
-    let result = file_stream.read_u32::<LittleEndian>().expect("Failed to read file") == 0x534641; // 'AFS'
-
-    file_stream.seek(SeekFrom::Start(pos)).expect("Failed to reset position");
-
+    let result = read_file::<u32le>().expect("Failed to read file") == 0x534641; // 'AFS'
+    seek_file(handle, -size_of::<u32le>(), SeekOrigin::Current).expect("Failed to reset position");
     result
 }
 ```

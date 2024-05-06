@@ -7,8 +7,6 @@
 It is designed to be used in scenarios where files need to be merged from multiple mods, and the
 merged result needs to be cached for faster subsequent access.
 
-!!! tip "Merged files are preferred over File Emulation [TODO: Link Pending] when the size of the file is small (i.e. smaller than 50MB)."
-
 ## Why a Merged File Cache?
 
 !!! question "Why do we need a Merged File Cache?"
@@ -18,17 +16,29 @@ same file. In such cases, the files need to be merged to produce the final resul
 
 Merging should be done using one of the following methods:
 
-- File Emulation [TODO: Link Pending], for archives and large files greater than 50MB
-- Merging in memory and saving to disk, in all other cases
+- [File Emulation][file-emulation], a method which does not use any extra disk space.
+    - At the overhead of around `15ns` per file read operation.
+- Merged File Cache, merging in memory and saving to disk, in all other cases
 
-For the latter of the two, merging can sometimes be a time consuming process if there are many input
-files being used. Very often, merging the files between different runs of the modded game will also
+Merging can sometimes be a time consuming process if there are many input files being used.
+
+Very often, merging the files between different runs of the modded game will also
 result in the same output; wasting time.
 
 The `Merged File Cache` provides a standardized approach to cache merged files, while also
 automatically handling cache invalidation based on changes to the source files.
 
 !!! tip "We opt to provide a standardized approach for efficiency reasons"
+
+## When to Prefer Merged File Cache
+
+!!! tip "Use Merged File Cache rather than [File Emulation][file-emulation] if all/most following criteria hold true"
+
+- User has a Hard Drive (HDD)
+- Merged file is small (<32MB)
+- There are many small files (<1MB) from many sources.
+
+For more info, see [Read Performance of SOLID Files][read-perf-solid-files].
 
 ## How It Works
 
@@ -62,3 +72,6 @@ If the file does not exist in the cache, create the file and add it to the cache
 
 - [Requirements](Requirements.md): Specifies the requirements and goals for the Merged File Cache library.
 - [Implementation Details](Implementation-Details.md): Provides details on the implementation of the Merged File Cache, including API reference and expiration details.
+
+[file-emulation]: ../../Essentials/File-Emulation-Framework/About.md
+[read-perf-solid-files]: ../../Essentials/File-Emulation-Framework/Read-Performance.md

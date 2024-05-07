@@ -124,6 +124,8 @@ nav:
           - Routing: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Routing.md
           - Guidelines: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Guidelines.md
           - Emulator API: Mods/Essentials/File-Emulation-Framework/Emulator-Development/Emulator-API.md
+        - Implementation Details:
+          - Hooks: Mods/Essentials/File-Emulation-Framework/Implementation-Details/Hooks.md
     - Essentials (Libraries):
       - Merged File Cache:
         - About: Mods/Libraries/Merged-File-Cache/About.md

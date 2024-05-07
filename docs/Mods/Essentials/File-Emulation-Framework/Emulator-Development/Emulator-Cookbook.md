@@ -68,6 +68,7 @@ impl AwbEmulatorApi {
         &mut self,
         source_path: &OsStr,
         offset: u64,
+        length: FileLength,
         route: &Route,
         destination_path: &OsStr,
     ) -> CreateFromFileSliceResult {

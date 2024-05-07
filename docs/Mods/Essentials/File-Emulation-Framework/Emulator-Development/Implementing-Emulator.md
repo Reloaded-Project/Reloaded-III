@@ -274,7 +274,7 @@ struct AfsEmulator {
 }
 
 impl IEmulator for AfsEmulator {
-    fn try_create_file(&mut self, handle: RawHandle, filepath: &OsStr, route: &Route) -> Option<Box<dyn IEmulatedFile>> {
+    fn try_create_file(&mut self, handle: RawHandle, filepath: &OsStr, length: FileLength, route: &Route) -> Option<Box<dyn IEmulatedFile>> {
         // Check extension.
         // This is a quick filter to prevent unnecesarily reading from disk in actual file check.
         if !filepath.to_str().map(|s| s.to_lowercase().ends_with(Constants.afs_extension)).unwrap_or(false) {
@@ -311,7 +311,7 @@ impl IEmulator for AfsEmulator {
         self.path_to_stream.insert(file_path_str, None);
 
         // Make the emulated file.
-        let stream = builder.build(handle, filepath, None);
+        let stream = builder.build(handle, filepath, route, None);
         self.path_to_stream.insert(file_path_str, Some(stream.clone()));
 
         Some(Box::new(EmulatedFile::new(stream)))
@@ -375,7 +375,7 @@ Below is a slightly simplified example from a real emulator.
 
 ```rust
 impl AfsBuilder {
-    pub fn build(&self, handle: RawHandle, filepath: &OsStr, logger: &Logger) -> MultiStream {
+    pub fn build(&self, handle: RawHandle, filepath: &OsStr, route: &Route, logger: &Logger) -> MultiStream {
         // Insert a link to the File Specification/layout here.
         // Spec: http://wiki.xentax.com/index.php/GRAF:AFS_AFS
         logger.info(&format!("[AfsBuilder] Building AFS File | {}", filepath));
@@ -478,6 +478,11 @@ represents in the final file. i.e. Offset 0 of stream is at `min`, and stream en
 !!! warning "The streams should all form a complete file, with no gaps in the offsets."
 
 The streams are then passed to a `MultiStream` constructor, which will handle the rest.
+
+!!! note "Notice we don't reuse the handle."
+
+    We can't risk unexpected failures as a result of concurrent reads.
+    This is where the recursion lock from `try_create_file` becomes handy 😉.
 
 [afs-emulator]: https://github.com/Sewer56/FileEmulationFramework/tree/main/Emulator/AFS.Stream.Emulator
 [emulator-cookbook]: ./Emulator-Cookbook.md

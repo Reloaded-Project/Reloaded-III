@@ -14,7 +14,13 @@
     In the real code, a different API should be used to avoid increasing the binary size
     by unreasonable amounts.
 
+!!! warning "TODO: Abstract away some common code."
+
+    Structs like (Afs)`BuilderFactory` are common across all emulators and rarely change.<br/>
+    We should abstract them to make all emulators not have to rewrite the same code over again.
+
 Use this page as a general guide to the process of creating a new emulator.
+It shows you how the emulators are built.
 
 Once your emulator is done, make sure it adheres to the [Guidelines][guidelines].
 And for more advanced interactions and use cases, see [Emulator Cookbook][emulator-cookbook].
@@ -104,6 +110,10 @@ This will call the `IEmulator` (`AfsEmulator`) instance registered during the [i
 
 !!! info "The builder is where you create the emulator."
 
+!!! note "This builder factory is a bit simpler than the real deal."
+
+    We skipped some optimizations here to keep the example simple.
+
 The Builder Factory stores information about all available emulator inputs.
 
 Implementations of builder factories (`AfsBuilderFactory`) may sometimes vary slightly,
@@ -135,7 +145,7 @@ impl AfsBuilderFactory {
                 continue;
             }
 
-            let route = Route::get_route(input_folder, group.get_directory_full_path());
+            let route = Route::from_folder_and_full_path(input_folder, group.get_directory_full_path());
             self.route_group_tuples.push(RouteGroupTuple {
                 route: Route::new(route),
                 files: group,
@@ -203,8 +213,6 @@ impl AfsBuilderFactory {
     /// * A builder which may or may not have files added to it
     pub fn try_create_from_route(&mut self, route: &Route) -> AfsBuilder {
         let mut builder = AfsBuilder::new();
-        // TODO: Optimize this search by using a hashmap of
-        // the last element the path ends with (whatever is after '/' separator)
         for group in &self.route_group_tuples {
             // group.route is "EVENT_ADX_E.AFS" or "EVENT_ADX_J.AFS" in this example.
             // it is NOT the full file path
@@ -433,6 +441,8 @@ impl AfsBuilder {
 
                 let original_entry = FileSlice::new(entries[x].offset, length_with_padding, filepath);
                 let stream = FileSliceStream::new(original_entry, logger);
+
+                // TODO: Assemble new 'route' and pass to framework, so another emulator can pick up.
                 pairs.push(StreamOffsetPair::new(
                     Box::new(stream),
                     OffsetRange::from_start_and_length(current_offset, length_with_padding)

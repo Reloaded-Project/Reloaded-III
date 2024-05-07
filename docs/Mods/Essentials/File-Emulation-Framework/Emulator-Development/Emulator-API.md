@@ -104,6 +104,29 @@ It provides methods to check if a given path matches the route.
 let route = Route::new("path/to/file.bin");
 ```
 
+#### as_file_name
+
+!!! info "Returns a slice of the `OsStr` representing the file name of the `Route`."
+
+This method is useful when you need to extract the file name from the `Route`.
+
+```rust
+let route = Route::new("path/to/file.bin");
+let file_name = route.as_file_name(); // file_name is an &OsStr slice representing "file.bin"
+```
+
+#### from_folder_and_full_path
+
+!!! info "Creates a `Route` given the full path of a file and the base folder where the emulator's files are contained."
+
+This method is used to create a `Route` by removing the base folder path from the full file path.
+
+```rust
+let base_folder = "path/to/emulator/files";
+let full_path = "path/to/emulator/files/subfolder/file.bin";
+let route = Route::from_folder_and_full_path(base_folder, full_path); // route is "subfolder/file.bin"
+```
+
 #### matches_no_subfolder
 
 !!! info "Checks if the given `group.Route` matches the end of the current `Route`, without considering subfolders."

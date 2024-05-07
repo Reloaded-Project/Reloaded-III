@@ -80,6 +80,23 @@ let current_position = get_file_pointer(file_handle).unwrap();
 println!("Current file pointer: {}", current_position);
 ```
 
+#### get_file_size
+
+!!! info "Retrieves the size of a file given its file handle."
+
+| Platform | API                                                 |
+| -------- | --------------------------------------------------- |
+| Windows  | `GetFileSizeEx`                                     |
+| POSIX    | `fstat` from `libc`                                 |
+
+```rust
+let file_size = get_file_size(file_handle).unwrap();
+println!("File size: {} bytes", file_size);
+```
+
+This API allows you to retrieve the size of a file using its file handle.
+It abstracts away the platform-specific details and provides a consistent interface for getting the file size.
+
 #### open_file
 
 !!! info "Opens a file for reading and returns a file handle."

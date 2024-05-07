@@ -433,22 +433,49 @@ impl AfsBuilder {
 
                 (length, length_with_padding)
             } else if x < entries.len() {
-                // Data in official archives use 2048 byte padding. We will assume that padding is there.
-                // If it is not, well, next file will be used as padding.
-                // This is to allow merging of the streams for performance.
-                let length = entries[x].length as u64;
-                let length_with_padding = Mathematics::round_up(length, AfsAlignment);
+                // We will call the file inside by index (no extension)
+                let new_route = self.route.merge(&format!("{}", x));
 
-                let original_entry = FileSlice::new(entries[x].offset, length_with_padding, filepath);
-                let stream = FileSliceStream::new(original_entry, logger);
+                // Match internal file against all emulators, this allows us to emulate internal
+                // files without extracting.
+                match self.framework.try_create_from_file_slice(filepath, entries[x].offset, entries[x].length, &new_route) {
+                    EmulatedFileResult { virtual_handle: Some(handle), error: EmulatedFileError::Success } => {
+                        let length = get_file_size(virtual_handle).unwrap();
+                        pairs.push(StreamOffsetPair::new(
+                            Box::new(VirtualHandleStream::new(handle)),
+                            OffsetRange::from_start_and_length(current_offset, length)
+                        ));
 
-                // TODO: Assemble new 'route' and pass to framework, so another emulator can pick up.
-                pairs.push(StreamOffsetPair::new(
-                    Box::new(stream),
-                    OffsetRange::from_start_and_length(current_offset, length_with_padding)
-                ));
+                        // Add padding to align to 2048 bytes.
+                        let length_with_padding = Mathematics::round_up(length, AfsAlignment);
+                        let padding_bytes = length_with_padding - length;
+                        if padding_bytes > 0 {
+                            pairs.push(StreamOffsetPair::new(
+                                Box::new(PaddingStream::new(0, padding_bytes)),
+                                OffsetRange::from_start_and_length(current_offset + length, padding_bytes)
+                            ));
+                        }
 
-                (length, length_with_padding)
+                        (length, length_with_padding)
+                    }
+                    _ => {
+                        // Data in official archives use 2048 byte padding. We will assume that padding is there.
+                        // If it is not, well, next file will be used as padding.
+                        // This is to allow merging of the streams for performance.
+                        let length = entries[x].length as u64;
+                        let length_with_padding = Mathematics::round_up(length, AfsAlignment);
+
+                        let original_entry = FileSlice::new(entries[x].offset, length_with_padding, filepath);
+                        let stream = FileSliceStream::new(original_entry, logger);
+
+                        pairs.push(StreamOffsetPair::new(
+                            Box::new(stream),
+                            OffsetRange::from_start_and_length(current_offset, length_with_padding)
+                        ));
+
+                        (length, length_with_padding)
+                    }
+                }
             } else {
                 // Otherwise have dummy file (no-op!)
                 (0, 0)

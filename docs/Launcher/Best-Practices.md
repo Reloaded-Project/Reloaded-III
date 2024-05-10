@@ -2,7 +2,7 @@
 
 !!! info
 
-    A collection of preferred practices by Mod Managers employing this spec. This list is opinionated. It is not enforced, only preferred.
+    A collection of preferred practices by Launchers employing this spec. This list is opinionated. It is not enforced, only preferred.
 
 ## Don't Store Content in Game Folder
 

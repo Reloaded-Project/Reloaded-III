@@ -4,22 +4,24 @@
 
 Inside each package folder is a file named `package.toml`; which stores the metadata of each package.
 
-| Type             | Name                             | Description                                                               |
-| ---------------- | -------------------------------- | ------------------------------------------------------------------------- |
-| string           | [Id](#id)                        | A name that uniquely identifies the package.                              |
-| string           | Name                             | Human friendly name of the package.                                       |
-| string           | Author                           | Main author of the package. (Individual or Team Name)                     |
-| string           | Summary                          | Short summary of the package. Max 2 sentences.                            |
-| PackageType      | [PackageType](#packagetype)      | Type of the package. See [PackageType](#packagetype) for possible values. |
-| string           | [DocsFile](#docsfile)            | [Optional] Entry point for this package documentation.                    |
-| SemVer           | [Version](#version)              | Semantic versioning version of the package.                               |
-| string[]         | [Tags](#tags)                    | Used to make searching easier within mod managers.                        |
-| Credit[]         | [Credits](#credits)              | [Optional] Stores information about who contributed what to the project.  |
-| string?          | SourceUrl                        | [Optional] Link to source code (if applicable).                           |
-| string?          | ProjectUrl                       | [Optional] Link to website to learn more about the project.               |
-| UpdateData       | [UpdateData](#update-data)       | Stores package specific update information.                               |
-| DependencyInfo[] | [Dependencies](#dependency-info) | Stores information about this package's dependencies.                     |
-| DateTime         | [Published](#published)          | The time when this package was packed.                                    |
+| Type                | Name                                       | Description                                                               |
+| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
+| string              | [Id](#id)                                  | A name that uniquely identifies the package.                              |
+| string              | Name                                       | Human friendly name of the package.                                       |
+| string              | Author                                     | Main author of the package. (Individual or Team Name)                     |
+| string              | Summary                                    | Short summary of the package. Max 2 sentences.                            |
+| PackageType         | [PackageType](#packagetype)                | Type of the package. See [PackageType](#packagetype) for possible values. |
+| string              | [DocsFile](#docsfile)                      | [Optional] Entry point for this package documentation.                    |
+| SemVer              | [Version](#version)                        | Semantic versioning version of the package.                               |
+| string[]            | [Tags](#tags)                              | Used to make searching easier within mod managers.                        |
+| Credit[]            | [Credits](#credits)                        | [Optional] Stores information about who contributed what to the project.  |
+| string?             | SourceUrl                                  | [Optional] Link to source code (if applicable).                           |
+| string?             | ProjectUrl                                 | [Optional] Link to website to learn more about the project.               |
+| UpdateData          | [UpdateData](#update-data)                 | Stores package specific update information.                               |
+| DependencyInfo[]    | [Dependencies](#dependency-info)           | Stores information about this package's dependencies.                     |
+| DateTime            | [Published](#published)                    | The time when this package was packed.                                    |
+| StoragePreference   | [StoragePreference](#storage-preference)   | Specifies the preferred storage tier for the package.                     |
+| IgnoredDiagnostic[] | [IgnoredDiagnostics](#ignored-diagnostics) | List of diagnostics to ignore as false positives.                         |
 
 ## Implicit Fields
 
@@ -364,6 +366,49 @@ This struct contains only the info needed to locate the dependency, and troubles
 !!! warning "This value is autogenerated when packing file."
 
 This is used to show when the package was last updated in mod managers and other visual applications.
+
+## Storage Preference
+
+!!! info "Specifies the preferred storage tier for the package."
+
+The `StoragePreference` field is an enum that indicates where the package should be stored, based
+on the storage speed. It can have the following values:
+
+- `FASTEST`: The package should be stored on the fastest available storage (e.g. SSD).
+- `SLOWEST`: The package can be stored on slowest storage (e.g. HDD) without significant performance impact.
+
+The values are represented as integers ranging from 0 to 255, with 0 being the fastest and 255 being
+the slowest. We currently use only two values: `FASTEST` (0) and `SLOWEST` (255).
+
+## Ignored Diagnostics
+
+!!! info "Specifies a list of diagnostics to ignore as false positives."
+
+The `IgnoredDiagnostics` field is an array of `IgnoredDiagnostic` structures that contain information
+about diagnostics that should be ignored for the package.
+
+This is useful when a diagnostic is incorrectly triggered for a specific package, and you want to
+suppress it.
+
+The `IgnoredDiagnostic` structure has the following fields:
+
+| Type   | Name | Description                                                                                                            |
+| ------ | ---- | ---------------------------------------------------------------------------------------------------------------------- |
+| string | Id   | The ID of the diagnostic to ignore. Should match the format specified in the [Diagnostics documentation][diagnostics]. |
+
+Example:
+```toml
+[[IgnoredDiagnostics]]
+Id = "R3.S56.PKGTIER-01"
+
+[[IgnoredDiagnostics]]
+Id = "R3.S56.TEXTUREOPT-02"
+```
+
+In this example, the package will ignore the `R3.S56.PKGTIER-01` and `R3.S56.TEXTUREOPT-02` diagnostics,
+treating them as false positives.
+
+If the `IgnoredDiagnostics` field is not specified or is an empty array, no diagnostics will be ignored.
 
 <!-- Links -->
 [app-metadata-id]: ../../Server/Configurations/App-Metadata.md#id

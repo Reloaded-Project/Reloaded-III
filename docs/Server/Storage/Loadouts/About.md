@@ -1,0 +1,1 @@
+Basically stores all of our mod metadata.

@@ -57,7 +57,7 @@ The cache must be scoped per mod. In addition to loadout scoping.
 Each mod gets its own cache. This works by having the mods create an instance of the cache with
 the ModId and version as the constructor parameters.
 
-The caching library then uses an existing cache associated with that ModId+version, or creates a new
+The caching library then uses an existing cache associated with that ModId+Version, or creates a new
 one.
 
 ## Efficient Serialization

@@ -87,6 +87,13 @@ nav:
       - App Metadata: Server/Configurations/App-Metadata.md
       - Mod Configuration: Server/Configurations/Mod-Configurations.md
       - Mod Metadata: Server/Configurations/Mod-Metadata.md
+    - Storage:
+      - About: Server/Storage/About.md
+      - Locations: Server/Storage/Locations.md
+      - Package Tiering: Server/Storage/Package-Tiering.md
+      - Loadouts:
+        - About: Server/Storage/Loadouts/About.md
+        - Storage Layout: Server/Storage/Loadouts/Storage-Layout.md
     - Diagnostics: Server/Diagnostics.md
     - Load Ordering: Server/Load-Ordering.md
     - Packaging:
@@ -94,6 +101,7 @@ nav:
       - Package Metadata: Server/Packaging/Package-Metadata.md
       - Publishing Packages: Server/Packaging/Publishing-Packages.md
   - Launcher (Manager Frontend):
+    - About: Launcher/About.md
     - Best Practices: Launcher/Best-Practices.md
   - Common:
     - Localisation:

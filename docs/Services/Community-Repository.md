@@ -46,7 +46,9 @@ They can have any name (as long as they use their own unique folder), in this sp
 | Diagnostic[]  | [Diagnostics](#diagnostics)                     | Diagnostics to display based on game's current folder state.                            |
 | string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                      |
 
-!!! note "Note: All hashes listed in this specification are `XXH3_128bits` (XXH128) unless specified otherwise."
+!!! note "Note: All hashes listed in this page are `XXH3_128bits` (XXH128) unless specified otherwise."
+
+    For more details, see the page on [Hashing Page][hashing].
 
 !!! note "Not all of this information has to be hand typed, some information such as version numbers, hashes, dates can be automatically extracted."
 
@@ -415,6 +417,7 @@ Should fit within the soft limit, outside of risks with new game releases.
 [gamefinder]: https://github.com/erri120/GameFinder
 [github-pages]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
 [gog-db]: https://www.gogdb.org/
+[hashing]: ../Common/Hashing.md
 [mod-metadata]: ../Server/Configurations/Mod-Metadata.md
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community

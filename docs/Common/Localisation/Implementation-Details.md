@@ -80,8 +80,8 @@ function FastFindKeys(data):
     - Stable/Same Hash
     - Fast
 
-The standard implementation will do this with [xxh3][xxh3], which was chosen based
-on [smhasher][smhasher] & [smhasher3][smhasher3] results.
+The standard implementation will do this with [xxh3][xxh3].
+See [Common/Hashing.md][hashing] for more info.
 
 In almost all most cases, the number of keys should be small enough such that we can reasonably
 expect that there will never be a hash collision between 2 keys.
@@ -136,3 +136,4 @@ In the elements inside `TableEntry` above, can then point to the unified buffer.
 [smhasher]: https://github.com/rurban/smhasher?tab=readme-ov-file
 [smhasher3]: https://gitlab.com/fwojcik/smhasher3
 [xxh3]: https://github.com/Cyan4973/xxHash
+[hashing]: ../../Common/Hashing.md

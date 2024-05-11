@@ -80,29 +80,30 @@ This file (`hashes.bin`) has the following format:
 - `u32`: EntryCount
 - `Entry [EntryCount]`: Entries
 
-The struct `Entry` (48 bytes) is defined as:
+The struct `Entry` (32 bytes) is defined as:
 
-| Data Type | Name         | Description                                               |
-| --------- | ------------ | --------------------------------------------------------- |
-| `u48`     | PathOffset   | Offset into the start of the UTF-8 string.                |
-| `u16`     | PathLength   | Length of the string at offset.                           |
-| `u64`     | PathHash     | Hash of the relative path. [xxh3][xxh3] |
-| `u128`    | FileHash     | Hash of the file (`XXH128`)                               |
-| `u64`     | FileSize     | Size of the file.                                         |
-| `u64`     | LastModified | Converted from `chrono::DateTime<Utc>`                    |
+| Data Type | Name         | Description                                |
+| --------- | ------------ | ------------------------------------------ |
+| `u48`     | PathOffset   | Offset into the start of the UTF-8 string. |
+| `u16`     | PathLength   | Length of the string at offset.            |
+| `u64`     | FileHash     | Hash of the file (`XXH3`)                  |
+| `u64`     | FileSize     | Size of the file.                          |
+| `u64`     | LastModified | Converted from `chrono::DateTime<Utc>`     |
 
-String hash is calculated using the stable [xxh3][xxh3] algorithm.
-based on [smhasher][smhasher] & [smhasher3][shmasher3] results.
-This saves us having to recompute the hash for each relative path.
+We store the hash of the file to avoid recomputing it, as the I/O reads involved
+would otherwise be too expensive. Hash of the file path (if needed) can be computed
+dynamically on the other hand.
+
+Unlike general [hashing guidelines][hashing], we use XXH3 so the struct can be kept at 32-bytes,
+this makes our structure more cache friendly as it aligns nicer with 64-byte cache lines.
 
 #### Strings.bin.zst
 
-This is a raw buffer of strings encoded using UTF-8.
+!!! info "This is a raw buffer of strings encoded using UTF-8"
 
 The start and length of each string can be found in the above `Entry` struct(s).
 
-It is compressed with `ZStandard -16` when
-being written to disk.
+It is compressed with `ZStandard -16` when being written to disk.
 
 ## Loadout Locations (Folders)
 
@@ -110,17 +111,10 @@ being written to disk.
 | ----------------------------------------- | --------- | ------------------------------------- |
 | [Configurations](#package-configurations) | `Configs` | Mod and other package configurations. |
 
-
-### Package Configurations
-
-
-
 ## Packing Strategy
 
 !!! info "To minimize loadout size when packed, the following strategy is used"
 
 
 [root-level]: ../Locations.md#items-to-store
-[smhasher]: https://github.com/rurban/smhasher?tab=readme-ov-file
-[smhasher3]: https://gitlab.com/fwojcik/smhasher3
-[xxh3]: https://github.com/Cyan4973/xxHash
+[hashing]: ../../../Common/Hashing.md

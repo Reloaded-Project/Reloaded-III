@@ -80,8 +80,8 @@ function FastFindKeys(data):
     - Stable/Same Hash
     - Fast
 
-The standard implementation will do this with [wyhash_final4][wyhash-final4], which was chosen based
-on [smhasher][smhasher] results.
+The standard implementation will do this with [xxh3][xxh3], which was chosen based
+on [smhasher][smhasher] & [smhasher3][smhasher3] results.
 
 In almost all most cases, the number of keys should be small enough such that we can reasonably
 expect that there will never be a hash collision between 2 keys.
@@ -134,4 +134,5 @@ In the elements inside `TableEntry` above, can then point to the unified buffer.
 <!-- Links -->
 [hashtable]: https://docs.rs/hashbrown/latest/hashbrown/struct.HashTable.html#method.find
 [smhasher]: https://github.com/rurban/smhasher?tab=readme-ov-file
-[wyhash-final4]: https://github.com/thynson/wyhash-final4/tree/main
+[smhasher3]: https://gitlab.com/fwojcik/smhasher3
+[xxh3]: https://github.com/Cyan4973/xxHash

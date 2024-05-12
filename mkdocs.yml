@@ -93,7 +93,8 @@ nav:
       - Package Tiering: Server/Storage/Package-Tiering.md
       - Loadouts:
         - About: Server/Storage/Loadouts/About.md
-        - Storage Layout: Server/Storage/Loadouts/Storage-Layout.md
+        - Events: Server/Storage/Loadouts/Events.md
+        - Commit Messages: Server/Storage/Loadouts/Commit-Messages.md
     - Diagnostics: Server/Diagnostics.md
     - Load Ordering: Server/Load-Ordering.md
     - Packaging:

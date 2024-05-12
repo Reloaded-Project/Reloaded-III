@@ -173,15 +173,6 @@ They are shown in lowest to highest bit order.
 
 So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
 
-### Types, Limits & Field Sizes
-
-- Max number of Package Manifests (MetadataIdx): `536,870,911` (29 bits)
-- Max number of Configs (ConfigIdx): `134,217,727` (27 bits)
-- Max number of Events: `4,294,967,295` (32 bits)
-- Max timestamp. R3TimeStamp: `2,199,023,255,551` (40 bits).
-    - This is `2^40 - 1` * 10 milliseconds from `1st January 2024`.
-    - Max year 2111.
-
 ### header.bin
 
 !!! info "This is a master file which tracks the state of other files in the loadout."
@@ -239,102 +230,9 @@ and save space.
 
 Situations where optimizations are applied at pack stage will be noted in the event's description.
 
-#### 00: PackageStatusChanged
+#### Event List
 
-!!! info "A new package has been added to `package-metadata.bin` and can be seen from loadout."
-
-| Data Type           | Name        | Description                                                       |
-| ------------------- | ----------- | ----------------------------------------------------------------- |
-| `u29`               | MetadataIdx | Index of metadata in [package-metadata.bin](#package-metadatabin) |
-| `u3` (PackageState) | NewStatus   |                                                                   |
-| `u24`               | Reserved    |                                                                   |
-
-`PackageState` is defined as:
-
-- `0`: `Removed`. The package was removed from the loadout.
-- `1`: `Hidden`. The package was hidden from the loadout.
-- `2`: `Disabled` (Default State). The package was disabled in the loadout.
-- `3`: `Added`. The package was added to the loadout.
-- `4`: `Enabled`. The package was enabled in the loadout.
-
-!!! note "Note: Some values of `NewStatus` field are only applied during packing optimization stage."
-
-    For example `Enabled` is emitted if a [PackageStatusChanged](#00-packagestatuschanged) event is
-    directly succeeded by a [PackageStateChangedEvent](#03-packagestatechanged) event enabling the package.
-
-    By default, a package is assumed `Disabled` after being first added.
-
-#### 01: GameLaunched
-
-This event is used to indicate that the game was launched.
-This event has no extra data. Timestamp for commit message is in from [commit-msg.bin](#commit-msgbin).
-
-!!! warning "The user may launch the game outside of the Reloaded3 UI."
-
-    Non-UI launches can be injected into the loadout history by scanning loader logs.
-
-#### 02: ConfigUpdated
-
-!!! info "This event indicates that a package configuration was updated."
-
-| Data Type | Name        | Description                                                       |
-| --------- | ----------- | ----------------------------------------------------------------- |
-| `u29`     | MetadataIdx | Index of metadata in [package-metadata.bin](#package-metadatabin) |
-| `u27`     | ConfigIdx   | Index of associated configuration in [config.bin](#configbin)     |
-
-Not to be confused with the current `Package Configuration Schema`.
-This is the actual configuration read by the mod.
-
-#### 03: PackageStateChanged
-
-!!! info "This event indicates that a package has been enabled, disabled etc."
-
-In this case, it means a mod has been toggled on or off.
-
-| Data Type           | Name        | Description                                                       |
-| ------------------- | ----------- | ----------------------------------------------------------------- |
-| `u29`               | MetadataIdx | Index of metadata in [package-metadata.bin](#package-metadatabin) |
-| `u3` (PackageState) | State       | See [PackageStatusChanged](#00-packagestatuschanged)              |
-| `u24`               | Reserved    |                                                                   |
-
-#### 04: LoadoutDisplaySettingChanged
-
-!!! info "A setting related to mod has been changed."
-
-!!! note "`LoadoutGrid` does not include load ordering."
-
-    It's just there to organize which mods are enabled/disabled.
-
-| Data Type               | Name                        | Description                                     |
-| ----------------------- | --------------------------- | ----------------------------------------------- |
-| `u7` (SortingMode)      | LoadoutGridEnabledSortMode  | Sorting mode for enabled items in LoadoutGrid.  |
-| `u7` (SortingMode)      | LoadoutGridDisabledSortMode | Sorting mode for disabled items in LoadoutGrid. |
-| `u2` (SortOrder)        | ModLoadOrderSort            | Sorting mode for load order reorderer.          |
-| `u4` (GridDisplayMode)  | LoadoutGridStyle            | Display mode for LoadoutGrid.                   |
-| `u36` (GridDisplayMode) | Reserved                    |                                                 |
-
-`SortingMode` is defined as:
-
-- `0`: Unchanged
-- `1`: `Static`. The order of mods is fixed and does not change between reboots.
-- `2`: `Release Date Ascending`. Show from oldest to newest.
-- `3`: `Release Date Descending`. Show from newest to oldest.
-- `4`: `Install Date Ascending`. Show from oldest to newest.
-- `5`: `Install Date Descending`. Show from newest to oldest.
-
-`SortOrder` is defined as:
-
-- `0`: Unchanged
-- `1`: `BottomToTop` (Default). Mods at bottom load first, mods at top load last and 'win'.
-- `2`: `TopToBottom`. Sort in ascending order.
-
-`GridDisplayMode` is defined as:
-
-- `0`: Unchanged
-- `1`: List (Compact)
-- `2`: Grid (Squares)
-- `3`: Grid (Horizontal Rectangles, Steam Size)
-- `4`: Grid (Vertical Rectangles, Steam Size)
+The full list of events can be found on the [Event List Page][event-indexes].
 
 ### commit-msg.bin
 
@@ -345,12 +243,12 @@ when auditing history; and this is an infrequent operation.
 
 This is an array of the following structure:
 
-| Data Type                  | Name            | Description                                                             |
-| -------------------------- | --------------- | ----------------------------------------------------------------------- |
-| `u40` (R3TimeStamp)        | TimeStamp       | Number of `10ms` ticks elapsed since `1st January 2024`. Max year 2111. |
-| `u8`                       | NumParameters   | Number of parameters substituted into the template. (Max 256)           |
-| `u18`                      | MessageTemplate | Index of message template. (Max 262144)                                 |
-| `Parameter[NumParameters]` | Parameters      | Parameters for the formatted string.                                    |
+| Data Type                          | Name            | Description                                                             |
+| ---------------------------------- | --------------- | ----------------------------------------------------------------------- |
+| `u40` ([R3TimeStamp][max-numbers]) | TimeStamp       | Number of `10ms` ticks elapsed since `1st January 2024`. Max year 2111. |
+| `u8`                               | NumParameters   | Number of parameters substituted into the template. (Max 256)           |
+| `u18`                              | MessageTemplate | Index of message template. (Max 262144)                                 |
+| `Parameter[NumParameters]`         | Parameters      | Parameters for the formatted string.                                    |
 
 The `Parameter` struct is defined as:
 
@@ -362,13 +260,13 @@ The `Parameter` struct is defined as:
 
 `ParameterType` is defined as:
 
-| Type | Data Type           | Example               | Description                                                    |
-| ---- | ------------------- | --------------------- | -------------------------------------------------------------- |
-| `0`  | `UTF-8 Char Array`  | `Hello, World!`       | UTF-8 characters.                                              |
-| `1`  | `u40` (R3TimeStamp) | `1st of January 2024` | Renders as human readable time.                                |
-| `2`  | `u40` (R3TimeStamp) | `5 minutes ago`       | Renders as relative time.                                      |
-| `3`  | `u0`                | `1st of January 2024` | Human readable timestamp. Time sourced from message timestamp. |
-| `4`  | `u0`                | `5 minutes ago`       | Relative time. Time sourced from message timestamp.            |
+| Type | Data Type                          | Example               | Description                                                    |
+| ---- | ---------------------------------- | --------------------- | -------------------------------------------------------------- |
+| `0`  | `UTF-8 Char Array`                 | `Hello, World!`       | UTF-8 characters.                                              |
+| `1`  | `u40` ([R3TimeStamp][max-numbers]) | `1st of January 2024` | Renders as human readable time.                                |
+| `2`  | `u40` ([R3TimeStamp][max-numbers]) | `5 minutes ago`       | Renders as relative time.                                      |
+| `3`  | `u0`                               | `1st of January 2024` | Human readable timestamp. Time sourced from message timestamp. |
+| `4`  | `u0`                               | `5 minutes ago`       | Relative time. Time sourced from message timestamp.            |
 
 Most messages will most likely contain 1 parameter. Thus be of size 8 (base) + 8 (1 `Parameter`).
 Giving us ~16 bytes per message.
@@ -391,13 +289,9 @@ The byte offset of each string and its length can be found in the [commit-msg.bi
 
 !!! note "A timestamp is shown beside each event, it does not need to be embedded into description."
 
-#### Message 00: PackageAdded
+#### Message Template List
 
-!!! info "Invoked by [Event 0x00: PackageStatusChanged](#00-packagestatuschanged)"
-
-```
-Added Package {} with version {}.
-```
+!!! info "Find the full list of templates on the [Commit Messages Page][commit-messages]."
 
 ### config.bin
 
@@ -405,12 +299,13 @@ Added Package {} with version {}.
 
 This is the array of `Config` structure, defined as:
 
-| Data Type | Name        | Description                                                   |
-| --------- | ----------- | ------------------------------------------------------------- |
-| `u32`     | MetadataIdx | Index of package metadata associated with this configuration. |
-| `u32`     | FileSize    | Size of the configuration file.                               |
-| `u64`     | FileOffset  | Offset of the configuration file.                             |
-| `u64`     | Hash        | Hash of the config ([XXH3][hashing]).                         |
+| Data Type                          | Name        | Description                                                   |
+| ---------------------------------- | ----------- | ------------------------------------------------------------- |
+| `u28` [(MetadataIdx)][max-numbers] | MetadataIdx | Index of package metadata associated with this configuration. |
+| `u4`                               | Reserved    |                                                               |
+| `u32`                              | FileSize    | Size of the configuration file.                               |
+| `u64`                              | FileOffset  | Offset of the configuration file.                             |
+| `u64`                              | Hash        | Hash of the config ([XXH3][hashing]).                         |
 
 Every config is appended to [config-data.bin](#config-databin) as it is added.
 
@@ -480,7 +375,10 @@ This full metadata package contains:
 It's expected each mod's package will probably be around 0.5MB - 3MB in size. Depending on the nature
 of their gallery.
 
-[root-level]: ../Locations.md#items-to-store
+[commit-messages]: ./Commit-Messages.md
+[event-indexes]: ./Events.md
 [hashing]: ../../../Common/Hashing.md
 [inline-data-sizes]: ../../../Common/Files.md#inline-data-sizes
 [package-toml]: ../../Packaging/Package-Metadata.md
+[root-level]: ../Locations.md#items-to-store
+[max-numbers]: Events.md#max-numbers

@@ -111,6 +111,7 @@ nav:
       - Loading Localisations: Common/Localisation/Loading-Localisations.md
       - Implementation Details: Common/Localisation/Implementation-Details.md
     - Hashing: Common/Hashing.md
+    - Files: Common/Files.md
   - Mods:
     - Essentials:
       - Virtual FileSystem:

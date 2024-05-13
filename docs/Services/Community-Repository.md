@@ -46,7 +46,9 @@ They can have any name (as long as they use their own unique folder), in this sp
 | Diagnostic[]  | [Diagnostics](#diagnostics)                     | Diagnostics to display based on game's current folder state.                            |
 | string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                      |
 
-!!! note "Note: All hashes listed in this specification are `XXH3_128bits` (XXH128) unless specified otherwise."
+!!! note "Note: All hashes listed in this page are `XXH3_128bits` (XXH128) unless specified otherwise."
+
+    For more details, see the page on [Hashing Page][hashing].
 
 !!! note "Not all of this information has to be hand typed, some information such as version numbers, hashes, dates can be automatically extracted."
 
@@ -341,11 +343,11 @@ Therefore, we will use `ETag`(s) to cache the index if possible.
 
 !!! info "The Index contains serialized dictionaries responsible for quick lookup of individual games."
 
-| Type                                   | Item       | Description                                      |
-| -------------------------------------- | ---------- | ------------------------------------------------ |
-| Dictionary&lt;string, IndexItem[]&gt;  | ExeToApps  | Maps game `.exe` file to App.                    |
-| Dictionary&lt;string, IndexItemp[]&gt; | HashToApps | Maps game `.exe` hash to App.                    |
-| HashEntry[]                            | Hashes     | A listing of all files and corresponding hashes. |
+| Type                                  | Item       | Description                                      |
+| ------------------------------------- | ---------- | ------------------------------------------------ |
+| Dictionary&lt;string, IndexItem[]&gt; | ExeToApps  | Maps game `.exe` file to App.                    |
+| Dictionary&lt;XXH128, IndexItem[]&gt; | HashToApps | Maps game `.exe` hash to App.                    |
+| HashEntry[]                           | Hashes     | A listing of all files and corresponding hashes. |
 
 #### HashEntry
 
@@ -353,7 +355,7 @@ Therefore, we will use `ETag`(s) to cache the index if possible.
 
 | Type   | Item     | Description                                              |
 | ------ | -------- | -------------------------------------------------------- |
-| string | Hash     | Hash of the file (XXH128)                                |
+| XXH128 | Hash     | Hash of the file (XXH128)                                |
 | string | FilePath | Relative path to the root folder containing Hashes file. |
 
 #### IndexItem
@@ -415,6 +417,7 @@ Should fit within the soft limit, outside of risks with new game releases.
 [gamefinder]: https://github.com/erri120/GameFinder
 [github-pages]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
 [gog-db]: https://www.gogdb.org/
+[hashing]: ../Common/Hashing.md
 [mod-metadata]: ../Server/Configurations/Mod-Metadata.md
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community

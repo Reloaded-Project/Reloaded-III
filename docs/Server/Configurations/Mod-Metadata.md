@@ -6,21 +6,35 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 | Type                             | Name                               | Description                                                   |
 | -------------------------------- | ---------------------------------- | ------------------------------------------------------------- |
-| string                           | [Icon](#icon)                      | Relative path of preview icon.                                |
+| string                           | [Icon-Square](#icon-square)        | Relative path of preview icon.                                |
 | GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                           |
 | bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.    |
 | Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend] |
 | string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                               |
 
-## Icon
+## Icons
 
-!!! info "Stores path relative to folder `Package.toml` is stored in."
+!!! info "These are paths relative to folder `Package.toml` is stored in."
 
 !!! info "Uses JPEG XL (`.jxl`)."
 
     Other formats, e.g. `.png`, `.jpg` and `.webp` will be auto converted.
 
+### Icon (Square)
+
 !!! info "Should be a multiple of `256x256`. Recommended `512x512`."
+
+### Icon (Banner)
+
+!!! info "Should be a multiple of `920x430`."
+
+    Same as Steam (Horizontal) banners.
+
+### Icon (Poster)
+
+!!! info "Should be a multiple of `600x900`."
+
+    Same as Steam (Vertical) covers/banners.
 
 ## Gallery
 

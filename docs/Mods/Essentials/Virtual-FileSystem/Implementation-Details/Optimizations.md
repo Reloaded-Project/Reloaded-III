@@ -67,8 +67,8 @@ to unrolled SSE2, while `make_ascii_uppercase` will use rolled AVX2 if possible 
 In the original C# implementation, this was a vectorized function which now lives here
 [Reloaded.Memory String Hash][reloaded-memory-hash].
 
-For the Rust implementation, it's recommended to use [AHash][ahash], it is the top performer
-in the [smhasher][smhasher] benchmark suite for hashtables.
+For the Rust implementation, it's we will use [AHash][ahash].
+See the [Common/Hashing][hashing] page for more details.
 
 - All strings stored as Wide Strings.
     - Windows APIs use Wide Strings under the hood, even for ANSI APIs.
@@ -188,6 +188,7 @@ The `LookupTree` allows us to resolve file paths in O(3) time, at expense of som
 [ahash]: https://github.com/tkaitchuck/aHash
 [equivalent]: https://docs.rs/hashbrown/latest/hashbrown/trait.Equivalent.html
 [godbolt-string-widen]: https://godbolt.org/z/K18b81rE8
+[hashing]: ../../../../Common/Hashing.md
 [hashtable]: https://docs.rs/hashbrown/latest/hashbrown/struct.HashTable.html#method.find
 [lookup-tree]: ./Trees.md#lookup-tree
 [make-ascii-uppercase]: https://github.com/rust-lang/rust/blob/80d1c8349ab7f1281b9e2f559067380549e2a4e6/library/core/src/num/mod.rs#L627

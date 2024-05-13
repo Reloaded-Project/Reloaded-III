@@ -165,5 +165,6 @@
         "Strip Whitespace": [
             "docs/**/*.md"
         ],
-    }
+    },
+    "discord.enabled": true
 }

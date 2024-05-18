@@ -203,20 +203,37 @@ Format:
 
 The number of events stored here is stored in [header.bin](#headerbin).
 
-Each event uses the following format:
+Each event uses one of the following formats:
 
-| Data Type | Name       | Description                                                                                                                  |
-| --------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `u8`      | EventType  | Which kind of event was used.                                                                                                |
-| `u56`     | InlineData | Information for event if the value is small enough to be stored in under 7 bytes. If not used, is set to `0xFFFFFFFFFFFFFF`. |
+| Data Type | Name       | Description                                                                             |
+| --------- | ---------- | --------------------------------------------------------------------------------------- |
+| `u8`      | EventType  | Which kind of event was used.                                                           |
+| `u56`     | InlineData | Information for event. Unused padding bytes repeat `EventType` to maximize compression. |
 
-After the 8 byte header, there is the raw data for the event if the data can't be inlined.
-The data formats for each event type are detailed below. Note that each event data always has to
-be a multiple of 8 bytes to maintain alignment.
+or
 
-!!! note "`EventType` 0xF0 - 0xFF are 2 byte codes."
+| Data Type | Name       | Description                                                                             |
+| --------- | ---------- | --------------------------------------------------------------------------------------- |
+| `u8`      | EventType  | Which kind of event was used.                                                           |
+| `u24`     | InlineData | Information for event. Unused padding bytes repeat `EventType` to maximize compression. |
 
-    This allows extending the total number of opcodes to 4336.
+or
+
+| Data Type | Name       | Description                   |
+| --------- | ---------- | ----------------------------- |
+| `u8`      | EventType  | Which kind of event was used. |
+| `u8`      | InlineData | Information for event.        |
+
+or
+
+| Data Type | Name       | Description                   |
+| --------- | ---------- | ----------------------------- |
+| `u8`      | EventType  | Which kind of event was used. |
+
+Instruction length depends on `EventType`.
+
+If the data can't be inlined because it is too big, it is stored in a separate file that corresponds
+to the event. Details of that can be seen on each individual event entry.
 
 #### Optimizing Events
 

@@ -1,96 +1,343 @@
-!!! info "This is a full list of [Commit Messages][commit-messages] for each event in [events.bin][events-bin]"
+!!! info "This is a full list of Commit Messages for each event in [events.bin][events-bin]"
 
-## 00: PackageAdded
+Note that these use markdown formatting, so double stars `**` mean **bold**.
 
-!!! info "Source: Event [0x00: PackageStatusChanged][event-00]"
+Most parameters are auto inferred from [(events.bin)][events-bin], any parameters not inferred are listed
+in the respective section.
 
-```
-Added Package {} with version {}.
-```
+## Package Status Changed
 
-## 01: PackageRemoved
+!!! info "Source: Event [PackageStatusChanged][event-packagestatuschanged]"
 
-!!! info "Source: Event [0x00: PackageStatusChanged][event-00]"
-
-```
-Removed Package {}.
-```
-
-## 02: PackageHidden
-
-!!! info "Source: Event [0x00: PackageStatusChanged][event-00]"
+### PackageAdded
 
 ```
-Hid Package {} from view.
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-## 03: PackageDisabled
-
-!!! info "Source: Event [0x00: PackageStatusChanged][event-00]"
+### PackageRemoved
 
 ```
-Disabled Package {}.
+Removed '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-## 04: PackageEnabled
-
-!!! info "Source: Event [0x00: PackageStatusChanged][event-00]"
+### PackageHidden
 
 ```
-Enabled Package {}.
+Hidden '**{Name}**' with ID '**{ID}**' and version '**{Version}**' from view.
 ```
 
-## 05: GameLaunched
-
-!!! info "Invoked by [Event 0x01: GameLaunched][game-launched]"
+### PackageDisabled
 
 ```
-Launched game at {}.
+Disabled '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-## 06: ConfigUpdated
-
-!!! info "Invoked by [Event 0x02: ConfigUpdated][event-02]"
+### PackageEnabled
 
 ```
-Updated configuration for Package {}.
+Enabled '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-## 07: LoadoutGridEnabledSortModeChanged
-
-!!! info "Invoked by [Event 0x03: LoadoutDisplaySettingChanged][event-03]"
+### ModAdded
 
 ```
-Changed enabled package sort mode to {}.
+Added mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-## 08: LoadoutGridDisabledSortModeChanged
-
-!!! info "Invoked by [Event 0x03: LoadoutDisplaySettingChanged][event-03]"
+### ModRemoved
 
 ```
-Changed disabled package sort mode to {}.
+Removed mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-## 09: ModLoadOrderSortChanged
-
-!!! info "Invoked by [Event 0x03: LoadoutDisplaySettingChanged][event-03]"
+### ModHidden
 
 ```
-Changed mod load order sort to {}.
+Hidden mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**' from view.
 ```
 
-## 10: LoadoutGridStyleChanged
-
-!!! info "Invoked by [Event 0x03: LoadoutDisplaySettingChanged][event-03]"
+### ModDisabled
 
 ```
-Changed loadout grid style to {}.
+Disabled mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-[commit-messages]: ../Loadouts/About.md#commit-msgbin
+### ModEnabled
+
+```
+Enabled mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### TranslationAdded
+
+```
+Added translation '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### TranslationRemoved
+
+```
+Removed translation '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### TranslationHidden
+
+```
+Hidden translation '**{Name}**' with ID '**{ID}**' and version '**{Version}**' from view.
+```
+
+### TranslationDisabled
+
+```
+Disabled translation '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### TranslationEnabled
+
+```
+Enabled translation '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### ToolAdded
+
+```
+Added tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### ToolRemoved
+
+```
+Removed tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### ToolHidden
+
+```
+Hidden tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**' from view.
+```
+
+### ToolDisabled
+
+```
+Disabled tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+### ToolEnabled
+
+```
+Enabled tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+## Package Updated
+
+!!! info "Source: Event [PackageUpdated][event-packageupdated]"
+
+### PackageUpdated
+
+```
+Updated '**{Name}**' from version '**{OldVersion}**' to '**{NewVersion}**'.
+(ID: '{ID}').
+```
+
+### ModUpdated
+
+```
+Updated mod '**{Name}**' from version '**{OldVersion}**' to '**{NewVersion}**'.
+(ID: '{ID}').
+```
+
+### TranslationUpdated
+
+```
+Updated translation '**{Name}**' from version '**{OldVersion}**' to '**{NewVersion}**'.
+(ID: '{ID}').
+```
+
+### ToolUpdated
+
+```
+Updated tool '**{Name}**' from version '**{OldVersion}**' to '**{NewVersion}**'.
+(ID: '{ID}').
+```
+
+## Game Launched
+
+!!! info "Invoked by [GameLaunched][event-game-launched]"
+
+```
+Launched game at {EventTimestamp}.
+```
+
+`EventTimestamp` is human readable absolute date.
+e.g. `11th of May 2020`.
+
+## Config Updated
+
+- `{ChangeList}` is sourced from [commit-parameters.bin][commit-parametersbin].
+
+### Change
+
+!!! note "This is an individual item in the `ChangeList` items below"
+
+```
+- **{Key}**: **{OldValue}** -> **{NewValue}**
+```
+
+It is sourced from [commit-parameters.bin][commit-parametersbin].
+
+### ModConfigUpdated
+
+!!! info "Source: Event [ConfigUpdated][event-configupdated]"
+
+```
+Updated settings for mod '**{ModName}**'.
+
+Changes:
+{ChangeList}
+
+(ID: '{ModID}')
+```
+
+#### Generic Message
+
+When the exact changes cannot be determined.
+
+```
+Updated settings for mod '**{ModName}**' (ID: '{ID}').
+```
+
+### ToolConfigUpdated
+
+!!! info "Source: Event [ConfigUpdated][event-configupdated]"
+
+```
+Updated settings for tool '**{ToolName}**'.
+
+Changes:
+{ChangeList}
+
+(ID: '{ID}')
+```
+
+#### Generic Message
+
+When the exact changes cannot be determined.
+
+```
+Updated settings for tool '**{ToolName}**' (ID: '{ID}').
+```
+
+## Load Order Changed
+
+!!! info "Source: Event [PackageLoadOrderChanged][event-packageloadorderchanged]"
+
+### ModLoadOrderChanged
+
+```
+Changed load order for mod '**{Name}**' from **{OldPosition}** to **{NewPosition}**.
+(ID: '{ID}')
+```
+
+### TranslationLoadOrderChanged
+
+```
+Changed load order for translation '**{Name}**' from **{OldPosition}** to **{NewPosition}**.
+(ID: '{ID}')
+```
+
+## Display Setting Changed
+
+!!! info "Source: Event [LoadoutDisplaySettingChanged][event-loadout-display-setting-changed]"
+
+### Multiple Settings Changed
+
+```
+Changed loadout display settings.
+
+{ChangeList}
+```
+
+!!! note "ChangeList is constructed in code since we know all possibilities ahead of time"
+
+    Below shows the messages added when the `ChangeList` is constructed.
+
+When `LoadoutGridEnabledSortMode` has changed:
+
+```
+- Enabled item sorting changed: '**{OldEnabledSortMode}**' to '**{NewEnabledSortMode}**'.
+```
+
+When `LoadoutGridDisabledSortMode` has changed:
+```
+- Disabled item sorting changed: '**{OldDisabledSortMode}**' to '**{NewDisabledSortMode}**'.
+```
+
+When `ModLoadOrderSort` has changed:
+```
+- Load reorderer sort mode changed: '**{OldLoadOrderSort}**' to '**{NewLoadOrderSort}**'.
+```
+
+When `LoadoutGridStyle` has changed:
+
+```
+- Mod display mode changed from '{OldLoadoutGridStyle}' to '{NewLoadoutGridStyle}'.
+```
+
+### LoadoutGridEnabledSortModeChanged
+
+```
+Enabled item sorting changed: '**{OldEnabledSortMode}**' to '**{NewEnabledSortMode}**'.
+```
+
+### LoadoutGridDisabledSortModeChanged
+
+```
+Changed sorting mode for disabled items from '{OldDisabledSortMode}' to '{NewDisabledSortMode}'.
+```
+
+### ModLoadOrderSortChanged
+```
+Load reorderer sort mode changed: '**{OldLoadOrderSort}**' to '**{NewLoadOrderSort}**'.
+```
+
+### LoadoutGridStyleChanged
+
+```
+Mod display mode changed from '{OldLoadoutGridStyle}' to '{NewLoadoutGridStyle}'.
+```
+
+### Enumerables
+
+The individual enum values are translated to the following.
+
+#### SortingMode
+
+- `0`: "Unchanged"
+- `1`: "Static"
+- `2`: "Release Date (Ascending)"
+- `3`: "Release Date (Descending)"
+- `4`: "Install Date (Ascending)"
+- `5`: "Install Date (Descending)"
+
+#### SortOrder
+
+- `0`: "Unchanged"
+- `1`: "Bottom to Top (First Mod Wins)"
+- `2`: "Top to Bottom (Last Mod Wins)"
+
+#### GridDisplayMode
+
+- `0`: "Unchanged"
+- `1`: "List (Compact)"
+- `2`: "Grid (Squares)"
+- `3`: "Grid (Horizontal Rectangles, Steam Size)"
+- `4`: "Grid (Vertical Rectangles, Steam Size)"
+
 [events-bin]: ../Loadouts/About.md#eventsbin
-[event-00]: ./Events.md#00-packagestatuschanged
-[event-02]: ./Events.md#02-configupdated
-[event-03]: ./Events.md#04-loadoutdisplaysettingchanged
-[game-launched]: ./Events.md#01-gamelaunched
+[event-packagestatuschanged]: ./Events.md#packagestatuschanged
+[event-config-updated]: ./Events.md#configupdated
+[event-loadout-display-setting-changed]: ./Events.md#1004-loadoutdisplaysettingchanged
+[event-game-launched]: ./Events.md#gamelaunched
+[event-packageupdated]: ./Events.md#packageupdated
+[event-configupdated]: ./Events.md#configupdated
+[event-packageloadorderchanged]: ./Events.md#packageloadorderchanged

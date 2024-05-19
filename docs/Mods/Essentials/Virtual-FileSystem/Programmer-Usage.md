@@ -150,10 +150,6 @@ public enum VfsSettings
 
 - `Enable()` / `Disable()`: Enables or disables the VFS entirely.
 
-Sure, here are the updated examples sections for both the VFS and Signature Scanner documentation:
-
-Examples for VFS:
-
 ## Examples
 
 Redirect an individual file:

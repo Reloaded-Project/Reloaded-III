@@ -43,6 +43,7 @@ Id = "reloaded3.gamesupport.p5rpc.s56"
 Name = "Persona 5 Royal Support"
 Summary = "Provides Essential Functionality for Persona 5 Royal."
 Author = "Sewer56"
+PackageType = "Mod"
 DocsFile = "index.html"
 Version = "1.0.1"
 Tags = ["Utility", "Library"]
@@ -216,8 +217,8 @@ For example, for the package name `reloaded3server.diagnostic.general`, use the 
 
 `PackageType` is an enumerable with the following possible values:
 
+- [Mod][mod-metadata] (Default): Stores a game modification.
 - `Profile`: Stores user profile.
-- [Mod][mod-metadata]: Stores a game modification.
 - `Translation`: Stores a [translation for another package][overriding-translations].
 - `Tool`: Represents a modding tool.
 

@@ -9,12 +9,13 @@ So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
 
 ### Max Numbers
 
-- Max number of Package Manifests (MetadataIdx): `268,435,456` (28 bits)
+- Max number of Package Download Data/Metadata (MetadataIdx): `268,435,456` (28 bits)
 - Max number of Configs (ConfigIdx): `134,217,727` (27 bits)
 - Max number of Events: `4,294,967,295` (32 bits)
-- Max timestamp. R3TimeStamp: `2,199,023,255,551` (40 bits).
-    - This is `2^40 - 1` * 10 milliseconds from `1st January 2024`.
-    - Max year 2111.
+- Max number of Game Versions/Revisions (GameVerIdx): `65,536` (16 bits)
+- Max timestamp. R3TimeStamp: `4,294,967,295` (32 bits).
+    - This is the number of seconds since `1st January 2024`.
+    - Max year 2160.
 
 ### PackageState
 
@@ -74,6 +75,21 @@ So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
 - `2`: Grid (Squares)
 - `3`: Grid (Horizontal Rectangles, Steam Size)
 - `4`: Grid (Vertical Rectangles, Steam Size)
+
+### StoreType
+
+!!! info "Represents the store or location from which a game has shipped from."
+
+    - Size: 8 bits
+    - Possible values: 0-15
+
+- 0: `Unknown` (Disk)
+- 1: `GOG`
+- 2: `Steam`
+- 3: `Epic`
+- 4: `Microsoft`
+
+This can also include game launchers.
 
 ## Events
 
@@ -154,9 +170,38 @@ This is used as padding if there is an event that needs to be written, but it wi
 
 This way we can ensure alignment is maintained.
 
+!!! note "This is not treated as a event, it is padding."
+
+    There are no timestamps or other data associated with this event.
+
 ### PackageStatusChanged
 
 !!! info "A new package has been added to `package-metadata.bin` and can be seen from loadout."
+
+#### Messages
+
+`PackageType` is the type of package referred to `MetadataIdx`.
+
+- [package-added][package-added] when `NewStatus == Added` when `PackageType` is not known.
+- [package-removed][package-removed] when `NewStatus == Removed` when `PackageType` is not known.
+- [package-hidden][package-hidden] when `NewStatus == Hidden` when `PackageType` is not known.
+- [package-disabled][package-disabled] when `NewStatus == Disabled` when `PackageType` is not known.
+- [package-enabled][package-enabled] when `NewStatus == Enabled` when `PackageType` is not known.
+- [mod-added][mod-added] when `NewStatus == Added` and `PackageType == Mod`.
+- [mod-removed][mod-removed] when `NewStatus == Removed` and `PackageType == Mod`.
+- [mod-hidden][mod-hidden] when `NewStatus == Hidden` and `PackageType == Mod`.
+- [mod-disabled][mod-disabled] when `NewStatus == Disabled` and `PackageType == Mod`.
+- [mod-enabled][mod-enabled] when `NewStatus == Enabled` and `PackageType == Mod`.
+- [translation-added][translation-added] when `NewStatus == Added` and `PackageType == Translation`.
+- [translation-removed][translation-removed] when `NewStatus == Removed` and `PackageType == Translation`.
+- [translation-hidden][translation-hidden] when `NewStatus == Hidden` and `PackageType == Translation`.
+- [translation-disabled][translation-disabled] when `NewStatus == Disabled` and `PackageType == Translation`.
+- [translation-enabled][translation-enabled] when `NewStatus == Enabled` and `PackageType == Translation`.
+- [tool-added][tool-added] when `NewStatus == Added` and `PackageType == Tool`.
+- [tool-removed][tool-removed] when `NewStatus == Removed` and `PackageType == Tool`.
+- [tool-hidden][tool-hidden] when `NewStatus == Hidden` and `PackageType == Tool`.
+- [tool-disabled][tool-disabled] when `NewStatus == Disabled` and `PackageType == Tool`.
+- [tool-enabled][tool-enabled] when `NewStatus == Enabled` and `PackageType == Tool`.
 
 #### {01}+00: PackageStatusChanged8
 
@@ -205,24 +250,35 @@ This way we can ensure alignment is maintained.
 | PackageState | NewStatus   | X     | See [PackageState](#packagestate)                                        |
 | `u28`        | MetadataIdx | Y     | [0-268M] Index of metadata in [package-metadata.bin][packagemetadatabin] |
 
-### {00}+01: GameLaunched
+### GameLaunched
 
 !!! info "This event is extremely common. So gets its own opcode."
 
-| EventType (0-7)  |
-| ---------------- |
-| 01 (`{00} + 01`) |
-
 This event is used to indicate that the game was launched.
-This event has no extra data. Timestamp for commit message is in from [commit-msg.bin][commitmsgbin].
+This event has no extra data.
 
 !!! note "This event can be added from parsing logs."
 
     If the launcher detects that Reloaded has been ran through an external logger.
 
+#### Messages
+
+- [game-launched][game-launched]
+
+#### {00}+01: GameLaunched
+
+| EventType (0-7)  |
+| ---------------- |
+| 01 (`{00} + 01`) |
+
 ### ConfigUpdated
 
 !!! info "This event indicates that a package configuration was updated."
+
+#### Messages
+
+- [mod-config-updated][mod-config-updated] when `PackageType == Mod`.
+- [tool-config-updated][tool-config-updated] when `PackageType == Tool`.
 
 #### {01}+01: ConfigUpdated8
 
@@ -281,9 +337,21 @@ This event has no extra data. Timestamp for commit message is in from [commit-ms
 | `u27` (ConfigIdx)   | ConfigIdx   | X     | [0-134M] Index of associated configuration in [config.bin][configbin]    |
 | `u28` (MetadataIdx) | MetadataIdx | Y     | [0-268M] Index of metadata in [package-metadata.bin][packagemetadatabin] |
 
-### {10}+04 LoadoutDisplaySettingChanged
+### LoadoutDisplaySettingChanged
 
 !!! info "A setting related to how mods are displayed in the UI has changed."
+
+This is rarely changed so has a large 4-byte payload and can change multiple events at once.
+
+#### Messages
+
+- [loadout-display-setting-changed][loadout-display-setting-changed]
+- [loadout-grid-enabled-sort-mode-changed][loadout-grid-enabled-sort-mode-changed] when only `LoadoutGridEnabledSortMode` has changed.
+- [loadout-grid-disabled-sort-mode-changed][loadout-grid-disabled-sort-mode-changed] when only `LoadoutGridDisabledSortMode` has changed.
+- [mod-load-order-sort-changed][mod-load-order-sort-changed] when only `ModLoadOrderSort` has changed.
+- [loadout-grid-style-changed][loadout-grid-style-changed] when only `LoadoutGridStyle` has changed.
+
+#### {10}+04 LoadoutDisplaySettingChanged
 
 | EventType (0-7)  | Unused (8-11) | LoadoutGridEnabledSortMode (12-18) | LoadoutGridDisabledSortMode (19-25) | ModLoadOrderSort (26-27) | LoadoutGridStyle (28-31) |
 | ---------------- | ------------- | ---------------------------------- | ----------------------------------- | ------------------------ | ------------------------ |
@@ -295,8 +363,6 @@ This event has no extra data. Timestamp for commit message is in from [commit-ms
 | `u7` [(SortingMode)](#sortingmode)         | LoadoutGridDisabledSortMode | X     | Sorting mode for disabled items in LoadoutGrid. |
 | `u2` [(SortOrder)](#sortorder)             | ModLoadOrderSort            | Y     | Sorting mode for load order reorderer.          |
 | `u4` [(GridDisplayMode)](#griddisplaymode) | LoadoutGridStyle            | Z     | Display mode for LoadoutGrid.                   |
-
-Apologies for the misunderstanding. Yes, I can provide an example of how the `PackageUpdated` event could be split into different length opcodes, similar to how `ConfigUpdated` is handled:
 
 ### PackageUpdated
 
@@ -311,6 +377,13 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 !!! note "Some mods can receive updates quite often"
 
     That's why `OldMetadatIdx` and `NewMetadataIdx` are evenly distributed in bits.
+
+#### Messages
+
+- [package-updated][package-updated] when `PackageType` is not known.
+- [mod-updated][mod-updated] when `PackageType == Mod`.
+- [translation-updated][translation-updated] when `PackageType == Translation`.
+- [tool-updated][tool-updated] when `PackageType == Tool`.
 
 #### {10}+05: PackageUpdated16
 
@@ -362,10 +435,10 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 
 !!! info "This event indicates that the load order of packages has changed."
 
-| Data Type | Name        | Description                                |
-| --------- | ----------- | ------------------------------------------ |
-| `u28`     | OldPosition | Old position of the mod in the load order. |
-| `u28`     | NewPosition | New position of the mod in the load order. |
+| Name        | Description                                |
+| ----------- | ------------------------------------------ |
+| OldPosition | Old position of the mod in the load order. |
+| NewPosition | New position of the mod in the load order. |
 
 !!! note "By default, we logically put every added mod to the end of the load order."
 
@@ -435,7 +508,10 @@ In a slightly unrealistic scenario of a 10000 mod loadout. Assuming mods were mo
 Or roughly `5ms` seconds of time, before factoring additional inefficiencies of small copies.
 On something like a GameCube, `50ms`.
 
-Sure! Here are the shortened variants of the `PackageLoadOrderChanged` event:
+#### Messages
+
+- [mod-load-order-changed][mod-load-order-changed] when `PackageType == Mod`.
+- [translation-load-order-changed][translation-load-order-changed] when `PackageType == Translation`.
 
 #### {10}+07: PackageLoadOrderChanged16
 
@@ -478,7 +554,7 @@ Optimized form for common action of moving a mod to the top of the load order.
 
 | EventType (0-7)  | OldPosition (8-27)             | OffsetFromTop (28-31) |
 | ---------------- | ------------------------------ | --------------------- |
-| 89 (`{10} + 09`) | `{XXXX} {XXXXXXXX} {XXXXXXXX}` | `{YYY}`               |
+| 8A (`{10} + 0A`) | `{XXXX} {XXXXXXXX} {XXXXXXXX}` | `{YYY}`               |
 
 | Data Type | Name          | Label | Description                                       |
 | --------- | ------------- | ----- | ------------------------------------------------- |
@@ -508,8 +584,81 @@ Optimized form for common action of moving a mod to the top of the load order.
 | `u28`     | OldPosition | X     | [0-268M] Old position of the mod in the load order. |
 | `u28`     | NewPosition | Y     | [0-268M] New position of the mod in the load order. |
 
-[commit-messages]: About.md#commit-msgbin
-[commitmsgbin]: About.md#commit-msgbin
+### UpdateGameStoreManifest
+
+!!! info "This is used for upgrading/downgrading a game on supported stores."
+
+And also just seeing when the game got updated.
+
+This sets an index of the new game version in the `NewRevision` field.
+
+This revision corresponds to an entry in the [stores.bin][stores-bin] file.
+
+This event is emitted the files of the game match a known new store manifest/revision.
+
+#### {01}+02: UpdateGameStoreManifest
+
+| EventType (0-7)  | NewRevision (8-15) |
+| ---------------- | ------------------ |
+| 42 (`{01} + 02`) | `{XXXXXXXX}`       |
+
+| Data Type         | Name        | Label | Description                        |
+| ----------------- | ----------- | ----- | ---------------------------------- |
+| `u8` (GameVerIdx) | NewRevision | X     | [0-255] New game version revision. |
+
+#### {10}+0B: UpdateGameStoreManifest
+
+!!! note "Unlikely this will ever be used, but just in case."
+
+| EventType (0-7)  | NewRevision (8-31)                 |
+| ---------------- | ---------------------------------- |
+| 82 (`{10} + 0B`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX}` |
+
+| Data Type         | Name        | Label | Description                          |
+| ----------------- | ----------- | ----- | ------------------------------------ |
+| `u8` (GameVerIdx) | NewRevision | X     | [0-16.8M] New game version revision. |
+
 [configbin]: About.md#configbin
 [events-bin]: About.md#eventsbin
 [packagemetadatabin]: About.md#package-metadatabin
+[package-added]: ./Commit-Messages.md#packageadded
+[package-removed]: ./Commit-Messages.md#packageremoved
+[package-hidden]: ./Commit-Messages.md#packagehidden
+[package-disabled]: ./Commit-Messages.md#packagedisabled
+[package-enabled]: ./Commit-Messages.md#packageenabled
+[package-added]: ./Commit-Messages.md#packageadded
+[package-removed]: ./Commit-Messages.md#packageremoved
+[package-hidden]: ./Commit-Messages.md#packagehidden
+[package-disabled]: ./Commit-Messages.md#packagedisabled
+[package-enabled]: ./Commit-Messages.md#packageenabled
+[mod-added]: ./Commit-Messages.md#modadded
+[mod-removed]: ./Commit-Messages.md#modremoved
+[mod-hidden]: ./Commit-Messages.md#modhidden
+[mod-disabled]: ./Commit-Messages.md#moddisabled
+[mod-enabled]: ./Commit-Messages.md#modenabled
+[translation-added]: ./Commit-Messages.md#translationadded
+[translation-removed]: ./Commit-Messages.md#translationremoved
+[translation-hidden]: ./Commit-Messages.md#translationhidden
+[translation-disabled]: ./Commit-Messages.md#translationdisabled
+[translation-enabled]: ./Commit-Messages.md#translationenabled
+[tool-added]: ./Commit-Messages.md#tooladded
+[tool-removed]: ./Commit-Messages.md#toolremoved
+[tool-hidden]: ./Commit-Messages.md#toolhidden
+[tool-disabled]: ./Commit-Messages.md#tooldisabled
+[tool-enabled]: ./Commit-Messages.md#toolenabled
+[package-updated]: ./Commit-Messages.md#packageupdated
+[mod-updated]: ./Commit-Messages.md#modupdated
+[translation-updated]: ./Commit-Messages.md#translationupdated
+[tool-updated]: ./Commit-Messages.md#toolupdated
+[event-packageloadorderchanged]: ./Events.md#packageloadorderchanged
+[mod-load-order-changed]: ./Commit-Messages.md#modloadorderchanged
+[translation-load-order-changed]: ./Commit-Messages.md#translationloadorderchanged
+[mod-config-updated]: ./Commit-Messages.md#modconfigupdated
+[tool-config-updated]: ./Commit-Messages.md#toolconfigupdated
+[loadout-display-setting-changed]: ./Commit-Messages.md#display-setting-changed
+[loadout-grid-enabled-sort-mode-changed]: ./Commit-Messages.md#loadoutgridenabledsortmodechanged
+[loadout-grid-disabled-sort-mode-changed]: ./Commit-Messages.md#loadoutgriddisabledsortmodechanged
+[mod-load-order-sort-changed]: ./Commit-Messages.md#modloadordersortchanged
+[loadout-grid-style-changed]: ./Commit-Messages.md#loadoutgridstylechanged
+[game-launched]: ./Commit-Messages.md#game-launched
+[stores-bin]: ./About.md#storesbin

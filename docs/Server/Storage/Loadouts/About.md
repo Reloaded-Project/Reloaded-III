@@ -97,13 +97,15 @@ a 'snapshot' of the current state is created, and event history is trimmed to re
 
 !!! info "This details the nature of how Reloaded3 implements Event Sourcing for Loadouts"
 
-| Item                                     | Path                                       | Description                                                                       |
-| ---------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------------- |
-| [Header](#headerbin)                     | `header.bin`                               | (Memory Mapped) Header with current loadout pointers. Facilitates 'transactions'. |
-| [Events](#eventsbin)                     | `events.bin`                               | List of all emitted events in the loadout.                                        |
-| [Commits](#commit-msgbin)                | `commit-msg.bin` & `commit-parameters.bin` | List of commit messages for each event.                                           |
-| [Configs](#configbin)                    | `config.bin` & `config-data.bin`           | Package Configurations.                                                           |
-| [Package Metadata](#package-metadatabin) | `package-metadata.bin`                     | Metadata required to restore all packages within this loadout.                    |
+| Item                                       | Path                                                  | Description                                                                       |
+| ------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [Header](#headerbin)                       | `header.bin`                                          | (Memory Mapped) Header with current loadout pointers. Facilitates 'transactions'. |
+| [Events](#eventsbin)                       | `events.bin`                                          | List of all emitted events in the loadout.                                        |
+| [Timestamps](#timestampsbin)               | `timestamps.bin`                                      | Timestamps for each commit.                                                       |
+| [Commit Parameters](#commit-parametersbin) | `commit-parameters.bin` & `commit-parameters-{x}.bin` | List of commit message parameters for each event.                                 |
+| [Configs](#configbin)                      | `config.bin` & `config-data.bin`                      | Package Configurations.                                                           |
+| [Package Metadata](#package-metadatabin)   | `package-metadata.bin` & `package-metadata-data.bin`  | Metadata required to restore all packages within this loadout.                    |
+| [Store Manifests](#storesbin)              | `manifest.bin` & `manifest-data.bin`                  | Game store specific info to restore game to last version if possible.             |
 
 These files are deliberately set up in such a way that making a change in a loadout means appending
 to the existing files. No data is overwritten. Rolling back in turn means truncating the files to the desired length.
@@ -111,7 +113,7 @@ to the existing files. No data is overwritten. Rolling back in turn means trunca
 In some cases, data is grouped to improve compression ratios by bundling similar data
 together when sharing.
 
-And in other cases, we put cold data that is infrequently accessed, e.g. `commit messages` in
+And in other cases, we put cold data that is infrequently accessed, e.g. `commit message` params in
 a separate file as that information is rarely accessed.
 
 ### Loadout Storage & Lifetime
@@ -184,13 +186,14 @@ performing a cleanup of unused data (by truncating remaining files).
 
 Format:
 
-| Data Type | Name        | Description                                                   |
-| --------- | ----------- | ------------------------------------------------------------- |
-| `u16`     | Version     | Version of the loadout format.                                |
-| `u16`     | Reserved    |                                                               |
-| `u32`     | NumEvents   | Total number of events (and commit messages) in this loadout. |
-| `u32`     | NumMetadata | Total number of package metadata files in this loadout.       |
-| `u32`     | NumConfigs  | Total number of package configuration files in this loadout.  |
+| Data Type | Name            | Description                                                  |
+| --------- | --------------- | ------------------------------------------------------------ |
+| `u16`     | Version         | Version of the loadout format.                               |
+| `u16`     | Reserved        |                                                              |
+| `u32`     | NumEvents       | Total number of events and timestamps in this loadout.       |
+| `u32`     | NumMetadata     | Total number of package metadata files in this loadout.      |
+| `u32`     | NumConfigs      | Total number of package configuration files in this loadout. |
+| `u32`     | NumGameVersions | Total number of game versions.                               |
 
 !!! warning "Backwards compatibility is supported but not forwards."
 
@@ -201,39 +204,16 @@ Format:
 
 !!! info "This file contains all of the events that occurred in this loadout."
 
+Each event has a 1:1 mapping to a timestamp in [timestamps.bin](#timestampsbin).
 The number of events stored here is stored in [header.bin](#headerbin).
 
-Each event uses one of the following formats:
+!!! info "The event format is documented in the [Event List Page][event-indexes]."
 
-| Data Type | Name       | Description                                                                             |
-| --------- | ---------- | --------------------------------------------------------------------------------------- |
-| `u8`      | EventType  | Which kind of event was used.                                                           |
-| `u56`     | InlineData | Information for event. Unused padding bytes repeat `EventType` to maximize compression. |
+As a summary. Each event is composed of an `u8` EventType and 0, 8, 24 or 56 bits of InlineData
+(depending on `EventType`). Events are laid out such that they align with 8 byte boundaries.
 
-or
-
-| Data Type | Name       | Description                                                                             |
-| --------- | ---------- | --------------------------------------------------------------------------------------- |
-| `u8`      | EventType  | Which kind of event was used.                                                           |
-| `u24`     | InlineData | Information for event. Unused padding bytes repeat `EventType` to maximize compression. |
-
-or
-
-| Data Type | Name       | Description                   |
-| --------- | ---------- | ----------------------------- |
-| `u8`      | EventType  | Which kind of event was used. |
-| `u8`      | InlineData | Information for event.        |
-
-or
-
-| Data Type | Name       | Description                   |
-| --------- | ---------- | ----------------------------- |
-| `u8`      | EventType  | Which kind of event was used. |
-
-Instruction length depends on `EventType`.
-
-If the data can't be inlined because it is too big, it is stored in a separate file that corresponds
-to the event. Details of that can be seen on each individual event entry.
+Any data that doesn't fit in the `InlineData` field is stored in another file and loaded by index.
+Details of that can be seen on each individual event entry.
 
 #### Optimizing Events
 
@@ -247,64 +227,128 @@ and save space.
 
 Situations where optimizations are applied at pack stage will be noted in the event's description.
 
-#### Event List
+### timestamps.bin
 
-The full list of events can be found on the [Event List Page][event-indexes].
+!!! info "This contains the timestamp for each event."
 
-### commit-msg.bin
+!!! tip "Each timestamp here corresponds to an event in [events.bin](#eventsbin)."
 
-!!! info "This contains the 'commit' messages for each event."
+This is an array of 32-bit timestamps ([R3TimeStamp[]][max-numbers]). The number of items is defined in
+[header.bin](#headerbin).
 
-This file is stored separately from the main events as the commit messages are only ever used
-when auditing history; and this is an infrequent operation.
+### commit-parameters.bin
 
-This is an array of the following structure:
+!!! tip "This file contains the parameters for any event that requires additional info in its commit message."
 
-| Data Type                          | Name            | Description                                                             |
-| ---------------------------------- | --------------- | ----------------------------------------------------------------------- |
-| `u40` ([R3TimeStamp][max-numbers]) | TimeStamp       | Number of `10ms` ticks elapsed since `1st January 2024`. Max year 2111. |
-| `u8`                               | NumParameters   | Number of parameters substituted into the template. (Max 256)           |
-| `u18`                              | MessageTemplate | Index of message template. (Max 262144)                                 |
-| `Parameter[NumParameters]`         | Parameters      | Parameters for the formatted string.                                    |
+    The commit messages can usually be derived directly from the event.<br/>
+    However, in some cases, additional information may be desireable to embed.
+
+    For example, modifying a package configuration requires a description of the changes made.<br/>
+    Because, we may not have the actual mod configuration metadata to determine what has changed.
+
+    This file stores parameters for these rare cases.
+
+!!! note "A timestamp is shown beside each event, it does not need to be embedded into description."
 
 The `Parameter` struct is defined as:
 
-| Data Type | Name            | Description                                                               |
-| --------- | --------------- | ------------------------------------------------------------------------- |
-| `u36`     | ParameterOffset | Offset of the parameter in [commit-parameters.bin](#commit-parametersbin) |
-| `u20`     | ParameterLength | Length of the parameter data. (1MB Max)                                   |
-| `u8`      | ParameterType   | Type of the parameter.                                                    |
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u8`      | ParameterType   | Type of the parameter.            |
+| `u24`     | ParameterLength | Length of the parameter in bytes. |
 
 `ParameterType` is defined as:
 
-| Type | Data Type                          | Example               | Description                                                    |
-| ---- | ---------------------------------- | --------------------- | -------------------------------------------------------------- |
-| `0`  | `UTF-8 Char Array`                 | `Hello, World!`       | UTF-8 characters.                                              |
-| `1`  | `u40` ([R3TimeStamp][max-numbers]) | `1st of January 2024` | Renders as human readable time.                                |
-| `2`  | `u40` ([R3TimeStamp][max-numbers]) | `5 minutes ago`       | Renders as relative time.                                      |
-| `3`  | `u0`                               | `1st of January 2024` | Human readable timestamp. Time sourced from message timestamp. |
-| `4`  | `u0`                               | `5 minutes ago`       | Relative time. Time sourced from message timestamp.            |
+| Type | Data Type                          | Example                                 | Description                                                           |
+| ---- | ---------------------------------- | --------------------------------------- | --------------------------------------------------------------------- |
+| `0`  | `UTF-8 Char Array`                 | `Hello, World!`                         | UTF-8 characters.                                                     |
+| `1`  | `u32` ([R3TimeStamp][max-numbers]) | `1st of January 2024`                   | Renders as human readable time.                                       |
+| `2`  | `u32` ([R3TimeStamp][max-numbers]) | `5 minutes ago`                         | Renders as relative time.                                             |
+| `3`  | `u0`                               | `1st of January 2024`                   | Human readable timestamp. Time sourced from message timestamp.        |
+| `4`  | `u0`                               | `5 minutes ago`                         | Relative time. Time sourced from message timestamp.                   |
+| `5`  | `BackReference`                    | 10 entries ago                          | Reference to a previous item. See [backreferences](#back-references). |
+| `6`  | `List`                             | See [Parameter Lists](#parameter-lists) | Defines the start of a list. See [Parameter Lists](#parameter-lists). |
 
-Most messages will most likely contain 1 parameter. Thus be of size 8 (base) + 8 (1 `Parameter`).
-Giving us ~16 bytes per message.
+The parameter data is split into multiple files to aid compression:
+
+- Text is expected to be mostly (English) ASCII and thus be mostly limited to a certain character set.
+- Timestamps are expected to mostly be increasing.
+- Other/Misc integers go in a separate file.
+- Other/Misc floats go in a separate file.
+
+Here is a listing of which parameter types go where:
+
+| Type | Data Type                          | File                               |
+| ---- | ---------------------------------- | ---------------------------------- |
+| `0`  | `UTF-8 Char Array`                 | `commit-parameters-text.bin`       |
+| `1`  | `u32` ([R3TimeStamp][max-numbers]) | `commit-parameters-timestamps.bin` |
+| `2`  | `u32` ([R3TimeStamp][max-numbers]) | `commit-parameters-timestamps.bin` |
 
 !!! note "Message parameters can be deduplicated."
 
     The writer maintains a hash of all parameters so far and reuses the same
-    offset+length if the parameter ends up being a duplicate.
+    parameter index if the parameter ends up being a duplicate.
 
-The `MessageTemplate` is a magic number that corresponds to a pre-formatted message.
+#### Back References
 
-The exact text for these messages are shipped in localisation files, such that they can appear
-in a user's native language.
+!!! info "Back References are a Special Type of Parameter that references a previous item."
 
-#### commit-parameters.bin
+This improves loadout sizes by reducing existing previous data.
 
-!!! tip "This is a raw buffer of UTF-8 characters."
+| Data Type | Name            | Description                              |
+| --------- | --------------- | ---------------------------------------- |
+| `u8`      | ParameterType   | Type of the parameter.                   |
+| `u24`     | ParameterOffset | Negative offset to referenced parameter. |
 
-The byte offset of each string and its length can be found in the [commit-msg.bin](#commit-msgbin) file.
+A `ParameterOffset` of `1` means 'the previous parameter'. `2` means 'the one before that' etc.
 
-!!! note "A timestamp is shown beside each event, it does not need to be embedded into description."
+#### Parameter Lists
+
+!!! info "This primitive is used when you have an unknown number of items."
+
+Imagine you have a message which says:
+
+```
+Changes were made, here they are:
+
+{ChangeList}
+```
+
+And you want `ChangeList` to have multiple items.
+
+These items need to be localizable, for example a single `Change` item could be:
+
+```
+- Value **{Name}** changed to **{NewValue}**
+```
+
+This is where `Parameter Lists` come in.
+
+A `Parameter List` is defined as:
+
+| Data Type | Name          | Description                           |
+| --------- | ------------- | ------------------------------------- |
+| `u8`      | ParameterType | Type of the parameter.                |
+| `u4`      | Version       | [Event Specific] version of the list. |
+| `u20`     | NumParameters | Number of parameters.                 |
+
+For the example above, we can treat each `Change` as 2 parameters.
+In which case, if we had 2 changes, we would set `NumParameters` to `4`.
+
+The individual parameters for `Name` and `NewValue` would then follow
+as regular parameters in [commit-parameters.bin](#commit-parametersbin).
+
+!!! question "Why is there a `Version` field?"
+
+    Sometimes it may be desireable to change the structure.
+    Suppose you wanted to change `Change` item to also have the previous value:
+
+    ```
+    - Value **{Name}** changed from **{OldValue}** to **{NewValue}**
+    ```
+
+    In order to perform this change, you would set the `Version` field to `1`.
+    So when you read loadouts you can interpret both the old and new format side by side.
 
 #### Message Template List
 
@@ -314,17 +358,30 @@ The byte offset of each string and its length can be found in the [commit-msg.bi
 
 !!! info "This stores all historical mod configurations for any point in time."
 
-This is the array of `Config` structure, defined as:
+This is the array of file sizes, each being:
 
-| Data Type                          | Name        | Description                                                   |
-| ---------------------------------- | ----------- | ------------------------------------------------------------- |
-| `u28` [(MetadataIdx)][max-numbers] | MetadataIdx | Index of package metadata associated with this configuration. |
-| `u4`                               | Reserved    |                                                               |
-| `u32`                              | FileSize    | Size of the configuration file.                               |
-| `u64`                              | FileOffset  | Offset of the configuration file.                             |
-| `u64`                              | Hash        | Hash of the config ([XXH3][hashing]).                         |
+| Data Type | Name     | Description                     |
+| --------- | -------- | ------------------------------- |
+| `u16`     | FileSize | Size of the configuration file. |
 
-Every config is appended to [config-data.bin](#config-databin) as it is added.
+Every new config is appended to [config-data.bin](#config-databin) as it is added.
+
+Each unique config has an index, a.k.a. [ConfigIdx][max-numbers], which is an incrementing value from 0
+every time a config is added. Emitted events refer to this index.
+
+!!! question "How do you use this data?"
+
+    When loading a loadout, calculate the offsets of each config in memory, by iterating through the
+    `FileSize` field(s).
+
+    - First config is at 0
+    - Second is at 0 + `FileSize(first)`
+    - Third is at `second` + `FileSize(second)`.
+
+    etc. As you do this also, hash the configs. ([AHash][hashing] recommended)
+
+    When a new config is created, hash it and check if it's a duplicate, if it isn't, add it to the
+    config list.
 
 #### config-data.bin
 
@@ -334,23 +391,32 @@ You can get the file size and offsets from the [config.bin](#configbin) file.
 
 ### package-metadata.bin
 
-!!! info "This file contains a copy of the metadata for each package in the loadout's history."
+!!! info "This file contains info on how to download a package."
 
-In other words, a stripped down copy of each unique [Package.toml][package-toml] encountered.
-This is stripped down to the absolute minimum information required to re-download the package
-from the internet. i.e. It contains the `ModId`, `Version` and Update Sources.
+This file contains a binary serialized, stripped down copy of each unique [Package.toml][package-toml]
+encountered. Each item is stripped down to `ModId`, `Name`, `Version`, `Package Type` and `Update Sources`,
+the minimum information required to download and display basic info about a package.
 
-It is generally expected for every file to be stored in here to be 1-3KB in size uncompressed.
-Compressing it generally reduces it to 700-900 bytes standalone, and even more when in a SOLID
-block like this.
+Items in this file are referred to by index as [MetadataIdx][max-numbers] in the events.
 
-#### What do we Store?
+As for the format, it is the same as [config.bin](#configbin), an array of file sizes
+
+| Data Type | Name     | Description                     |
+| --------- | -------- | ------------------------------- |
+| `u16`     | FileSize | Size of the configuration file. |
+
+So refer to [config.bin](#configbin) documentation for more info.
+
+#### package-metadata-data.bin
+
+!!! info "An example of what we store."
 
 Below is an example in `.toml` with dummy data:
 
 ```
 Id = "reloaded3.gamesupport.p5rpc.s56"
 Name = "Persona 5 Royal Support"
+Version = "1.0.0"
 
 [UpdateData]
 [UpdateData.GameBanana]
@@ -373,7 +439,8 @@ AllowUpdateFromAnyRepository = false
 ID, Name and Update Sources to download the full package are stored. Rest is stripped.
 
 We do custom binary serialization to store this info as efficiently as possible. Exact details to be
-determined once the code is written.
+determined once the code is written. It's generally expected for each entry to be in 150-300 byte range
+before compression.
 
 #### How do we use this Data?
 
@@ -389,8 +456,116 @@ This full metadata package contains:
 - All Gallery Images
 - Full Documentation
 
-It's expected each mod's package will probably be around 0.5MB - 3MB in size. Depending on the nature
-of their gallery.
+It's expected each mod's full metadata package will probably be around 0.5MB - 3MB in size.
+Depending on the nature of their gallery.
+
+If it's not possible to download the metadata, we download the full package.
+
+### stores.bin
+
+!!! info "This stores all game store specific info."
+
+!!! info "Why do we store this info?"
+
+    This info can be used to identify the game when you share the loadout with a friend,
+    and the game isn't known by the [Community Repository][community-repository].
+
+    Or in the event that you cloud sync a game (between your machines) that's not known
+    by the [Community Repository][community-repository].
+
+    It can also be used to identify when game updates have taken place when auditing the log.
+
+!!! warning "TODO: This topic requires more research."
+
+| Data Type                      | Name      | Description                              |
+| ------------------------------ | --------- | ---------------------------------------- |
+| `u8` [(StoreType)][store-type] | StoreType | The store from which the game came from. |
+| `u24`                          | FileSize  | Size of the configuration file.          |
+
+The offsets can be derived from file sizes.
+
+Basically this contains data specific to game stores such as `GOG`, `Steam`, `Epic` etc. that can
+be used to revert the game to an older version.
+
+!!! warning "Reverting to earlier versions is not possible in all game stores."
+
+#### store-data.bin
+
+##### CommmonData Struct
+
+!!! info "This struct is shared between all store entries."
+
+i.e. This game was manually added.
+
+- `Version`: u8
+- `ExeHash`: u64 [(XXH3)][hashing]
+- `ExePath`: String
+- `AppId`: String
+
+We store this for every game, regardless of store.
+
+##### Unknown
+
+- `CommonData`: CommonData
+
+##### Steam
+
+- `Version`: u8
+- `CommonData`: CommonData
+- `AppId`: u64
+- `DepotId`: u64
+- `ManifestId` u64
+- `Branch`: String
+- `BranchPassword`: String
+
+To perform rollback, will probably invoke `DepotDownloader` CLI,
+no need to reinvent wheel. Manifest contains SHA checksums and
+all file paths, we might be able to only do partial downloads.
+
+To determine current version, check the App's `.acf` file in
+`steamapps`. The `InstalledDepots` will give you the current
+`Depot` and `Manifest` ID. Steam does not unfortunately have
+user friendly version names.
+
+To determine downloadable manifests, we'll probably have to use
+`SteamKit2`. Use [DepotDownloader][depot-downloader] for inspiration.
+
+##### GOG
+
+We can get the info from the registry at
+`HKEY_LOCAL_MACHINE\Software\GOG.com\Games\{GameId}`
+
+- `Version`: u8
+- `CommonData`: CommonData
+- `GameId`: u64
+    - Uniquely identifies the game.
+- `Manifest`: u128
+    - Manifest of the depot, identifies the current update.
+- `VersionName`: String
+    - User friendly name, for commit display purposes.
+
+The `VersionName` is also copied into the commit message on each update.
+
+To identify the version reliably, it seems we will need to compare the hashes against the ones in the different depots.
+
+This will also allow us to support e.g. Heroic on Linux.
+
+[See: GameLauncherResearch wiki for more information.](https://github.com/Lariaa/GameLauncherResearch/wiki/GoG-:-Installing-games)
+
+##### Epic
+
+Nope, they don't store older builds.
+But we can nip some data from `C:\Program Data\Epic\EpicGamesLauncher\Data\Manifests`.
+
+We'll backup the whole manifest but what we really want is `CatalogItemId`.
+
+##### Microsoft
+
+Nope, they don't store older builds.
+But just in case, we'll backup `AppXManifest.xml`.
+
+Most likely we only need `PackageFamilyName` from it, but in the event a downgrade
+ever becomes possible, we'll store the full manifest.
 
 [commit-messages]: ./Commit-Messages.md
 [event-indexes]: ./Events.md
@@ -399,3 +574,6 @@ of their gallery.
 [package-toml]: ../../Packaging/Package-Metadata.md
 [root-level]: ../Locations.md#items-to-store
 [max-numbers]: Events.md#max-numbers
+[depot-downloader]: https://github.com/SteamRE/DepotDownloader/blob/b96125f9cbbb0f63d47e14784929f255f6c21ce1/DepotDownloader/ContentDownloader.cs#L185
+[community-repository]: ../../../Services/Community-Repository.md
+[store-type]: ./Events.md#storetype

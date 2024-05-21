@@ -618,6 +618,25 @@ This event is emitted the files of the game match a known new store manifest/rev
 | ----------------- | ----------- | ----- | ------------------------------------ |
 | `u8` (GameVerIdx) | NewRevision | X     | [0-16.8M] New game version revision. |
 
+### UpdateCommandline
+
+!!! info "This event updates the commandline parameters passed to the game."
+
+!!! note "Restricted to 255 characters arbitrarily."
+
+    If someone needs a longer commandline, just make an issue please.
+    We could encode that as null terminated, probably, while keeping the space savings intact.
+
+#### {01}+03: UpdateCommandline8
+
+| EventType (0-7)  | Length (8-15) |
+| ---------------- | ------------- |
+| 43 (`{01} + 03`) | `{XXXXXXXX}`  |
+
+| Data Type | Name   | Label | Description                                                                                                      |
+| --------- | ------ | ----- | ---------------------------------------------------------------------------------------------------------------- |
+| `u8`      | Length | X     | [0-255] Length of new commandline parameters in [commandline-parameter-data.bin][commandline-parameter-data.bin] |
+
 [configbin]: About.md#configbin
 [events-bin]: About.md#eventsbin
 [packagemetadatabin]: About.md#package-metadatabin
@@ -662,3 +681,4 @@ This event is emitted the files of the game match a known new store manifest/rev
 [loadout-grid-style-changed]: ./Commit-Messages.md#loadoutgridstylechanged
 [game-launched]: ./Commit-Messages.md#game-launched
 [stores-bin]: ./About.md#storesbin
+[commandline-parameter-data.bin]: ./About.md#commandline-parameter-databin

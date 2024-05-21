@@ -97,15 +97,16 @@ a 'snapshot' of the current state is created, and event history is trimmed to re
 
 !!! info "This details the nature of how Reloaded3 implements Event Sourcing for Loadouts"
 
-| Item                                       | Path                                                  | Description                                                                       |
-| ------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [Header](#headerbin)                       | `header.bin`                                          | (Memory Mapped) Header with current loadout pointers. Facilitates 'transactions'. |
-| [Events](#eventsbin)                       | `events.bin`                                          | List of all emitted events in the loadout.                                        |
-| [Timestamps](#timestampsbin)               | `timestamps.bin`                                      | Timestamps for each commit.                                                       |
-| [Commit Parameters](#commit-parametersbin) | `commit-parameters.bin` & `commit-parameters-{x}.bin` | List of commit message parameters for each event.                                 |
-| [Configs](#configbin)                      | `config.bin` & `config-data.bin`                      | Package Configurations.                                                           |
-| [Package Metadata](#package-metadatabin)   | `package-metadata.bin` & `package-metadata-data.bin`  | Metadata required to restore all packages within this loadout.                    |
-| [Store Manifests](#storesbin)              | `manifest.bin` & `manifest-data.bin`                  | Game store specific info to restore game to last version if possible.             |
+| Item                                                     | Path                                                  | Description                                                                       |
+| -------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [Header](#headerbin)                                     | `header.bin`                                          | (Memory Mapped) Header with current loadout pointers. Facilitates 'transactions'. |
+| [Events](#eventsbin)                                     | `events.bin`                                          | List of all emitted events in the loadout.                                        |
+| [Timestamps](#timestampsbin)                             | `timestamps.bin`                                      | Timestamps for each commit.                                                       |
+| [Commit Parameters](#commit-parametersbin)               | `commit-parameters.bin` & `commit-parameters-{x}.bin` | List of commit message parameters for each event.                                 |
+| [Configs](#configbin)                                    | `config.bin` & `config-data.bin`                      | Package Configurations.                                                           |
+| [Package Metadata](#package-metadatabin)                 | `package-metadata.bin` & `package-metadata-data.bin`  | Metadata required to restore all packages within this loadout.                    |
+| [Store Manifests](#storesbin)                            | `manifest.bin` & `manifest-data.bin`                  | Game store specific info to restore game to last version if possible.             |
+| [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                      | Raw data for commandline parameters. Length specified in event.                   |
 
 These files are deliberately set up in such a way that making a change in a loadout means appending
 to the existing files. No data is overwritten. Rolling back in turn means truncating the files to the desired length.
@@ -567,6 +568,11 @@ But just in case, we'll backup `AppXManifest.xml`.
 Most likely we only need `PackageFamilyName` from it, but in the event a downgrade
 ever becomes possible, we'll store the full manifest.
 
+#### commandline-parameter-data.bin
+
+This file contains the raw strings for commandline parameters.
+The lengths of the parameters are specified in the [UpdateCommandline event][update-command-line].
+
 [commit-messages]: ./Commit-Messages.md
 [event-indexes]: ./Events.md
 [hashing]: ../../../Common/Hashing.md
@@ -577,3 +583,4 @@ ever becomes possible, we'll store the full manifest.
 [depot-downloader]: https://github.com/SteamRE/DepotDownloader/blob/b96125f9cbbb0f63d47e14784929f255f6c21ce1/DepotDownloader/ContentDownloader.cs#L185
 [community-repository]: ../../../Services/Community-Repository.md
 [store-type]: ./Events.md#storetype
+[update-command-line]: ./Events.md#updatecommandline

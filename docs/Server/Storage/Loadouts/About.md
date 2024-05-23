@@ -533,6 +533,8 @@ To determine downloadable manifests, we'll probably have to use
 
 ##### GOG
 
+Extended details in [Stores: GOG][gog].
+
 We can get the info from the registry at
 `HKEY_LOCAL_MACHINE\Software\GOG.com\Games\{GameId}`
 
@@ -584,3 +586,4 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [community-repository]: ../../../Services/Community-Repository.md
 [store-type]: ./Events.md#storetype
 [update-command-line]: ./Events.md#updatecommandline
+[gog]: ./Stores/GOG.md

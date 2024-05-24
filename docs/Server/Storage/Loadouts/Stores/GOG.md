@@ -361,16 +361,18 @@ To do this, use the link:
 https://cdn.gog.com/content-system/v2/meta/GALAXY_PATH
 ```
 
-The `GALAXY_PATH` should be substituted with a `manifest`,
-in this example we will use `e9161c8b414317dbf1dbb93ecfd39588`.
+The `GALAXY_PATH` is actually an MD5 hash, in the form:
+
+- `{firstByteHex}/{secondByteHex}/{wholehash}`.
+
+In this case, we will use one of the `manifest`(s) from above, `e9161c8b414317dbf1dbb93ecfd39588`.
 
 The link will be
 ```
 https://cdn.gog.com/content-system/v2/meta/e9/16/e9161c8b414317dbf1dbb93ecfd39588
 ```
 
-Note we added the prefix `e9/16` after `meta`. This is derived from the start of the manifest.
-Likely an optimization on GOG's part.
+Note we added the prefix `e9/16`, as seen above.
 
 This response is also zlib compressed, after decompression you get something like:
 
@@ -580,12 +582,173 @@ If a file has only 1 chunk, the `md5` of the first chunk is the `md5` of the fil
 If the file has multiple chunks, there is a separate `md5` field beside the path,
 and that is the hash of the file.
 
-### Downloading Files
+## Authenticating with GOG
 
-!!! warning "TODO: We'll figure this out later."
+!!! info "This is required for downloading files."
 
-You need to perform OAuth authentication using the steps described in the
-[Game Launcher Research][game-launcher-research] wiki.
+GOG seems to use OAuth2 Authorization Code Flow for authentication.
+
+The following steps below simulate a Galaxy 2.0 client.
+
+### Obtain an Authorization Code
+
+Call the URL:
+
+- https://auth.gog.com/auth?client_id=46899977096215655&redirect_uri=https://embed.gog.com/on_login_success?origin=client&response_type=code&layout=galaxy
+
+And sign in.
+
+Once you have signed in, you will be taken to the `redirect_uri`, like:
+
+- `https://embed.gog.com/on_login_success?origin=client&code={code}`
+
+Extract the `code` from the URL.
+
+!!! tip "`redirect_uri` can probably point to a protocol handler."
+
+    For example, a hypothetical `r3:` protocol.
+
+!!! warning "This code expires quickly."
+
+    Use it immediately.
+
+### Obtain an OAuth Access Token
+
+Plug in the `Auth Code` from the previous step in here:
+
+- `https://auth.gog.com/token?client_id=46899977096215655&client_secret=9d85c43b1482497dbbce61f6e4aa173a433796eeae2ca8c5f6129f2dc4de46d9&grant_type=authorization_code&redirect_uri=https://embed.gog.com/on_login_success?origin=client&code={Auth Code}`
+
+Response should look something like:
+
+```json
+{
+    "access_token": "{token}",
+    "expires_in": 3600,
+    "token_type": "bearer",
+    "scope": "",
+    "session_id": "7372563298170931441",
+    "refresh_token": "{refresh_token}",
+    "user_id": "48654639305277775"
+}
+```
+
+Note that you get a standard 'bearer' OAuth token.
+
+### Downloading From GOG
+
+#### Getting the CDN Links
+
+!!! info "Before we can download files, we need to obtain to the CDNs."
+
+Call the following URL
+
+- `https://content-system.gog.com/products/{Game ID}/secure_link?generation=2&_version=2&path=/`.
+
+Substituting the `{Game ID}` with the appropriate value.
+
+This will return a payload like:
+
+```json
+{
+    "product_id": 1444826419,
+    "type": "depot",
+    "urls": [
+        {
+            "endpoint_name": "fastly",
+            "url_format": "{base_url}/token=nva={expires_at}~dirs={dirs}~token={token}{path}",
+            "parameters": {
+                "base_url": "https://gog-cdn-fastly.gog.com",
+                "path": "/content-system/v2/store/1444826419/",
+                "token": "SOME_TOKEN_VALUE",
+                "expires_at": 1716645745,
+                "dirs": 7
+            },
+            "priority": 998,
+            "max_fails": 100,
+            "supports_generation": [
+                1,
+                2
+            ],
+            "fallback_only": false
+        },
+        {
+            "endpoint_name": "akamai_edgecast_proxy",
+            "url_format": "{base_url}/{path}?__token__={token}",
+            "parameters": {
+                "base_url": "https://gog-cdn.akamaized.net",
+                "path": "content-system/v2/store/1444826419/",
+                "token": "SOME_TOKEN_VALUE"
+            },
+            "priority": 1,
+            "max_fails": 100,
+            "supports_generation": [
+                2
+            ],
+            "fallback_only": false
+        },
+        {
+            "endpoint_name": "edgecast",
+            "url_format": "{base_url}/{path}?{token}",
+            "parameters": {
+                "base_url": "https://cdn.gog.com",
+                "path": "content-system/v2/store/1444826419/",
+                "token": "SOME_TOKEN_VALUE"
+            },
+            "priority": 1,
+            "max_fails": 100,
+            "supports_generation": [
+                2
+            ],
+            "fallback_only": false
+        }
+    ]
+}
+```
+
+To download from a specific CDN, take the `url_format` and substitute the variables with the appropriate values.
+So for `edgecast` CDN, the URL would be:
+
+- `https://cdn.gog.com/content-system/v2/store/1444826419/?SOME_TOKEN_VALUE`.
+
+
+#### Downloading Files
+
+!!! tip "To download a file, use the `md5` of the file obtained from a [Depot](#getting-information-about-a-depot)"
+
+We will try to download the file `Config2.exe` from the depot.
+
+```json
+{
+    "chunks": [
+        {
+            "compressedMd5": "63b11ee937b521972d10f00d07081679",
+            "compressedSize": 562066,
+            "md5": "9c78a13d67a5fbaa5c29d991c86a377f",
+            "size": 859136
+        }
+    ],
+    "flags": [
+        "executable"
+    ],
+    "path": "Config2.exe",
+    "sha256": "610a9b9e5a72e52f5031d5f8a66dd45a65c28ab24360d4aebef5e48ca069310d",
+    "type": "DepotFile"
+},
+```
+
+Remember the [GALAXY_PATH](#getting-information-about-a-depot)?
+Since it's just an MD5, you can use file MD5s too.
+
+So for this file, `63/b1/63b11ee937b521972d10f00d07081679`.
+
+Append it to the `path` obtained from the CDN link above:
+
+- `https://cdn.gog.com/content-system/v2/store/1444826419/63/b1/63b11ee937b521972d10f00d07081679?SOME_TOKEN_VALUE`.
+
+This will give you the requested file chunk.
+Decompress it (zlib as usual).
+
+!!! note "We can only download compressed chunks. The raw `md5` is just for validating post decompression."
 
 ## Unsolved Questions
 

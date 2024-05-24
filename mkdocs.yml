@@ -91,6 +91,8 @@ nav:
       - About: Server/Storage/About.md
       - Locations: Server/Storage/Locations.md
       - Package Tiering: Server/Storage/Package-Tiering.md
+      - Games:
+        - About: Server/Storage/Games/About.md
       - Loadouts:
         - About: Server/Storage/Loadouts/About.md
         - Events: Server/Storage/Loadouts/Events.md

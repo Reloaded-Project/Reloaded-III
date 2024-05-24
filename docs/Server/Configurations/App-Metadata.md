@@ -37,19 +37,6 @@ This value will be autopopulated based on configurations within a future version
   "AppLocation": "C:\\Users\\sewer\\Desktop\\Sonic Heroes\\Tsonic_win.EXE",
   "AppArguments": "",
   "AppIcon": "Icon.png",
-  "AutoInject": false,
-  "EnabledMods": [
-    "sonicheroes.controller.hook.custom",
-    "criware.filesystem.hook",
-    "sonicheroes.utils.discordrpc",
-    "sonicheroes.controller.hook.postprocess",
-    "sonicheroes.skins.hdtextures",
-    "sonicheroes.essentials.graphics",
-    "sonicheroes.stages.radicalhighway",
-    "sonicheroes.gamefiles.characteroverhaul",
-    "sonicheroes.utils.toner",
-    "Reloaded.Universal.DInputPleaseCooperate"
-  ],
   "WorkingDirectory": null,
   "PluginData": {
     "GBPackageProvider": {

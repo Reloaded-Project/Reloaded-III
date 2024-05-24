@@ -178,7 +178,7 @@ Example Output:
 
 `https://content-system.gog.com/products/1444826419/os/windows/builds?generation=2`
 
-```
+```json
 {
     "total_count": 26,
     "count": 5,
@@ -278,7 +278,7 @@ Send a GET request to the `link` URL obtained in the previous step, for example
 
 This returns a zlib compressed response with info of downloadbable depots.
 
-```
+```json
 {
     "baseProductId": "1444826419",
     "buildId": "56010259761743716",

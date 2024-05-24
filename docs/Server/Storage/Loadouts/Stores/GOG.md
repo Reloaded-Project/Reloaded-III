@@ -755,5 +755,8 @@ Decompress it (zlib as usual).
 - Can games have relative file paths that are over 1024 characters?
     - Is there a special version of `goggame-{gameid}.hashdb` to handle that?
 - Are there cases where you don't want to download all the depots (e.g., games with language-specific depots)?
+- How do we get *patches*?
+    - GOG has an endpoint for patches that contain delta compressed data.
+    - 3rd party launchers like Heroic use them, but that's not documented anywhere.
 
 [game-launcher-research]: https://github.com/Lariaa/GameLauncherResearch/wiki/GoG-:-Installing-games

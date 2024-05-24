@@ -17,7 +17,7 @@ to switch between them on the fly.
 
 ## Event Sourcing
 
-!!! tip "Loadouts in Reloaded-III use the concept of 'events' to track and manage changes over time."
+!!! tip "Loadouts in Reloaded3 use the concept of 'events' to track and manage changes over time."
 
 Event sourcing is a design pattern that represents the state of a system as a sequence of events.
 
@@ -66,12 +66,12 @@ Additional benefits include:
 
 ## Sharing and Syncing Loadouts
 
-!!! info "Loadouts in Reloaded-III are designed to be easily shared & synced across different devices or with other users."
+!!! info "Loadouts in Reloaded3 are designed to be easily shared & synced across different devices or with other users."
 
 Since Loadouts are represented as a sequence of events, they can be efficiently serialized and
 stored in a compact format.
 
-Loadouts just like pretty much everything else in Reloaded-III are packages. This means they can be
+Loadouts just like pretty much everything else in Reloaded3 are packages. This means they can be
 packed and downloaded by another user as a single file. The only caveat is they are stored outside
 of the main `Packages` directory.
 
@@ -80,7 +80,7 @@ a 'snapshot' of the current state is created, and event history is trimmed to re
 
 ### Sync Methods
 
-!!! info "Reloaded-III loadouts are intended to be share-able through the following methods"
+!!! info "Reloaded3 loadouts are intended to be share-able through the following methods"
 
 - **1st Party Cloud Sync**: Basically something I self host for my people.
 - **Game Store SaveData Sync**: e.g. Steam Cloud, GOG Galaxy SDK

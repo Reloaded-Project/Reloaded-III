@@ -3,7 +3,7 @@
 !!! info "This section covers all information related to the design and architecture of the backend server powering the mod manager."
 
 The server is responsible for various tasks such as mod packaging, configuration management,
-diagnostics, load ordering, and more. This also covers the 'data model' of Reloaded-III.
+diagnostics, load ordering, and more. This also covers the 'data model' of Reloaded3.
 
 Basically all the actual work of a 'mod manager', but as a server.
 

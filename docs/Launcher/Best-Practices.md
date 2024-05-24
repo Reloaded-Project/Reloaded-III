@@ -12,4 +12,4 @@
 
 Ideally the user should be able to cleanly install/uninstall the mod loader and their mods.
 
-So keep all your manager/loader related files away from the game folder, or at least in a subfolder like `.Reloaded-III`.
+So keep all your manager/loader related files away from the game folder, or at least in a subfolder like `.Reloaded3`.

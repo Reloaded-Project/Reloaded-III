@@ -28,8 +28,10 @@ which may be requested by the front-end, packaages (mods/tools etc.) and configu
 | [Locations][locations]         | Describes where all the data is stored.                |
 | [Package Tiering][pkg-tiering] | Smart storage location selection for packages.         |
 | [Loadouts][loadouts]           | Encapsulates a group of mods and their configurations. |
+| [Games][games]                 | Contains user's specific settings for a game.          |
 
 <!-- Links -->
 [locations]: ./Locations.md
 [loadouts]: ./Loadouts/About.md
+[games]: ./Games/About.md
 [pkg-tiering]: ./Package-Tiering.md

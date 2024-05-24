@@ -346,8 +346,8 @@ The following (Reloaded-II) mods can be used as examples.
   - [ ] Including CI/CD Pipelines, like GitHub Actions, GitLab
 - [ ] Add Link to 'Mod Configuration' Page when ready. [here](#set-a-dependency-on-the-other-mod)
 - [ ] Add instructions on setting a dependency in Reloaded3. [here](#set-a-dependency-on-the-other-mod)
-- [ ] Update Diagrams with Reloaded-III Examples.
-- [ ] Update linked mods in [Add NuGet Reference to Other Mod](#add-nuget-reference-to-other-mod) with Reloaded-III Examples.
+- [ ] Update Diagrams with Reloaded3 Examples.
+- [ ] Update linked mods in [Add NuGet Reference to Other Mod](#add-nuget-reference-to-other-mod) with Reloaded3 Examples.
 - [ ] Rename `IDependencyInjector` (based on feedback).
 - [ ] Show which field to check in [Life Cycle & Disposal](#life-cycle-and-disposal) for determining if unloadable.
 

@@ -228,7 +228,7 @@ The goal is to create a world where modders can focus on actually *modding* the 
 
     This page looks [awfully familiar to Reloaded-II][reloaded-ii], what's up with that?
 
-`Reloaded-III` is a specification for an enhanced version of `Reloaded-II`; with a newer config schema,
+`Reloaded3` is a specification for an enhanced version of `Reloaded-II`; with a newer config schema,
 design that supports multiple platforms (not just Windows) and the ability to allow anyone write mods in an arbitrary programming
 language of their choice.
 

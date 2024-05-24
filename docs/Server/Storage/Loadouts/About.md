@@ -171,7 +171,7 @@ Loadouts shared with other people can simply have the whole history stripped if 
 
 !!! info "This lists the binary file formats used by an unpacked loadout."
 
-All bit packed fields are in little endian unless specified otherwise.
+All values are in little endian unless specified otherwise.
 They are shown in lowest to highest bit order.
 
 So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
@@ -481,7 +481,8 @@ If it's not possible to download the metadata, we download the full package.
 | Data Type                      | Name      | Description                              |
 | ------------------------------ | --------- | ---------------------------------------- |
 | `u8` [(StoreType)][store-type] | StoreType | The store from which the game came from. |
-| `u24`                          | FileSize  | Size of the configuration file.          |
+| `u16`                          | FileSize  | Size of the configuration file.          |
+| `u8`                           |           | Currently Unused                         |
 
 The offsets can be derived from file sizes.
 
@@ -492,7 +493,10 @@ be used to revert the game to an older version.
 
 #### store-data.bin
 
-!!! warning "More research is needed here to determine exact binary format."
+When values, e.g. strings are not available, they are encoded as 0 length strings, i.e. constant 00.
+
+- `String8` is assumed to be a 1 byte length prefixed UTF-8 string.
+- `String16` is assumed to be a 2 byte length prefixed UTF-8 string.
 
 ##### CommmonData Struct
 
@@ -500,28 +504,34 @@ be used to revert the game to an older version.
 
 i.e. This game was manually added.
 
-- `Version`: u8
-- `ExeHash`: u64 [(XXH3)][hashing]
-- `ExePath`: String
-- `AppId`: String
+| Data Type  | Name    | Description                                               |
+| ---------- | ------- | --------------------------------------------------------- |
+| `u64`      | ExeHash | The hash of the game executable (using [(XXH3)][hashing]) |
+| `String16` | ExePath | The path to the game executable                           |
+| `String8`  | AppId   | The application ID of the game                            |
 
 We store this for every game, regardless of store.
 
 ##### Unknown
 
-- `CommonData`: CommonData
+| Data Type    | Name       | Description                  |
+| ------------ | ---------- | ---------------------------- |
+| `u8`         | Version    | The version of the structure |
+| `CommonData` | CommonData | The common data structure    |
 
 ##### Steam
 
-- `Version`: u8
-- `CommonData`: CommonData
-- `AppId`: u64
-- `DepotId`: u64
-- `ManifestId` u64
-- `Branch`: String
-- `BranchPassword`: String
+| Data Type    | Name           | Description                                               |
+| ------------ | -------------- | --------------------------------------------------------- |
+| `u8`         | Version        | The version of the structure                              |
+| `CommonData` | CommonData     | The common data structure                                 |
+| `u64`        | AppId          | The Steam application ID                                  |
+| `u64`        | DepotId        | The Steam depot ID                                        |
+| `u64`        | ManifestId     | The Steam manifest ID                                     |
+| `String8`    | Branch         | The Steam branch name                                     |
+| `String8`    | BranchPassword | The password for the Steam branch (if password-protected) |
 
-To perform rollback, will probably invoke `DepotDownloader` CLI,
+To perform rollback, will maintain basic minimal change fork of `DepotDownloader`,
 no need to reinvent wheel. Manifest contains SHA checksums and
 all file paths, we might be able to only do partial downloads.
 
@@ -531,7 +541,7 @@ To determine current version, check the App's `.acf` file in
 user friendly version names.
 
 To determine downloadable manifests, we'll probably have to use
-`SteamKit2`. Use [DepotDownloader][depot-downloader] for inspiration.
+`SteamKit2`. Use [DepotDownloader code][depot-downloader] for inspiration.
 
 ##### GOG
 
@@ -540,14 +550,13 @@ Extended details in [Stores: GOG][gog].
 We can get the info from the registry at
 `HKEY_LOCAL_MACHINE\Software\GOG.com\Games\{GameId}`
 
-- `Version`: u8
-- `CommonData`: CommonData
-- `GameId`: u64
-    - Uniquely identifies the game.
-- `Manifest`: u128
-    - Manifest of the depot, identifies the current update.
-- `VersionName`: String
-    - User friendly name, for commit display purposes.
+| Data Type    | Name        | Description                                         |
+| ------------ | ----------- | --------------------------------------------------- |
+| `u8`         | Version     | The version of the structure                        |
+| `CommonData` | CommonData  | The common data structure                           |
+| `u64`        | GameId      | The unique identifier for the game on GOG           |
+| `u128`       | Manifest    | The MD5 hash of the depot manifest                  |
+| `String8`    | VersionName | The user-friendly version name for display purposes |
 
 The `VersionName` is also copied into the commit message on each update.
 
@@ -555,26 +564,49 @@ To identify the version reliably, it seems we will need to compare the hashes ag
 
 This will also allow us to support e.g. Heroic on Linux.
 
+###### Heroic & Playnite
+
+!!! note "These are 3rd party launchers that support GOG"
+
+    They need to be supported, because there's no official Linux launcher.
+
+!!! info "To be determined."
+
 ##### Epic
 
-!!! warning "TODO: Work in Progress"
+!!! warning "Version downgrade with Epic isn't possible."
 
-Nope, they don't store older builds.
-But we can nip some data from `C:\Program Data\Epic\EpicGamesLauncher\Data\Manifests`.
+    We will store the minimal amount of data required to identify the game in the hopes it is one day.
 
-We'll backup the whole manifest but what we really want is `CatalogItemId` and `AppVersionString`.
+With Epic we can nip this data from `C:\Program Data\Epic\EpicGamesLauncher\Data\Manifests`.
+We want the following:
+
+| Data Type    | Name             | Description                                  |
+| ------------ | ---------------- | -------------------------------------------- |
+| `u8`         | Version          | The version of the structure                 |
+| `CommonData` | CommonData       | The common data structure                    |
+| `u128`       | CatalogItemId    | The MD5 hash identifier for the game on Epic |
+| `String8`    | AppVersionString | The version string of the game on Epic       |
+
+These values are directly extracted from the manifest file.
 
 ##### Microsoft
 
-!!! warning "TODO: Work in Progress"
+!!! warning "Version downgrade with Microsoft isn't possible."
 
-Nope, they don't store older builds.
-But just in case, we'll backup `AppXManifest.xml`.
+    We will store the minimal amount of data required to identify the game in the hopes it is one day.
 
-Most likely we only need `PackageFamilyName` from it, but in the event a downgrade
-ever becomes possible, we'll store the full manifest.
+We're interested in `AppXManifest.xml` in this case.
 
-Can also get `Version` from the `Identity` field if desireable.
+| Data Type    | Name              | Description                                                                                                           |
+| ------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `u8`         | Version           | The version of the structure                                                                                          |
+| `CommonData` | CommonData        | The common data structure                                                                                             |
+| `String8`    | PackageFamilyName | The unique identifier for the game on the Microsoft Store. [{Identity.Name}_{hash(Identity.Publisher)}][ms-store-pfm] |
+| `String8`    | PackageVersion    | The version of the game package on the Microsoft Store, from `Identity` field.                                        |
+
+The `PackageVersion` is actually a four part version, but is stored as string, so just in case an invalid
+version exists in some manifest, we will string it.
 
 #### commandline-parameter-data.bin
 
@@ -593,3 +625,4 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [store-type]: ./Events.md#storetype
 [update-command-line]: ./Events.md#updatecommandline
 [gog]: ./Stores/GOG.md
+[ms-store-pfm]: ../../../Loader/Copy-Protection/Windows-MSStore.md

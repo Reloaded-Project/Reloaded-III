@@ -412,7 +412,7 @@ treating them as false positives.
 If the `IgnoredDiagnostics` field is not specified or is an empty array, no diagnostics will be ignored.
 
 <!-- Links -->
-[app-metadata-id]: ../../Server/Configurations/App-Metadata.md#id
+[app-metadata-id]: ./Configurations/App-Metadata.md#id
 [backend]: ../../Loader/Backends/About.md
 [changelog]: ./About.md#changelog
 [config]: ./About.md#config
@@ -427,7 +427,7 @@ If the `IgnoredDiagnostics` field is not specified or is an empty array, no diag
 [license]: ./About.md#license
 [middleware-api-hooks]: ../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
 [mod-configurations]: ./Mod-Configurations.md
-[mod-metadata]: ../Configurations/Mod-Metadata.md
+[mod-metadata]: ./Configurations/Mod-Metadata.md
 [nexus-mods]: https://www.nexusmods.com
 [native-backend]: ../../Loader/Backends/Native.md
 [overriding-translations]: ../../Common/Localisation/Adding-Localisations.md#sideloading-translations

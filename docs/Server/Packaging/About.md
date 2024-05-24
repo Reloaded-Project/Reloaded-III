@@ -113,4 +113,4 @@ That means including the following in each package:
 
 [cc-by-nc-sa-4.0]: https://creativecommons.org/licenses/by-nc-sa/4.0/
 [docs-file]: ./Package-Metadata.md#docsfile
-[gallery-items]: ../Configurations/Mod-Metadata.md#gallery
+[gallery-items]: ./Configurations/Mod-Metadata.md#gallery

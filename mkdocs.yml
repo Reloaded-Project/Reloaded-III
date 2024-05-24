@@ -82,11 +82,6 @@ nav:
       - Windows: Loader/Platforms/Windows.md
   - Server (Manager Backend):
     - About (Overview): Server/About.md
-    - Configurations:
-      - About: Server/Configurations/About.md
-      - App Metadata: Server/Configurations/App-Metadata.md
-      - Mod Configuration: Server/Configurations/Mod-Configurations.md
-      - Mod Metadata: Server/Configurations/Mod-Metadata.md
     - Storage:
       - About: Server/Storage/About.md
       - Locations: Server/Storage/Locations.md
@@ -105,6 +100,11 @@ nav:
       - About: Server/Packaging/About.md
       - Package Metadata: Server/Packaging/Package-Metadata.md
       - Publishing Packages: Server/Packaging/Publishing-Packages.md
+      - Package Configurations:
+        - About: Server/Packaging/Configurations/About.md
+        - App Metadata: Server/Packaging/Configurations/App-Metadata.md
+        - Mod Configuration: Server/Packaging/Configurations/Mod-Configurations.md
+        - Mod Metadata: Server/Packaging/Configurations/Mod-Metadata.md
   - Launcher (Manager Frontend):
     - About: Launcher/About.md
     - Best Practices: Launcher/Best-Practices.md

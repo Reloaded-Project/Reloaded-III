@@ -47,5 +47,5 @@ This value will be autopopulated based on configurations within a future version
 ```
 
 <!-- Links -->
-[community-repository]: ../../Services/Community-Repository.md
+[community-repository]: ../../../Services/Community-Repository.md
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community

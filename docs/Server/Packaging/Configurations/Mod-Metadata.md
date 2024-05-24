@@ -100,14 +100,14 @@ Alternatively, when experimenting with new games which do not have a specified A
 Mod managers will automatically update this to appropriate ID during process of querying [Community Repository][community-repository].
 
 <!-- Links -->
-[app-metadata-id]: ../../Server/Configurations/App-Metadata.md#id
-[backend]: ../../Loader/Backends/About.md
-[community-repository]: ../../Services/Community-Repository.md
-[coreclr-backend]: ../../Loader/Backends/CoreCLR.md
-[instruction-sets]: ../../Loader/Backends/Native.md#instruction-sets
+[app-metadata-id]: ./App-Metadata.md#id
+[backend]: ../../../Loader/Backends/About.md
+[community-repository]: ../../../Services/Community-Repository.md
+[coreclr-backend]: ../../../Loader/Backends/CoreCLR.md
+[instruction-sets]: ../../../Loader/Backends/Native.md#instruction-sets
 [mod-configurations]: ./Mod-Configurations.md
-[native-backend]: ../../Loader/Backends/Native.md
-[package-toml]: ../Packaging/Package-Metadata.md
-[package-images]: ../Packaging/About.md#images
-[ready-to-run]: ../../Loader/Backends/CoreCLR.md#ready-to-run
-[reloaded2-backend]: ../../Loader/Backends/CoreCLR.md#reloaded-ii
+[native-backend]: ../../../Loader/Backends/Native.md
+[package-toml]: ../Package-Metadata.md
+[package-images]: ../About.md#images
+[ready-to-run]: ../../../Loader/Backends/CoreCLR.md#ready-to-run
+[reloaded2-backend]: ../../../Loader/Backends/CoreCLR.md#reloaded-ii

@@ -106,5 +106,5 @@ For the following reasons:
 <!-- Links -->
 [core-detect]: https://docs.rs/core_detect/latest/core_detect/
 [microarchitecture-levels]: https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels
-[mod-metadata-targets]: ../../Server/Configurations/Mod-Metadata.md#targets
+[mod-metadata-targets]: ../../Server/Packaging/Configurations/Mod-Metadata.md#targets
 [mod-publishing]: ../../Server/Packaging/Publishing-Packages.md

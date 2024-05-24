@@ -408,8 +408,8 @@ Or ~40000 users/month with 3 games each.
 Should fit within the soft limit, outside of risks with new game releases.
 
 <!-- Links -->
-[app-metadata]: ../Server/Configurations/App-Metadata.md
-[app-metadata-id]: ../Server/Configurations/App-Metadata.md#id
+[app-metadata]: ../Server/Packaging/Configurations/App-Metadata.md
+[app-metadata-id]: ../Server/Packaging/Configurations/App-Metadata.md#id
 [appx-manifest-identity]: https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity
 [diagnostics]: ../Server/Diagnostics.md#file-based-diagnostics
 [ea-desktop]: https://www.ea.com/en-gb/news/ea-app
@@ -418,7 +418,7 @@ Should fit within the soft limit, outside of risks with new game releases.
 [github-pages]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
 [gog-db]: https://www.gogdb.org/
 [hashing]: ../Common/Hashing.md
-[mod-metadata]: ../Server/Configurations/Mod-Metadata.md
+[mod-metadata]: ../Server/Packaging/Configurations/Mod-Metadata.md
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
 [steamdb]: https://steamdb.info/

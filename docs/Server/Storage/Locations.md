@@ -114,6 +114,6 @@ Taking these factors into account, we should aim to keep the user data as small 
 and ensure we don't unnecessarily access too many small files. Parralelise file access if possible to
 reduce the impact of high latency.
 
-[app-metadata]: ../Configurations/App-Metadata.md
+[app-metadata]: ../Packaging/Configurations/App-Metadata.md
 [loadouts]: ./Loadouts/About.md
 [package-metadata]: ../Packaging/Package-Metadata.md

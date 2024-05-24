@@ -93,17 +93,17 @@ HasExports = true
 
 ## Supported Games
 
-!!! info "Stores a list of supported games; by using their known [Application ID][app-metadata-id]."
+!!! info "Stores a list of supported games; by using their known [Game ID][game-id]."
 
-Alternatively, when experimenting with new games which do not have a specified Application ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
+Alternatively, when experimenting with new games which do not have a specified Game ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 
 Mod managers will automatically update this to appropriate ID during process of querying [Community Repository][community-repository].
 
 <!-- Links -->
-[app-metadata-id]: ./App-Metadata.md#id
 [backend]: ../../../Loader/Backends/About.md
 [community-repository]: ../../../Services/Community-Repository.md
 [coreclr-backend]: ../../../Loader/Backends/CoreCLR.md
+[game-id]: ../../Storage/Games/About.md#id
 [instruction-sets]: ../../../Loader/Backends/Native.md#instruction-sets
 [mod-configurations]: ./Mod-Configurations.md
 [native-backend]: ../../../Loader/Backends/Native.md

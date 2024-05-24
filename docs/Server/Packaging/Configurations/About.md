@@ -11,11 +11,9 @@ They ensure proper functionality, compatibility, and customization options for u
 
 | Page                                     | Description                                              |
 | ---------------------------------------- | -------------------------------------------------------- |
-| [App Metadata][app-metadata]             | Metadata stored for games.                               |
 | [Mod Configurations][mod-configurations] | Schema for Reloaded3 mod configurations.                 |
 | [Mod Metadata][mod-metadata]             | Schema for each Reloaded3 mod. Extending package format. |
 
 <!-- Links -->
-[app-metadata]: ./App-Metadata.md
 [mod-configurations]: ./Mod-Configurations.md
 [mod-metadata]: ./Mod-Metadata.md

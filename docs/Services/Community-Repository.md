@@ -37,7 +37,7 @@ They can have any name (as long as they use their own unique folder), in this sp
 | Type          | Item                                            | Description                                                                             |
 | ------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------- |
 | string        | [Id][app-metadata]                              | Unique identifier for this game. Copied to [App Id][app-metadata].                      |
-| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'.                                   |
+| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'. Copied to [App Name][app-metadata-name].                                   |
 | Version[]     | [Versions](#version)                            | Versions of the executable.                                                             |
 | OtherBinary[] | [OtherBinaries](#other-binaries)                | Stores information about other executables in game folder you probably don't wanna mod. |
 | string[]      | [ReferenceFiles](#referencefiles)               | Stores relative file paths of arbitrary files to disambiguate shared EXE names.         |
@@ -408,8 +408,9 @@ Or ~40000 users/month with 3 games each.
 Should fit within the soft limit, outside of risks with new game releases.
 
 <!-- Links -->
-[app-metadata]: ../Server/Packaging/Configurations/App-Metadata.md
-[app-metadata-id]: ../Server/Packaging/Configurations/App-Metadata.md#id
+[app-metadata]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[app-metadata-name]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[app-metadata-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
 [appx-manifest-identity]: https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity
 [diagnostics]: ../Server/Diagnostics.md#file-based-diagnostics
 [ea-desktop]: https://www.ea.com/en-gb/news/ea-app

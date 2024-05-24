@@ -162,7 +162,7 @@ This format is designed to minimize collisions while providing a human-readable 
 
 The suggested format to use for names is `game.type.subtype.name.author`.
 
-- `game` should ideally match [App 'Id'][app-metadata-id] for the given application.
+- `game` should ideally match [Game 'Id'][game-metadata-id] for the given application.
 - `type` name should ideally match category of the package on a site like [GameBanana][gamebanana] or [NexusMods][nexus-mods].
 - `subtype` [Optional] provides additional information about the item.
 - `name` unique name for the package. Can use another `.` dot if additional info is needed.
@@ -412,7 +412,7 @@ treating them as false positives.
 If the `IgnoredDiagnostics` field is not specified or is an empty array, no diagnostics will be ignored.
 
 <!-- Links -->
-[app-metadata-id]: ./Configurations/App-Metadata.md#id
+[game-metadata-id]: ../Storage/Games/About.md#id
 [backend]: ../../Loader/Backends/About.md
 [changelog]: ./About.md#changelog
 [config]: ./About.md#config

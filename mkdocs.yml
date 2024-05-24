@@ -102,7 +102,6 @@ nav:
       - Publishing Packages: Server/Packaging/Publishing-Packages.md
       - Package Configurations:
         - About: Server/Packaging/Configurations/About.md
-        - App Metadata: Server/Packaging/Configurations/App-Metadata.md
         - Mod Configuration: Server/Packaging/Configurations/Mod-Configurations.md
         - Mod Metadata: Server/Packaging/Configurations/Mod-Metadata.md
   - Launcher (Manager Frontend):

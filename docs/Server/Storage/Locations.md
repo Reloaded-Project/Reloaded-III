@@ -88,7 +88,7 @@ is part of the path to the main binary.
 | [Packages][package-metadata] (Mods, Tools, etc.) | Machine (Cache)         | `Packages`          | Pretty much anything you can download.                                   |
 | [Loadouts][loadouts]                             | User                    | `Loadouts`          | Loadouts that are private to the current user.                           |
 | [Loadouts (Shared)][loadouts]                    | Machine (Persistent)    | `Loadouts`          | Loadouts that are shared between all users.                              |
-| [Added Games][app-metadata]                      | User                    | `Games/{gameId}`    | And all of user's global preferences for that game.                      |
+| [Added Games][game-metadata]                     | User                    | `Games/{gameId}`    | And all of user's global preferences for that game.                      |
 
 [1] Temporary Files should be tied to `ProcessID`, if a process with that ID is dead, they should be
 auto deleted by the server. To avoid files in use accidentally being deleted, temporary files are stored
@@ -114,6 +114,6 @@ Taking these factors into account, we should aim to keep the user data as small 
 and ensure we don't unnecessarily access too many small files. Parralelise file access if possible to
 reduce the impact of high latency.
 
-[app-metadata]: ../Packaging/Configurations/App-Metadata.md
+[game-metadata]: ../Storage/Games/About.md
 [loadouts]: ./Loadouts/About.md
 [package-metadata]: ../Packaging/Package-Metadata.md

@@ -7,6 +7,53 @@ Before reading this, read the basics over at the [Loadouts page][event-sourcing]
 The approach and requirements here are generally the same.
 Likewise, storing App configurations also makes use of *Event Sourcing* for backups.
 
+## What's inside an Game Configuration?
+
+| Type    | Name      | Description                                                        |
+| ------- | --------- | ------------------------------------------------------------------ |
+| string? | [Id](#id) | A name that uniquely identifies the game. Should be user friendly. |
+| string  | Name      | User friendly name for the game, e.g. 'Sonic Heroes'.              |
+
+### Id
+
+!!! info "A known, standardized name that uniquely identifies this application."
+
+!!! warning "For games without established communities or people experimenting with new titles, this may be left blank."
+
+For games which a user added before it had an entry in the [Community Repository][community-repository].
+
+This value will be autopopulated based on configurations within a future version of [Reloaded.Community][reloaded-community].
+
+## Game Versioning Strategy
+
+!!! warning
+
+    In some rare cases games can be updated to completely different ports; e.g. an older game can get a '64-bit' upgrade
+    that totally would break all code mods and even change some file formats.
+
+To mitigate this; we will use binary hashes.
+This value will be autopopulated based on configurations within a future version of [Reloaded.Community][reloaded-community].
+
+```json
+{
+  "Id": "tsonic_win.exe",
+  "AppName": "Sonic Heroes",
+  "AppLocation": "C:\\Users\\sewer\\Desktop\\Sonic Heroes\\Tsonic_win.EXE",
+  "AppArguments": "",
+  "AppIcon": "Icon.png",
+  "WorkingDirectory": null,
+  "PluginData": {
+    "GBPackageProvider": {
+      "GameId": 6061
+    }
+  }
+}
+```
+
+<!-- Links -->
+[community-repository]: ../../../Services/Community-Repository.md
+[reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
+
 ## File Format
 
 !!! info "A config for an application has the following file format."

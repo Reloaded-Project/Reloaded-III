@@ -555,7 +555,7 @@ We can get the info from the registry at
 | `u8`         | Version     | The version of the structure                        |
 | `CommonData` | CommonData  | The common data structure                           |
 | `u64`        | GameId      | The unique identifier for the game on GOG           |
-| `u128`       | Manifest    | The MD5 hash of the depot manifest                  |
+| `u64`        | BuildId     | The [unique identifier for the build][gog-buildid]  |
 | `String8`    | VersionName | The user-friendly version name for display purposes |
 
 The `VersionName` is also copied into the commit message on each update.
@@ -626,3 +626,4 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [update-command-line]: ./Events.md#updatecommandline
 [gog]: ./Stores/GOG.md
 [ms-store-pfm]: ../../../Loader/Copy-Protection/Windows-MSStore.md
+[gog-buildid]: ./Stores/GOG.md#retrieving-available-game-versions

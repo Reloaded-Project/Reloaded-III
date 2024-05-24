@@ -596,6 +596,14 @@ This revision corresponds to an entry in the [stores.bin][stores-bin] file.
 
 This event is emitted the files of the game match a known new store manifest/revision.
 
+#### Messages
+
+- [update-game-store-manifest][update-game-store-manifest]
+- [update-game-store-manifest-steam][update-game-store-manifest-steam] when the store is Steam.
+- [update-game-store-manifest-gog][update-game-store-manifest-gog] when the store is GOG.
+- [update-game-store-manifest-microsoft][update-game-store-manifest-microsoft] when the store is Microsoft Store.
+- [update-game-store-manifest-epic][update-game-store-manifest-epic] when the store is Epic Games Store.
+
 #### {01}+02: UpdateGameStoreManifest
 
 | EventType (0-7)  | NewRevision (8-15) |
@@ -612,7 +620,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 | EventType (0-7)  | NewRevision (8-31)                 |
 | ---------------- | ---------------------------------- |
-| 82 (`{10} + 0B`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX}` |
+| 8B (`{10} + 0B`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX}` |
 
 | Data Type         | Name        | Label | Description                          |
 | ----------------- | ----------- | ----- | ------------------------------------ |
@@ -626,6 +634,10 @@ This event is emitted the files of the game match a known new store manifest/rev
 
     If someone needs a longer commandline, just make an issue please.
     We could encode that as null terminated, probably, while keeping the space savings intact.
+
+#### Messages
+
+- [update-commandline][update-commandline]
 
 #### {01}+03: UpdateCommandline8
 
@@ -682,3 +694,10 @@ This event is emitted the files of the game match a known new store manifest/rev
 [game-launched]: ./Commit-Messages.md#game-launched
 [stores-bin]: ./About.md#storesbin
 [commandline-parameter-data.bin]: ./About.md#commandline-parameter-databin
+[update-game-store-manifest]: ./Commit-Messages.md#updategamestoremanifest
+[update-game-store-manifest-steam]: ./Commit-Messages.md#steam
+[update-game-store-manifest-gog]: ./Commit-Messages.md#gog
+[update-game-store-manifest-epic]: ./Commit-Messages.md#epic-games-store
+[update-game-store-manifest-microsoft]: ./Commit-Messages.md#microsoft-store
+[update-commandline]: ./Commit-Messages.md#updatecommandline
+[featuresbin]: ./About.md#featuresbin

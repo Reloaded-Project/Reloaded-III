@@ -105,7 +105,7 @@ a 'snapshot' of the current state is created, and event history is trimmed to re
 | [Commit Parameters](#commit-parametersbin)               | `commit-parameters.bin` & `commit-parameters-{x}.bin` | List of commit message parameters for each event.                                 |
 | [Configs](#configbin)                                    | `config.bin` & `config-data.bin`                      | Package Configurations.                                                           |
 | [Package Metadata](#package-metadatabin)                 | `package-metadata.bin` & `package-metadata-data.bin`  | Metadata required to restore all packages within this loadout.                    |
-| [Store Manifests](#storesbin)                            | `manifest.bin` & `manifest-data.bin`                  | Game store specific info to restore game to last version if possible.             |
+| [Store Manifests](#storesbin)                            | `stores.bin` & `store-data.bin`                       | Game store specific info to restore game to last version if possible.             |
 | [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                      | Raw data for commandline parameters. Length specified in event.                   |
 
 These files are deliberately set up in such a way that making a change in a loadout means appending
@@ -492,6 +492,8 @@ be used to revert the game to an older version.
 
 #### store-data.bin
 
+!!! warning "More research is needed here to determine exact binary format."
+
 ##### CommmonData Struct
 
 !!! info "This struct is shared between all store entries."
@@ -553,22 +555,26 @@ To identify the version reliably, it seems we will need to compare the hashes ag
 
 This will also allow us to support e.g. Heroic on Linux.
 
-[See: GameLauncherResearch wiki for more information.](https://github.com/Lariaa/GameLauncherResearch/wiki/GoG-:-Installing-games)
-
 ##### Epic
+
+!!! warning "TODO: Work in Progress"
 
 Nope, they don't store older builds.
 But we can nip some data from `C:\Program Data\Epic\EpicGamesLauncher\Data\Manifests`.
 
-We'll backup the whole manifest but what we really want is `CatalogItemId`.
+We'll backup the whole manifest but what we really want is `CatalogItemId` and `AppVersionString`.
 
 ##### Microsoft
+
+!!! warning "TODO: Work in Progress"
 
 Nope, they don't store older builds.
 But just in case, we'll backup `AppXManifest.xml`.
 
 Most likely we only need `PackageFamilyName` from it, but in the event a downgrade
 ever becomes possible, we'll store the full manifest.
+
+Can also get `Version` from the `Identity` field if desireable.
 
 #### commandline-parameter-data.bin
 

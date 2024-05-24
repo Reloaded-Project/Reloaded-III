@@ -306,11 +306,58 @@ Load reorderer sort mode changed: '**{OldLoadOrderSort}**' to '**{NewLoadOrderSo
 Mod display mode changed from '{OldLoadoutGridStyle}' to '{NewLoadoutGridStyle}'.
 ```
 
-### Enumerables
+## UpdateGameStoreManifest
+
+!!! info "Source: Event [UpdateGameStoreManifest][event-updategamestoremanifest]"
+
+!!! tip "See: [Store Data][store-data] for more info."
+
+### Steam
+
+```
+Updated game to manifest `{ManifestId}` (from `{OldManifestId}`) on Steam.
+```
+
+### GOG
+
+```
+Updated game to version '{VersionName}' (from version `{OldVersionName}`) on GOG.
+```
+
+### Microsoft Store
+
+```
+Updated game to version '{VersionName}' (from version `{OldVersionName}`) on Xbox.
+```
+
+### Epic Games Store
+
+```
+Updated game to version '{VersionName}' (from version `{OldVersionName}`) on Epic Store.
+```
+
+### Generic Message
+
+```
+Game was updated to a new version or EXE was modified.
+```
+
+## UpdateCommandline
+
+!!! info "Source: Event [UpdateCommandline][event-updatecommandline]"
+
+```
+Updated command line parameters from:
+- `{OldCommandLine}`
+to
+- `{NewCommandLine}`
+```
+
+## Enumerables
 
 The individual enum values are translated to the following.
 
-#### SortingMode
+### SortingMode
 
 - `0`: "Unchanged"
 - `1`: "Static"
@@ -319,19 +366,20 @@ The individual enum values are translated to the following.
 - `4`: "Install Date (Ascending)"
 - `5`: "Install Date (Descending)"
 
-#### SortOrder
+### SortOrder
 
 - `0`: "Unchanged"
 - `1`: "Bottom to Top (First Mod Wins)"
 - `2`: "Top to Bottom (Last Mod Wins)"
 
-#### GridDisplayMode
+### GridDisplayMode
 
 - `0`: "Unchanged"
 - `1`: "List (Compact)"
 - `2`: "Grid (Squares)"
 - `3`: "Grid (Horizontal Rectangles, Steam Size)"
 - `4`: "Grid (Vertical Rectangles, Steam Size)"
+
 
 [events-bin]: ../Loadouts/About.md#eventsbin
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
@@ -341,3 +389,6 @@ The individual enum values are translated to the following.
 [event-packageupdated]: ./Events.md#packageupdated
 [event-configupdated]: ./Events.md#configupdated
 [event-packageloadorderchanged]: ./Events.md#packageloadorderchanged
+[event-updategamestoremanifest]: ./Events.md#updategamestoremanifest
+[store-data]: ./About.md#store-databin
+[event-updatecommandline]: ./Events.md#updatecommandline

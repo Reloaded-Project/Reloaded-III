@@ -4,14 +4,6 @@ This is a singleton stored in [`Added Games (User)` (`Games/{gameId}`) folder.][
 
 All data here is user specific, for cloud syncing but not sharing.
 
-## Background Knowledge
-
-Before reading this, read the basics over at the [Loadouts page][event-sourcing].
-
-The approach and requirements here are generally the same.
-
-Likewise, storing Game configurations also makes use of *Event Sourcing* for backups.
-
 ## What's inside an Game Configuration?
 
 | Type                   | Name                                                 | Description                                           |

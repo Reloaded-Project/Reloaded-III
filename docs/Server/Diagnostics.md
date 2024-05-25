@@ -375,7 +375,6 @@ following way.
 
 If hash is present, diagnostic will only ever be emitted if the hash matches.
 
-
 #### File Based Diagnostic Fixes
 
 !!! warning "TODO: Implement a way to fix file based diagnostics"

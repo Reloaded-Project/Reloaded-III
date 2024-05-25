@@ -40,11 +40,11 @@ Arguments = ["-fullscreen", "-config", "{GameDir}/config.ini"]
 | string[]                  | [GroupNames](#group-names)                | A user-friendly name for 'group' containing this task.                                                                |
 | string?                   | [Description](#description)               | A brief description of the task. Ideally limited to 2 short lines.                                                    |
 | string                    | [Path](#path)                             | The relative path to the executable file or the URL to open. See [Path](#path) for details.                           |
-| bool                      | [IsPrimary](#IsPrimary)                   | Indicates whether this task launches the game's main executable. Only one task should have `IsPrimary` set to `true`. |
+| bool                      | [IsPrimary](#isprimary)                   | Indicates whether this task launches the game's main executable. Only one task should have `IsPrimary` set to `true`. |
 | bool                      | [InjectLoader](#injectloader)             | Indicates whether the loader should be injected. Usually only true for the `IsPrimary` task.                          |
 | string[]                  | [Arguments](#arguments)                   | An array of additional commandline arguments to pass to the executable. Can use placeholders like `{GameDir}`.        |
 | bool?                     | IsHidden                                  | Indicates whether the task should be hidden from the user. Defaults to `false`.                                       |
-| string?                   | [RelativeWorkingDir](#RelativeWorkingDir) | The working directory for the task. Defaults to the folder containing `Path`, otherwise is a folder relative to it.   |
+| string?                   | [RelativeWorkingDir](#relativeworkingdir) | The working directory for the task. Defaults to the folder containing `Path`, otherwise is a folder relative to it.   |
 
 ### TaskType
 
@@ -110,14 +110,6 @@ executable, which is usually the primary EXE file assigned by the game store or 
 !!! warning "When importing external tasks, there may be more than one 'default' task."
 
     In such cases, the local already defined task wins.
-
-### IsDerived
-
-!!! info "Indicates whether this task was imported from an external source."
-
-    For example, [imported from GOG.](#importing-from-gog)
-
-This field is not persiste
 
 ### InjectLoader
 

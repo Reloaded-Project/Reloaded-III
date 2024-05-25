@@ -83,9 +83,7 @@ The entry point for the documentation is specified in the [DocsFile][docs-file] 
 
 !!! info "Located in `package/images`."
 
-!!! info "All images here use `JPEG XL (.jxl)`."
-
-    Any images in other formats will be auto converted.
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
 
 This contains any supplementary images that are used in the package.
 These images can be referenced from the main `package.toml` file, for example in
@@ -114,3 +112,4 @@ That means including the following in each package:
 [cc-by-nc-sa-4.0]: https://creativecommons.org/licenses/by-nc-sa/4.0/
 [docs-file]: ./Package-Metadata.md#docsfile
 [gallery-items]: ./Configurations/Mod-Metadata.md#gallery
+[images]: ../../Common/Images.md

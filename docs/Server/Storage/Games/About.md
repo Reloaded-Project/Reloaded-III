@@ -5,14 +5,16 @@
 Before reading this, read the basics over at the [Loadouts page][event-sourcing].
 
 The approach and requirements here are generally the same.
-Likewise, storing App configurations also makes use of *Event Sourcing* for backups.
+
+Likewise, storing Game configurations also makes use of *Event Sourcing* for backups.
 
 ## What's inside an Game Configuration?
 
-| Type    | Name      | Description                                                        |
-| ------- | --------- | ------------------------------------------------------------------ |
-| string? | [Id](#id) | A name that uniquely identifies the game. Should be user friendly. |
-| string  | Name      | User friendly name for the game, e.g. 'Sonic Heroes'.              |
+| Type    | Name           | Description                                                        |
+| ------- | -------------- | ------------------------------------------------------------------ |
+| string? | [Id](#id)      | A name that uniquely identifies the game. Should be user friendly. |
+| string  | [Name](#name)  | User friendly name for the game, e.g. 'Sonic Heroes'.              |
+| Task[]  | [Tasks][tasks] | List of executables that can be launched for this game.            |
 
 ### Id
 
@@ -23,6 +25,20 @@ Likewise, storing App configurations also makes use of *Event Sourcing* for back
 For games which a user added before it had an entry in the [Community Repository][community-repository].
 
 This value will be autopopulated based on configurations within a future version of [Reloaded.Community][reloaded-community].
+
+### Name
+
+!!! info "A user friendly name for the game."
+
+This can be populated from the following sources (in order of preference):
+
+- Game Store Name
+- Friendly Name embedded in executable.
+- The game's executable name.
+
+The user can overwrite the name if they wish.
+
+
 
 ## Game Versioning Strategy
 
@@ -41,7 +57,7 @@ This value will be autopopulated based on configurations within a future version
   "AppLocation": "C:\\Users\\sewer\\Desktop\\Sonic Heroes\\Tsonic_win.EXE",
   "AppArguments": "",
   "AppIcon": "Icon.png",
-  "WorkingDirectory": null,
+  "RelativeWorkingDirectory": null,
   "PluginData": {
     "GBPackageProvider": {
       "GameId": 6061
@@ -51,9 +67,6 @@ This value will be autopopulated based on configurations within a future version
 ```
 
 <!-- Links -->
-[community-repository]: ../../../Services/Community-Repository.md
-[reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
-
 ## File Format
 
 !!! info "A config for an application has the following file format."
@@ -72,3 +85,6 @@ Consider reading more about this in the
 - ❌ [Extra Commandline Arguments]
 
 [event-sourcing]: ../Loadouts/About.md#event-sourcing
+[community-repository]: ../../../Services/Community-Repository.md
+[reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
+[tasks]: ./Tasks.md

@@ -6,7 +6,9 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 | Type                             | Name                               | Description                                                   |
 | -------------------------------- | ---------------------------------- | ------------------------------------------------------------- |
-| string                           | [Icon-Square](#icon-square)        | Relative path of preview icon.                                |
+| string                           | [IconSquare](#icon-square)         | Relative path of preview icon (square format).                |
+| string                           | [IconBanner](#icon-banner)         | Relative path of preview icon (banner format).                |
+| string                           | [IconPoster](#icon-poster)         | Relative path of preview icon (poster format).                |
 | GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                           |
 | bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.    |
 | Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend] |
@@ -16,9 +18,7 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 !!! info "These are paths relative to folder `Package.toml` is stored in."
 
-!!! info "Uses JPEG XL (`.jxl`)."
-
-    Other formats, e.g. `.png`, `.jpg` and `.webp` will be auto converted.
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
 
 ### Icon (Square)
 
@@ -111,3 +111,4 @@ Mod managers will automatically update this to appropriate ID during process of 
 [package-images]: ../About.md#images
 [ready-to-run]: ../../../Loader/Backends/CoreCLR.md#ready-to-run
 [reloaded2-backend]: ../../../Loader/Backends/CoreCLR.md#reloaded-ii
+[images]: ../../../Common/Images.md

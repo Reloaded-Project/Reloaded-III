@@ -20,8 +20,8 @@ Some use cases include:
 - Helping automatic detection of games installed via Steam/Epic/Origin etc.
 - Providing compatibility warnings for pre-patched/pre-modded legacy games.
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
-- Auto assign Game IDs in [Application Configurations][app-metadata].
-- Updating [Mod Configurations][mod-metadata] with correct [App ID][app-metadata-id]s marking which games an app supports.
+- Auto assign Game IDs in [Application Configurations][game-metadata].
+- Updating [Mod Configurations][mod-metadata] with correct [Game ID][game-metadata-id]s marking which games a mod supports.
 - Images for in-app game icons, banners, etc.
 
 ## Schema
@@ -34,17 +34,17 @@ All configurations are written as TOML (for editing convenience).
 
 They can have any name (as long as they use their own unique folder), in this spec we will refer to them as `App.toml`.
 
-| Type          | Item                                            | Description                                                                             |
-| ------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------- |
-| string        | [Id][app-metadata]                              | Unique identifier for this game. Copied to [App Id][app-metadata].                      |
-| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'. Copied to [App Name][app-metadata-name].                                   |
-| Version[]     | [Versions](#version)                            | Versions of the executable.                                                             |
-| OtherBinary[] | [OtherBinaries](#other-binaries)                | Stores information about other executables in game folder you probably don't wanna mod. |
-| string[]      | [ReferenceFiles](#referencefiles)               | Stores relative file paths of arbitrary files to disambiguate shared EXE names.         |
-| StoreInfo     | [StoreInformation](#store-information)          | Game store specific information.                                                        |
-| ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                              |
-| Diagnostic[]  | [Diagnostics](#diagnostics)                     | Diagnostics to display based on game's current folder state.                            |
-| string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                      |
+| Type          | Item                                            | Description                                                                                      |
+| ------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| string        | [Id][game-metadata]                             | Unique identifier for this game. Copied to [Game Id][game-metadata].                             |
+| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'. Copied to [Game Name][game-metadata-name]. |
+| Version[]     | [Versions](#version)                            | Versions of the executable.                                                                      |
+| OtherBinary[] | [OtherBinaries](#other-binaries)                | Stores information about other executables in game folder you probably don't wanna mod.          |
+| string[]      | [ReferenceFiles](#referencefiles)               | Stores relative file paths of arbitrary files to disambiguate shared EXE names.                  |
+| StoreInfo     | [StoreInformation](#store-information)          | Game store specific information.                                                                 |
+| ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                                       |
+| Diagnostic[]  | [Diagnostics](#diagnostics)                     | Diagnostics to display based on game's current folder state.                                     |
+| string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                               |
 
 !!! note "Note: All hashes listed in this page are `XXH3_128bits` (XXH128) unless specified otherwise."
 
@@ -166,9 +166,7 @@ ReferenceFiles = [
 
 !!! info "Stores path relative to folder `App.toml` is stored in."
 
-!!! info "Images use JPEG XL (`.jxl`)."
-
-    Images in other supported formats will be auto converted.
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
 
 !!! info "Should be a multiple of `128x128`. Recommended `512x512`."
 
@@ -176,9 +174,7 @@ ReferenceFiles = [
 
 !!! info "Stores path relative to folder `App.toml` is stored in."
 
-!!! info "Images use JPEG XL (`.jxl`)."
-
-    Images in other supported formats will be auto converted.
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
 
 !!! info "BannerV: Use `600x900` or a multiple of this resolution."
 
@@ -408,9 +404,9 @@ Or ~40000 users/month with 3 games each.
 Should fit within the soft limit, outside of risks with new game releases.
 
 <!-- Links -->
-[app-metadata]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
-[app-metadata-name]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
-[app-metadata-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[game-metadata]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[game-metadata-name]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[game-metadata-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
 [appx-manifest-identity]: https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity
 [diagnostics]: ../Server/Diagnostics.md#file-based-diagnostics
 [ea-desktop]: https://www.ea.com/en-gb/news/ea-app
@@ -423,3 +419,4 @@ Should fit within the soft limit, outside of risks with new game releases.
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
 [steamdb]: https://steamdb.info/
+[images]: ../Common/Images.md

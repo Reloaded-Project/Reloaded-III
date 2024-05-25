@@ -88,6 +88,7 @@ nav:
       - Package Tiering: Server/Storage/Package-Tiering.md
       - Games:
         - About: Server/Storage/Games/About.md
+        - Tasks: Server/Storage/Games/Tasks.md
       - Loadouts:
         - About: Server/Storage/Loadouts/About.md
         - Events: Server/Storage/Loadouts/Events.md

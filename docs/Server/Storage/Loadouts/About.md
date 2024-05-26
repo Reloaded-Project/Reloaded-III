@@ -414,7 +414,7 @@ So refer to [config.bin](#configbin) documentation for more info.
 
 Below is an example in `.toml` with dummy data:
 
-```
+```toml
 Id = "reloaded3.gamesupport.p5rpc.s56"
 Name = "Persona 5 Royal Support"
 Version = "1.0.0"

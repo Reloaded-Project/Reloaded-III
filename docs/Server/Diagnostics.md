@@ -375,7 +375,6 @@ following way.
 
 If hash is present, diagnostic will only ever be emitted if the hash matches.
 
-
 #### File Based Diagnostic Fixes
 
 !!! warning "TODO: Implement a way to fix file based diagnostics"
@@ -384,4 +383,4 @@ If hash is present, diagnostic will only ever be emitted if the hash matches.
 <!-- Links -->
 [compiler-errors]: https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0027
 [diagnostic-id]: https://github.com/Nexus-Mods/NexusMods.App/blob/main/src/Abstractions/NexusMods.Abstractions.Games.Diagnostics/DiagnosticId.cs
-[mods]: ./Configurations/Mod-Metadata.md
+[mods]: ./Packaging/Configurations/Mod-Metadata.md

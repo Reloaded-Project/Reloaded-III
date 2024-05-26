@@ -69,5 +69,5 @@ To allow for maximum modularity; custom backends are implemented via [regular mo
 allowing them to be updated independently from the loader.
 
 <!-- Links -->
-[mod-configurations-targets]: ../../Server/Configurations/Mod-Metadata.md#targets
+[mod-configurations-targets]: ../../Server/Packaging/Configurations/Mod-Metadata.md#targets
 [regular-mods]: ../Core-Architecture.md#regular-mods-layer-3

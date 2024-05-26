@@ -6,7 +6,9 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 | Type                             | Name                               | Description                                                   |
 | -------------------------------- | ---------------------------------- | ------------------------------------------------------------- |
-| string                           | [Icon-Square](#icon-square)        | Relative path of preview icon.                                |
+| string                           | [IconSquare](#icon-square)         | Relative path of preview icon (square format).                |
+| string                           | [IconBanner](#icon-banner)         | Relative path of preview icon (banner format).                |
+| string                           | [IconPoster](#icon-poster)         | Relative path of preview icon (poster format).                |
 | GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                           |
 | bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.    |
 | Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend] |
@@ -16,9 +18,7 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 !!! info "These are paths relative to folder `Package.toml` is stored in."
 
-!!! info "Uses JPEG XL (`.jxl`)."
-
-    Other formats, e.g. `.png`, `.jpg` and `.webp` will be auto converted.
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
 
 ### Icon (Square)
 
@@ -93,21 +93,22 @@ HasExports = true
 
 ## Supported Games
 
-!!! info "Stores a list of supported games; by using their known [Application ID][app-metadata-id]."
+!!! info "Stores a list of supported games; by using their known [Game ID][game-id]."
 
-Alternatively, when experimenting with new games which do not have a specified Application ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
+Alternatively, when experimenting with new games which do not have a specified Game ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 
 Mod managers will automatically update this to appropriate ID during process of querying [Community Repository][community-repository].
 
 <!-- Links -->
-[app-metadata-id]: ../../Server/Configurations/App-Metadata.md#id
-[backend]: ../../Loader/Backends/About.md
-[community-repository]: ../../Services/Community-Repository.md
-[coreclr-backend]: ../../Loader/Backends/CoreCLR.md
-[instruction-sets]: ../../Loader/Backends/Native.md#instruction-sets
+[backend]: ../../../Loader/Backends/About.md
+[community-repository]: ../../../Services/Community-Repository.md
+[coreclr-backend]: ../../../Loader/Backends/CoreCLR.md
+[game-id]: ../../Storage/Games/About.md#id
+[instruction-sets]: ../../../Loader/Backends/Native.md#instruction-sets
 [mod-configurations]: ./Mod-Configurations.md
-[native-backend]: ../../Loader/Backends/Native.md
-[package-toml]: ../Packaging/Package-Metadata.md
-[package-images]: ../Packaging/About.md#images
-[ready-to-run]: ../../Loader/Backends/CoreCLR.md#ready-to-run
-[reloaded2-backend]: ../../Loader/Backends/CoreCLR.md#reloaded-ii
+[native-backend]: ../../../Loader/Backends/Native.md
+[package-toml]: ../Package-Metadata.md
+[package-images]: ../About.md#images
+[ready-to-run]: ../../../Loader/Backends/CoreCLR.md#ready-to-run
+[reloaded2-backend]: ../../../Loader/Backends/CoreCLR.md#reloaded-ii
+[images]: ../../../Common/Images.md

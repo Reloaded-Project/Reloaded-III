@@ -20,8 +20,8 @@ Some use cases include:
 - Helping automatic detection of games installed via Steam/Epic/Origin etc.
 - Providing compatibility warnings for pre-patched/pre-modded legacy games.
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
-- Auto assign Game IDs in [Application Configurations][app-metadata].
-- Updating [Mod Configurations][mod-metadata] with correct [App ID][app-metadata-id]s marking which games an app supports.
+- Auto assign Game IDs in [Application Configurations][game-metadata].
+- Updating [Mod Configurations][mod-metadata] with correct [Game ID][game-metadata-id]s marking which games a mod supports.
 - Images for in-app game icons, banners, etc.
 
 ## Schema
@@ -34,17 +34,18 @@ All configurations are written as TOML (for editing convenience).
 
 They can have any name (as long as they use their own unique folder), in this spec we will refer to them as `App.toml`.
 
-| Type          | Item                                            | Description                                                                             |
-| ------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------- |
-| string        | [Id][app-metadata]                              | Unique identifier for this game. Copied to [App Id][app-metadata].                      |
-| string        | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'.                                   |
-| Version[]     | [Versions](#version)                            | Versions of the executable.                                                             |
-| OtherBinary[] | [OtherBinaries](#other-binaries)                | Stores information about other executables in game folder you probably don't wanna mod. |
-| string[]      | [ReferenceFiles](#referencefiles)               | Stores relative file paths of arbitrary files to disambiguate shared EXE names.         |
-| StoreInfo     | [StoreInformation](#store-information)          | Game store specific information.                                                        |
-| ModSourceInfo | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/GitHub) specific information.                              |
-| Diagnostic[]  | [Diagnostics](#diagnostics)                     | Diagnostics to display based on game's current folder state.                            |
-| string        | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                      |
+| Type           | Item                                            | Description                                                                                      |
+| -------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| string         | [Id][game-metadata]                             | Unique identifier for this game. Copied to [Game Id][game-metadata].                             |
+| string         | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'. Copied to [Game Name][game-metadata-name]. |
+| Version[]      | [Versions](#version)                            | Versions of the executable.                                                                      |
+| OtherBinary[]  | [OtherBinaries](#other-binaries)                | Stores information about other executables in game folder you probably don't wanna mod.          |
+| string[]       | [ReferenceFiles](#referencefiles)               | Stores relative file paths of arbitrary files to disambiguate shared EXE names.                  |
+| StoreInfo      | [StoreInformation](#store-information)          | Game store specific information.                                                                 |
+| IntegraionInfo | [IntegrationInfo](#integraion-info)             | Integrations with 3rd party services.                                                            |
+| ModSourceInfo  | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/OtherModSite) specific information.                                 |
+| Diagnostic[]   | [Diagnostics](#diagnostics)                     | Diagnostics to display based on game's current folder state.                                     |
+| string         | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                               |
 
 !!! note "Note: All hashes listed in this page are `XXH3_128bits` (XXH128) unless specified otherwise."
 
@@ -144,6 +145,8 @@ SuggestedExecutable = "tsonic_win.exe"
 Message = "This executable is the launcher for this game. Would you like to select {SuggestedExecutable} instead?"
 ```
 
+This gives the user a yes/no prompt. If they select 'yes', the `SuggestedExecutable` is used instead.
+
 ### ReferenceFiles
 
 !!! info "Here we can add 1 or more files that are unique to this game."
@@ -166,27 +169,36 @@ ReferenceFiles = [
 
 !!! info "Stores path relative to folder `App.toml` is stored in."
 
-!!! info "Images use JPEG XL (`.jxl`)."
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
 
-    Images in other supported formats will be auto converted.
+!!! info "Aspect ratio 1:1. Recommended size `512x512`."
 
-!!! info "Should be a multiple of `128x128`. Recommended `512x512`."
+In practice, expect the image to be shown as 256x256 on grids, and 96x96 on the 'spine'
+(sidebar) in the 1st party launcher.
+
+The recommended size accounts for 4K being the standard. The launcher is expected
+to scale the image down (if needed) and use a scaled down version on lower DPI displays.
+
+!!! note "Relevant Game & Loadout Setting [GridDisplayMode][grid-display-mode]"
+
+!!! tip "Expect an image size of around 40-100KiB for `512x512`"
 
 ### Banner
 
 !!! info "Stores path relative to folder `App.toml` is stored in."
 
-!!! info "Images use JPEG XL (`.jxl`)."
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
 
-    Images in other supported formats will be auto converted.
+!!! info "BannerV: Use `600x900`."
 
-!!! info "BannerV: Use `600x900` or a multiple of this resolution."
+!!! info "BannerH: Use `920x430`"
 
-!!! info "BannerH: Use `920x430` or a multiple of this resolution."
+We use the Steam resolutions for `BannerV` and `BannerH`.
+These resolutions are specified with 4K in mind.
 
-We use the Steam resolutions for `BannerV` and `BannerH`, and official Steam assets when possible.
+!!! note "Relevant Game & Loadout Setting [GridDisplayMode][grid-display-mode]"
 
-Mod manager can choose to display either, or not use any at all.
+!!! tip "Expect an image size of around 100-300KiB for `600x900` and `920x430`"
 
 ### Store Information
 
@@ -199,6 +211,8 @@ Mod manager can choose to display either, or not use any at all.
 | XboxGameInfo  | [Xbox](#xbox)             | Xbox Game Pass information.                   |
 
 Supported stores are based on [GameFinder][gamefinder] library.
+
+This information is used to link up locally installed games with the community repository.
 
 #### EA Desktop
 
@@ -222,21 +236,27 @@ Supported stores are based on [GameFinder][gamefinder] library.
 
 | Type | Item | Description                            |
 | ---- | ---- | -------------------------------------- |
-| long | ID   | Unique ID for this game used in 'GOG'. |
+| u64  | ID   | Unique ID for this game used in 'GOG'. |
 
 #### Steam
 
 !!! tip "You can use the [SteamDB][steamdb] to look up these IDs."
 
-| Type   | Item          | Description                     |
-| ------ | ------------- | ------------------------------- |
-| string | CatalogItemId | Unique ID in catalog for 'EGS'. |
+| Type | Item       | Description                  |
+| ---- | ---------- | ---------------------------- |
+| u64  | SteamAppId | Unique ID for game in Steam. |
 
 #### Xbox
 
 | Type   | Item | Description                                                                                   |
 | ------ | ---- | --------------------------------------------------------------------------------------------- |
 | string | ID   | Unique ID. Corresponds to [Package.Identity.Name in AppxManifest.xml][appx-manifest-identity] |
+
+### Integration Info
+
+| Type | Item          | Description                                  |
+| ---- | ------------- | -------------------------------------------- |
+| u32  | SteamGridDbId | ID of the game on SteamGridDB. 0 if not set. |
 
 ### Mod Source Information
 
@@ -251,7 +271,7 @@ Supported stores are based on [GameFinder][gamefinder] library.
 
 | Type | Item | Description                                                                 |
 | ---- | ---- | --------------------------------------------------------------------------- |
-| int  | Id   | Unique identifier for game, e.g. 6061 for https://gamebanana.com/games/6061 |
+| u32  | Id   | Unique identifier for game, e.g. 6061 for https://gamebanana.com/games/6061 |
 
 #### Nexus Mods
 
@@ -408,8 +428,9 @@ Or ~40000 users/month with 3 games each.
 Should fit within the soft limit, outside of risks with new game releases.
 
 <!-- Links -->
-[app-metadata]: ../Server/Configurations/App-Metadata.md
-[app-metadata-id]: ../Server/Configurations/App-Metadata.md#id
+[game-metadata]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[game-metadata-name]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[game-metadata-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
 [appx-manifest-identity]: https://learn.microsoft.com/en-us/uwp/schemas/appxpackage/uapmanifestschema/element-identity
 [diagnostics]: ../Server/Diagnostics.md#file-based-diagnostics
 [ea-desktop]: https://www.ea.com/en-gb/news/ea-app
@@ -418,7 +439,9 @@ Should fit within the soft limit, outside of risks with new game releases.
 [github-pages]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
 [gog-db]: https://www.gogdb.org/
 [hashing]: ../Common/Hashing.md
-[mod-metadata]: ../Server/Configurations/Mod-Metadata.md
+[mod-metadata]: ../Server/Packaging/Configurations/Mod-Metadata.md
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
 [steamdb]: https://steamdb.info/
+[images]: ../Common/Images.md
+[grid-display-mode]: ../Server/Storage/Loadouts/Events.md#griddisplaymode

@@ -64,23 +64,39 @@ installed in more than one store.
 
 !!! tip "This contains machine specific information tied to this user."
 
-This structure is defined as: `HashMap<MachineName, MachineInfo>`.
+This structure is defined as: `HashMap<EntryID, MachineInfo>`.
 
-MachineName is a unique name tied to this machine; and is usually the machine's hostname.
+#### Deriving the EntryID
 
-- Linux & macOS: `hostname`
-- Windows: `ComputerName`
+!!! info "`EntryID` is derived as `{MachineID}+{UserName}`"
+
+`MachineID` is derived as:
+
+- Linux: `/etc/machine-id`
+- Windows: `MachineGuid`
+    - This is `HKEY_LOCAL_MACHINE/SOFTWARE/Microsoft/Cryptography` -> `MachineGuid`
+- macOS: TODO
+
+`UserName` is well, as the name describes.
+
+#### MachineInfo
 
 `MachineInfo` is defined as:
 
 | Type           | Name                              | Description                                                   |
 | -------------- | --------------------------------- | ------------------------------------------------------------- |
 | bool           | DisplayedCreateShortcutPrompt     | Displayed the [Create Shortcut](#autocreateshortcuts) prompt. |
+| string         | FriendlyName                      | Friendly Name for the Machine.                                |
 | string         | MainExePath                       | Last path to the main executable.                             |
 | string         | MainExeHash                       | Original hash of the main executable. [XXH128][hashing]       |
 | DeploymentType | [DeploymentType](#deploymenttype) | Dictates how the loader is injected into the game.            |
 
-#### DeploymentType
+The `FriendlyName` is derived from `UserName` and `MachineName`.
+`MachineName` is derived as `hostname` on Linux/macOS and `ComputerName` on Windows.
+
+Usually it's formatted as `{UserName}'s {MachineName}`.
+
+##### DeploymentType
 
 !!! info "This defines user's preference for how the loader is injected into the game."
 
@@ -158,28 +174,6 @@ We can convert the `thumb` URL to a `jxl` image and store it in the game configu
 | StoreInfo     | [StoreInformation][store-information]          | Game store specific information.                                                        |
 | ModSourceInfo | [ModSourceInformation][mod-source-information] | Mod source (Nexus/GameBanana/OtherModSite) specific information.                        |
 | Diagnostic[]  | [Diagnostics][diagnostics]                     | Diagnostics to display based on game's current folder state.                            |
-
-## Game Versioning Strategy
-
-!!! warning
-
-    In some rare cases games can be updated to completely different ports; e.g. an older game can get a '64-bit' upgrade
-    that totally would break all code mods and even change some file formats.
-
-To mitigate this; we will use binary hashes.
-This value will be autopopulated based on configurations within a future version of [Reloaded.Community][reloaded-community].
-
-```json
-{
-  "PluginData": {
-    "GBPackageProvider": {
-      "GameId": 6061
-    }
-  }
-}
-```
-
-Consider reading more about this in the
 
 [added-games-location]: ../Locations.md#items-to-store
 [community-repository]: ../../../Services/Community-Repository.md

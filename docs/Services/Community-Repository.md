@@ -137,20 +137,21 @@ date of the release as the version.
 
 #### ReferenceFile
 
-Specifies a unique reference file and hash for a specific version of the game.
+Specifies a unique reference file and hash.
 
-| Type   | Item         | Description                                             |
-| ------ | ------------ | ------------------------------------------------------- |
-| string | RelativePath | Path to the reference file relative to the game folder. |
-| string | Hash         | Hash of the reference file. (XXH128)                    |
+| Type   | Item         | Description                                              |
+| ------ | ------------ | -------------------------------------------------------- |
+| string | RelativePath | Path to the reference file relative to the game folder.  |
+| string | Hash         | Hash of the reference file. (XXH128)                     |
 
-This allows disambiguating between different versions of a game that may share the same executable name.
-
-!!! tip "Prefer longer file paths, to game files unlikely to change between updates."
+This allows disambiguating between different versions of a game that may share the same executable.
+For example, when the executable is a stub.
 
 ```toml
-ReferenceFile = { RelativePath = "dvdroot/advertise/E/adv_title.one", Hash = "abcdefabcdefabcdefabcdefabcdefab" }
+ReferenceFile = { RelativePath = "dvdroot/advertise/E/adv_title.one", Hash = "986cc4f000fb530245f44c7b49206628" }
 ```
+
+!!! tip "Choose a file that is short, exists in all game versions, and is unique to this version."
 
 ### Other Binaries
 

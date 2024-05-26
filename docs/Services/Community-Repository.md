@@ -120,7 +120,7 @@ Id = 1705545557
 | ------------- | ------------- | -------------------------------------------------------------------------------- |
 | string        | Hash          | Hash of executable. (XXH128)                                                     |
 | string        | ExeName       | Name of executable.                                                              |
-| string        | Version       | [Optional] Version of game bound to this executable.                             |
+| string        | FriendlyName  | Friendly name for this game version. e.g. `1.0.1 (GOG)`.                         |
 | DateTime      | Date          | [Optional] Date of this version, as ISO 8601.                                    |
 | ReferenceFile | ReferenceFile | [Optional] Unique reference file and hash for this specific version of the game. |
 

@@ -139,10 +139,11 @@ date of the release as the version.
 
 Specifies a unique reference file and hash.
 
-| Type   | Item         | Description                                              |
-| ------ | ------------ | -------------------------------------------------------- |
-| string | RelativePath | Path to the reference file relative to the game folder.  |
-| string | Hash         | Hash of the reference file. (XXH128)                     |
+| Type    | Item         | Description                                             |
+| ------- | ------------ | ------------------------------------------------------- |
+| string  | RelativePath | Path to the reference file relative to the game folder. |
+| string? | Hash1M       | Hash of the first 1MB bytes of file. (XXH128)           |
+| string  | Hash         | Hash of the reference file. (XXH128)                    |
 
 This allows disambiguating between different versions of a game that may share the same executable.
 For example, when the executable is a stub.
@@ -152,6 +153,14 @@ ReferenceFile = { RelativePath = "dvdroot/advertise/E/adv_title.one", Hash = "98
 ```
 
 !!! tip "Choose a file that is short, exists in all game versions, and is unique to this version."
+
+!!! tip "Prefer using same file across all version entries if possible."
+
+!!! tip "Hash1M can be used as a speedup if game only has big files."
+
+    For example 2GB archives.<br/>
+    Consider files over 10MB to be a decent threshold for using this, as we also have to account
+    for the likes of hard drives.
 
 ### Other Binaries
 

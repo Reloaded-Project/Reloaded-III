@@ -1,7 +1,4 @@
-﻿Certainly! Here's the updated Community Repository page with the changes you requested:
-
----
-# Community Repository
+﻿# Community Repository
 
 !!! info "About the Community Repository"
 
@@ -39,7 +36,6 @@ They can have any name (as long as they use their own unique folder), in this sp
 | string                    | Name                                                          | User-friendly name for the game, e.g. 'Sonic Heroes'. Copied to [Game Name][game-metadata-name]. |
 | Version[]                 | [Versions](#version)                                          | Versions of the executable.                                                                      |
 | OtherBinary[]             | [OtherBinaries](#other-binaries)                              | Stores information about other executables in game folder you probably don't wanna mod.          |
-| string[]                  | [ReferenceFiles](#referencefiles)                             | Stores relative file paths of arbitrary files to disambiguate shared EXE names.                  |
 | StoreInfo                 | [StoreInformation](#store-information)                        | Game store specific information.                                                                 |
 | ModSourceInfo             | [ModSourceInformation](#mod-source-information)               | Mod source (Nexus/GameBanana/OtherModSite) specific information.                                 |
 | Diagnostic[]              | [Diagnostics](#diagnostics)                                   | Diagnostics to display based on game's current folder state.                                     |
@@ -63,15 +59,13 @@ They can have any name (as long as they use their own unique folder), in this sp
 Id = "SonicHeroes"
 Name = "Sonic Heroes"
 BadHashDescription = "Mods target the NoCD version of Sonic Heroes; specifically the Reloaded release. That said, any NoCD version with removed SafeDisc DRM should work, including Sega's own Sonic PC Collection."
-ReferenceFiles = [
-    "dvdroot/advertise/E/adv_title.one"
-]
 
 [[Versions]]
 Hash = "8ac32285128d165e011860da2234f9d1"
 ExeName = "tsonic_win.exe"
 Version = "1.0.0.1"
 Date = 2004-10-18T08:15:02Z
+ReferenceFile = { RelativePath = "dvdroot/advertise/E/adv_title.one", Hash = "986cc4f000fb530245f44c7b49206628" }
 
 [[OtherBinaries]]
 Hash = "9ef04af103c974659a01310c7c7013eb"
@@ -122,12 +116,13 @@ Id = 1705545557
 
 !!! info "Stores individual version information for a binary with a given hash."
 
-| Type     | Item    | Description                                          |
-| -------- | ------- | ---------------------------------------------------- |
-| string   | Hash    | Hash of executable. (XXH128)                         |
-| string   | ExeName | Name of executable.                                  |
-| string   | Version | [Optional] Version of game bound to this executable. |
-| DateTime | Date    | [Optional] Date of this version, as ISO 8601.        |
+| Type          | Item          | Description                                                                      |
+| ------------- | ------------- | -------------------------------------------------------------------------------- |
+| string        | Hash          | Hash of executable. (XXH128)                                                     |
+| string        | ExeName       | Name of executable.                                                              |
+| string        | Version       | [Optional] Version of game bound to this executable.                             |
+| DateTime      | Date          | [Optional] Date of this version, as ISO 8601.                                    |
+| ReferenceFile | ReferenceFile | [Optional] Unique reference file and hash for this specific version of the game. |
 
 This version and their time are supposed to be purely informative.
 
@@ -139,6 +134,23 @@ date of the release as the version.
     In cases where a game significantly differs after a update to the point where handling it using existing mods
     is not possible (e.g. 32bit -> 64bit + changed file formats); you should make a new entry for the game in the repository,
     e.g. `Persona 4 Golden 64-bit`, rather than adding a new version.
+
+#### ReferenceFile
+
+Specifies a unique reference file and hash for a specific version of the game.
+
+| Type   | Item         | Description                                             |
+| ------ | ------------ | ------------------------------------------------------- |
+| string | RelativePath | Path to the reference file relative to the game folder. |
+| string | Hash         | Hash of the reference file. (XXH128)                    |
+
+This allows disambiguating between different versions of a game that may share the same executable name.
+
+!!! tip "Prefer longer file paths, to game files unlikely to change between updates."
+
+```toml
+ReferenceFile = { RelativePath = "dvdroot/advertise/E/adv_title.one", Hash = "abcdefabcdefabcdefabcdefabcdefab" }
+```
 
 ### Other Binaries
 
@@ -162,24 +174,6 @@ Message = "This executable is the launcher for this game. Would you like to sele
 ```
 
 This gives the user a yes/no prompt. If they select 'yes', the `SuggestedExecutable` is used instead.
-
-### ReferenceFiles
-
-!!! info "Here we can add 1 or more files that are unique to this game."
-
-The intent of this field is to disambiguate games that share the same executable name.
-
-For example if two games have `Engine.exe`, AND `Engine.exe` does not have a known hash, we can use
-this field to disambiguate the two games.
-
-!!! tip "Prefer longer file paths, to game files unlikely to change between updates."
-
-```toml
-# Sonic Heroes' Title Screen File
-ReferenceFiles = [
-    "dvdroot/advertise/E/adv_title.one"
-]
-```
 
 ### Icons and Banners (SteamGridDB)
 
@@ -252,7 +246,7 @@ the `Horizontal` and `Vertical` banners.
 
 !!! note "Relevant Game & Loadout Setting [GridDisplayMode][grid-display-mode]"
 
-!!! tio "[Fetching assets from SteamGridDB][steam-grid-db-docs]"
+!!! tip "[Fetching assets from SteamGridDB][steam-grid-db-docs]"
 
 ### Store Information
 
@@ -479,3 +473,4 @@ Should fit within the soft limit, outside of risks with new game releases.
 [images]: ../Common/Images.md
 [grid-display-mode]: ../Server/Storage/Loadouts/Events.md#griddisplaymode
 [steam-grid-db-docs]: ../Research/External-Services/SteamGridDB.md
+[reloaded-central-server]: ./Central-Server.md

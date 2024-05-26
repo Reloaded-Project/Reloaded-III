@@ -168,6 +168,8 @@ nav:
       - Windows:
         - Windows - DLL Hijack: Research/Bootloaders/Windows-DllHijack.md
         - Windows - Inject Into Suspended Process: Research/Bootloaders/Windows-InjectIntoSuspended.md
+    - External Services:
+        - Steam Grid DB: Research/External-Services/SteamGridDB.md
   - Wiki:
     - Contributing Locally: Contributing-Locally.md
     - Contributing Online: Contributing-Online.md

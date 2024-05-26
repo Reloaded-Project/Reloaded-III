@@ -1,9 +1,11 @@
-﻿# Community Repository
+﻿Certainly! Here's the updated Community Repository page with the changes you requested:
+
+---
+# Community Repository
 
 !!! info "About the Community Repository"
 
-    This allows us to provide real time updates for per-game specific information without
-    explicitly having having to recompile mod loader/server/manager.
+    This allows us to provide real-time updates for per-game specific information without explicitly having to recompile the mod loader/server/manager.
 
 !!! note "This documents a future iteration of [Reloaded.Community][reloaded-community] repository."
 
@@ -11,8 +13,7 @@
 
 The `Community Repository` contains game-specific information for the Reloaded3 backend server.
 
-The idea is we can update the information we know about various games without ever having to
-update the actual server itself. This is sometimes called 'out of band' information.
+The idea is we can update the information we know about various games without ever having to update the actual server itself. This is sometimes called 'out of band' information.
 
 Some use cases include:
 
@@ -22,46 +23,37 @@ Some use cases include:
 - Informing user of wrong game binary. (e.g. User has EU EXE but mods target US)
 - Auto assign Game IDs in [Application Configurations][game-metadata].
 - Updating [Mod Configurations][mod-metadata] with correct [Game ID][game-metadata-id]s marking which games a mod supports.
-- Images for in-app game icons, banners, etc.
+- Providing SteamGridDB IDs for game icons and banners.
 
 ## Schema
 
-!!! note
-
-    This represents the schema of games the individual users add to the repo manually.
+!!! note "This represents the schema of games the individual users add to the repo manually."
 
 All configurations are written as TOML (for editing convenience).
 
 They can have any name (as long as they use their own unique folder), in this spec we will refer to them as `App.toml`.
 
-| Type           | Item                                            | Description                                                                                      |
-| -------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| string         | [Id][game-metadata]                             | Unique identifier for this game. Copied to [Game Id][game-metadata].                             |
-| string         | Name                                            | User friendly name for the game, e.g. 'Sonic Heroes'. Copied to [Game Name][game-metadata-name]. |
-| Version[]      | [Versions](#version)                            | Versions of the executable.                                                                      |
-| OtherBinary[]  | [OtherBinaries](#other-binaries)                | Stores information about other executables in game folder you probably don't wanna mod.          |
-| string[]       | [ReferenceFiles](#referencefiles)               | Stores relative file paths of arbitrary files to disambiguate shared EXE names.                  |
-| StoreInfo      | [StoreInformation](#store-information)          | Game store specific information.                                                                 |
-| IntegraionInfo | [IntegrationInfo](#integraion-info)             | Integrations with 3rd party services.                                                            |
-| ModSourceInfo  | [ModSourceInformation](#mod-source-information) | Mod source (Nexus/GameBanana/OtherModSite) specific information.                                 |
-| Diagnostic[]   | [Diagnostics](#diagnostics)                     | Diagnostics to display based on game's current folder state.                                     |
-| string         | [BadHashMessage](#bad-hash-message)             | Message to display if the user has a bad EXE hash.                                               |
+| Type                      | Item                                                          | Description                                                                                      |
+| ------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| string                    | [Id][game-metadata]                                           | Unique identifier for this game. Copied to [Game Id][game-metadata].                             |
+| string                    | Name                                                          | User-friendly name for the game, e.g. 'Sonic Heroes'. Copied to [Game Name][game-metadata-name]. |
+| Version[]                 | [Versions](#version)                                          | Versions of the executable.                                                                      |
+| OtherBinary[]             | [OtherBinaries](#other-binaries)                              | Stores information about other executables in game folder you probably don't wanna mod.          |
+| string[]                  | [ReferenceFiles](#referencefiles)                             | Stores relative file paths of arbitrary files to disambiguate shared EXE names.                  |
+| StoreInfo                 | [StoreInformation](#store-information)                        | Game store specific information.                                                                 |
+| ModSourceInfo             | [ModSourceInformation](#mod-source-information)               | Mod source (Nexus/GameBanana/OtherModSite) specific information.                                 |
+| Diagnostic[]              | [Diagnostics](#diagnostics)                                   | Diagnostics to display based on game's current folder state.                                     |
+| string                    | [BadHashMessage](#bad-hash-message)                           | Message to display if the user has a bad EXE hash.                                               |
+| SteamGridDBCategoryAndId? | [SteamGridDBIcon](#icons-and-banners-steamgriddb)             | SteamGridDB category and ID for the game's icon. Optional.                                       |
+| SteamGridDBCategoryAndId? | [SteamGridDBBannerSquare](#icons-and-banners-steamgriddb)     | SteamGridDB category and ID for the game's app grid square. Optional.                            |
+| SteamGridDBCategoryAndId? | [SteamGridDBBannerHorizontal](#icons-and-banners-steamgriddb) | SteamGridDB category and ID for the game's horizontal banner. Optional.                          |
+| SteamGridDBCategoryAndId? | [SteamGridDBBannerVertical](#icons-and-banners-steamgriddb)   | SteamGridDB category and ID for the game's vertical banner. Optional.                            |
 
-!!! note "Note: All hashes listed in this page are `XXH3_128bits` (XXH128) unless specified otherwise."
+!!! note "All hashes listed in this page are `XXH3_128bits` (XXH128) unless specified otherwise."
 
     For more details, see the page on [Hashing Page][hashing].
 
 !!! note "Not all of this information has to be hand typed, some information such as version numbers, hashes, dates can be automatically extracted."
-
-### Implicit Files
-
-!!! info "If present, the following will be used."
-
-| Value         | Item               | Description                            |
-| ------------- | ------------------ | -------------------------------------- |
-| `Icon.jxl`    | [Icon](#icon)      | Icon for the game in 1:1 aspect ratio. |
-| `BannerH.jxl` | [BannerH](#banner) | Horizontal banner for the game.        |
-| `BannerV.jxl` | [BannerV](#banner) | Vertical banner for the game.          |
 
 ### Minimal Example
 
@@ -98,6 +90,30 @@ Message = "Your game folder contains ThirteenAG's old Legacy WidescreenFix. You 
 [[Diagnostics.Items]]
 Hash = "abcdefabcdefabcdefabcdefabcdefab"
 FilePath = "scripts/SonicHeroes.WidescreenFix.asi"
+
+# Icons to Use
+[SteamGridDBIcon]
+Category = "Icon"
+Id = 1393
+
+[SteamGridDBBannerSquare]
+Category = "Grid"
+Id = 162786
+
+[SteamGridDBBannerHorizontal]
+Category = "Grid"
+Id = 78140
+
+[SteamGridDBBannerVertical]
+Category = "Grid"
+Id = 78138
+
+# Pretend the title was on some stores.
+[StoreInformation.Steam]
+SteamAppId = 71340
+
+[StoreInformation.Gog]
+Id = 1705545557
 ```
 
 !!! note "Note: Better examples are welcome!"
@@ -165,40 +181,78 @@ ReferenceFiles = [
 ]
 ```
 
-### Icon
+### Icons and Banners (SteamGridDB)
 
-!!! info "Stores path relative to folder `App.toml` is stored in."
+!!! info "Technical Note (Icon)"
 
-!!! info "Images use [JPEG XL (`.jxl`)][images]"
+    **Aspect ratio**: 1:1.
+    **Expected Resolution**: `256x256`. (4K Display ✅)
+    **Preferred Resolution**: `512x512`. (8K Display ✅)
+    **Expected Size @ `256x256`**: ~60KiB.
+    **Format**: [JPEG XL][images].
 
-!!! info "Aspect ratio 1:1. Recommended size `512x512`."
+!!! info "Technical Note (Banner Square)"
 
-In practice, expect the image to be shown as 256x256 on grids, and 96x96 on the 'spine'
-(sidebar) in the 1st party launcher.
+    **Aspect ratio**: 1:1.
+    **Expected Resolution**: `512x512`. (4K Display ✅)
+    **Preferred Resolution**: `1024x1024`. (8K Display ✅)
+    **Expected Size @ `512x512`**: ~120KiB.
+    **Format**: [JPEG XL][images].
 
-The recommended size accounts for 4K being the standard. The launcher is expected
-to scale the image down (if needed) and use a scaled down version on lower DPI displays.
+!!! info "Technical Note (BannerV)"
+
+    **Aspect ratio**: 2:3.
+    **Expected Resolution (BannerV)**: `600x900`. (4K Display ✅)
+    **Expected Size @ `600x900`**: ~210KiB.
+    **Format**: [JPEG XL][images].
+
+!!! info "Technical Note (BannerH)"
+
+    **Aspect ratio**: 92:43.
+    **Expected Resolution (BannerV)**: `920x430`. (4K Display ✅)
+    **Expected Size @ `920x430`**: ~180KiB.
+    **Format**: [JPEG XL][images].
+
+!!! question "Where is are these images used?"
+
+    All resolutions listed target 96 DPI and reference 1st party launcher.
+    So for 4K, double the resolution.
+
+    **Icons (1:1)**:
+        - 48x48 in Windows Desktop Shortcut
+        - 96x96 in Spine
+        - 100x100 in Gnome 3 Shortcut (All Apps View)
+
+    **BannerSquare (1:1)**:
+        - 192x192 in Game Grid (Default)
+        - 256x256 in Game Grid (Larger)
+
+    **BannerH (92:43)**:
+        - 460x215 App View (Grid Horizontal)
+
+    **BannerV (2:3)**:
+        - 300x450 App View (Grid Vertical)
+
+The `SteamGridDbCategoryAndId` struct is defined as follows:
+
+| Type                | Item     | Description                            |
+| ------------------- | -------- | -------------------------------------- |
+| SteamGridDbCategory | Category | 0 = Grid, 1 = Hero, 2 = Logo, 3 = Icon |
+| u32                 | Id       | ID of this specific entry.             |
+
+If an icon is specified, the launcher will contact the [Reloaded Central Server][reloaded-central-server]
+to fetch the image from SteamGridDB using the provided category and ID.
+
+If not specified (null), the launcher will attempt to fetch the first image tagged as `official`
+in style from SteamGridDB.
+
+If there is no internet connection, the launcher will default to extracting the app icon from the
+game's executable for the icon, reuse that for `Square Banner` and use a placeholder for
+the `Horizontal` and `Vertical` banners.
 
 !!! note "Relevant Game & Loadout Setting [GridDisplayMode][grid-display-mode]"
 
-!!! tip "Expect an image size of around 40-100KiB for `512x512`"
-
-### Banner
-
-!!! info "Stores path relative to folder `App.toml` is stored in."
-
-!!! info "Images use [JPEG XL (`.jxl`)][images]"
-
-!!! info "BannerV: Use `600x900`."
-
-!!! info "BannerH: Use `920x430`"
-
-We use the Steam resolutions for `BannerV` and `BannerH`.
-These resolutions are specified with 4K in mind.
-
-!!! note "Relevant Game & Loadout Setting [GridDisplayMode][grid-display-mode]"
-
-!!! tip "Expect an image size of around 100-300KiB for `600x900` and `920x430`"
+!!! tio "[Fetching assets from SteamGridDB][steam-grid-db-docs]"
 
 ### Store Information
 
@@ -252,12 +306,6 @@ This information is used to link up locally installed games with the community r
 | ------ | ---- | --------------------------------------------------------------------------------------------- |
 | string | ID   | Unique ID. Corresponds to [Package.Identity.Name in AppxManifest.xml][appx-manifest-identity] |
 
-### Integration Info
-
-| Type | Item          | Description                                  |
-| ---- | ------------- | -------------------------------------------- |
-| u32  | SteamGridDbId | ID of the game on SteamGridDB. 0 if not set. |
-
 ### Mod Source Information
 
 | Type           | Item                      | Description                     |
@@ -303,15 +351,9 @@ If this is the case, we simply provide a message to the user via the `BadHashMes
 .
 └── Apps
     ├── SonicHeroes
-    │   ├── App.toml
-    │   ├── BannerH.jxl
-    │   ├── BannerV.jxl
-    │   └── Icon.jxl
+    │   └── App.toml
     └── SonicRiders
-        ├── App.toml
-        ├── BannerH.jxl
-        ├── BannerV.jxl
-        └── Icon.jxl
+        └── App.toml
 ```
 
 ## Building The Repository
@@ -323,16 +365,10 @@ The result of the 'build' is the following:
 ```
 .
 ├── Apps
-│   ├── SonicHeroes
-│   │   ├── App.msgpack.zst
-│   │   ├── BannerH.jxl
-│   │   ├── BannerV.jxl
-│   │   └── Icon.jxl
-│   └── SonicRiders
-│       ├── App.msgpack.zst
-│       ├── BannerH.jxl
-│       ├── BannerV.jxl
-│       └── Icon.jxl
+│   ├── SonicHeroes
+│   │   └── App.msgpack.zst
+│   └── SonicRiders
+│       └── App.msgpack.zst
 └── Index.msgpack.zst
 ```
 
@@ -418,12 +454,9 @@ Expected sizes:
 
 - `30KB`: Index.msgpack.zst (~100 games)
 - `1KB`: App.msgpack.zst
-- `300KB`: BannerH.jxl
-- `300KB`: BannerV.jxl
 
-Approximately 500-700KB per user.
-This makes for 142857 queries per month, with each user having 1 known game.
-Or ~40000 users/month with 3 games each.
+Approximately 30KB per user.
+This makes for 3.2 million queries per month, with each user having 1 known game.
 
 Should fit within the soft limit, outside of risks with new game releases.
 
@@ -445,3 +478,4 @@ Should fit within the soft limit, outside of risks with new game releases.
 [steamdb]: https://steamdb.info/
 [images]: ../Common/Images.md
 [grid-display-mode]: ../Server/Storage/Loadouts/Events.md#griddisplaymode
+[steam-grid-db-docs]: ../Research/External-Services/SteamGridDB.md

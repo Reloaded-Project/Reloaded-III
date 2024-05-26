@@ -108,60 +108,14 @@ Usually it's formatted as `{UserName}'s {MachineName}`.
 
 ## Icons and Banners
 
-!!! warning "TODO: Override for specifying icon from an external source."
-
 !!! info "If present, the following will be used."
 
-| Value         | Item                                   | Description                            |
-| ------------- | -------------------------------------- | -------------------------------------- |
-| `Icon.jxl`    | [Icon][community-repository-icon]      | Icon for the game in 1:1 aspect ratio. |
-| `BannerH.jxl` | [BannerH][community-repository-banner] | Horizontal banner for the game.        |
-| `BannerV.jxl` | [BannerV][community-repository-banner] | Vertical banner for the game.          |
-
-### Icon from SteamGridDB
-
-!!! note "To avoid having end users register on SteamGridDB, we will expose a 1st party server that wraps the API"
-
-    TODO: Talk to the SteamGridDB guys to find if they're ok with this.
-    As it'll end up being a lot of requests against my single API key.
-
-API Docs:
-- `https://www.steamgriddb.com/api/v2`
-
-If you run a query like:
-- `https://www.steamgriddb.com/api/v2/icons/game/5247913`
-
-You'll get multiple results in the form:
-
-```json
-"success": true,
-    "data": [
-        {
-            "id": 21699,
-            "score": 0,
-            "style": "official",
-            "width": 0,
-            "height": 0,
-            "nsfw": false,
-            "humor": false,
-            "notes": "Pulled from the game executable.",
-            "mime": "image/vnd.microsoft.icon",
-            "language": "en",
-            "url": "https://cdn2.steamgriddb.com/icon/61d647c1a3d7b66b408e4a21c3167fe2.ico",
-            "thumb": "https://cdn2.steamgriddb.com/icon/61d647c1a3d7b66b408e4a21c3167fe2/32/256x256.png",
-            "lock": false,
-            "epilepsy": false,
-            "upvotes": 0,
-            "downvotes": 0,
-            "author": {
-                "name": "cynojien",
-                "steam64": "76561197971169044",
-                "avatar": "https://avatars.steamstatic.com/a5dda94a5752ec305ff430dda89b034b41f42cff_medium.jpg"
-            }
-        },
-```
-
-We can convert the `thumb` URL to a `jxl` image and store it in the game configuration.
+| Value              | Item                                      | Description                                   |
+| ------------------ | ----------------------------------------- | --------------------------------------------- |
+| `Icon.jxl`         | [Icon][community-repository-icon]         | Icon for the game in 1:1 aspect ratio.        |
+| `BannerSquare.jxl` | [BannerSquare][community-repository-icon] | Grid Square for the game in 1:1 aspect ratio. |
+| `BannerHorz.jxl`   | [BannerHorz][community-repository-banner] | Horizontal banner for the game.               |
+| `BannerVert.jxl`   | [BannerVert][community-repository-banner] | Vertical banner for the game.                 |
 
 ## Information Sourced Externally
 
@@ -183,8 +137,8 @@ We can convert the `thumb` URL to a `jxl` image and store it in the game configu
 [task-placeholders]: Tasks.md#commandline-placeholders
 [tasks]: ./Tasks.md
 [tasks-arguments]: Tasks.md#arguments
-[community-repository-icon]: ../../../Services/Community-Repository.md#icon
-[community-repository-banner]: ../../../Services/Community-Repository.md#banner
+[community-repository-icon]: ../../../Services/Community-Repository.md#icons-and-banners-steamgriddb
+[community-repository-banner]: ../../../Services/Community-Repository.md#icons-and-banners-steamgriddb
 [store-info]: ../../../Services/Community-Repository.md#store-information
 [mod-source-info]: ../../../Services/Community-Repository.md#mod-source-information
 [community-repo-versions]: ../../../Services/Community-Repository.md#version

@@ -476,8 +476,6 @@ If it's not possible to download the metadata, we download the full package.
 
     It can also be used to identify when game updates have taken place when auditing the log.
 
-!!! warning "TODO: This topic requires more research."
-
 | Data Type                      | Name      | Description                              |
 | ------------------------------ | --------- | ---------------------------------------- |
 | `u8` [(StoreType)][store-type] | StoreType | The store from which the game came from. |

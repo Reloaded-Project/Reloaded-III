@@ -117,14 +117,15 @@ Id = 1705545557
 
 !!! info "Stores individual version information for a binary with a given hash."
 
-| Type          | Item          | Description                                                                      |
-| ------------- | ------------- | -------------------------------------------------------------------------------- |
-| u32           | ID            | Unique number for this version entry within a `Game`.                            |
-| string        | Hash          | Hash of executable. (XXH128)                                                     |
-| string        | ExeName       | Name of executable.                                                              |
-| string        | FriendlyName  | Friendly name for this game version. e.g. `1.0.1 (GOG)`.                         |
-| DateTime      | Date          | Date of this version, as ISO 8601.                                               |
-| ReferenceFile | ReferenceFile | [Optional] Unique reference file and hash for this specific version of the game. |
+| Type          | Item                            | Description                                                                      |
+| ------------- | ------------------------------- | -------------------------------------------------------------------------------- |
+| u32           | ID                              | Unique number for this version entry within a `Game`.                            |
+| string        | Hash                            | Hash of executable. (XXH128)                                                     |
+| string        | ExeName                         | Name of executable.                                                              |
+| string        | FriendlyName                    | Friendly name for this game version. e.g. `1.0.1 (GOG)`.                         |
+| DateTime      | Date                            | Date of this version, as ISO 8601.                                               |
+| ReferenceFile | [ReferenceFile](#referencefile) | [Optional] Unique reference file and hash for this specific version of the game. |
+| StoreVersion  | [StoreInfo](#storeinfo)         | Store-specific information for this game version.                                |
 
 The `ID` is a unique integer for each entry, ideally incrementing from 0.
 It should never be changed. This allows for changing other information on
@@ -134,6 +135,57 @@ This `FriendlyName` and `Date` are purely informative. (For Launcher UIs etc.)
 
 Ideally the `FriendlyName` field should stick to official version names (if available).
 Include the store name in the brackets e.g. `(GOG)` if the code differs between stores.
+
+#### StoreInfo
+
+!!! note "Ignore this for legacy games from before the era of digital distribution."
+
+The `StoreInfo` field is an optional field that contains store-specific information
+for each game version.
+
+It is defined as follows:
+
+| Type                      | Item      | Description                              |
+| ------------------------- | --------- | ---------------------------------------- |
+| [(StoreType)][store-type] | StoreType | The store from which the game came from. |
+
+**GOG Specific Fields**:
+
+| Type | Item       | Description                                                                                           |
+| ---- | ---------- | ----------------------------------------------------------------------------------------------------- |
+| u64  | GogBuildId | [GOG Only] The [unique identifier for the build][gog-buildid]. Only applicable when `Store` is `GOG`. |
+
+**Steam Specific Fields**:
+
+| Type   | Item                | Description                                                                                                      |
+| ------ | ------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| u64    | SteamDepotId        | [Steam Only] The Steam depot ID. Only applicable when `Store` is `Steam`.                                        |
+| u64    | SteamManifestId     | [Steam Only] The Steam manifest ID. Only applicable when `Store` is `Steam`.                                     |
+| string | SteamBranch         | [Steam Only] The Steam branch name. Only applicable when `Store` is `Steam`.                                     |
+| string | SteamBranchPassword | [Steam Only] The password for the Steam branch (if password-protected). Only applicable when `Store` is `Steam`. |
+
+**Epic Specific Fields**:
+
+| Type   | Item                 | Description                                                                                 |
+| ------ | -------------------- | ------------------------------------------------------------------------------------------- |
+| string | EpicAppVersionString | [Epic Only] The version string of the game on Epic. Only applicable when `Store` is `Epic`. |
+
+**Microsoft Specific Fields**:
+
+| Type   | Item                    | Description                                                                                                                                      |
+| ------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| string | MicrosoftPackageVersion | [Microsoft Only] The version of the game package on the Microsoft Store, from the `Identity` field. Only applicable when `Store` is `Microsoft`. |
+
+Example:
+
+```toml
+[Versions.StoreVersion]
+Store = "Steam"
+SteamDepotId = 1234567890
+SteamManifestId = 9876543210
+SteamBranch = "beta"
+SteamBranchPassword = "secretpassword"
+```
 
 #### ReferenceFile
 
@@ -436,7 +488,7 @@ containing the code.
 On the other hand, the `ExeToApps` field is for handling unknown game versions. In those cases,
 a user will manually select their intended game.
 
-In case of duplicates, they will be auto resolved using the [ReferenceFiles](#referencefiles).
+In case of duplicates, they will be auto resolved using the [ReferenceFile](#referencefile).
 
 !!! note "In super rare case of unresolvable duplicates, the user will be prompted to select the correct game."
 
@@ -485,3 +537,6 @@ Should fit within the soft limit, outside of risks with new game releases.
 [grid-display-mode]: ../Server/Storage/Loadouts/Events.md#griddisplaymode
 [steam-grid-db-docs]: ../Research/External-Services/SteamGridDB.md
 [reloaded-central-server]: ./Central-Server.md
+[stores-bin]: ../Server/Storage/Loadouts/About.md#storesbin
+[gog-buildid]: ../Server/Storage/Loadouts/Stores/GOG.md#retrieving-available-game-versions
+[store-type]: ../Server/Storage/Loadouts/Events.md#storetype

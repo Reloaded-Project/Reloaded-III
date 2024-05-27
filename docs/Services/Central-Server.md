@@ -387,6 +387,10 @@ The response contains the contents of the [`UpdateData`][update-data] struct fro
 
 !!! tip "To get the full package, including documentation, the entire package must be downloaded."
 
+## GitHub Fallback
+
+!!! info "In case of downtime, critical functionality is handled by GitHub"
+
 [community-repository]: ./Community-Repository.md
 [community-repository-versions]: ./Community-Repository.md#version
 [community-repository-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration

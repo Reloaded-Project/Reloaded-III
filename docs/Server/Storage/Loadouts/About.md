@@ -445,7 +445,7 @@ before compression.
 
 #### How do we use this Data?
 
-!!! info "Immediately download full package metadata from 1st party server."
+!!! info "[Immediately download full package metadata from 1st party server.][package-metadata-server]"
 
 Using this stripped down metadata, we download the full metadata package from the 1st party server
 if the user does not have the full mod or full metadata available.
@@ -625,3 +625,4 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [gog]: ./Stores/GOG.md
 [ms-store-pfm]: ../../../Loader/Copy-Protection/Windows-MSStore.md
 [gog-buildid]: ./Stores/GOG.md#retrieving-available-game-versions
+[package-metadata-server]: ../../../Services/Central-Server.md#package-metadata

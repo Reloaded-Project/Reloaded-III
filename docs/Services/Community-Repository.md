@@ -40,6 +40,7 @@ They can have any name (as long as they use their own unique folder), in this sp
 | ModSourceInfo             | [ModSourceInformation](#mod-source-information)               | Mod source (Nexus/GameBanana/OtherModSite) specific information.                                 |
 | Diagnostic[]              | [Diagnostics](#diagnostics)                                   | Diagnostics to display based on game's current folder state.                                     |
 | string                    | [BadHashMessage](#bad-hash-message)                           | Message to display if the user has a bad EXE hash.                                               |
+| u32                       | [SteamGridDBGameId](#obtain-a-steamgriddb-id)                 | Unique Game ID from SteamGridDB API. Optional.                                                   |
 | SteamGridDBCategoryAndId? | [SteamGridDBIcon](#icons-and-banners-steamgriddb)             | SteamGridDB category and ID for the game's icon. Optional.                                       |
 | SteamGridDBCategoryAndId? | [SteamGridDBBannerSquare](#icons-and-banners-steamgriddb)     | SteamGridDB category and ID for the game's app grid square. Optional.                            |
 | SteamGridDBCategoryAndId? | [SteamGridDBBannerHorizontal](#icons-and-banners-steamgriddb) | SteamGridDB category and ID for the game's horizontal banner. Optional.                          |
@@ -310,6 +311,15 @@ the `Horizontal` and `Vertical` banners.
 !!! note "Relevant Game & Loadout Setting [GridDisplayMode][grid-display-mode]"
 
 !!! tip "[Fetching assets from SteamGridDB][steam-grid-db-docs]"
+
+#### Obtain a SteamGridDB ID
+
+Look at the URL, for example:
+
+- **Game**: `https://www.steamgriddb.com/game/38740`
+- **Grid**: `https://www.steamgriddb.com/grid/196080`
+
+It's the number at the end.
 
 ### Store Information
 

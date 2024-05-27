@@ -445,22 +445,12 @@ before compression.
 
 #### How do we use this Data?
 
-!!! info "[Immediately download full package metadata from 1st party server.][package-metadata-server]"
+!!! info "Restore the packages in the case the [Central Server][central-server] is having downtime"
 
-Using this stripped down metadata, we download the full metadata package from the 1st party server
-if the user does not have the full mod or full metadata available.
+    This also helps reduce the load on the central server.
 
-This full metadata package contains:
-
-- Full [Package.toml][package-toml]
-- Mod Configuration Schema
-- All Gallery Images
-- Full Documentation
-
-It's expected each mod's full metadata package will probably be around 0.5MB - 3MB in size.
-Depending on the nature of their gallery.
-
-If it's not possible to download the metadata, we download the full package.
+TODO QUESTION: Can we not ship the update info separately? It compresses well and all, but it bloats
+the loadout size.
 
 ### stores.bin
 
@@ -626,3 +616,4 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [ms-store-pfm]: ../../../Loader/Copy-Protection/Windows-MSStore.md
 [gog-buildid]: ./Stores/GOG.md#retrieving-available-game-versions
 [package-metadata-server]: ../../../Services/Central-Server.md#package-metadata
+[central-server]: ../../../Services/Central-Server.md

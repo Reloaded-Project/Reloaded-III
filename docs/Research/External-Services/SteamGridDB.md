@@ -7,6 +7,8 @@
     I plan to cache the data on my end, but it will still cause an unusually large amount of
     requests against my API key. Possibly like 200 requests a minute.
 
+To see where this is used, see [Central Server][central-server]
+
 ## Using the API (Example)
 
 API Docs:
@@ -57,3 +59,7 @@ We can convert the `thumb` URL to a `jxl` image and store it in the game configu
 - Get a specific icon: `https://www.steamgriddb.com/api/public/asset/icon/{iconID}`
 
 The individual IDs are the same as the ones you obtain from search.
+
+No API key is required for these endpoints.
+
+[central-server]: ../../Services/Central-Server.md

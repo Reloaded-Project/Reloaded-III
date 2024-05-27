@@ -61,13 +61,14 @@ Name = "Sonic Heroes"
 BadHashDescription = "Mods target the NoCD version of Sonic Heroes; specifically the Reloaded release. That said, any NoCD version with removed SafeDisc DRM should work, including Sega's own Sonic PC Collection."
 
 [[Versions]]
+ID = 0
 Hash = "8ac32285128d165e011860da2234f9d1"
 ExeName = "tsonic_win.exe"
 Version = "1.0.0.1"
 Date = 2004-10-18T08:15:02Z
-ReferenceFile = { RelativePath = "dvdroot/advertise/E/adv_title.one", Hash = "986cc4f000fb530245f44c7b49206628" }
 
 [[OtherBinaries]]
+ID = 1
 Hash = "9ef04af103c974659a01310c7c7013eb"
 ExeName = "launcher.exe"
 Version = "1.0.0.1"
@@ -118,22 +119,21 @@ Id = 1705545557
 
 | Type          | Item          | Description                                                                      |
 | ------------- | ------------- | -------------------------------------------------------------------------------- |
+| u32           | ID            | Unique number for this version entry within a `Game`.                            |
 | string        | Hash          | Hash of executable. (XXH128)                                                     |
 | string        | ExeName       | Name of executable.                                                              |
 | string        | FriendlyName  | Friendly name for this game version. e.g. `1.0.1 (GOG)`.                         |
-| DateTime      | Date          | [Optional] Date of this version, as ISO 8601.                                    |
+| DateTime      | Date          | Date of this version, as ISO 8601.                                               |
 | ReferenceFile | ReferenceFile | [Optional] Unique reference file and hash for this specific version of the game. |
 
-This version and their time are supposed to be purely informative.
+The `ID` is a unique integer for each entry, ideally incrementing from 0.
+It should never be changed. This allows for changing other information on
+the struct without breaking existing references to it
 
-Ideally the `Version` field should stick to official version names (if available). Otherwise use the
-date of the release as the version.
+This `FriendlyName` and `Date` are purely informative. (For Launcher UIs etc.)
 
-!!! warning
-
-    In cases where a game significantly differs after a update to the point where handling it using existing mods
-    is not possible (e.g. 32bit -> 64bit + changed file formats); you should make a new entry for the game in the repository,
-    e.g. `Persona 4 Golden 64-bit`, rather than adding a new version.
+Ideally the `FriendlyName` field should stick to official version names (if available).
+Include the store name in the brackets e.g. `(GOG)` if the code differs between stores.
 
 #### ReferenceFile
 
@@ -146,7 +146,7 @@ Specifies a unique reference file and hash.
 | string  | Hash         | Hash of the reference file. (XXH128)                    |
 
 This allows disambiguating between different versions of a game that may share the same executable.
-For example, when the executable is a stub.
+For example, when the executable is a stub that loads main game code from a DLL.
 
 ```toml
 ReferenceFile = { RelativePath = "dvdroot/advertise/E/adv_title.one", Hash = "986cc4f000fb530245f44c7b49206628" }
@@ -175,6 +175,7 @@ Example:
 
 ```toml
 [[OtherBinaries]]
+ID = 1
 Hash = "9ef04af103c974659a01310c7c7013eb"
 ExeName = "launcher.exe"
 Version = "1.0.0.1"

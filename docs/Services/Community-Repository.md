@@ -504,12 +504,12 @@ In case of duplicates, they will be auto resolved using the [ReferenceFile](#ref
 
 ## Hosting
 
-!!! info "Initially the Community Repository will be hosted on [GitHub Pages][github-pages]."
+!!! info "The Community Repository will be hosted on [GitHub Pages][github-pages]."
 
-With caching of assets on the end user's side.
+    With a fallback on the [Central Server][reloaded-central-server] if GitHub ever goes
+    down.
 
-Then, if we ever find we're serving too much traffic, we will self
-host the repository.
+Because this data is very small and stale, the user will cache all of the data on their end.
 
 The repository is set up in such a way that any HTTP server with downloads can host it.
 

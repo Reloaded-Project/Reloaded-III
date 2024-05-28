@@ -387,13 +387,46 @@ The response contains the contents of the [`UpdateData`][update-data] struct fro
 
 !!! tip "To get the full package, including documentation, the entire package must be downloaded."
 
-## GitHub Fallback
+## Redundancy with GitHub
 
-!!! info "In case of downtime, critical functionality is handled by GitHub"
+!!! info "In case of downtime, some critical functionality can be offloaded to GitHub"
+
+    And likewise some GitHub functionality can be offloaded to the Central Server.
+
+In order to avoid a situation where a single point of failure can take down the entire ecosystem,
+some critical functionality can be offloaded to GitHub.
+
+Likewise, some critical functionality hosted on GitHub (e.g. [Community Repository][community-repository])
+can have a shallow copy on the Central Server.
+
+### Download Locations API
+
+Namely resolving packages to their download final location, i.e. performing the duty of
+[Download Locations](#download-locations) API. This will ensure that at least basic functionality
+of Reloaded3 remains live.
+
+Reloaded-II today already contains a fallback like this, the [AllPackages.json.br][r2-all-deps-idx]
+index used as a fallback in dependency resolution.
+
+Currently, this uses around 45 bytes per package on average.
+In the R3 index, we will contain some more info, but also some will be made redundant, I expect around
+50 bytes per package.
+
+So 5MB for around `100,000` packages.
+
+#### Optimizing for Size
+
+!!! tip "Usually when opening a loadout, a user will likely mostly be missing packages related to a specific game"
+
+In other words, we can group packages by their associated primary [Game ID][game-id].
+
+This will help make the index smaller.
 
 [community-repository]: ./Community-Repository.md
 [community-repository-versions]: ./Community-Repository.md#version
 [community-repository-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
+[game-id]: ../Server/Storage/Games/About.md#id
 [package-metadata]: ../Server/Packaging/Package-Metadata.md
 [update-data]: ../Server/Packaging/Package-Metadata.md#update-data
 [steam-grid-db]: ../Research/External-Services/SteamGridDB.md
+[r2-all-deps-idx]: https://github.com/Reloaded-Project/Reloaded-II.Index/blob/main/AllDependencies.json.br

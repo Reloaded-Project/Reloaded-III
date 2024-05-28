@@ -269,6 +269,6 @@ you can find the new interface quickly.
 [dll-hijacking]: ../../Research/Bootloaders/Windows-DllHijack.md
 [dll-injection]: ../../Research/Bootloaders/Windows-InjectIntoSuspended.md
 [package-family-name]: https://github.com/russellbanks/package-family-name
-[reloaded-ii-unprotect]: https://github.com/Reloaded-Project/Reloaded-II/blob/3b800957b5b919ebba42b92e9cf859dbbe1c9926/source/Reloaded.Mod.Launcher.Lib/Utility/TryUnprotectGamePassGame.cs#L14
+[reloaded-ii-unprotect]: https://github.com/Reloaded-Project/Reloaded-II/blob/96924a5a05e210427aaacea066a608a14005ef50/source/Reloaded.Mod.Launcher.Lib/Utility/TryUnprotectGamePassGame.cs#L4
 [replace-files-with-itself]: https://github.com/Sewer56/replace-files-with-itself
 [wait-for-single-object]: https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject?redirectedfrom=MSDN

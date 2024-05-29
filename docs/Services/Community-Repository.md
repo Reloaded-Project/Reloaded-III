@@ -506,8 +506,7 @@ In case of duplicates, they will be auto resolved using the [ReferenceFile](#ref
 
 !!! info "The Community Repository will be hosted on [GitHub Pages][github-pages]."
 
-    With a fallback on the [Central Server][reloaded-central-server] if GitHub ever goes
-    down.
+    With a fallback on the [Central Server][reloaded-central-server] if GitHub ever goes down.
 
 Because this data is very small and stale, the user will cache all of the data on their end.
 

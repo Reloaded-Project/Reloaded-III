@@ -326,6 +326,7 @@ This can be directly saved to disk by the client.
 - `POST /api/packages/download-locations`
 
 ***Description:*** Get the latest download locations for the specified packages.
+This is used to restore packages to a new PC [after syncing a loadout][sync-loadout].
 
 ***Request Body:*** An array of objects, each containing `packageId` and `version` fields.
 
@@ -399,28 +400,62 @@ some critical functionality can be offloaded to GitHub.
 Likewise, some critical functionality hosted on GitHub (e.g. [Community Repository][community-repository])
 can have a shallow copy on the Central Server.
 
-### Download Locations API
+### Static Download Locations API
 
-Namely resolving packages to their download final location, i.e. performing the duty of
-[Download Locations](#download-locations) API. This will ensure that at least basic functionality
-of Reloaded3 remains live.
+!!! info "An offline version of the [Download Locations](#download-locations) API."
 
 Reloaded-II today already contains a fallback like this, the [AllPackages.json.br][r2-all-deps-idx]
 index used as a fallback in dependency resolution.
 
-Currently, this uses around 45 bytes per package on average.
-In the R3 index, we will contain some more info, but also some will be made redundant, I expect around
-50 bytes per package.
+The R2 version uses 45 bytes per package on average. In the R3 index, we will contain some more
+info, but also some will be made redundant, I expect around 50 bytes per package.
 
 So 5MB for around `100,000` packages.
 
-#### Optimizing for Size
+!!! info "GitHub pages sites are limited to [100GB of bandwidth per month][pages-limits]."
 
-!!! tip "Usually when opening a loadout, a user will likely mostly be missing packages related to a specific game"
+    Some optimization is needed here to reduce file sizes. We'll do our best with the structure below.
 
-In other words, we can group packages by their associated primary [Game ID][game-id].
+#### File Structure
 
-This will help make the index smaller.
+!!! tip "The files are structured using the following use case"
+
+    > A user is opening a loadout on a new PC for the first time and needs to restore packages.
+
+    > Because the loadout inherently composed of mods for a specific game (and the universal `reloaded3` group),
+      practically 100% of the time, grabbing packages just from those two groups will be enough.
+
+
+```
+.
+├── groups
+│   ├── gbfrelink
+│   │   └── packages.json.zstd
+│   ├── p4gpc
+│   │   └── packages.json.zstd
+│   ├── p5rpc
+│   │   └── packages.json.zstd
+│   ├── reloaded3
+│   │   └── packages.json.zstd
+│   └── sonicheroes
+│       └── packages.json.zstd
+└── index.json.zstd
+```
+
+Note the standard package format `game.type.subtype.name.author`, or its simplified form
+`game.type.name.author` as described in the [Package Metadata][package-id] page.
+
+With this in mind, we can group the packages by `game`, this is the content of the `groups` folder.
+
+!!! note "Most games are not expected to break 4000 total mods."
+
+    As a point of reference as of 29th of May 2024, only 25 games have above 4000 mods
+    on Nexus Mods.
+
+!!! warning "The files must be laid out in a deterministic order."
+
+    We cannot apply optimizations such as `put first 1000 mods` in File A, and `put next 1000 mods`
+    in File B.
 
 [community-repository]: ./Community-Repository.md
 [community-repository-versions]: ./Community-Repository.md#version
@@ -430,3 +465,6 @@ This will help make the index smaller.
 [update-data]: ../Server/Packaging/Package-Metadata.md#update-data
 [steam-grid-db]: ../Research/External-Services/SteamGridDB.md
 [r2-all-deps-idx]: https://github.com/Reloaded-Project/Reloaded-II.Index/blob/main/AllDependencies.json.br
+[pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
+[package-id]: ../Server/Packaging/Package-Metadata.md#id
+[sync-loadout]: ../Server/Storage/Loadouts/About.md#restoring-actual-package-files

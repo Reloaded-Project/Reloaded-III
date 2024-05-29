@@ -97,16 +97,17 @@ a 'snapshot' of the current state is created, and event history is trimmed to re
 
 !!! info "This details the nature of how Reloaded3 implements Event Sourcing for Loadouts"
 
-| Item                                                     | Path                                                  | Description                                                                       |
-| -------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [Header](#headerbin)                                     | `header.bin`                                          | (Memory Mapped) Header with current loadout pointers. Facilitates 'transactions'. |
-| [Events](#eventsbin)                                     | `events.bin`                                          | List of all emitted events in the loadout.                                        |
-| [Timestamps](#timestampsbin)                             | `timestamps.bin`                                      | Timestamps for each commit.                                                       |
-| [Commit Parameters](#commit-parametersbin)               | `commit-parameters.bin` & `commit-parameters-{x}.bin` | List of commit message parameters for each event.                                 |
-| [Configs](#configbin)                                    | `config.bin` & `config-data.bin`                      | Package Configurations.                                                           |
-| [Package Metadata](#package-metadatabin)                 | `package-metadata.bin` & `package-metadata-data.bin`  | Metadata required to restore all packages within this loadout.                    |
-| [Store Manifests](#storesbin)                            | `stores.bin` & `store-data.bin`                       | Game store specific info to restore game to last version if possible.             |
-| [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                      | Raw data for commandline parameters. Length specified in event.                   |
+| Item                                                     | Path                                                                        | Description                                                                       |
+| -------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [Header](#headerbin)                                     | `header.bin`                                                                | (Memory Mapped) Header with current loadout pointers. Facilitates 'transactions'. |
+| [Events](#eventsbin)                                     | `events.bin`                                                                | List of all emitted events in the loadout.                                        |
+| [Timestamps](#timestampsbin)                             | `timestamps.bin`                                                            | Timestamps for each commit.                                                       |
+| [Commit Parameters](#commit-parametersbin)               | `commit-parameters.bin`<br/>+ `commit-parameters-{x}.bin`                   | List of commit message parameters for each event.                                 |
+| [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                        | Package Configurations.                                                           |
+| [Package Reference (IDs)](#package-references)           | `package-reference-ids-len.bin`<br/>+ `package-reference-ids.bin`           | Metadata required to restore all packages within this loadout.                    |
+| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin` | Metadata required to restore all packages within this loadout.                    |
+| [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                         | Game store specific info to restore game to last version if possible.             |
+| [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                            | Raw data for commandline parameters. Length specified in event.                   |
 
 These files are deliberately set up in such a way that making a change in a loadout means appending
 to the existing files. No data is overwritten. Rolling back in turn means truncating the files to the desired length.
@@ -390,77 +391,68 @@ every time a config is added. Emitted events refer to this index.
 
 You can get the file size and offsets from the [config.bin](#configbin) file.
 
-### package-metadata.bin
+### Package References
 
-!!! info "This file contains info on how to download a package."
+!!! info "A 'package reference' consists of an Package ID and Version."
 
-This file contains a binary serialized, stripped down copy of each unique [Package.toml][package-toml]
-encountered. Each item is stripped down to `ModId`, `Name`, `Version`, `Package Type` and `Update Sources`,
-the minimum information required to download and display basic info about a package.
+    This is the minimum amount of data required to uniquely identify a package.
 
-Items in this file are referred to by index as [MetadataIdx][max-numbers] in the events.
+Packages are referred to by an index known as [MetadataIdx][max-numbers] in the events.
 
-As for the format, it is the same as [config.bin](#configbin), an array of file sizes
+So a `MetadataIdx == 1` means `fetch the entry at index 1` of [package-reference-ids.bin](#package-reference-idsbin)
+and [package-reference-versions.bin](#package-reference-idsbin).
 
-| Data Type | Name     | Description                     |
-| --------- | -------- | ------------------------------- |
-| `u16`     | FileSize | Size of the configuration file. |
+As for how to use the data, it is similar to [config.bin](#configbin), essentially we deduplicate
+entries by in-memory hash. So an event can always refer to a [MetadataIdx][max-numbers] created
+in an earlier event to save space.
 
-So refer to [config.bin](#configbin) documentation for more info.
+#### package-reference-ids-len.bin
 
-#### package-metadata-data.bin
+Contains the lengths of entries in [package-reference-ids.bin](#package-reference-idsbin).
 
-!!! info "An example of what we store."
+| Data Type | Name     | Description            |
+| --------- | -------- | ---------------------- |
+| `u8`      | IDLength | Size of the ID string. |
 
-Below is an example in `.toml` with dummy data:
+#### package-reference-ids.bin
 
-```toml
-Id = "reloaded3.gamesupport.p5rpc.s56"
-Name = "Persona 5 Royal Support"
-Version = "1.0.0"
+!!! info "This is a buffer consisting of package IDs, whose length is defined in [package-reference.bin](#package-references)"
 
-[UpdateData]
-[UpdateData.GameBanana]
-ItemType = "Mod"
-ItemId = 408376
+These versions are stored as UTF-8 strings. No null terminator.
 
-[UpdateData.GitHub]
-UserName = "Sewer56"
-RepositoryName = "reloaded3.gamesupport.p5rpc"
+#### package-reference-versions-len.bin
 
-[UpdateData.Nexus]
-GameDomain = "persona5"
-Id = 789012
+Contains the lengths of entries in [package-reference-versions.bin](#package-reference-idsbin).
 
-[UpdateData.NuGet]
-DefaultRepositoryUrls = ["http://packages.sewer56.moe:5000/v3/index.json"]
-AllowUpdateFromAnyRepository = false
-```
+| Data Type | Name          | Description                 |
+| --------- | ------------- | --------------------------- |
+| `u8`      | VersionLength | Size of the Version string. |
 
-ID, Name and Update Sources to download the full package are stored. Rest is stripped.
+!!! tip "This data compresses extremely well."
 
-We do custom binary serialization to store this info as efficiently as possible. Exact details to be
-determined once the code is written. It's generally expected for each entry to be in 150-300 byte range
-before compression.
+    Most versions are of form `X.Y.Z` so there is a lot of repetition of `05`.
 
-#### How do we use this Data?
+#### package-reference-versions.bin
 
-!!! info "Immediately download full package metadata from 1st party server."
+!!! info "This is a buffer consisting of package versions, whose length is defined in [package-reference.bin](#package-references)"
 
-Using this stripped down metadata, we download the full metadata package from the 1st party server
-if the user does not have the full mod or full metadata available.
+These versions are stored as UTF-8 strings. No null terminator.
 
-This full metadata package contains:
+!!! tip "This data compresses extremely well."
 
-- Full [Package.toml][package-toml]
-- Mod Configuration Schema
-- All Gallery Images
-- Full Documentation
+    Because the randomness (entropy) of values is low, the version components
+    are super commonly 1s and 0s, and almost always all first two numbers `0-1` and dot `.`
 
-It's expected each mod's full metadata package will probably be around 0.5MB - 3MB in size.
-Depending on the nature of their gallery.
+#### Restoring Actual Package Files
 
-If it's not possible to download the metadata, we download the full package.
+!!! info "We follow a multi step process in order to reliably try restore Reloaded3 packages."
+
+First we attempt to obtain full package metadata from [Central Server][central-server].
+
+!!! failure "But what if [Central Server][central-server] is down?"
+
+We will query the [GitHub Fallback Package Dump][central-server-github].
+That contains a dump of the latest package update info.
 
 ### stores.bin
 
@@ -625,3 +617,6 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [gog]: ./Stores/GOG.md
 [ms-store-pfm]: ../../../Loader/Copy-Protection/Windows-MSStore.md
 [gog-buildid]: ./Stores/GOG.md#retrieving-available-game-versions
+[package-metadata-server]: ../../../Services/Central-Server.md#package-metadata
+[central-server]: ../../../Services/Central-Server.md
+[central-server-github]: ../../../Services/Central-Server.md#redundancy-with-github

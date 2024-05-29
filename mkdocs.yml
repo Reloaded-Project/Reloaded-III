@@ -156,6 +156,7 @@ nav:
       - Game Support Mods: Mods/Guidelines/Game-Support.md
       - Middleware Mods: Mods/Guidelines/Middleware.md
   - Online Services:
+    - Central Server: Services/Central-Server.md
     - Community Repository: Services/Community-Repository.md
   - FAQ: FAQ.md
   - Research & Explanations:

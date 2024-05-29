@@ -40,6 +40,7 @@ They can have any name (as long as they use their own unique folder), in this sp
 | ModSourceInfo             | [ModSourceInformation](#mod-source-information)               | Mod source (Nexus/GameBanana/OtherModSite) specific information.                                 |
 | Diagnostic[]              | [Diagnostics](#diagnostics)                                   | Diagnostics to display based on game's current folder state.                                     |
 | string                    | [BadHashMessage](#bad-hash-message)                           | Message to display if the user has a bad EXE hash.                                               |
+| u32                       | [SteamGridDBGameId](#obtain-a-steamgriddb-id)                 | Unique Game ID from SteamGridDB API. Optional.                                                   |
 | SteamGridDBCategoryAndId? | [SteamGridDBIcon](#icons-and-banners-steamgriddb)             | SteamGridDB category and ID for the game's icon. Optional.                                       |
 | SteamGridDBCategoryAndId? | [SteamGridDBBannerSquare](#icons-and-banners-steamgriddb)     | SteamGridDB category and ID for the game's app grid square. Optional.                            |
 | SteamGridDBCategoryAndId? | [SteamGridDBBannerHorizontal](#icons-and-banners-steamgriddb) | SteamGridDB category and ID for the game's horizontal banner. Optional.                          |
@@ -311,6 +312,15 @@ the `Horizontal` and `Vertical` banners.
 
 !!! tip "[Fetching assets from SteamGridDB][steam-grid-db-docs]"
 
+#### Obtain a SteamGridDB ID
+
+Look at the URL, for example:
+
+- **Game**: `https://www.steamgriddb.com/game/38740`
+- **Grid**: `https://www.steamgriddb.com/grid/196080`
+
+It's the number at the end.
+
 ### Store Information
 
 | Type          | Item                      | Description                                   |
@@ -494,12 +504,11 @@ In case of duplicates, they will be auto resolved using the [ReferenceFile](#ref
 
 ## Hosting
 
-!!! info "Initially the Community Repository will be hosted on [GitHub Pages][github-pages]."
+!!! info "The Community Repository will be hosted on [GitHub Pages][github-pages]."
 
-With caching of assets on the end user's side.
+    With a fallback on the [Central Server][reloaded-central-server] if GitHub ever goes down.
 
-Then, if we ever find we're serving too much traffic, we will self
-host the repository.
+Because this data is very small and stale, the user will cache all of the data on their end.
 
 The repository is set up in such a way that any HTTP server with downloads can host it.
 

@@ -104,8 +104,8 @@ a 'snapshot' of the current state is created, and event history is trimmed to re
 | [Timestamps](#timestampsbin)                             | `timestamps.bin`                                                            | Timestamps for each commit.                                                       |
 | [Commit Parameters](#commit-parametersbin)               | `commit-parameters.bin`<br/>+ `commit-parameters-{x}.bin`                   | List of commit message parameters for each event.                                 |
 | [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                        | Package Configurations.                                                           |
-| [Package Reference (IDs)](#package-references)           | `package-reference-ids-len.bin`<br/>+ `package-reference-ids.bin`           | Metadata required to restore all packages within this loadout.                    |
-| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin` | Metadata required to restore all packages within this loadout.                    |
+| [Package Reference (IDs)](#package-references)           | `package-reference-ids.bin`                                                 | Hashes of package IDs in this loadout.                                            |
+| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin` | String versions of package IDs in this loadout.                                   |
 | [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                         | Game store specific info to restore game to last version if possible.             |
 | [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                            | Raw data for commandline parameters. Length specified in event.                   |
 
@@ -393,7 +393,9 @@ You can get the file size and offsets from the [config.bin](#configbin) file.
 
 ### Package References
 
-!!! info "A 'package reference' consists of an Package ID and Version."
+!!! info "A 'package reference' consists of a [XXH3(PackageID)][hashing] and Version."
+
+    From [Package.toml][package-toml].
 
     This is the minimum amount of data required to uniquely identify a package.
 
@@ -406,19 +408,45 @@ As for how to use the data, it is similar to [config.bin](#configbin), essential
 entries by in-memory hash. So an event can always refer to a [MetadataIdx][max-numbers] created
 in an earlier event to save space.
 
-#### package-reference-ids-len.bin
+!!! danger "Launcher MUST ensure each published mod has valid update/download data."
 
-Contains the lengths of entries in [package-reference-ids.bin](#package-reference-idsbin).
-
-| Data Type | Name     | Description            |
-| --------- | -------- | ---------------------- |
-| `u8`      | IDLength | Size of the ID string. |
+    Otherwise this system could fail, as a hash of packageID is not useful.
 
 #### package-reference-ids.bin
 
-!!! info "This is a buffer consisting of package IDs, whose length is defined in [package-reference.bin](#package-references)"
+!!! info "This is a buffer of [XXH3(PackageID)][hashing]"
 
-These versions are stored as UTF-8 strings. No null terminator.
+    Each entry is 8 bytes long.
+
+Using a 64-bit hash, we need around 5 billion hashes until we reach a 50% chance of collision,
+that's quite plenty!
+
+System can still always fail, we just pray it won't.
+
+!!! note "Some Numbers"
+
+    Nexus Mods alone hosts 815999 mods as of 30th of May 2024 (obtained via GraphQL API).
+
+    The probability of a hash collision on whole mod set is roughly the following:
+
+    ```python
+    >>> r=815999
+    >>> N=2**64
+    >>> ratio = 2*N / r**2
+    >>> ratio
+    55407743.67551148
+    >>> 1-math.exp(-1/ratio)
+    1.8048018635141716e-08
+    ```
+
+    That ends up being ~0.0000018%
+    I'll be damned if R3 comes anywhere close to that.
+
+Anyway, assuming a more modest '100000' mods will be made in R3's lifetime, we can expect
+a probability of 0.0000000027%, or more than 1 in 3.7 trillion.
+
+If I'm ever *that* successful, I'd probably be funded enough that I could extend this to 128-bit hash,
+and at that point a meteor is more likely to land on your house (no joke).
 
 #### package-reference-versions-len.bin
 

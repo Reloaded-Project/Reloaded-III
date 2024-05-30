@@ -193,13 +193,17 @@ The returned objects are just a simplified response from `SteamGridDB`, with ser
 
 ### Get Package Metadata
 
-- `POST /api/packages/metadata`
+- `POST /api/packages/metadata-fromhash`
+- `POST /api/packages/metadata-fromid`
 
 ***Description:*** Get the raw `Package.toml` files for multiple packages in a single request.
 
-***Request Body:*** An array of objects, each containing `packageId` and `version` fields.
+***Request Body:*** An array of objects, each containing `XXH3(UTF8(packageId))` and `version` fields.
 
 ***Example Request Body:***
+
+- `POST /api/packages/metadata-fromid`
+
 ```json
 [
   {
@@ -208,6 +212,21 @@ The returned objects are just a simplified response from `SteamGridDB`, with ser
   },
   {
     "packageId": "reloaded3.utility.reloadedhooks.s56",
+    "version": "2.3.0"
+  }
+]
+```
+
+- `POST /api/packages/metadata-fromhash`
+
+```json
+[
+  {
+    "packageId": "c88fcd6edc933d2a",
+    "version": "1.0.1"
+  },
+  {
+    "packageId": "ff900b821c9f5e89",
     "version": "2.3.0"
   }
 ]
@@ -236,6 +255,10 @@ This can be directly saved to disk by the client.
 
 - Restore metadata for all packages when syncing mods to a new PC.
 - Mod Search UIs/Engines
+
+!!! question "Why is there a `by-hash` API?"
+
+    [Package References][package-reference-ids] use hashes in this format. This allows loadouts to stay small.
 
 ### Get Package Configuration
 
@@ -425,19 +448,20 @@ So 5MB for around `100,000` packages.
     > Because the loadout inherently composed of mods for a specific game (and the universal `reloaded3` group),
       practically 100% of the time, grabbing packages just from those two groups will be enough.
 
+!!! note "We use notation `XXH3(string)` to represent the actual [XXH3][xxh3] of inner string."
 
 ```
 .
 ├── groups
-│   ├── gbfrelink
+│   ├── XXH3("gbfrelink")
 │   │   └── packages.json.zstd
-│   ├── p4gpc
+│   ├── XXH3("p4gpc")
 │   │   └── packages.json.zstd
-│   ├── p5rpc
+│   ├── XXH3("p5rpc")
 │   │   └── packages.json.zstd
-│   ├── reloaded3
+│   ├── XXH3("reloaded3")
 │   │   └── packages.json.zstd
-│   └── sonicheroes
+│   └── XXH3("sonicheroes")
 │       └── packages.json.zstd
 └── index.json.zstd
 ```
@@ -457,6 +481,64 @@ With this in mind, we can group the packages by `game`, this is the content of t
     We cannot apply optimizations such as `put first 1000 mods` in File A, and `put next 1000 mods`
     in File B.
 
+
+##### index.json.zstd
+
+```json
+{
+  "groups": [
+    "XXH3(\"p5rpc\")",
+    "XXH3(\"reloaded3\")",
+    "XXH3(\"p4gpc\")",
+    "XXH3(\"gbfrelink\")",
+    "XXH3(\"sonicheroes\")"
+  ]
+}
+```
+
+##### packages.json.zstd
+
+Example payload:
+
+```json
+[
+  {
+    "packageId": "XXH3(UTF8(packageId))",
+    "version": "1.1.0",
+    "updateData": {
+      "GameBanana": {
+        "ItemType": "Mod",
+        "ItemId": 408376
+      },
+      "GitHub": {
+        "UserName": "Sewer56",
+        "RepositoryName": "reloaded3.gamesupport.p5rpc"
+      },
+      "Nexus": {
+        "GameDomain": "persona5",
+        "Id": 789012
+      },
+      "NuGet": {
+        "DefaultRepositoryUrls": [
+          "http://packages.sewer56.moe:5000/v3/index.json"
+        ],
+        "AllowUpdateFromAnyRepository": false
+      }
+    }
+  },
+  {
+    "packageId": "XXH3(UTF8(packageId))",
+    "version": "2.3.0",
+    "updateData": {
+      "GitHub": {
+        "UserName": "Reloaded-Project",
+        "RepositoryName": "reloaded3.utility.reloadedhooks"
+      }
+    }
+  }
+]
+```
+
 [community-repository]: ./Community-Repository.md
 [community-repository-versions]: ./Community-Repository.md#version
 [community-repository-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
@@ -468,3 +550,5 @@ With this in mind, we can group the packages by `game`, this is the content of t
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [package-id]: ../Server/Packaging/Package-Metadata.md#id
 [sync-loadout]: ../Server/Storage/Loadouts/About.md#restoring-actual-package-files
+[package-reference-ids]: ../Server/Storage/Loadouts/About.md#package-reference-idsbin
+[hashing]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use

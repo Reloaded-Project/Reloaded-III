@@ -479,7 +479,7 @@ First we attempt to obtain full package metadata from [Central Server][central-s
 
 !!! failure "But what if [Central Server][central-server] is down?"
 
-We will query the [GitHub Fallback Package Dump][central-server-github].
+We will query the [Static CDN API][static-cdn-api].
 That contains a dump of the latest package update info.
 
 ### stores.bin
@@ -645,6 +645,5 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [gog]: ./Stores/GOG.md
 [ms-store-pfm]: ../../../Loader/Copy-Protection/Windows-MSStore.md
 [gog-buildid]: ./Stores/GOG.md#retrieving-available-game-versions
-[package-metadata-server]: ../../../Services/Central-Server.md#package-metadata
 [central-server]: ../../../Services/Central-Server.md
-[central-server-github]: ../../../Services/Central-Server.md#redundancy-with-github
+[static-cdn-api]: ../../../Services/Central-Server.md#static-cdn-api

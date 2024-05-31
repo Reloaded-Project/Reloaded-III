@@ -4,6 +4,14 @@
 
 It is responsible for the tasks listed below.
 
+!!! note "API returns Zstandard compressed MessagePack by default."
+
+    But we will use JSON in the examples for readability.
+
+    This is to reduce bandwidth usage and improve performance.
+
+    Gotta remember that Reloaded is funded out of pocket, at a loss, so we need to keep costs low.
+
 ## Mod Compatibility Tracking
 
 !!! info "The Central Server keeps a database of user submitted mod compatibility reports."
@@ -191,19 +199,20 @@ The returned objects are just a simplified response from `SteamGridDB`, with ser
 
 !!! info "The Central Server provides access to package metadata and configurations."
 
+!!! note "Any API labelled `fromhash` accepts a `packageIdHash` as the parameter instead of `packageId`."
+
 ### Get Package Metadata
 
+- `POST /api/packages/metadata`
 - `POST /api/packages/metadata-fromhash`
-- `POST /api/packages/metadata-fromid`
 
-***Description:*** Get the raw `Package.toml` files for multiple packages in a single request.
+***Description:*** Get the raw `Package.toml` files, `Config.toml` files, and associated language files for multiple packages in a single request.
 
-***Request Body:*** An array of objects, each containing `XXH3(UTF8(packageId))` and `version` fields.
+***Request Body:*** An array of objects, each containing `packageId` (or `packageIdHash` for `/api/packages/metadata-fromhash`) and `version` fields.
 
 ***Example Request Body:***
 
-- `POST /api/packages/metadata-fromid`
-
+- `POST /api/packages/metadata`:
 ```json
 [
   {
@@ -217,16 +226,15 @@ The returned objects are just a simplified response from `SteamGridDB`, with ser
 ]
 ```
 
-- `POST /api/packages/metadata-fromhash`
-
+- `POST /api/packages/metadata-fromhash`:
 ```json
 [
   {
-    "packageId": "c88fcd6edc933d2a",
+    "packageIdHash": "c88fcd6edc933d2a",
     "version": "1.0.1"
   },
   {
-    "packageId": "ff900b821c9f5e89",
+    "packageIdHash": "ff900b821c9f5e89",
     "version": "2.3.0"
   }
 ]
@@ -237,78 +245,60 @@ The returned objects are just a simplified response from `SteamGridDB`, with ser
 [
   {
     "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageIdHash": "c88fcd6edc933d2a",
     "version": "1.0.1",
-    "packageToml": "Id = \"reloaded3.gamesupport.p5rpc.s56\"\nName = \"Persona 5 Royal Support\"..."
+    "packageToml": "Id = \"reloaded3.gamesupport.p5rpc.s56\"\nName = \"Persona 5 Royal Support\"...",
+    "configToml": "...",
+    "languageFiles": [
+      {
+        "path": "languages/en-GB.toml",
+        "data": "..."
+      },
+      {
+        "path": "languages/fr-FR.toml",
+        "data": "..."
+      }
+    ]
   },
   {
     "packageId": "reloaded3.utility.reloadedhooks.s56",
+    "packageIdHash": "ff900b821c9f5e89",
     "version": "2.3.0",
-    "packageToml": "Id = \"reloaded3.utility.reloadedhooks.s56\"\nName = \"Reloaded3 Hooking Library\"..."
+    "packageToml": "Id = \"reloaded3.utility.reloadedhooks.s56\"\nName = \"Reloaded3 Hooking Library\"...",
+    "configToml": "...",
+    "languageFiles": [
+      {
+        "path": "languages/en-GB.toml",
+        "data": "..."
+      }
+    ]
   }
 ]
 ```
 
-In the response, `packageToml` contains the raw contents of the [Package.toml][package-metadata] file as a string.
-This can be directly saved to disk by the client.
+In the response, `packageToml` contains the raw contents of the [Package.toml][package-metadata]
+file as a string. This can be directly saved to disk by the client.
+
+The same goes for the config, and the language files contain all language files for the package,
+which are likely referenced by `configToml`.
+
+The `/api/packages/metadata` endpoint accepts an array of objects containing the `packageId` and
+`version` fields, while the `/api/packages/metadata-fromhash` endpoint accepts an array of objects
+containing the `packageIdHash` (the XXH3 hash of the package ID) and `version` fields.
 
 ***Typical Use Cases:***
 
-- Restore metadata for all packages when syncing mods to a new PC.
+- Restore metadata and configuration for all packages when syncing mods to a new PC.
 - Mod Search UIs/Engines
 
 !!! question "Why is there a `by-hash` API?"
 
     [Package References][package-reference-ids] use hashes in this format. This allows loadouts to stay small.
 
-### Get Package Configuration
-
-- `POST /api/packages/config`
-
-***Description:*** Get the raw `Configuration.toml` files for multiple packages in a single request.
-
-***Request Body:*** An array of objects, each containing `packageId` and `version` fields.
-
-***Example Request Body:***
-```json
-[
-  {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
-    "version": "1.0.1"
-  },
-  {
-    "packageId": "reloaded3.utility.reloadedhooks.s56",
-    "version": "2.3.0"
-  }
-]
-```
-
-***Example Response Body:***
-```json
-[
-  {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
-    "version": "1.0.1",
-    "configToml": "..."
-  },
-  {
-    "packageId": "reloaded3.utility.reloadedhooks.s56",
-    "version": "2.3.0",
-    "configToml": "..."
-  }
-]
-```
-
-In the response, `configToml` contains the raw contents of the `Configuration.toml` file as a string.
-This can be directly saved to disk by the client.
-
-***Typical Use Cases:***
-
-- Restore config files after restoring all metadata files.
-    - Very few mods have config files, so returning them separately is more efficient.
-
 ### Check for Updates
 
 - `POST /api/packages/check-updates`
+- `POST /api/packages/check-updates-fromhash`
 
 ***Description:*** Check if updates are available for the specified packages.
 
@@ -343,6 +333,101 @@ This can be directly saved to disk by the client.
   }
 ]
 ```
+
+### Search Translations
+
+- `GET /api/packages/{packageId}/translations`
+- `GET /api/packages/{packageId}/translations-fromhash`
+
+***Description:*** Find available translations for a specified package.
+
+***Path Parameters:***
+
+- `packageId`: The package ID.
+
+***Example Request:***
+
+```
+GET /api/packages/reloaded3.utility.examplemod.s56/translations
+```
+
+***Example Response Body:***
+```json
+[
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.de",
+    "languageCode": "de-DE",
+    "friendlyName": "Deutsch (Deutschland)"
+  },
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.fr",
+    "languageCode": "fr-FR",
+    "friendlyName": "Français (France)"
+  },
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.uwu",
+    "languageCode": "uwu-en",
+    "friendlyName": "UwU (English)"
+  }
+]
+```
+
+***Typical Use Cases:***
+
+- Discover available translations for a package.
+- Download and install translations for a package.
+
+For more information on how translations are structured and added to packages, refer to the
+[Adding Localisations][adding-localisations] documentation.
+
+### Get Translation Contents
+
+- `POST /api/packages/translations`
+- `POST /api/packages/translations-fromhash`
+
+***Description:*** Retrieve the contents of translation files for one or more translations.
+
+***Request Body:*** An array of objects, each containing `packageId` and `version` fields.
+
+***Example Request Body:***
+```json
+[
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.de",
+    "version": "1.0.0"
+  },
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.fr",
+    "version": "1.0.0"
+  }
+]
+```
+
+***Example Response Body:***
+```json
+[
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.de",
+    "version": "1.0.0",
+    "translations": {
+      "languages/config/de-DE.toml": "...",
+      "languages/dll/de-DE.toml": "..."
+    }
+  },
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.fr",
+    "version": "1.0.0",
+    "translations": {
+      "languages/config/fr-FR.toml": "..."
+    }
+  }
+]
+```
+
+***Typical Use Cases:***
+
+- Retrieve the contents of all translation files for a package.
+- Implement a translation management system that allows editing and updating translation files.
 
 ### Download Locations
 
@@ -411,99 +496,151 @@ The response contains the contents of the [`UpdateData`][update-data] struct fro
 
 !!! tip "To get the full package, including documentation, the entire package must be downloaded."
 
-## Redundancy with GitHub
+Apologies for the confusion. Here's the updated version of the `Static CDN API` section with the requested changes:
 
-!!! info "In case of downtime, some critical functionality can be offloaded to GitHub"
+## Static CDN API
 
-    And likewise some GitHub functionality can be offloaded to the Central Server.
+!!! info "The Static CDN API provides offline access to package metadata, configurations, compatibility reports, and other essential information."
 
-In order to avoid a situation where a single point of failure can take down the entire ecosystem,
-some critical functionality can be offloaded to GitHub.
+!!! info "The API is hosted on BackBlaze with CloudFlare CDN."
 
-Likewise, some critical functionality hosted on GitHub (e.g. [Community Repository][community-repository])
-can have a shallow copy on the Central Server.
+    Or directly on CloudFlare R2, we'll see when we get there.
 
-### Static Download Locations API
-
-!!! info "An offline version of the [Download Locations](#download-locations) API."
-
-Reloaded-II today already contains a fallback like this, the [AllPackages.json.br][r2-all-deps-idx]
-index used as a fallback in dependency resolution.
-
-The R2 version uses 45 bytes per package on average. In the R3 index, we will contain some more
-info, but also some will be made redundant, I expect around 50 bytes per package.
-
-So 5MB for around `100,000` packages.
-
-!!! info "GitHub pages sites are limited to [100GB of bandwidth per month][pages-limits]."
-
-    Some optimization is needed here to reduce file sizes. We'll do our best with the structure below.
-
-#### File Structure
-
-!!! tip "The files are structured using the following use case"
-
-    > A user is opening a loadout on a new PC for the first time and needs to restore packages.
-
-    > Because the loadout inherently composed of mods for a specific game (and the universal `reloaded3` group),
-      practically 100% of the time, grabbing packages just from those two groups will be enough.
-
-!!! note "We use notation `XXH3(string)` to represent the actual [XXH3][xxh3] of inner string."
+The API uses a file structure designed to efficiently handle lookups for over 1 million packages, with packages split into multiple files based on the first three bytes of their XXH3 hash, calculated from the package ID.
 
 ```
 .
-├── groups
-│   ├── XXH3("gbfrelink")
-│   │   └── packages.json.zstd
-│   ├── XXH3("p4gpc")
-│   │   └── packages.json.zstd
-│   ├── XXH3("p5rpc")
-│   │   └── packages.json.zstd
-│   ├── XXH3("reloaded3")
-│   │   └── packages.json.zstd
-│   └── XXH3("sonicheroes")
-│       └── packages.json.zstd
-└── index.json.zstd
+├── download-locations
+│   ├── 00
+│   │   ├── 00
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ...
+│   │   │   └── {packageIdHash}.msgpack.zstd
+│   │   ├── 01
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ...
+│   │   │   └── {packageIdHash}.msgpack.zstd
+│   │   ...
+│   │   └── ff
+│   │       ├── {packageIdHash}.msgpack.zstd
+│   │       ├── {packageIdHash}.msgpack.zstd
+│   │       ...
+│   │       └── {packageIdHash}.msgpack.zstd
+│   ...
+│   └── ff
+│       ├── 00
+│       │   ├── {packageIdHash}.msgpack.zstd
+│       │   ├── {packageIdHash}.msgpack.zstd
+│       │   ...
+│       │   └── {packageIdHash}.msgpack.zstd
+│       ...
+│       └── ff
+│           ├── {packageIdHash}.msgpack.zstd
+│           ├── {packageIdHash}.msgpack.zstd
+│           ...
+│           └── {packageIdHash}.msgpack.zstd
+├── package-metadata
+│   ├── 00
+│   │   ├── 00
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ...
+│   │   │   └── {packageIdHash}.msgpack.zstd
+│   │   ├── 01
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ...
+│   │   │   └── {packageIdHash}.msgpack.zstd
+│   │   ...
+│   │   └── ff
+│   │       ├── {packageIdHash}.msgpack.zstd
+│   │       ├── {packageIdHash}.msgpack.zstd
+│   │       ...
+│   │       └── {packageIdHash}.msgpack.zstd
+│   ...
+│   └── ff
+│       ├── 00
+│       │   ├── {packageIdHash}.msgpack.zstd
+│       │   ├── {packageIdHash}.msgpack.zstd
+│       │   ...
+│       │   └── {packageIdHash}.msgpack.zstd
+│       ...
+│       └── ff
+│           ├── {packageIdHash}.msgpack.zstd
+│           ├── {packageIdHash}.msgpack.zstd
+│           ...
+│           └── {packageIdHash}.msgpack.zstd
+├── translations
+│   ├── 00
+│   │   ├── 00
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ...
+│   │   ├── 01
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ├── {packageIdHash}.msgpack.zstd
+│   │   │   ...
+│   │   ...
+│   │   └── ff
+│   │       ├── {packageIdHash}.msgpack.zstd
+│   │       ├── {packageIdHash}.msgpack.zstd
+│   │       ...
+│   ...
+│   └── ff
+│       ├── 00
+│       │   ├── {packageIdHash}.msgpack.zstd
+│       │   ├── {packageIdHash}.msgpack.zstd
+│       │   ...
+│       ...
+│       └── ff
+│           ├── {packageIdHash}.msgpack.zstd
+│           ├── {packageIdHash}.msgpack.zstd
+│           ...
+└── compatibility-reports
+    ├── 00
+    │   ├── 00
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ...
+    │   │   └── {packageIdHash}.msgpack.zstd
+    │   ├── 01
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ...
+    │   │   └── {packageIdHash}.msgpack.zstd
+    │   ...
+    │   └── ff
+    │       ├── {packageIdHash}.msgpack.zstd
+    │       ├── {packageIdHash}.msgpack.zstd
+    │       ...
+    │       └── {packageIdHash}.msgpack.zstd
+    ...
+    └── ff
+        ├── 00
+        │   ├── {packageIdHash}.msgpack.zstd
+        │   ├── {packageIdHash}.msgpack.zstd
+        │   ...
+        │   └── {packageIdHash}.msgpack.zstd
+        ...
+        └── ff
+            ├── {packageIdHash}.msgpack.zstd
+            ├── {packageIdHash}.msgpack.zstd
+            ...
+            └── {packageIdHash}.msgpack.zstd
 ```
 
-Note the standard package format `game.type.subtype.name.author`, or its simplified form
-`game.type.name.author` as described in the [Package Metadata][package-id] page.
+### Download Locations API
 
-With this in mind, we can group the packages by `game`, this is the content of the `groups` folder.
-
-!!! note "Most games are not expected to break 4000 total mods."
-
-    As a point of reference as of 29th of May 2024, only 25 games have above 4000 mods
-    on Nexus Mods.
-
-!!! warning "The files must be laid out in a deterministic order."
-
-    We cannot apply optimizations such as `put first 1000 mods` in File A, and `put next 1000 mods`
-    in File B.
-
-
-##### index.json.zstd
-
-```json
-{
-  "groups": [
-    "XXH3(\"p5rpc\")",
-    "XXH3(\"reloaded3\")",
-    "XXH3(\"p4gpc\")",
-    "XXH3(\"gbfrelink\")",
-    "XXH3(\"sonicheroes\")"
-  ]
-}
-```
-
-##### packages.json.zstd
-
-Example payload:
+Each `.msgpack.zstd` file in the `download-locations` directory contains an array of package entries.
+Here's an example of the decoded MessagePack content:
 
 ```json
 [
   {
-    "packageId": "XXH3(UTF8(packageId))",
+    "packageIdHash": "XXH3(UTF8(packageId))",
+    "packageId": "reloaded3.utility.reloadedhooks.s56",
     "version": "1.1.0",
     "updateData": {
       "GameBanana": {
@@ -526,19 +663,96 @@ Example payload:
       }
     }
   },
-  {
-    "packageId": "XXH3(UTF8(packageId))",
-    "version": "2.3.0",
-    "updateData": {
-      "GitHub": {
-        "UserName": "Reloaded-Project",
-        "RepositoryName": "reloaded3.utility.reloadedhooks"
-      }
-    }
-  }
+  ...
 ]
 ```
 
+!!! note "Expect only 1 package per file"
+
+### Package Metadata API
+
+Each `.msgpack.zstd` file in the `package-metadata` directory contains an array of package entries.
+Here's an example of the decoded MessagePack content:
+
+```json
+[
+  {
+    "packageIdHash": "XXH3(UTF8(packageId))",
+    "packageId": "reloaded3.utility.reloadedhooks.s56",
+    "version": "1.1.0",
+    "packageToml": "Id = \"reloaded3.utility.reloadedhooks.s56\"\nName = \"Reloaded3 Hooking Library\"...",
+    "configToml": "...",
+    "languageFiles": [
+      {
+        "path": "languages/en-GB.toml",
+        "data": "..."
+      },
+      {
+        "path": "languages/fr-FR.toml",
+        "data": "..."
+      }
+    ]
+  },
+  ...
+]
+```
+
+### Translations API
+
+Each `.msgpack.zstd` file in the `translations` directory corresponds to a single package.
+Here's an example of the decoded MessagePack content:
+
+```json
+[
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.de",
+    "languageCode": "de-DE",
+    "friendlyName": "Deutsch (Deutschland)"
+  },
+  {
+    "packageId": "reloaded3.utility.examplemod.s56.fr",
+    "languageCode": "fr-FR",
+    "friendlyName": "Français (France)"
+  },
+  ...
+]
+```
+
+### Compatibility Reports API
+
+Each `.msgpack.zstd` file in the `compatibility-reports` directory contains an array of compatibility
+report entries. Here's an example of the decoded MessagePack content:
+
+```json
+[
+  {
+    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageVersion": "1.0.1",
+    "gameId": "P5R",
+    "gameVersionId": 1,
+    "successCount": 42,
+    "failureCount": 3
+  },
+  ...
+]
+```
+
+### Lookup Process
+
+To look up a package, translation, or compatibility report:
+
+1. Calculate the XXH3 hash of the package ID.
+2. Take the first two bytes of the hash.
+3. Navigate to the corresponding directory based on the first byte, second byte, and third byte.
+4. Load the corresponding `.msgpack.zstd` file within that directory.
+5. Search for the package entry with the matching full hash within that file.
+
+This file structure provides benefits such as scalability, fast lookups, and balanced distribution
+of packages across files, while accommodating the potential for accessing around 16.8 million unique mods.
+
+(In a manner where 1 file == 1 mod)
+
+[adding-localisations]: ../Common/Localisation/Adding-Localisations.md
 [community-repository]: ./Community-Repository.md
 [community-repository-versions]: ./Community-Repository.md#version
 [community-repository-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration

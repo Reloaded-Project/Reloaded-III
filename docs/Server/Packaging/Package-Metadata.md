@@ -13,6 +13,7 @@ Inside each package folder is a file named `package.toml`; which stores the meta
 | PackageType         | [PackageType](#packagetype)                | Type of the package. See [PackageType](#packagetype) for possible values. |
 | string              | [DocsFile](#docsfile)                      | [Optional] Entry point for this package documentation.                    |
 | SemVer              | [Version](#version)                        | Semantic versioning version of the package.                               |
+| string              | LicenseId                                  | [SPDX License Identifier][spdx-license]                                   |
 | string[]            | [Tags](#tags)                              | Used to make searching easier within mod managers.                        |
 | Credit[]            | [Credits](#credits)                        | [Optional] Stores information about who contributed what to the project.  |
 | string?             | SourceUrl                                  | [Optional] Link to source code (if applicable).                           |
@@ -28,6 +29,7 @@ Inside each package folder is a file named `package.toml`; which stores the meta
 Some items are stored as separate files:
 
 - [license][license]: License file, located in `package/license.md`.
+    - This is used if `LicenseId` is not specified.
 - [changelog][changelog]: Changelog file(s), located in `package/changelog/*.md`.
 - [description][description]: Description file, located in `package/description.md`.
 - [config][config]: Configuration schema for the package, located in `package/config.toml`.
@@ -434,3 +436,4 @@ If the `IgnoredDiagnostics` field is not specified or is an empty array, no diag
 [ready-to-run]: ../../Loader/Backends/CoreCLR.md#ready-to-run
 [reloaded2-backend]: ../../Loader/Backends/CoreCLR.md#reloaded-ii
 [semantic-versioning]: https://semver.org
+[spdx-license]: https://spdx.org/licenses/

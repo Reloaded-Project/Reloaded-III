@@ -12,7 +12,7 @@ Such as a mod, utility, etc.
 reloaded3.utility.examplemod.s56
 ├── languages
 │   ├── en-GB.toml
-│   └── uwu.toml
+│   └── uwu-en.toml
 ├── config.toml
 └── package.toml
 ```
@@ -30,15 +30,17 @@ For example, a localisable config and `DLL` code loaded at runtime.
 
 ```
 reloaded3.utility.examplemod.s56
+├── config
+│   └── config.toml
+├── modfiles
+│   └── mod.dll
 ├── languages
 │   ├── config
 │   │   ├── en-GB.toml
-│   │   └── uwu.toml
+│   │   └── uwu-en.toml
 │   └── dll
 │       ├── en-GB.toml
-│       └── uwu.toml
-├── config.toml
-├── mod.dll
+│       └── uwu-en.toml
 └── package.toml
 ```
 
@@ -144,6 +146,59 @@ reloaded3.utility.examplemod.s56.de
 ```
 
 This would add a German translation to both the config and the DLL.
+
+## Updating Translations
+
+!!! warning "Keys in translations must NEVER be changed."
+
+    This is to ensure backwards compatibility in [Sideloaded Translations](#sideloading-translations).
+
+Suppose you have a translation file with the following content:
+
+```toml
+## Update 1.0.0 | 2024 April 1st
+## Initial Release
+[[ADD_AN_APPLICATION]]
+Add an Application
+```
+
+At some point you decide you're no longer supporting 'Applications' but instead 'Games'.
+
+!!! success "The correct approach here is to add a new key."
+
+```toml
+## Update 1.0.0 | 2024 April 1st
+## Initial Release
+
+# DEPRECATED in 2.0.0 by `ADD_A_GAME`
+# [[ADD_AN_APPLICATION]]
+# Add an Application
+
+## Update 2.0.0 | 2024 May 1st
+## We now only support games.
+[[ADD_A_GAME]]
+Add a Game
+```
+
+In this way, people who use a newer translation, can still use it with older versions of the package.
+
+!!! note "Original language (e.g. English) can comment out unused strings."
+
+    Non-original language ***must keep all strings uncommented***, in case a newer translation is used
+    with an older version of original package.
+
+## Special Keys
+
+!!! info "Some applications may reserve keys for special purposes."
+
+!!! example "Reloaded3 uses the `NATIVE_NAME` key to store the display name of the language."
+
+    ```toml
+    [[DISPLAY_NAME]]
+    UwU (English)
+    ```
+
+This is application specific, and not standardised.
 
 [iso-lang-code]: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
 [iso3166-alpha2]: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2

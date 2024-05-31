@@ -24,17 +24,23 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 !!! info "Should be a multiple of `256x256`. Recommended `512x512`."
 
+Name of file in [images][package-images] folder.
+
 ### Icon (Banner)
 
 !!! info "Should be a multiple of `920x430`."
 
     Same as Steam (Horizontal) banners.
 
+Name of file in [images][package-images] folder.
+
 ### Icon (Poster)
 
 !!! info "Should be a multiple of `600x900`."
 
     Same as Steam (Vertical) covers/banners.
+
+Name of file in [images][package-images] folder.
 
 ## Gallery
 
@@ -56,6 +62,8 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 ## Targets
 
 !!! info "This section specifies info for the individual [backends.][backend]"
+
+!!! info "These specify file paths relative to `modfiles` folder."
 
 Find more info on the pages for the [individual backends][backend], but we'll provide some examples.
 

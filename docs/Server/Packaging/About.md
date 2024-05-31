@@ -9,35 +9,55 @@ Each mod package contains the following approximate structure.
 
 ```
 reloaded3.utility.examplemod.s56
+├── config
+│   ├── config-image-1.jxl
+│   └── config.toml
+├── languages
+│   ├── config
+│   │   ├── en-GB.toml
+│   │   └── uwu-en.toml
+│   └── dll
+│       ├── en-GB.toml
+│       └── uwu-en.toml
+├── modfiles
+│   ├── redirector
+│   │   └── skill-game-asset.bin
+│   └── mod.dll
 ├── package
-│   ├── changelog
-│   │   ├── 1.0.0.md
-│   │   ├── 1.1.0.md
-│   │   ├── 1.2.0.md
-│   │   ├── 1.2.1.md
-│   │   └── 2.0.0.md
 │   ├── docs
+│   │   ├── changelog
+│   │   │   ├── 1.0.0.md
+│   │   │   ├── 1.1.0.md
+│   │   │   ├── 1.2.0.md
+│   │   │   ├── 1.2.1.md
+│   │   │   └── 2.0.0.md
 │   │   └── index.html
 │   ├── images
 │   │   ├── skill-1.jxl
 │   │   ├── skill-2.jxl
 │   │   └── skill-3.jxl
 │   ├── description.md
-│   ├── files.meta
 │   └── license.md
-├── redirector
-│   └── skill-game-asset.bin
-├── config.toml
 └── package.toml
 ```
 
 ### Changelog
 
-!!! info "Located in `package/changelog`."
+!!! info "Located in `package/docs/changelog`."
 
 !!! info "This contains the changelog for each version of the mod up until the current version."
 
 Each version is contained in its own `Markdown` file, e.g. `1.0.0.md`.
+
+!!! note "Having `Docs` is not required to have `Changelogs`"
+
+    The `Changelog` exists in the `docs` part of the folder because they
+    commonly share images. It also allows you to have the Changelogs
+    as separate documentation pages.
+
+    Some documentation building tools may require that all images are
+    within a certain subfolder, thus to allow image reuse, we put the
+    changelog pages within the docs folder.
 
 ### Config
 
@@ -78,6 +98,8 @@ Currently accepted formats include:
 - `Text` (`.txt`)
 
 The entry point for the documentation is specified in the [DocsFile][docs-file] field in the `package.toml`.
+
+!!! tip "We recommand using `MkDocs Material` in CI for the documentation."
 
 ### Images
 

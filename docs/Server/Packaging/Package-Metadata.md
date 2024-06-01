@@ -41,7 +41,7 @@ Some items are stored as separate files:
 Example [game support mod][game-support].
 
 ```toml
-Id = "reloaded3.gamesupport.p5rpc.s56"
+Id = "reloaded3.gamesupport.persona5royal.s56"
 Name = "Persona 5 Royal Support"
 Summary = "Provides Essential Functionality for Persona 5 Royal."
 Author = "Sewer56"
@@ -49,8 +49,8 @@ PackageType = "Mod"
 DocsFile = "index.html"
 Version = "1.0.1"
 Tags = ["Utility", "Library"]
-SourceUrl = "https://github.com/Sewer56/p5rpc.modloader"
-ProjectUrl = "https://sewer56.dev/p5rpc.modloader/"
+SourceUrl = "https://github.com/Sewer56/persona5royal.modloader"
+ProjectUrl = "https://sewer56.dev/persona5royal.modloader/"
 Published = 2023-06-08T12:34:56Z
 
 # Mod Fields
@@ -99,7 +99,7 @@ ItemId = 408376
 
 [UpdateData.GitHub]
 UserName = "Sewer56"
-RepositoryName = "reloaded3.gamesupport.p5rpc"
+RepositoryName = "reloaded3.gamesupport.persona5royal"
 
 [UpdateData.Nexus]
 GameDomain = "persona5"
@@ -149,9 +149,9 @@ Caption = "Gameplay screenshot 2"
 
 [Targets]
 [Targets."win-x64"]
-any = "reloaded3.gamesupport.p5rpc.dll"
-x64-v2 = "reloaded3.gamesupport.p5rpc.v2.dll"
-x64-v3 = "reloaded3.gamesupport.p5rpc.v3.dll"
+any = "reloaded3.gamesupport.persona5royal.dll"
+x64-v2 = "reloaded3.gamesupport.persona5royal.v2.dll"
+x64-v3 = "reloaded3.gamesupport.persona5royal.v3.dll"
 ```
 
 ## Id
@@ -164,7 +164,7 @@ This format is designed to minimize collisions while providing a human-readable 
 
 The suggested format to use for names is `game.type.subtype.name.author`.
 
-- `game` should ideally match [Game 'Id'][game-metadata-id] for the given application.
+- `game` see [Game 'Id'][game-metadata-id] for more info.
 - `type` name should ideally match category of the package on a site like [GameBanana][gamebanana] or [NexusMods][nexus-mods].
 - `subtype` [Optional] provides additional information about the item.
 - `name` unique name for the package. Can use another `.` dot if additional info is needed.
@@ -191,7 +191,7 @@ Use lowercase, no spaces, no special characters.
 | ------------ | ------------------------------------------------- | --------------------------------- |
 | backend      | For [backends][backend].                          | `reloaded3.backend.coreclr.s56`   |
 | api          | For [middleware/API hooks][middleware-api-hooks]. | `reloaded3.api.windows.vfs.s56`   |
-| game support | For [game support mods][game-support].            | `reloaded3.gamesupport.p5rpc.s56` |
+| game support | For [game support mods][game-support].            | `reloaded3.gamesupport.persona5royal.s56` |
 | utility      | For utility mods with reusable code.              | `reloaded3.utility.hooks.s56`     |
 
 Server can choose whether to show non game-specific mods (`reloaded3` id) on a specific game's page or not.

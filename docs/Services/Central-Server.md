@@ -32,9 +32,9 @@ This information can be used to provide compatibility insights to other users.
 
 ```json
 {
-  "packageId": "reloaded3.gamesupport.p5rpc.s56",
+  "packageId": "reloaded3.gamesupport.persona5royal.s56",
   "packageVersion": "1.0.1",
-  "gameId": "P5R",
+  "gameId": "persona5royal",
   "gameVersionId": 1
 }
 ```
@@ -65,9 +65,9 @@ This information can be used to provide compatibility insights to other users.
 ***Example Response Body:***
 ```json
 {
-  "packageId": "reloaded3.gamesupport.p5rpc.s56",
+  "packageId": "reloaded3.gamesupport.persona5royal.s56",
   "packageVersion": "1.0.1",
-  "gameId": "P5R",
+  "gameId": "persona5royal",
   "gameVersionId": 1,
   "successCount": 42,
   "failureCount": 3
@@ -86,9 +86,9 @@ This information can be used to provide compatibility insights to other users.
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "packageVersion": "1.0.1",
-    "gameId": "P5R",
+    "gameId": "persona5royal",
     "gameVersionId": 1
   },
   {
@@ -216,7 +216,7 @@ The returned objects are just a simplified response from `SteamGridDB`, with ser
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "version": "1.0.1"
   },
   {
@@ -244,10 +244,10 @@ The returned objects are just a simplified response from `SteamGridDB`, with ser
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "packageIdHash": "c88fcd6edc933d2a",
     "version": "1.0.1",
-    "packageToml": "Id = \"reloaded3.gamesupport.p5rpc.s56\"\nName = \"Persona 5 Royal Support\"...",
+    "packageToml": "Id = \"reloaded3.gamesupport.persona5royal.s56\"\nName = \"Persona 5 Royal Support\"...",
     "configToml": "...",
     "languageFiles": [
       {
@@ -308,7 +308,7 @@ containing the `packageIdHash` (the XXH3 hash of the package ID) and `version` f
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "version": "1.0.1"
   },
   {
@@ -322,7 +322,7 @@ containing the `packageIdHash` (the XXH3 hash of the package ID) and `version` f
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "hasUpdate": true,
     "latestVersion": "1.1.0"
   },
@@ -442,7 +442,7 @@ This is used to restore packages to a new PC [after syncing a loadout][sync-load
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "version": "1.1.0"
   },
   {
@@ -456,7 +456,7 @@ This is used to restore packages to a new PC [after syncing a loadout][sync-load
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "version": "1.1.0",
     "updateData": {
       "GameBanana": {
@@ -465,7 +465,7 @@ This is used to restore packages to a new PC [after syncing a loadout][sync-load
       },
       "GitHub": {
         "UserName": "Sewer56",
-        "RepositoryName": "reloaded3.gamesupport.p5rpc"
+        "RepositoryName": "reloaded3.gamesupport.persona5royal"
       },
       "Nexus": {
         "GameDomain": "persona5",
@@ -508,97 +508,28 @@ Apologies for the confusion. Here's the updated version of the `Static CDN API` 
 
 The API uses a file structure designed to efficiently handle lookups for over 1 million packages, with packages split into multiple files based on the first three bytes of their XXH3 hash, calculated from the package ID.
 
+### Lookup Process
+
+To look up a package, translation, or other hash based data:
+
+1. Calculate the XXH3 hash of the package ID.
+2. Take the first two bytes of the hash.
+3. Navigate to the corresponding directory based on the first byte, second byte, and third byte.
+4. Load the corresponding `.msgpack.zstd` file (or folder) within that directory.
+5. Search for the package entry with the matching full hash within that file.
+
+This file structure provides benefits such as scalability, fast lookups, and balanced distribution
+of packages across files, while accommodating the potential for accessing around 16.8 million unique mods.
+
+(In a manner where 1 file == 1 mod)
+
+### Download Locations API
+
+Each `.msgpack.zstd` file in the `download-locations` directory contains an array of package entries.
+
 ```
 .
-├── download-locations
-│   ├── 00
-│   │   ├── 00
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ...
-│   │   │   └── {packageIdHash}.msgpack.zstd
-│   │   ├── 01
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ...
-│   │   │   └── {packageIdHash}.msgpack.zstd
-│   │   ...
-│   │   └── ff
-│   │       ├── {packageIdHash}.msgpack.zstd
-│   │       ├── {packageIdHash}.msgpack.zstd
-│   │       ...
-│   │       └── {packageIdHash}.msgpack.zstd
-│   ...
-│   └── ff
-│       ├── 00
-│       │   ├── {packageIdHash}.msgpack.zstd
-│       │   ├── {packageIdHash}.msgpack.zstd
-│       │   ...
-│       │   └── {packageIdHash}.msgpack.zstd
-│       ...
-│       └── ff
-│           ├── {packageIdHash}.msgpack.zstd
-│           ├── {packageIdHash}.msgpack.zstd
-│           ...
-│           └── {packageIdHash}.msgpack.zstd
-├── package-metadata
-│   ├── 00
-│   │   ├── 00
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ...
-│   │   │   └── {packageIdHash}.msgpack.zstd
-│   │   ├── 01
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ...
-│   │   │   └── {packageIdHash}.msgpack.zstd
-│   │   ...
-│   │   └── ff
-│   │       ├── {packageIdHash}.msgpack.zstd
-│   │       ├── {packageIdHash}.msgpack.zstd
-│   │       ...
-│   │       └── {packageIdHash}.msgpack.zstd
-│   ...
-│   └── ff
-│       ├── 00
-│       │   ├── {packageIdHash}.msgpack.zstd
-│       │   ├── {packageIdHash}.msgpack.zstd
-│       │   ...
-│       │   └── {packageIdHash}.msgpack.zstd
-│       ...
-│       └── ff
-│           ├── {packageIdHash}.msgpack.zstd
-│           ├── {packageIdHash}.msgpack.zstd
-│           ...
-│           └── {packageIdHash}.msgpack.zstd
-├── translations
-│   ├── 00
-│   │   ├── 00
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ...
-│   │   ├── 01
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ├── {packageIdHash}.msgpack.zstd
-│   │   │   ...
-│   │   ...
-│   │   └── ff
-│   │       ├── {packageIdHash}.msgpack.zstd
-│   │       ├── {packageIdHash}.msgpack.zstd
-│   │       ...
-│   ...
-│   └── ff
-│       ├── 00
-│       │   ├── {packageIdHash}.msgpack.zstd
-│       │   ├── {packageIdHash}.msgpack.zstd
-│       │   ...
-│       ...
-│       └── ff
-│           ├── {packageIdHash}.msgpack.zstd
-│           ├── {packageIdHash}.msgpack.zstd
-│           ...
-└── compatibility-reports
+└── download-locations
     ├── 00
     │   ├── 00
     │   │   ├── {packageIdHash}.msgpack.zstd
@@ -631,9 +562,7 @@ The API uses a file structure designed to efficiently handle lookups for over 1 
             └── {packageIdHash}.msgpack.zstd
 ```
 
-### Download Locations API
 
-Each `.msgpack.zstd` file in the `download-locations` directory contains an array of package entries.
 Here's an example of the decoded MessagePack content:
 
 ```json
@@ -649,7 +578,7 @@ Here's an example of the decoded MessagePack content:
       },
       "GitHub": {
         "UserName": "Sewer56",
-        "RepositoryName": "reloaded3.gamesupport.p5rpc"
+        "RepositoryName": "reloaded3.gamesupport.persona5royal"
       },
       "Nexus": {
         "GameDomain": "persona5",
@@ -672,6 +601,42 @@ Here's an example of the decoded MessagePack content:
 ### Package Metadata API
 
 Each `.msgpack.zstd` file in the `package-metadata` directory contains an array of package entries.
+
+```
+.
+└── package-metadata
+    ├── 00
+    │   ├── 00
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ...
+    │   │   └── {packageIdHash}.msgpack.zstd
+    │   ├── 01
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ...
+    │   │   └── {packageIdHash}.msgpack.zstd
+    │   ...
+    │   └── ff
+    │       ├── {packageIdHash}.msgpack.zstd
+    │       ├── {packageIdHash}.msgpack.zstd
+    │       ...
+    │       └── {packageIdHash}.msgpack.zstd
+    ...
+    └── ff
+        ├── 00
+        │   ├── {packageIdHash}.msgpack.zstd
+        │   ├── {packageIdHash}.msgpack.zstd
+        │   ...
+        │   └── {packageIdHash}.msgpack.zstd
+        ...
+        └── ff
+            ├── {packageIdHash}.msgpack.zstd
+            ├── {packageIdHash}.msgpack.zstd
+            ...
+            └── {packageIdHash}.msgpack.zstd
+```
+
 Here's an example of the decoded MessagePack content:
 
 ```json
@@ -700,6 +665,36 @@ Here's an example of the decoded MessagePack content:
 ### Translations API
 
 Each `.msgpack.zstd` file in the `translations` directory corresponds to a single package.
+
+```
+└── translations
+    ├── 00
+    │   ├── 00
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ...
+    │   ├── 01
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ├── {packageIdHash}.msgpack.zstd
+    │   │   ...
+    │   ...
+    │   └── ff
+    │       ├── {packageIdHash}.msgpack.zstd
+    │       ├── {packageIdHash}.msgpack.zstd
+    │       ...
+    ...
+    └── ff
+        ├── 00
+        │   ├── {packageIdHash}.msgpack.zstd
+        │   ├── {packageIdHash}.msgpack.zstd
+        │   ...
+        ...
+        └── ff
+            ├── {packageIdHash}.msgpack.zstd
+            ├── {packageIdHash}.msgpack.zstd
+            ...
+```
+
 Here's an example of the decoded MessagePack content:
 
 ```json
@@ -720,37 +715,206 @@ Here's an example of the decoded MessagePack content:
 
 ### Compatibility Reports API
 
-Each `.msgpack.zstd` file in the `compatibility-reports` directory contains an array of compatibility
-report entries. Here's an example of the decoded MessagePack content:
+!!! tip "This is a backup endpoint and may contain slightly outdated compatibility reports"
+
+    To get the latest values, query the server proper.
+    This is just a fallback in case main server is dead.
+
+    To save on costs, this is a backup updated every 24 hours.
+    This makes for approx `256*30` -> `7680` files updated a month.
+
+The compatibility reports are grouped by the first byte of the `packageId` hash
+to efficiently handle updates for a large number of mods.
+
+This allows us to update multiple mods in batch every time interval.
+
+```
+.
+└── compatibility-reports
+    ├── 00.msgpack.zstd
+    ├── 01.msgpack.zstd
+    └── fd.msgpack.zstd
+    └── fe.msgpack.zstd
+    └── ff.msgpack.zstd
+```
+
+Here's an example of the decoded MessagePack content:
 
 ```json
 [
   {
-    "packageId": "reloaded3.gamesupport.p5rpc.s56",
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "packageVersion": "1.0.1",
-    "gameId": "P5R",
-    "gameVersionId": 1,
-    "successCount": 42,
-    "failureCount": 3
+    "gameCompatibility": {
+      "persona5royal": [
+        {
+          "gameVersionId": 1,
+          "successCount": 42,
+          "failureCount": 3
+        },
+        ...
+      ],
+      "persona4golden": [
+        {
+          "gameVersionId": 2,
+          "successCount": 10,
+          "failureCount": 1
+        },
+        ...
+      ]
+    }
+  },
+  {
+    "packageId": "reloaded3.utility.reloadedhooks.s56",
+    "packageVersion": "2.3.0",
+    "gameCompatibility": {
+      "sonicheroes": [
+        {
+          "gameVersionId": 2,
+          "successCount": 20,
+          "failureCount": 1
+        },
+        ...
+      ]
+    }
   },
   ...
 ]
 ```
 
-### Lookup Process
+!!! info "The `gameVersionId` field is sourced from the [Community Repository][community-repository-versions]."
 
-To look up a package, translation, or compatibility report:
+### Search API
 
-1. Calculate the XXH3 hash of the package ID.
-2. Take the first two bytes of the hash.
-3. Navigate to the corresponding directory based on the first byte, second byte, and third byte.
-4. Load the corresponding `.msgpack.zstd` file within that directory.
-5. Search for the package entry with the matching full hash within that file.
+!!! info "Retrieves the entire list of mods for a specific game"
 
-This file structure provides benefits such as scalability, fast lookups, and balanced distribution
-of packages across files, while accommodating the potential for accessing around 16.8 million unique mods.
+    We download this and can then search locally.
 
-(In a manner where 1 file == 1 mod)
+The searchable mod data is grouped by the `game` prefix, which is the first part of the package ID
+as declared in `Package-Metadata.md`. All mods with the same `game` prefix are stored within a
+single `.msgpack.zstd` file.
+
+```
+.
+└── search
+    ├── game1.msgpack.zstd
+    ├── game2.msgpack.zstd
+    ...
+    └── reloaded3.msgpack.zstd
+```
+
+In this structure, each `.msgpack.zstd` file represents a `game` prefix and contains an
+array of searchable mod entries for all mods with that prefix.
+
+Here's an example of the decoded MessagePack content for a `.msgpack.zstd` file:
+
+```json
+[
+  {
+    "packageId": "game1.mods.mod1.s56",
+    "name": "Mod 1",
+    "summary": "A cool mod for Game 1",
+    "bannerImages": [
+      {
+        "imageHash": 1234567890,
+        "resolutions": [
+          {
+            "width": 440,
+            "height": 220
+          },
+          {
+            "width": 880,
+            "height": 440
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "packageId": "game1.mods.mod2.s56",
+    "name": "Mod 2",
+    "summary": "Another awesome mod for Game 1",
+    "bannerImages": [
+      {
+        "imageHash": 2345678901,
+        "resolutions": [
+          {
+            "width": 440,
+            "height": 220
+          },
+          {
+            "width": 880,
+            "height": 440
+          }
+        ]
+      }
+    ]
+  },
+  ...
+]
+```
+
+Each entry in the array represents a searchable mod and includes the following fields:
+
+- `packageId`: The unique identifier of the mod package.
+- `name`: The name of the mod.
+- `summary`: A brief one-line summary of the mod, extracted from the mod metadata.
+- `bannerImages`: An array of banner images for the mod.
+    - `imageHash`: The XXH3 hash of the banner image, stored as an integer to minimize size.
+    - `resolutions`: An array of available resolutions for the banner image.
+        - `width`: The width of the image in pixels.
+        - `height`: The height of the image in pixels.
+
+#### Banner Files
+
+!!! info "All banner files are stored in a separate folder structure based on the XXH3 hash of the image."
+
+    We use XXH3 here because MessagePack doesn't natively support 16 byte integers.
+    Also to save space.
+
+```
+.
+└── banner-files
+    ├── 12
+    │   └── 34
+    │       ├── 1234{restofImageHash}
+    │       │   ├── 0.jxl
+    │       │   └── 1.jxl
+    │       └── 1234{restofImageHash}
+    │           ├── 0.jxl
+    │           └── 1.jxl
+    ├── 56
+    │   └── 78
+    │       ├── 5678{restofImageHash}
+    │       │   ├── 0.jxl
+    │       │   └── 1.jxl
+    │       └── 5678{restofImageHash}
+    │           ├── 0.jxl
+    │           └── 1.jxl
+    ...
+```
+
+The logic is same as in directories above. The only caveat is we now have a folder named after the hash, and multiple files inside of it.
+
+For the file name, use the index of the array entry. So first entry is `0.jxl`, second entry is `1.jxl`, and so on.
+
+!!! tip "See [Mod Metadata: Icon (Search)][mod-metadata-search-image] for more information."
+
+#### Searching Mods
+
+To perform a search, users can follow these steps:
+
+1. Download the `.msgpack.zstd` file for the desired `game` prefix from the static endpoint.
+2. Decompress and load the `.msgpack.zstd` file into memory.
+3. Perform local searches based on the desired criteria:
+      - Mod Name: Search for mods whose `name` field contains the specified keywords.
+      - Mod ID: Search for mods whose `packageId` field matches the specified ID.
+      - Summary: Search for mods whose `summary` field contains the specified keywords.
+4. Display the search results to the user, including the banner images.
+      - To display a banner image, retrieve the banner file using the `imageHash` and `resolutions` array from the `bannerImages` field of the mod entry.
+      - Load the appropriate banner file based on the user's display resolution.
+
+By default, I recommend searching by substring. In Name and ModId. Summary can be opt in.
 
 [adding-localisations]: ../Common/Localisation/Adding-Localisations.md
 [community-repository]: ./Community-Repository.md
@@ -766,3 +930,4 @@ of packages across files, while accommodating the potential for accessing around
 [sync-loadout]: ../Server/Storage/Loadouts/About.md#restoring-actual-package-files
 [package-reference-ids]: ../Server/Storage/Loadouts/About.md#package-reference-idsbin
 [hashing]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use
+[mod-metadata-search-image]: ../Server/Packaging/Configurations/Mod-Metadata.md#icon-search

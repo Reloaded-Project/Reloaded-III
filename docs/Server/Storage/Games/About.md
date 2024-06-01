@@ -19,10 +19,27 @@ All data here is user specific, for cloud syncing but not sharing.
 
 !!! info "A known, standardized name that uniquely identifies this application."
 
+    Use lowercase, don't abbreviate.
+    For example use `persona5royal`, not `p5r`. Use `sonicheroes`, not `sh`. etc.
+
 !!! warning "For games without established communities or people experimenting with new titles, this may be left blank."
 
 This ID links the item with the [Community Repository][community-repository].
 If the community repository has no data for this game, the field will be left blank.
+
+!!! question "What do I do if the game has no known ID?"
+
+    The launcher should block publish until a valid ID is set.
+
+    On publish the launcher should take the user to a readme page that tells you how to add game to
+    [Community Repository][community-repository]. This should be a largely automated step.
+
+    New submissions can be made via GitHub PRs to Community repo, or by Discord request.
+    This ensures all shared mods have the same game ID.
+
+    !!! warning "There will be a need to introduce a 'rename package ID in loadout' operation"
+
+        As a new game ID will need injecting into package name.
 
 ### Name
 

@@ -7,8 +7,7 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 | Type                             | Name                               | Description                                                   |
 | -------------------------------- | ---------------------------------- | ------------------------------------------------------------- |
 | string                           | [IconSquare](#icon-square)         | Relative path of preview icon (square format).                |
-| string                           | [IconBanner](#icon-banner)         | Relative path of preview icon (banner format).                |
-| string                           | [IconPoster](#icon-poster)         | Relative path of preview icon (poster format).                |
+| string                           | [IconSearch](#icon-search)         | Relative path of preview icon (search format).                |
 | GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                           |
 | bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.    |
 | Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend] |
@@ -16,7 +15,9 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 ## Icons
 
-!!! info "These are paths relative to folder `Package.toml` is stored in."
+!!! info "Gallery images are stored in [images][package-images] folder."
+
+!!! info "Each entry is a name of file in [images][package-images] folder."
 
 !!! info "Images use [JPEG XL (`.jxl`)][images]"
 
@@ -24,23 +25,19 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 !!! info "Should be a multiple of `256x256`. Recommended `512x512`."
 
-Name of file in [images][package-images] folder.
+### Icon (Search)
 
-### Icon (Banner)
+!!! info "This is the preview icon used for mod search results."
 
-!!! info "Should be a multiple of `920x430`."
+The size of this image should be `880x440` (2:1) with a `content` area of `600x440`.
 
-    Same as Steam (Horizontal) banners.
+Depending on the user's window size, the will be cropped to some size
+between `880x440` and `600x440`. Thus you should aim to put all the important
+detail within the `600x440` area.
 
-Name of file in [images][package-images] folder.
+This image is expected to be around 50KiB.
 
-### Icon (Poster)
-
-!!! info "Should be a multiple of `600x900`."
-
-    Same as Steam (Vertical) covers/banners.
-
-Name of file in [images][package-images] folder.
+!!! note "The `880x440` is the target resolution for 4K displays."
 
 ## Gallery
 
@@ -70,9 +67,9 @@ Find more info on the pages for the [individual backends][backend], but we'll pr
 [Native Mod][native-backend]:
 ```json
 [Targets."win-x64"]
-any = "reloaded3.gamesupport.p5rpc.dll"
-x64-v2 = "reloaded3.gamesupport.p5rpc.v2.dll"
-x64-v3 = "reloaded3.gamesupport.p5rpc.v3.dll"
+any = "reloaded3.gamesupport.persona5royal.dll"
+x64-v2 = "reloaded3.gamesupport.persona5royal.v2.dll"
+x64-v3 = "reloaded3.gamesupport.persona5royal.v3.dll"
 ```
 
 !!! note "It's not expected for mod authors to ship with multiple [instruction sets][instruction-sets] outside of super high perf scenarios. This is just for example."

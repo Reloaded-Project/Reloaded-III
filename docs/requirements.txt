@@ -1,2 +1,3 @@
 mkdocs-redirects
 mkdocs-macros-plugin
+mkdocs-exclude-unused-files

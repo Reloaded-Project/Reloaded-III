@@ -43,6 +43,10 @@ plugins:
   - search
   - macros:
       include_dir: docs/Custom
+  - exclude-unused-files:
+      file_types_to_check: [ "psd", "7z", "kra" ]
+      file_types_override_mode: append
+      enabled: true
 
 theme:
   name: material

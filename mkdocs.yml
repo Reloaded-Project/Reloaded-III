@@ -5,6 +5,7 @@ repo_name: Reloaded-Project/Reloaded-III
 repo_url: https://github.com/Reloaded-Project/Reloaded-III
 
 edit_uri: edit/main/docs/
+use_directory_urls: false
 
 extra:
   social:
@@ -40,6 +41,7 @@ extra_css:
   - Reloaded/Stylesheets/extra.css
 
 plugins:
+  - offline
   - search
   - macros:
       include_dir: docs/Custom

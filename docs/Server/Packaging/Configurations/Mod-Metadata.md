@@ -29,6 +29,8 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 !!! info "This is the preview icon used for mod search results."
 
+    It corresponds to [GridDisplayMode 3][grid-display-mode].
+
 The size of this image should be `880x440` (2:1) with a `content` area of `600x440`.
 
 Depending on the user's window size, the will be cropped to some size
@@ -38,6 +40,30 @@ detail within the `600x440` area.
 This image is expected to be around 50KiB.
 
 !!! note "The `880x440` is the target resolution for 4K displays."
+
+### Icon (List Compact View)
+
+!!! info "This is the preview icon used when displaying mods as a list (compact)."
+
+    It corresponds to [GridDisplayMode 1][grid-display-mode].
+
+The size of this image should be `84x48`.
+
+This image is expected to be around 2KiB.
+
+!!! note "The `84x48` is the target resolution for 4K displays."
+
+### Icon (List View)
+
+!!! info "This is the preview icon used when displaying mods as a list."
+
+    It corresponds to [GridDisplayMode 2][grid-display-mode].
+
+The size of this image should be `168x96`.
+
+This image is expected to be around 5KiB.
+
+!!! note "The `84x48` is the target resolution for 4K displays."
 
 ## Gallery
 
@@ -117,3 +143,4 @@ Mod managers will automatically update this to appropriate ID during process of 
 [ready-to-run]: ../../../Loader/Backends/CoreCLR.md#ready-to-run
 [reloaded2-backend]: ../../../Loader/Backends/CoreCLR.md#reloaded-ii
 [images]: ../../../Common/Images.md
+[grid-display-mode]: ../../../Server/Storage/Loadouts/Events.md#griddisplaymode

@@ -72,9 +72,8 @@ So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
 
 - `0`: Unchanged
 - `1`: List (Compact)
-- `2`: Grid (Squares)
-- `3`: Grid (Horizontal Rectangles, Steam Size)
-- `4`: Grid (Vertical Rectangles, Steam Size)
+- `2`: List (Thick)
+- `3`: Grid (Search)
 
 ### StoreType
 

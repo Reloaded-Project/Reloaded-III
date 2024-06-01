@@ -46,9 +46,10 @@ plugins:
   - macros:
       include_dir: docs/Custom
   - exclude-unused-files:
+      enabled: true
+      enabled_on_serve: false
       file_types_to_check: [ "psd", "7z", "kra" ]
       file_types_override_mode: append
-      enabled: true
   - exclude:
       # Exclude the Theme's own files.
       glob:

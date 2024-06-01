@@ -47,6 +47,14 @@ plugins:
       file_types_to_check: [ "psd", "7z", "kra" ]
       file_types_override_mode: append
       enabled: true
+  - exclude:
+      # Exclude the Theme's own files.
+      glob:
+        - Reloaded/Pages/*
+        - Reloaded/docs/*
+        - Reloaded/Readme.md
+        - Reloaded/LICENSE
+        - Reloaded/mkdocs.yml
 
 theme:
   name: material

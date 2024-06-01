@@ -50,8 +50,8 @@ Here's a quick guide of how you could do it from your `command prompt` (cmd).
 2. Install Material for MkDocs and Plugins (Python package)
     ```bash
     # Restart your command prompt before running this command.
-    pip install mkdocs-material
-    pip install mkdocs-redirects
+    # And open command prompt where mkdocs.yml is.
+    pip install -r ./docs/requirements.txt
     ```
 
 3. Open a command prompt in the folder containing `mkdocs.yml`. and run the site locally.

@@ -127,6 +127,7 @@ nav:
     - Configuration:
       - About: Common/Configuration/About.md
       - Config Schema: Common/Configuration/Config-Schema.md
+      - Binary Format: Common/Configuration/Binary-Format.md
     - Localisation:
       - About: Common/Localisation/About.md
       - File Format: Common/Localisation/File-Format.md

@@ -537,10 +537,6 @@ formatters = ["SIZE_FRIENDLY"]
 In this example, the `SETTING_FILE_SIZE_LIMIT` setting will display its value in MB or GB for
 better readability.
 
-Here's the updated section with the requested changes:
-
-Here's the expanded section with basic and advanced examples:
-
 ## Source Generation
 
 !!! tip "The configuration schema is designed to be source generation friendly."
@@ -548,6 +544,8 @@ Here's the expanded section with basic and advanced examples:
 In the future, I hope to use C# Source Generators and Rust `proc_macro` to automatically generate
 the schema file based on the configuration settings defined in the code.
 This will keep the schema and code in sync.
+
+Here's the current idea.
 
 ### Basic Example
 
@@ -611,24 +609,33 @@ This will keep the schema and code in sync.
 
     ```csharp
     [Config(Name = "Mod Name", Author = "Author Name", LanguageFolder = "config", DefaultLanguage = "en-GB.toml")]
-    public partial struct MyModConfig
+    public partial class MyModConfig
     {
         [Setting(Index = 0, Name = "SETTING_ENABLE_FEATURE", Description = "SETTING_ENABLE_FEATURE_DESC")]
         private bool enableFeature = true;
 
-        [Group(Index = 1, Prefix = "General", Name = "GROUP_GENERAL", Description = "GROUP_GENERAL_DESC")]
+        [Group(Prefix = "General", Name = "GROUP_GENERAL", Description = "GROUP_GENERAL_DESC")]
         private GeneralSettings generalSettings;
 
-        [Group(Index = 2, Prefix = "Advanced", Name = "GROUP_ADVANCED", Description = "GROUP_ADVANCED_DESC")]
-        private GeneralSettings advancedSettings;
+        [Group(Prefix = "Advanced", Name = "GROUP_ADVANCED", Description = "GROUP_ADVANCED_DESC")]
+        private AdvancedSettings advancedSettings;
 
-        public partial struct GeneralSettings
+        [Setting(Index = 9, Name = "SETTING_LOG_FEATURE", Description = "SETTING_LOG_FEATURE_DESC")]
+        private bool logFeature = true;
+
+        private class GeneralSettings
         {
-            [Setting(Index = 0, Name = "SETTING_UPDATE_INTERVAL", Description = "SETTING_UPDATE_INTERVAL_DESC", Min = 1, Max = 60)]
+            [Setting(Index = 1, Name = "SETTING_UPDATE_INTERVAL", Description = "SETTING_UPDATE_INTERVAL_DESC", Min = 1, Max = 60)]
             private int updateInterval = 5;
 
-            [Setting(Index = 1, Name = "SETTING_ENABLE_NOTIFICATIONS", Description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
+            [Setting(Index = 2, Name = "SETTING_ENABLE_NOTIFICATIONS", Description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
             private bool enableNotifications = true;
+        }
+
+        private class AdvancedSettings
+        {
+            [Setting(Index = 5, Name = "SETTING_ADVANCED_FEATURE", Description = "SETTING_ADVANCED_FEATURE_DESC")]
+            private bool advancedFeature = false;
         }
     }
     ```
@@ -636,14 +643,13 @@ This will keep the schema and code in sync.
     This could generate the following methods:
 
     ```csharp
-    public partial struct MyModConfig
+    public partial class MyModConfig
     {
         public bool GetEnableFeature(ISettingsSource source);
-        // Note 'General' is derived from 'Prefix` setting.
         public int GetGeneralUpdateInterval(ISettingsSource source);
         public bool GetGeneralEnableNotifications(ISettingsSource source);
-        public int GetAdvancedUpdateInterval(ISettingsSource source);
-        public bool GetAdvancedEnableNotifications(ISettingsSource source);
+        public bool GetAdvancedFeature(ISettingsSource source);
+        public bool GetLogFeature(ISettingsSource source);
     }
     ```
 
@@ -655,19 +661,27 @@ This will keep the schema and code in sync.
         #[setting(index = 0, name = "SETTING_ENABLE_FEATURE", description = "SETTING_ENABLE_FEATURE_DESC")]
         enable_feature: bool,
 
-        #[group(index = 1, prefix = "general", name = "GROUP_GENERAL", description = "GROUP_GENERAL_DESC")]
+        #[group(prefix = "general", name = "GROUP_GENERAL", description = "GROUP_GENERAL_DESC")]
         general_settings: GeneralSettings,
 
-        #[group(index = 2, prefix = "advanced", name = "GROUP_ADVANCED", description = "GROUP_ADVANCED_DESC")]
-        advanced_settings: GeneralSettings,
+        #[group(prefix = "advanced", name = "GROUP_ADVANCED", description = "GROUP_ADVANCED_DESC")]
+        advanced_settings: AdvancedSettings,
+
+        #[setting(index = 9, name = "SETTING_LOG_FEATURE", description = "SETTING_LOG_FEATURE_DESC")]
+        log_feature: bool,
     }
 
     pub struct GeneralSettings {
-        #[setting(index = 0, name = "SETTING_UPDATE_INTERVAL", description = "SETTING_UPDATE_INTERVAL_DESC", min = 1, max = 60)]
+        #[setting(index = 1, name = "SETTING_UPDATE_INTERVAL", description = "SETTING_UPDATE_INTERVAL_DESC", min = 1, max = 60)]
         update_interval: i32,
 
-        #[setting(index = 1, name = "SETTING_ENABLE_NOTIFICATIONS", description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
+        #[setting(index = 2, name = "SETTING_ENABLE_NOTIFICATIONS", description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
         enable_notifications: bool,
+    }
+
+    pub struct AdvancedSettings {
+        #[setting(index = 5, name = "SETTING_ADVANCED_FEATURE", description = "SETTING_ADVANCED_FEATURE_DESC")]
+        advanced_feature: bool,
     }
     ```
 
@@ -675,90 +689,64 @@ This will keep the schema and code in sync.
 
     ```rust
     impl MyModConfig {
-        pub fn get_enable_feature(&self, source: &dyn ISettingsSource) -> bool
-        // Note 'General' is derived from 'Prefix` setting.
-        pub fn get_general_update_interval(&self, source: &dyn ISettingsSource) -> i32
-        pub fn get_general_enable_notifications(&self, source: &dyn ISettingsSource) -> bool
-        pub fn get_advanced_update_interval(&self, source: &dyn ISettingsSource) -> i32
-        pub fn get_advanced_enable_notifications(&self, source: &dyn ISettingsSource) -> bool
+        pub fn get_enable_feature(&self, source: &dyn ISettingsSource) -> bool;
+        pub fn get_general_update_interval(&self, source: &dyn ISettingsSource) -> i32;
+        pub fn get_general_enable_notifications(&self, source: &dyn ISettingsSource) -> bool;
+        pub fn get_advanced_feature(&self, source: &dyn ISettingsSource) -> bool;
+        pub fn get_log_feature(&self, source: &dyn ISettingsSource) -> bool;
     }
     ```
 
-In the advanced example, the same `GeneralSettings` struct is reused multiple times with different
-group names (`GROUP_GENERAL` and `GROUP_ADVANCED`).
-
 ### Groups
 
-Groups can be expressed as nested structs inside the main configuration struct.
+The group properties, such as `Prefix`, `Name`, and `Description`, are defined on the group itself
+using the `Group` attribute (C#) or `#[group]` attribute (Rust).
 
-They are annotated with a `Group` attribute (C#) or a `#[group]` attribute (Rust) to specify the
-group's name and description.
+They are included into the parent via fields however, this helps express order that closer matches
+the config file.
 
 ### Ordering
 
-!!! info "Whe settingsin the derived `config.toml` are sorted by the `index` attribute."
+!!! info "The settings in the derived `config.toml` are sorted by the `index` attribute."
 
-When dealing with groups however, some special rules apply.
+When dealing with groups, the order is determined by the lowest `index` inside the group struct.
 
-Inside each element of a struct which represents a group, the `Index` represents the offset from
-the index assigned to the group.
-
-For example, suppose the following:
+For example:
 
 ```csharp
 [Config(Name = "Mod Name", Author = "Author Name", LanguageFolder = "config", DefaultLanguage = "en-GB.toml")]
-public partial struct MyModConfig
+public partial class MyModConfig
 {
     [Setting(Index = 0, Name = "SETTING_ENABLE_FEATURE", Description = "SETTING_ENABLE_FEATURE_DESC")]
     private bool enableFeature = true;
 
-    [Group(Index = 1, Prefix = "General", Name = "GROUP_GENERAL", Description = "GROUP_GENERAL_DESC")]
+    [Group(Prefix = "General", Name = "GROUP_GENERAL", Description = "GROUP_GENERAL_DESC")]
     private GeneralSettings generalSettings;
 
-    [Group(Index = 2, Prefix = "Advanced", Name = "GROUP_ADVANCED", Description = "GROUP_ADVANCED_DESC")]
-    private GeneralSettings advancedSettings;
+    [Group(Prefix = "Advanced", Name = "GROUP_ADVANCED", Description = "GROUP_ADVANCED_DESC")]
+    private AdvancedSettings advancedSettings;
 
-    [Setting(Index = 3, Name = "SETTING_LOG_FEATURE", Description = "SETTING_LOG_FEATURE_DESC")]
+    [Setting(Index = 9, Name = "SETTING_LOG_FEATURE", Description = "SETTING_LOG_FEATURE_DESC")]
     private bool logFeature = true;
 
-    public partial struct GeneralSettings
+    private class GeneralSettings
     {
-        [Setting(Index = 0, Name = "SETTING_UPDATE_INTERVAL", Description = "SETTING_UPDATE_INTERVAL_DESC", Min = 1, Max = 60)]
+        [Setting(Index = 1, Name = "SETTING_UPDATE_INTERVAL", Description = "SETTING_UPDATE_INTERVAL_DESC", Min = 1, Max = 60)]
         private int updateInterval = 5;
 
-        [Setting(Index = 1, Name = "SETTING_ENABLE_NOTIFICATIONS", Description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
+        [Setting(Index = 2, Name = "SETTING_ENABLE_NOTIFICATIONS", Description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
         private bool enableNotifications = true;
+    }
+
+    private class AdvancedSettings
+    {
+        [Setting(Index = 5, Name = "SETTING_ADVANCED_FEATURE", Description = "SETTING_ADVANCED_FEATURE_DESC")]
+        private bool advancedFeature = false;
     }
 }
 ```
 
-This would be unrolled into:
-
-```
-0: enableFeature
-1: generalSettings.updateInterval
-2: generalSettings.enableNotifications
-3: advancedSettings.updateInterval
-4: advancedSettings.enableNotifications
-5: logFeature
-```
-
-In order to not trap yourself and avoid making incompatible changes, it's recommended to reserve
-additional space for structures. For example:
-
-```csharp
-[Setting(Index = 0, Name = "SETTING_ENABLE_FEATURE", Description = "SETTING_ENABLE_FEATURE_DESC")]
-private bool enableFeature = true;
-
-[Group(Index = 1, Prefix = "General", Name = "GROUP_GENERAL", Description = "GROUP_GENERAL_DESC")]
-private GeneralSettings generalSettings;
-
-[Group(Index = 5, Prefix = "Advanced", Name = "GROUP_ADVANCED", Description = "GROUP_ADVANCED_DESC")]
-private GeneralSettings advancedSettings;
-
-[Setting(Index = 9, Name = "SETTING_LOG_FEATURE", Description = "SETTING_LOG_FEATURE_DESC")]
-private bool logFeature = true;
-```
+This would result in the following indexes:
 
 ```
 0: enableFeature
@@ -766,19 +754,30 @@ private bool logFeature = true;
 2: generalSettings.enableNotifications
 3: reserved
 4: reserved
-5: advancedSettings.updateInterval
-6: advancedSettings.enableNotifications
+5: advancedSettings.advancedFeature
+6: reserved
 7: reserved
 8: reserved
 9: logFeature
 ```
 
+Which means the groups can be extended.
+
+!!! tip "Please keep indexes within the range 0-65535 if possible, and ideally within 0-255."
+
+    So we can compress better.
+
+### Number Sizes
+
+The sizes of integers in the generated code depend on the `max` value set in the `Setting` attribute.
+
+By default, if no `max` value is specified, a 32-bit integer is used.
+
 ### Accessors
 
 !!! info "The fields in the configuration struct are private."
 
-The source generator will generate public accessor methods for each field, taking
-an `ISettingsSource` as a parameter.
+The source generator will generate public accessor methods for each field, taking an `ISettingsSource` as a parameter.
 
 The `ISettingsSource` is responsible for providing the actual values of the settings.
 
@@ -793,6 +792,8 @@ The `ISettingsSource` is responsible for providing the actual values of the sett
 
     If you need to do any of the following, please make a new setting and remove the old setting.<br/>
     That way, setting files from older versions of the package will still work.
+
+    Slightly tweaking settings in compatible ways of course, such as adjusting min-max ranges is fine.
 
 !!! tip
 

@@ -74,15 +74,16 @@ Setting `language_folder = "config"` and `default_language = "en-GB.toml"` would
 
 All setting types share the following common fields:
 
-| Field         | Type   | Description                                                          |
-| ------------- | ------ | -------------------------------------------------------------------- |
-| `index`       | number | Index of the setting. Make this a unique number and never change it. |
-| `type`        | string | The data type of the setting. See individual setting types.          |
-| `name`        | string | The localization key for the setting name.                           |
-| `description` | string | The localization key for the setting description.                    |
-| `default`     | varies | The default value for the setting. Type depends on `type`.           |
-| `apply_on`    | string | When to apply setting changes. One of "restart", "save", "instant".  |
-| `variable`    | string | Optional variable name to reference the setting in conditionals.     |
+| Field         | Type   | Description                                                                               |
+| ------------- | ------ | ----------------------------------------------------------------------------------------- |
+| `index`       | number | Index of the setting. Make this a unique number and never change it.                      |
+| `type`        | string | The data type of the setting. See individual setting types.                               |
+| `name`        | string | The localization key for the setting name.                                                |
+| `description` | string | The localization key for the setting description.                                         |
+| `default`     | varies | The default value for the setting. Type depends on `type`.                                |
+| `apply_on`    | string | When to apply setting changes. One of "restart", "save", "instant".                       |
+| `variable`    | string | Optional variable name to reference the setting in conditionals.                          |
+| `client_side` | bool   | [Optional] Indicates if the setting should not be overwritten by the host in multiplayer. |
 
 The `name` and `description` fields should reference localization keys as described in the
 [Localisation Format][localisation-format] page.
@@ -97,6 +98,14 @@ The `name` and `description` fields should reference localization keys as descri
 - `restart`: Requires a restart of application/game to apply changes.
 - `save`: Applies settings when you hit `save` button.
 - `instant`: Applies settings in real-time.
+
+### client_side
+
+!!! info "If true, this config won't be overwritten when joining an online multiplayer lobby."
+
+This allows for mods such as UI mods to be used in mods that add online play without forcibly being disabled.
+
+By default this value is false. So config would get overwritten.
 
 ## How are Settings Displayed?
 

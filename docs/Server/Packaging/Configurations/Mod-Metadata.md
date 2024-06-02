@@ -4,14 +4,15 @@
 
 Mod Metadata extends from standard ([package.toml][package-toml]).
 
-| Type                             | Name                               | Description                                                   |
-| -------------------------------- | ---------------------------------- | ------------------------------------------------------------- |
-| string                           | [IconSquare](#icon-square)         | Relative path of preview icon (square format).                |
-| string                           | [IconSearch](#icon-search)         | Relative path of preview icon (search format).                |
-| GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                           |
-| bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.    |
-| Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend] |
-| string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                               |
+| Type                             | Name                               | Description                                                                                                         |
+| -------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| string                           | [IconSquare](#icon-square)         | Relative path of preview icon (square format).                                                                      |
+| string                           | [IconSearch](#icon-search)         | Relative path of preview icon (search format).                                                                      |
+| GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                                                                                 |
+| bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.                                                          |
+| Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend]                                                       |
+| string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                                                                                     |
+| bool                             | [ClientSide](#clientside)          | [Optional] Indicates if the mod is a client-side mod and does not need to be disabled when joining an online lobby. |
 
 ## Icons
 
@@ -129,6 +130,14 @@ HasExports = true
 Alternatively, when experimenting with new games which do not have a specified Game ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 
 Mod managers will automatically update this to appropriate ID during process of querying [Community Repository][community-repository].
+
+## ClientSide
+
+!!! info "If true, this mod won't be disabled when joining an online multiplayer lobby."
+
+This allows for mods such as UI mods to be used in mods that add online play without forcibly being disabled.
+
+By default this value is false. So mod would get disabled.
 
 <!-- Links -->
 [backend]: ../../../Loader/Backends/About.md

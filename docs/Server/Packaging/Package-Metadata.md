@@ -52,6 +52,7 @@ Tags = ["Utility", "Library"]
 SourceUrl = "https://github.com/Sewer56/persona5royal.modloader"
 ProjectUrl = "https://sewer56.dev/persona5royal.modloader/"
 Published = 2023-06-08T12:34:56Z
+ClientSide = false
 
 # Mod Fields
 Icon = "icon.jxl"

@@ -587,247 +587,355 @@ better readability.
 
 ## Source Generation
 
-!!! tip "The configuration schema is designed to be source generation friendly."
+!!! tip "A standalone tool will be provided to generate C# or Rust code directly from the `config.toml` schema file."
 
-In the future, I hope to use C# Source Generators and Rust `proc_macro` to automatically generate
-the schema file based on the configuration settings defined in the code.
-This will keep the schema and code in sync.
+In order to keep the `config.toml` schema file in sync with the source code, a standalone tool will
+be provided to automate the code generation process for a given language.
 
-Here's the current idea.
+This will allow for adding config capabilities to new programming languages without the need for
+the language to support source generation natively.
 
-### Basic Example
+### Example Usage
+
+!!! tip "It's a basic CLI tool 😉"
+
+
+```bash
+config-codegen --lang csharp --input config.toml --output MyModConfig.cs
+```
+
+or
+
+```bash
+config-codegen --lang rust --input config.toml --output my_mod_config.rs
+```
+
+That said, you'll never actually need to run it manually. We'll try to integrate it to build process
+wherever possible.
+
+### Integration with Build Systems
+
+!!! info "Examples of how we can integrate with build system."
+
+=== "Rust"
+
+    In a Rust project using Cargo, we can add a build script that runs the code generation tool directly:
+
+    ```toml
+    [build-dependencies]
+    config-codegen = "1.0"
+    ```
+
+    ```rust
+    // build.rs
+    fn main() {
+        config_codegen::generate("config.toml", "src/my_mod_config.rs");
+    }
+    ```
+
+    Since the original code is Rust, we can use it as a regular library.
+
+=== "C#"
+
+    For other languages like C#, this can be done with something like:
+
+    1. Create a NuGet Package that wraps the Rust Code Gen Binary.
+
+          - Include the compiled Rust library binaries for different platforms.
+          - Include a `.targets` file to run the tool.
+              - This will allow code to be executed during build.
+          - Publish as NuGet package.
+
+    The `.targets` file may look something like:
+
+    ```xml
+    <Project>
+    <!-- Not Tested, But it's Something like This -->
+    <Target Name="GenerateMyModConfig" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <R3ConfigCodeGenerator Condition="$([MSBuild]::IsOsPlatform('Windows')) And $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.X86)">$(MSBuildThisFileDirectory)../../tools/win-x86/my_mod_config_codegen.exe</R3ConfigCodeGenerator>
+            <R3ConfigCodeGenerator Condition="$([MSBuild]::IsOsPlatform('Windows')) And $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.X64)">$(MSBuildThisFileDirectory)../../tools/win-x64/my_mod_config_codegen.exe</R3ConfigCodeGenerator>
+            <R3ConfigCodeGenerator Condition="$([MSBuild]::IsOsPlatform('Linux')) And $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.X86)">$(MSBuildThisFileDirectory)../../tools/linux-x86/my_mod_config_codegen</R3ConfigCodeGenerator>
+            <R3ConfigCodeGenerator Condition="$([MSBuild]::IsOsPlatform('Linux')) And $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.X64)">$(MSBuildThisFileDirectory)../../tools/linux-x64/my_mod_config_codegen</R3ConfigCodeGenerator>
+            <R3ConfigCodeGenerator Condition="$([MSBuild]::IsOsPlatform('Linux')) And $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.Arm64)">$(MSBuildThisFileDirectory)../../tools/linux-arm64/my_mod_config_codegen</R3ConfigCodeGenerator>
+            <R3ConfigCodeGenerator Condition="$([MSBuild]::IsOsPlatform('OSX')) And $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.X64)">$(MSBuildThisFileDirectory)../../tools/osx-x64/my_mod_config_codegen</R3ConfigCodeGenerator>
+            <R3ConfigCodeGenerator Condition="$([MSBuild]::IsOsPlatform('OSX')) And $([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.Arm64)">$(MSBuildThisFileDirectory)../../tools/osx-arm64/my_mod_config_codegen</R3ConfigCodeGenerator>
+        </PropertyGroup>
+        <Exec Condition="$([MSBuild]::IsOsPlatform('Linux')) Or $([MSBuild]::IsOsPlatform('OSX'))" Command="chmod +x $(R3ConfigCodeGenerator)" />
+        <Exec Command="$(R3ConfigCodeGenerator) --input config.toml --output MyModConfig.cs" />
+    </Target>
+    </Project>
+    ```
+
+    Then to use the generator, simply add the NuGet to the project's `.csproj` file:
+
+    ```xml
+    <ItemGroup>
+        <PackageReference Include="Reloaded3Config.CodeGeneration" Version="1.0.0" />
+    </ItemGroup>
+    ```
+
+### Generated Code Structure
+
+!!! info "This is an example of generated code"
+
+The generated code includes:
+
+- A struct for the root config object, based on `[general]` section.
+- Nested structs for each config group.
+- Properties for each setting, with appropriate types and defaults.
+  - The types are based on the `min` and `max` values, falling back to the smallest possible type.
+  - Enums are generated for `Choice` settings.
+- Getters to access setting values.
+
+Example TOML:
+
+```toml
+[general]
+name = "My Mod"
+author = "John Doe"
+language_folder = "config"
+default_language = "en-GB.toml"
+
+[[settings]]
+index = 0
+type = "bool"
+name = "ENABLE_FEATURE"
+description = "Enable the special feature"
+default = false
+apply_on = "save"
+
+[[settings]]
+index = 1
+type = "int"
+name = "MAX_COUNT"
+description = "Maximum count for the feature"
+default = 10
+min = 1
+max = 100
+apply_on = "restart"
+
+[[settings]]
+index = 2
+type = "choice"
+name = "DIFFICULTY"
+description = "Game difficulty"
+choices = ["EASY", "NORMAL", "HARD"]
+default = "NORMAL"
+
+[[settings]]
+index = 3
+type = "color"
+name = "UI_COLOR"
+description = "UI accent color"
+default = "#FF0000"
+alpha = true
+
+[group]
+name = "Advanced"
+description = "Advanced settings"
+
+[[settings]]
+index = 4
+type = "string_list"
+name = "BLACKLISTED_MODS"
+description = "List of blacklisted mods"
+default = []
+```
+
+!!! note "SettingsSource API"
+
+    === "C#"
+
+        ```csharp
+        public interface ISettingsSource
+        {
+            bool GetBool(int index, bool defaultValue);
+            int GetInt(int index, int defaultValue);
+            string GetString(int index, string defaultValue);
+            string[] GetStringList(int index, string[] defaultValue);
+            Color GetColor(int index, Color defaultValue);
+            T GetEnum<T>(int index, T defaultValue) where T : Enum;
+
+            void SubscribeBool(int index, Action<bool> callback);
+            void SubscribeInt(int index, Action<int> callback);
+            void SubscribeString(int index, Action<string> callback);
+            void SubscribeStringList(int index, Action<string[]> callback);
+            void SubscribeColor(int index, Action<Color> callback);
+            void SubscribeEnum<T>(int index, Action<T> callback) where T : Enum;
+        }
+        ```
+
+    === "Rust"
+
+        ```rust
+        pub trait SettingsSource {
+            fn get_bool(&self, index: u32, default: bool) -> bool;
+            fn get_int(&self, index: u32, default: i32) -> i32;
+            fn get_string(&self, index: u32, default: &str) -> String;
+            fn get_string_list(&self, index: u32, default: &[String]) -> Vec<String>;
+            fn get_color(&self, index: u32, default: Color) -> Color;
+            fn get_enum<T: FromPrimitive + Copy>(&self, index: u32, default: T) -> T;
+
+            fn subscribe_bool(&mut self, index: u32, callback: fn(bool));
+            fn subscribe_int(&mut self, index: u32, callback: fn(i32));
+            fn subscribe_string(&mut self, index: u32, callback: fn(String));
+            fn subscribe_string_list(&mut self, index: u32, callback: fn(Vec<String>));
+            fn subscribe_color(&mut self, index: u32, callback: fn(Color));
+            fn subscribe_enum<T: FromPrimitive + Copy>(&mut self, index: u32, callback: fn(T));
+        }
+        ```
 
 === "C#"
 
     ```csharp
-    [Config(Name = "Mod Name", Author = "Author Name", LanguageFolder = "config", DefaultLanguage = "en-GB.toml")]
-    public partial class MyModConfig
+    public struct MyModConfig
     {
-        [Setting(Index = 0, Name = "SETTING_ENABLE_LOGGING", Description = "SETTING_ENABLE_LOGGING_DESC")]
-        private bool enableLogging = false;
+        private bool _enableFeature;
+        private byte _maxCount;
+        private Difficulty _difficulty;
+        private Color _uiColor;
+        private AdvancedSettings _advanced;
 
-        [Setting(Index = 1, Name = "SETTING_LOG_LEVEL", Description = "SETTING_LOG_LEVEL_DESC", DefaultValue = "INFO")]
-        private string logLevel = "INFO";
+        public bool EnableFeature => _enableFeature;
+        public byte MaxCount => _maxCount;
+        public Difficulty Difficulty => _difficulty;
+        public Color UiColor => _uiColor;
+        public AdvancedSettings Advanced => _advanced;
 
-        [Setting(Index = 2, Name = "SETTING_MAX_LOG_FILES", Description = "SETTING_MAX_LOG_FILES_DESC", Min = 1, Max = 100)]
-        private int maxLogFiles = 10;
+        public delegate void EnableFeatureChangedHandler(bool value);
+
+        public MyModConfig(ISettingsSource source, EnableFeatureChangedHandler onEnableFeatureChanged)
+        {
+            _enableFeature = source.GetBool(0, false);
+            _maxCount = (byte)source.GetInt(1, 10);
+            _difficulty = source.GetEnum<Difficulty>(2, Difficulty.Normal);
+            _uiColor = source.GetColor(3, new Color(255, 0, 0, 255));
+            _advanced.Initialize(source);
+
+            // Ensure that the initial value is set before subscribing to changes
+            source.SubscribeBool(0, newValue => {
+                _enableFeature = newValue;
+                onEnableFeatureChanged(newValue);
+            });
+        }
+
+        public struct AdvancedSettings
+        {
+            private string[] _blacklistedMods;
+            public string[] BlacklistedMods => _blacklistedMods;
+
+            public AdvancedSettings(ISettingsSource source)
+            {
+                _blacklistedMods = source.GetStringList(4, Array.Empty<string>());
+            }
+        }
     }
-    ```
 
-    This could generate the following code:
-
-    ```csharp
-    public partial class MyModConfig
+    public enum Difficulty
     {
-        public bool GetEnableLogging(ISettingsSource source);
-        public string GetLogLevel(ISettingsSource source);
-        public int GetMaxLogFiles(ISettingsSource source);
+        Easy,
+        Normal,
+        Hard
     }
     ```
 
 === "Rust"
 
     ```rust
-    #[config(name = "Mod Name", author = "Author Name", language_folder = "config", default_language = "en-GB.toml")]
     pub struct MyModConfig {
-        #[setting(index = 0, name = "SETTING_ENABLE_LOGGING", description = "SETTING_ENABLE_LOGGING_DESC")]
-        enable_logging: bool,
-
-        #[setting(index = 1, name = "SETTING_LOG_LEVEL", description = "SETTING_LOG_LEVEL_DESC", default_value = "INFO")]
-        log_level: String,
-
-        #[setting(index = 2, name = "SETTING_MAX_LOG_FILES", description = "SETTING_MAX_LOG_FILES_DESC", min = 1, max = 100)]
-        max_log_files: i32,
-    }
-    ```
-
-    This could generate the following code:
-
-    ```rust
-    impl MyModConfig {
-        pub fn get_enable_logging(&self, source: &dyn ISettingsSource) -> bool;
-        pub fn get_log_level(&self, source: &dyn ISettingsSource) -> &str;
-        pub fn get_max_log_files(&self, source: &dyn ISettingsSource) -> i32;
-    }
-    ```
-
-### Advanced Example
-
-=== "C#"
-
-    ```csharp
-    [Config(Name = "Mod Name", Author = "Author Name", LanguageFolder = "config", DefaultLanguage = "en-GB.toml")]
-    public partial class MyModConfig
-    {
-        [Setting(Index = 0, Name = "SETTING_ENABLE_FEATURE", Description = "SETTING_ENABLE_FEATURE_DESC")]
-        private bool enableFeature = true;
-
-        [Group(Prefix = "General", Name = "GROUP_GENERAL", Description = "GROUP_GENERAL_DESC")]
-        private GeneralSettings generalSettings;
-
-        [Group(Prefix = "Advanced", Name = "GROUP_ADVANCED", Description = "GROUP_ADVANCED_DESC")]
-        private AdvancedSettings advancedSettings;
-
-        [Setting(Index = 9, Name = "SETTING_LOG_FEATURE", Description = "SETTING_LOG_FEATURE_DESC")]
-        private bool logFeature = true;
-
-        private class GeneralSettings
-        {
-            [Setting(Index = 1, Name = "SETTING_UPDATE_INTERVAL", Description = "SETTING_UPDATE_INTERVAL_DESC", Min = 1, Max = 60)]
-            private int updateInterval = 5;
-
-            [Setting(Index = 2, Name = "SETTING_ENABLE_NOTIFICATIONS", Description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
-            private bool enableNotifications = true;
-        }
-
-        private class AdvancedSettings
-        {
-            [Setting(Index = 5, Name = "SETTING_ADVANCED_FEATURE", Description = "SETTING_ADVANCED_FEATURE_DESC")]
-            private bool advancedFeature = false;
-        }
-    }
-    ```
-
-    This could generate the following methods:
-
-    ```csharp
-    public partial class MyModConfig
-    {
-        public bool GetEnableFeature(ISettingsSource source);
-        public int GetGeneralUpdateInterval(ISettingsSource source);
-        public bool GetGeneralEnableNotifications(ISettingsSource source);
-        public bool GetAdvancedFeature(ISettingsSource source);
-        public bool GetLogFeature(ISettingsSource source);
-    }
-    ```
-
-=== "Rust"
-
-    ```rust
-    #[config(name = "Mod Name", author = "Author Name", language_folder = "config", default_language = "en-GB.toml")]
-    pub struct MyModConfig {
-        #[setting(index = 0, name = "SETTING_ENABLE_FEATURE", description = "SETTING_ENABLE_FEATURE_DESC")]
         enable_feature: bool,
-
-        #[group(prefix = "general", name = "GROUP_GENERAL", description = "GROUP_GENERAL_DESC")]
-        general_settings: GeneralSettings,
-
-        #[group(prefix = "advanced", name = "GROUP_ADVANCED", description = "GROUP_ADVANCED_DESC")]
-        advanced_settings: AdvancedSettings,
-
-        #[setting(index = 9, name = "SETTING_LOG_FEATURE", description = "SETTING_LOG_FEATURE_DESC")]
-        log_feature: bool,
+        max_count: u8,
+        difficulty: Difficulty,
+        ui_color: Color,
+        advanced: AdvancedSettings,
     }
 
-    pub struct GeneralSettings {
-        #[setting(index = 1, name = "SETTING_UPDATE_INTERVAL", description = "SETTING_UPDATE_INTERVAL_DESC", min = 1, max = 60)]
-        update_interval: i32,
+    impl MyModConfig {
+        pub type EnableFeatureChangedHandler = fn(bool);
 
-        #[setting(index = 2, name = "SETTING_ENABLE_NOTIFICATIONS", description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
-        enable_notifications: bool,
+        pub fn new(source: &mut dyn SettingsSource, on_enable_feature_changed: EnableFeatureChangedHandler) -> Self {
+            let result = Self {
+                enable_feature: source.get_bool(0, false),
+                max_count: source.get_int(1, 10) as u8,
+                difficulty: source.get_enum(2, Difficulty::Normal),
+                ui_color: source.get_color(3, Color::new(255, 0, 0, 255)),
+                advanced: AdvancedSettings::new(source),
+            }
+
+            // Subscribe to changes after initializing the values
+            source.subscribe_bool(0, move |new_value| {
+                config.enable_feature = new_value;
+                on_enable_feature_changed(new_value);
+            });
+
+            result
+        }
+
+        pub fn enable_feature(&self) -> bool {
+            self.enable_feature
+        }
+
+        pub fn max_count(&self) -> u8 {
+            self.max_count
+        }
+
+        pub fn difficulty(&self) -> Difficulty {
+            self.difficulty
+        }
+
+        pub fn ui_color(&self) -> Color {
+            self.ui_color
+        }
+
+        pub fn advanced(&self) -> &AdvancedSettings {
+            &self.advanced
+        }
     }
 
     pub struct AdvancedSettings {
-        #[setting(index = 5, name = "SETTING_ADVANCED_FEATURE", description = "SETTING_ADVANCED_FEATURE_DESC")]
-        advanced_feature: bool,
+        blacklisted_mods: Vec<String>,
+    }
+
+    impl AdvancedSettings {
+        pub fn new(source: &mut dyn SettingsSource) -> Self {
+            Self {
+                blacklisted_mods: source.get_string_list(4),
+            }
+        }
+
+        pub fn blacklisted_mods(&self) -> &[String] {
+            &self.blacklisted_mods
+        }
+    }
+
+    #[derive(Clone, Copy, PartialEq, Eq)]
+    pub enum Difficulty {
+        Easy,
+        Normal,
+        Hard,
     }
     ```
 
-    This could generate the following methods:
+!!! note "In the generated code, the types are inferred based on the `min` and `max` values."
 
-    ```rust
-    impl MyModConfig {
-        pub fn get_enable_feature(&self, source: &dyn ISettingsSource) -> bool;
-        pub fn get_general_update_interval(&self, source: &dyn ISettingsSource) -> i32;
-        pub fn get_general_enable_notifications(&self, source: &dyn ISettingsSource) -> bool;
-        pub fn get_advanced_feature(&self, source: &dyn ISettingsSource) -> bool;
-        pub fn get_log_feature(&self, source: &dyn ISettingsSource) -> bool;
-    }
-    ```
+    The actual values use the smallest possible type that can represent the range.
 
-### Groups
+!!! note "Enums are auto generated for `Choice` settings."
 
-The group properties, such as `Prefix`, `Name`, and `Description`, are defined on the group itself
-using the `Group` attribute (C#) or `#[group]` attribute (Rust).
+!!! note "The generated code contains the defaults for the settings."
 
-They are included into the parent via fields however, this helps express order that closer matches
-the config file.
+    This allows you for migration of settings created in older versions.
 
-### Ordering
+!!! note "The callback functions are only defined for settings where `apply_on` is not set to `restart`"
 
-!!! info "The settings in the derived `config.toml` are sorted by the `index` attribute."
+    For settings with `apply_on` set to `restart`, the changes will only take effect after a restart,
+    so there's no need to handle them in real-time.
 
-When dealing with groups, the order is determined by the lowest `index` inside the group struct.
+    These callbacks are specified in the `Initialize` method, to ensure at compile time the user includes
+    a handler where necessary.
 
-For example:
-
-```csharp
-[Config(Name = "Mod Name", Author = "Author Name", LanguageFolder = "config", DefaultLanguage = "en-GB.toml")]
-public partial class MyModConfig
-{
-    [Setting(Index = 0, Name = "SETTING_ENABLE_FEATURE", Description = "SETTING_ENABLE_FEATURE_DESC")]
-    private bool enableFeature = true;
-
-    [Group(Prefix = "General", Name = "GROUP_GENERAL", Description = "GROUP_GENERAL_DESC")]
-    private GeneralSettings generalSettings;
-
-    [Group(Prefix = "Advanced", Name = "GROUP_ADVANCED", Description = "GROUP_ADVANCED_DESC")]
-    private AdvancedSettings advancedSettings;
-
-    [Setting(Index = 9, Name = "SETTING_LOG_FEATURE", Description = "SETTING_LOG_FEATURE_DESC")]
-    private bool logFeature = true;
-
-    private class GeneralSettings
-    {
-        [Setting(Index = 1, Name = "SETTING_UPDATE_INTERVAL", Description = "SETTING_UPDATE_INTERVAL_DESC", Min = 1, Max = 60)]
-        private int updateInterval = 5;
-
-        [Setting(Index = 2, Name = "SETTING_ENABLE_NOTIFICATIONS", Description = "SETTING_ENABLE_NOTIFICATIONS_DESC")]
-        private bool enableNotifications = true;
-    }
-
-    private class AdvancedSettings
-    {
-        [Setting(Index = 5, Name = "SETTING_ADVANCED_FEATURE", Description = "SETTING_ADVANCED_FEATURE_DESC")]
-        private bool advancedFeature = false;
-    }
-}
-```
-
-This would result in the following indexes:
-
-```
-0: enableFeature
-1: generalSettings.updateInterval
-2: generalSettings.enableNotifications
-3: reserved
-4: reserved
-5: advancedSettings.advancedFeature
-6: reserved
-7: reserved
-8: reserved
-9: logFeature
-```
-
-Which means the groups can be extended.
-
-!!! tip "Please keep indexes within the range 0-65535 if possible, and ideally within 0-255."
-
-    So we can compress better.
-
-### Number Sizes
-
-The sizes of integers in the generated code depend on the `max` value set in the `Setting` attribute.
-
-By default, if no `max` value is specified, a 32-bit integer is used.
-
-### Accessors
-
-!!! info "The fields in the configuration struct are private."
-
-The source generator will generate public accessor methods for each field, taking an `ISettingsSource` as a parameter.
-
-The `ISettingsSource` is responsible for providing the actual values of the settings.
+    The callbacks are added in index order to make migrations between versions easier.
 
 ## Configuration Versioning
 

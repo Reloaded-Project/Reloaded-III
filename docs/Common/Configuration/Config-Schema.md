@@ -121,6 +121,11 @@ What the Launcher UI displays should match 1:1 with the order of settings in the
 
 !!! info "A boolean value, presented as a checkbox."
 
+| Field       | Type   | Description                                      |
+| ----------- | ------ | ------------------------------------------------ |
+| `image_on`  | string | [Optional] Image to display when value is true.  |
+| `image_off` | string | [Optional] Image to display when value is false. |
+
 Example:
 ```toml
 [[settings]]
@@ -129,6 +134,8 @@ type = "bool"
 name = "SETTING_ENABLE_X"
 description = "SETTING_ENABLE_X_DESC"
 default = false
+image_on = "enable_x_on.jxl"
+image_off = "enable_x_off.jxl"
 ```
 
 ### Choice (Enum) Setting
@@ -137,9 +144,10 @@ default = false
 
 Additional Fields:
 
-| Field     | Type     | Description                                              |
-| --------- | -------- | -------------------------------------------------------- |
-| `choices` | [string] | An array of localization keys for the available options. |
+| Field           | Type     | Description                                                                          |
+| --------------- | -------- | ------------------------------------------------------------------------------------ |
+| `choices`       | [string] | An array of localization keys for the available options.                             |
+| `choice_images` | [string] | [Optional] An array of images for each choice, corresponding to the `choices` array. |
 
 Example:
 ```toml
@@ -149,6 +157,7 @@ type = "choice"
 name = "SETTING_RENDER_MODE"
 description = "SETTING_RENDER_MODE_DESC"
 choices = ["RENDER_MODE_A", "RENDER_MODE_B", "RENDER_MODE_C"]
+choice_images = ["render_mode_a.jxl", "render_mode_b.jxl", "render_mode_c.jxl"]
 default = "RENDER_MODE_B"
 ```
 
@@ -193,13 +202,14 @@ formatters = ["FRIENDLY"]
 
 Additional Fields:
 
-| Field        | Type             | Description                                     |
-| ------------ | ---------------- | ----------------------------------------------- |
-| `min`        | int              | (Default: -2^63) The minimum allowed value.     |
-| `max`        | int              | (Default: 2^63) The maximum allowed value.      |
-| `step`       | int              | The increment step for the slider.              |
-| `labels`     | [string, string] | Localization keys for min and max value labels. |
-| `formatters` | [string]         | [Formatters][formatters] to apply to the value. |
+| Field          | Type             | Description                                     |
+| -------------- | ---------------- | ----------------------------------------------- |
+| `min`          | int              | (Default: -2^63) The minimum allowed value.     |
+| `max`          | int              | (Default: 2^63) The maximum allowed value.      |
+| `step`         | int              | The increment step for the slider.              |
+| `labels`       | [string, string] | Localization keys for min and max value labels. |
+| `formatters`   | [string]         | [Formatters][formatters] to apply to the value. |
+| `range_images` | [[int, string]]  | [Optional] The image to display for each value. |
 
 Example:
 ```toml
@@ -214,7 +224,17 @@ step = 5
 default = 50
 labels = ["LABEL_LOW", "LABEL_HIGH"]
 formatters = ["PERCENTAGE"]
+range_images = [
+    [0, "intensity_low.jxl"],
+    [50, "intensity_medium.jxl"],
+    [80, "intensity_high.jxl"]
+]
 ```
+
+!!! note "About `range_images`"
+
+    The values specified here are minimums.
+    So in this example, `intensity_low.jxl` will be used for values 0-49, and `intensity_medium.jxl` for 50-79.
 
 ### Float Setting
 
@@ -249,13 +269,14 @@ formatters = ["ROUNDED"]
 
 Additional Fields:
 
-| Field        | Type             | Description                                     |
-| ------------ | ---------------- | ----------------------------------------------- |
-| `min`        | float            | The minimum allowed value.                      |
-| `max`        | float            | The maximum allowed value.                      |
-| `step`       | float            | The increment step for the slider.              |
-| `labels`     | [string, string] | Localization keys for min and max value labels. |
-| `formatters` | [string]         | [Formatters][formatters] to apply to the value. |
+| Field          | Type             | Description                                     |
+| -------------- | ---------------- | ----------------------------------------------- |
+| `min`          | float            | The minimum allowed value.                      |
+| `max`          | float            | The maximum allowed value.                      |
+| `step`         | float            | The increment step for the slider.              |
+| `labels`       | [string, string] | Localization keys for min and max value labels. |
+| `formatters`   | [string]         | [Formatters][formatters] to apply to the value. |
+| `range_images` | [[int, string]]  | [Optional] The image to display for each value. |
 
 Example:
 ```toml
@@ -270,7 +291,17 @@ step = 0.1
 default = 0.5
 labels = ["LABEL_MUTE", "LABEL_MAX"]
 formatters = ["PERCENTAGE"]
+range_images = [
+    [0.0, "volume_mute.jxl"],
+    [0.5, "volume_medium.jxl"],
+    [0.8, "volume_high.jxl"]
+]
 ```
+
+!!! note "About `range_images`"
+
+    The values specified here are minimums.
+    So in this example, `volume_mute.jxl` will be used for `x < 0.5`, and `intensity_medium.jxl` for x `>0.5` and `<0.8`.
 
 ### File Setting
 

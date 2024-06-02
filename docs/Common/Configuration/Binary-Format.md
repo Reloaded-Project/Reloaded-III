@@ -1,5 +1,3 @@
-!!! warning "Work in Progress"
-
 # Config Binary Format
 
 !!! info "This page describes the binary format used for serializing and deserializing the [config.toml][config-schema] file."

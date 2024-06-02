@@ -32,7 +32,7 @@ Some items are stored as separate files:
     - This is used if `LicenseId` is not specified.
 - [changelog][changelog]: Changelog file(s), located in `package/changelog/*.md`.
 - [description][description]: Description file, located in `package/description.md`.
-- [config][config]: Configuration schema for the package, located in `package/config.toml`.
+- [config][config]: Configuration schema for the package, located in `config.toml`.
 
 ## Example Config
 

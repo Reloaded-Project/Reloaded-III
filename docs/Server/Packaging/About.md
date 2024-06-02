@@ -11,7 +11,7 @@ Each mod package contains the following approximate structure.
 reloaded3.utility.examplemod.s56
 ├── config
 │   ├── config-image-1.jxl
-│   └── config.toml
+│   └──
 ├── languages
 │   ├── config
 │   │   ├── en-GB.toml
@@ -38,6 +38,7 @@ reloaded3.utility.examplemod.s56
 │   │   └── skill-3.jxl
 │   ├── description.md
 │   └── license.md
+├── config.toml
 └── package.toml
 ```
 
@@ -61,7 +62,7 @@ Each version is contained in its own `Markdown` file, e.g. `1.0.0.md`.
 
 ### Config
 
-!!! info "Located at `package/config.toml`."
+!!! info "Located at `config.toml`."
 
 !!! info "This contains the configuration for the mod."
 
@@ -69,6 +70,8 @@ This file may not exist in some packages.
 
 This file stores the configuration schema used for the package when the user hits
 `Configure Mod` (or equivalent) button inside the `Mod Manager` frontend.
+
+Images referenced by the config should be in the `package/images` folder.
 
 ### Description
 

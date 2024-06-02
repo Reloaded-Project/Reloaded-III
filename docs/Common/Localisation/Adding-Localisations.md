@@ -30,8 +30,6 @@ For example, a localisable config and `DLL` code loaded at runtime.
 
 ```
 reloaded3.utility.examplemod.s56
-├── config
-│   └── config.toml
 ├── modfiles
 │   └── mod.dll
 ├── languages
@@ -41,6 +39,7 @@ reloaded3.utility.examplemod.s56
 │   └── dll
 │       ├── en-GB.toml
 │       └── uwu-en.toml
+├── config.toml
 └── package.toml
 ```
 

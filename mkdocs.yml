@@ -124,6 +124,9 @@ nav:
     - About: Launcher/About.md
     - Best Practices: Launcher/Best-Practices.md
   - Common:
+    - Configuration:
+      - About: Common/Configuration/About.md
+      - Config Schema: Common/Configuration/Config-Schema.md
     - Localisation:
       - About: Common/Localisation/About.md
       - File Format: Common/Localisation/File-Format.md

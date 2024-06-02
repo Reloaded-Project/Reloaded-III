@@ -1,5 +1,3 @@
-Here is the updated `Mod-Configurations.md` page with the requested changes:
-
 # Mod Configurations
 
 !!! info "This file specifies the schema for the `config.toml` file that defines package configuration settings."
@@ -78,7 +76,7 @@ All setting types share the following common fields:
 
 | Field         | Type   | Description                                                          |
 | ------------- | ------ | -------------------------------------------------------------------- |
-| `index`       | u16    | Index of the setting. Make this a unique number and never change it. |
+| `index`       | number | Index of the setting. Make this a unique number and never change it. |
 | `type`        | string | The data type of the setting. See individual setting types.          |
 | `name`        | string | The localization key for the setting name.                           |
 | `description` | string | The localization key for the setting description.                    |
@@ -145,6 +143,16 @@ choices = ["RENDER_MODE_A", "RENDER_MODE_B", "RENDER_MODE_C"]
 default = "RENDER_MODE_B"
 ```
 
+!!! danger "It's a breaking change to remove an entry from `choices`."
+
+    You can hide a choice by replacing it with a blank string, `""`, this will hide it from the user UI.
+
+    ```toml
+    choices = ["RENDER_MODE_A", "", "RENDER_MODE_C", "RENDER_MODE_D"]
+    ```
+
+    Here, `MODE_B` was hidden.
+
 ### Integer Setting
 
 !!! info "An integer value, presented as a number input."
@@ -153,8 +161,8 @@ Additional Fields:
 
 | Field        | Type     | Description                                     |
 | ------------ | -------- | ----------------------------------------------- |
-| `min`        | int      | The minimum allowed value.                      |
-| `max`        | int      | The maximum allowed value.                      |
+| `min`        | int      | (Default: -2^63) The minimum allowed value.     |
+| `max`        | int      | (Default: -2^63) The maximum allowed value.     |
 | `formatters` | [string] | [Formatters][formatters] to apply to the value. |
 
 Example:
@@ -178,8 +186,8 @@ Additional Fields:
 
 | Field        | Type             | Description                                     |
 | ------------ | ---------------- | ----------------------------------------------- |
-| `min`        | int              | The minimum allowed value.                      |
-| `max`        | int              | The maximum allowed value.                      |
+| `min`        | int              | (Default: -2^63) The minimum allowed value.     |
+| `max`        | int              | (Default: 2^63) The maximum allowed value.      |
 | `step`       | int              | The increment step for the slider.              |
 | `labels`     | [string, string] | Localization keys for min and max value labels. |
 | `formatters` | [string]         | [Formatters][formatters] to apply to the value. |

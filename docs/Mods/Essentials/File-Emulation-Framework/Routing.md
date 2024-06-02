@@ -1,5 +1,3 @@
-Certainly! Here's a more user-friendly version of the documentation, tailored for video game modders:
-
 !!! tip "Additional information for programmers is contained at [Emulator-Development/Routing.md][routing]"
 
 !!! info "This section explains how files on your computer are used to create custom game files."

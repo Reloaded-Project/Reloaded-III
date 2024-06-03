@@ -74,16 +74,17 @@ Setting `language_folder = "config"` and `default_language = "en-GB.toml"` would
 
 All setting types share the following common fields:
 
-| Field         | Type   | Description                                                                               |
-| ------------- | ------ | ----------------------------------------------------------------------------------------- |
-| `index`       | number | Index of the setting. Make this a unique number and never change it.                      |
-| `type`        | string | The data type of the setting. See individual setting types.                               |
-| `name`        | string | The localization key for the setting name.                                                |
-| `description` | string | The localization key for the setting description.                                         |
-| `default`     | varies | The default value for the setting. Type depends on `type`.                                |
-| `apply_on`    | string | When to apply setting changes. One of "restart", "save", "instant".                       |
-| `variable`    | string | Optional variable name to reference the setting in conditionals.                          |
-| `client_side` | bool   | [Optional] Indicates if the setting should not be overwritten by the host in multiplayer. |
+| Field         | Type      | Description                                                                               |
+| ------------- | --------- | ----------------------------------------------------------------------------------------- |
+| `index`       | number    | Index of the setting. Make this a unique number and never change it.                      |
+| `type`        | string    | The data type of the setting. See individual setting types.                               |
+| `name`        | string    | The localization key for the setting name.                                                |
+| `description` | string    | The localization key for the setting description.                                         |
+| `default`     | varies    | The default value for the setting. Type depends on `type`.                                |
+| `apply_on`    | string    | When to apply setting changes. One of "restart", "save", "instant".                       |
+| `variable`    | string    | Optional variable name to reference the setting in conditionals.                          |
+| `client_side` | bool      | [Optional] Indicates if the setting should not be overwritten by the host in multiplayer. |
+| `show_if`     | condition | See: [Conditional Settings](#conditional-settings)                                        |
 
 The `name` and `description` fields should reference localization keys as described in the
 [Localisation Format][localisation-format] page.
@@ -481,6 +482,8 @@ show_if = [
 In this example, the `SETTING_LOG_LEVEL` setting will only be displayed if both `enable_logging` and
 `enable_advanced_settings` are set to `true`.
 
+!!! note "This can be applied to individual settings as well as groups."
+
 ## Setting Groups
 
 !!! info "Settings can be organized into collapsible groups for better readability."
@@ -584,6 +587,78 @@ formatters = ["SIZE_FRIENDLY"]
 
 In this example, the `SETTING_FILE_SIZE_LIMIT` setting will display its value in MB or GB for
 better readability.
+
+Sure! Here's a new section added to the documentation about simulating multiple config files:
+
+## Simulating Multiple Config Files
+
+!!! info "In Reloaded-II, it was possible to create multiple config files."
+
+    However, this feature no longer exists in the current configuration system.
+
+Instead, to achieve a similar effect, you can duplicate the fields within a single `config.toml`
+file and place the settings into appropriate groups.
+
+You can then use the `show_if` field to conditionally display or hide entire groups based on
+specific conditions.
+
+Here's an example of enabling settings for Player 1 and Player 2:
+
+```toml
+[[settings]]
+index = 0
+type = "bool"
+name = "SETTING_ENABLE_P1"
+description = "SETTING_ENABLE_P1_DESC"
+default = true
+variable = "enable_p1"
+
+[[settings]]
+index = 1
+type = "bool"
+name = "SETTING_ENABLE_P2"
+description = "SETTING_ENABLE_P2_DESC"
+default = false
+variable = "enable_p2"
+
+[group]
+name = "GROUP_PLAYER_1"
+description = "GROUP_PLAYER_1_DESC"
+show_if = [{ variable = "enable_p1", comparator = "=", value = "true" }]
+
+[[settings]]
+index = 2
+type = "string"
+name = "SETTING_P1_NAME"
+description = "SETTING_P1_NAME_DESC"
+default = "Player 1"
+
+# ... Additional Player 1 settings ...
+
+[group]
+name = "GROUP_PLAYER_2"
+description = "GROUP_PLAYER_2_DESC"
+show_if = [{ variable = "enable_p2", comparator = "=", value = "true" }]
+
+[[settings]]
+index = 10
+type = "string"
+name = "SETTING_P2_NAME"
+description = "SETTING_P2_NAME_DESC"
+default = "Player 2"
+
+# ... Additional Player 2 settings ...
+```
+
+In this example, we have two settings (`SETTING_ENABLE_P1` and `SETTING_ENABLE_P2`) that
+control the visibility of the Player 1 and Player 2 settings, respectively.
+
+This is done via the [show_if](#conditional-settings) field, and the `enable_p1` and `enable_p2`
+variables.
+
+!!! tip "Careful with the copy-paste."
+
+    Remember to update setting names, descriptions, and group names to reflect the correct player.
 
 ## Source Generation
 

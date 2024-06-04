@@ -1,5 +1,7 @@
 # Mod Configurations
 
+!!! warning "TODO: Enabling 'features' in configs."
+
 !!! info "This file specifies the schema for the `config.toml` file that defines package configuration settings."
 
 The `config.toml` file is used to declare a list of configurable settings for a package (e.g. mod).

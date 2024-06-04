@@ -531,6 +531,8 @@ The `file` and `folder` settings support the use of special location references 
 
 ### Special Location References
 
+!!! warning "TODO: Move these to a 'standard' mods can also use."
+
 Special location references can be used to point to predefined directories. The available references are:
 
 - `$ModFolder`: The root folder of the current mod.

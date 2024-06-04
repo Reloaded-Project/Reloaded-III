@@ -37,11 +37,13 @@
 
 !!! tip "In reading order."
 
-| Section                        | Description                                            |
-| ------------------------------ | ------------------------------------------------------ |
-| [Config Schema][config-schema] | How configuration options are defined.                 |
-| [Binary Format][binary-format] | How Reloaded3 configuration files are written to disk. |
+| Section                         | Description                                            |
+| ------------------------------- | ------------------------------------------------------ |
+| [Config Schema][config-schema]  | How configuration options are defined.                 |
+| [Source Generation][source-gen] | How we generate source code from config schema.        |
+| [Binary Format][binary-format]  | How Reloaded3 configuration files are written to disk. |
 
-[loadouts]: ../../Server/Storage/Loadouts/About.md
-[config-schema]: ./Config-Schema.md
 [binary-format]: ./Binary-Format.md
+[config-schema]: ./Config-Schema.md
+[loadouts]: ../../Server/Storage/Loadouts/About.md
+[source-gen]: ./Source-Generation.md

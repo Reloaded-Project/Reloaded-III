@@ -353,4 +353,4 @@ default = []
 [config-schema-general]: ./Config-Schema.md#general-metadata
 [config-schema-min]: ./Config-Schema.md#integer-setting
 [config-schema-max]: ./Config-Schema.md#integer-setting
-[config-schema-choice]: ./Config-Schema.md#choice-enum-setting2
+[config-schema-choice]: ./Config-Schema.md#choice-enum-setting

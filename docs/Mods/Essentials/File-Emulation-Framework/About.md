@@ -1,6 +1,6 @@
 <div align="center">
 	<h1>Reloaded3 File Emulation Framework</h1>
-	<img src="../Images/Icon.png" Width=200/><br/>
+	<img src="./Images/Icon.png" Width=200/><br/>
 	<strong>🎈 Let's screw with binaries 🎈</strong>
     <p>A framework for creating virtual files at runtime.</p>
 </div>

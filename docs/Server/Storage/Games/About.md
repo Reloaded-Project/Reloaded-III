@@ -1,16 +1,42 @@
-!!! info "Game config stores all of the user's preferences for launcher/loader behaviour related to a game."
+!!! info "This details the per game metadata stored in the [`Added Games (User)` (`Games/{gameId}`) folder.][added-games-location]"
 
-This is a singleton stored in [`Added Games (User)` (`Games/{gameId}`) folder.][added-games-location]
+Game config stores all of the user's preferences for launcher/loader behaviour related to a game.
 
-All data here is user specific, for cloud syncing but not sharing.
+This file is intended to be user editable by hand, thus all files here are in TOML format.
+
+## Folder Structure
+
+```
+{gameId}
+├── BannerHorz.jxl
+├── BannerSquare.jxl
+├── BannerVert.jxl
+├── Icon.jxl
+└── Info.toml
+```
+
+### Icons and Banners
+
+!!! info "If present, the following will be used."
+
+| Value              | Item                                      | Description                                   |
+| ------------------ | ----------------------------------------- | --------------------------------------------- |
+| `Icon.jxl`         | [Icon][community-repository-icon]         | Icon for the game in 1:1 aspect ratio.        |
+| `BannerSquare.jxl` | [BannerSquare][community-repository-icon] | Grid Square for the game in 1:1 aspect ratio. |
+| `BannerHorz.jxl`   | [BannerHorz][community-repository-banner] | Horizontal banner for the game.               |
+| `BannerVert.jxl`   | [BannerVert][community-repository-banner] | Vertical banner for the game.                 |
 
 ## What's inside an Game Configuration?
+
+!!! info "This is the specification for `Info.toml`"
+
+    This file is intended to be editable by hand, thus is in TOML format.
 
 | Type                   | Name                                                 | Description                                           |
 | ---------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
 | string?                | [Id](#id)                                            | A name that uniquely identifies the game.             |
 | string                 | [Name](#name)                                        | User friendly name for the game, e.g. 'Sonic Heroes'. |
-| Task[]                 | [ExtraTasks][tasks]                                  | List of extra ways to launche the game.               |
+| Task[]                 | [ExtraTasks][tasks]                                  | List of extra ways to launch the game.                |
 | AutoCreateShortcutKind | [AutoCreateShortcuts](#autocreateshortcuts)          | If true, auto creates shortcuts on the desktop.       |
 | StoreInfo              | [UserStoreInformation](#user-store-information)      | Store specific information for current user.          |
 | MachineSpecificInfo    | [MachineSpecificInformation](#machine-specific-info) | Machine specific information tied to this user.       |
@@ -123,20 +149,9 @@ Usually it's formatted as `{UserName}'s {MachineName}`.
 | 1     | **CodeInjection**: Inject code, i.e. Shared Library (DLL) Injection.   |
 | 2     | **DllHijacking**: Place a 'shim' executable to the user's game folder. |
 
-## Icons and Banners
+## Extended Information
 
-!!! info "If present, the following will be used."
-
-| Value              | Item                                      | Description                                   |
-| ------------------ | ----------------------------------------- | --------------------------------------------- |
-| `Icon.jxl`         | [Icon][community-repository-icon]         | Icon for the game in 1:1 aspect ratio.        |
-| `BannerSquare.jxl` | [BannerSquare][community-repository-icon] | Grid Square for the game in 1:1 aspect ratio. |
-| `BannerHorz.jxl`   | [BannerHorz][community-repository-banner] | Horizontal banner for the game.               |
-| `BannerVert.jxl`   | [BannerVert][community-repository-banner] | Vertical banner for the game.                 |
-
-## Information Sourced Externally
-
-!!! info "Some data is dynamically pulled from the [Community Repository][community-repository]."
+!!! info "Some additional info is obtained from the [Community Repository][community-repository]."
 
 | Type          | Item                                           | Description                                                                             |
 | ------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -145,6 +160,8 @@ Usually it's formatted as `{UserName}'s {MachineName}`.
 | StoreInfo     | [StoreInformation][store-information]          | Game store specific information.                                                        |
 | ModSourceInfo | [ModSourceInformation][mod-source-information] | Mod source (Nexus/GameBanana/OtherModSite) specific information.                        |
 | Diagnostic[]  | [Diagnostics][diagnostics]                     | Diagnostics to display based on game's current folder state.                            |
+
+This data is cached in the  [`Server Cache Files` (`Cache/Server`) folder.][added-games-location]"
 
 [added-games-location]: ../Locations.md#items-to-store
 [community-repository]: ../../../Services/Community-Repository.md

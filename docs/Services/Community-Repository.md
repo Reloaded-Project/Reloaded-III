@@ -433,34 +433,15 @@ The result of the 'build' is the following:
 .
 ├── Apps
 │   ├── SonicHeroes
-│   │   └── App.msgpack.zst
+│   │   └── App.msgpack
 │   └── SonicRiders
-│       └── App.msgpack.zst
-└── Index.msgpack.zst
+│       └── App.msgpack
+└── Index.msgpack
 ```
 
-A new file is produced:
+The files are converted to `MessagePack` format and a new file is produced:
 
 - [Index](#index) for searching games & metadata.
-
-### Compression
-
-!!! info "Files on the Index are packed with MessagePack and compressed using ZStandard."
-
-It's expected most games will fit under 1 disk block, so 4096 bytes.
-
-And ideally, under 1 packet, so under 1280 bytes.
-
-### Caching
-
-!!! info "Received data should be cached by the client."
-
-To minimize bandwidth usage, any file from the community repository should be cached by the client.
-
-The data is generally expected to be stale, however in the event of game updates, it's expected that
-the user receives any updates immediately.
-
-Therefore, we will use `ETag`(s) to cache the index if possible.
 
 ### Index
 
@@ -508,23 +489,30 @@ In case of duplicates, they will be auto resolved using the [ReferenceFile](#ref
 
     Because this makes life easier, we will build the Repo with GitHub Actions.
 
-Because this data is very small and stale, the user will cache all of the data on their end.
+The [built repository](#building-the-repository) will be compressed into an `.nx` archive and
+uploaded as a sole file to pages. Named `CommunityRepository.nx`.
 
-The repository is set up in such a way that any HTTP server with downloads can host it.
+Because this data is very small and stale, it's expected that most of the time a user will already
+have the latest version.
+
+### Caching
+
+!!! info "See [Locations/Server Cache Files][server-cache-files-communityrepo] for details"
 
 ### Bandwidth Numbers
 
-!!! info "GitHub pages sites are limited to [100GB of bandwidth per month][pages-limits]."
+!!! info "GitHub pages sites are soft limited to [100GB of bandwidth per month][pages-limits]."
 
 Expected sizes:
 
 - `30KB`: Index.msgpack.zst (~100 games)
-- `1KB`: App.msgpack.zst
+- `1KB`: App.msgpack.zst (per game)
 
-Approximately 30KB per user.
-This makes for 3.2 million queries per month, with each user having 1 known game.
+For 100 games, therefore expect `130KB`.
+This makes for around 770,000 queries per month.
 
-Should fit within the soft limit, outside of risks with new game releases.
+If we ever get notified from GitHub about bandwidth usage, we will migrate this to
+[Central Server][reloaded-central-server].
 
 <!-- Links -->
 [game-metadata]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
@@ -549,3 +537,4 @@ Should fit within the soft limit, outside of risks with new game releases.
 [stores-bin]: ../Server/Storage/Loadouts/About.md#storesbin
 [gog-buildid]: ../Server/Storage/Loadouts/Stores/GOG.md#retrieving-available-game-versions
 [store-type]: ../Server/Storage/Loadouts/Events.md#storetype
+[server-cache-files-communityrepo]: ../Server/Storage/Locations.md#community-repository

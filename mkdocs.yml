@@ -127,6 +127,7 @@ nav:
     - Configuration:
       - About: Common/Configuration/About.md
       - Config Schema: Common/Configuration/Config-Schema.md
+      - Hardware Configs: Common/Configuration/Hardware-Configs.md
       - Source Generation: Common/Configuration/Source-Generation.md
       - Binary Format: Common/Configuration/Binary-Format.md
     - Localisation:

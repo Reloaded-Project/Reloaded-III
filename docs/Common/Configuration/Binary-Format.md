@@ -15,11 +15,11 @@ All numbers are stored as little endian.
 
 The header is a single byte containing version and key size information.
 
-| Bits | Description                                          |
-| ---- | ---------------------------------------------------- |
-| 0-2  | Version number, 0-7. Currently `0` and `1` are used. |
-| 3-5  | Reserved                                             |
-| 6-7  | Key size in bytes. 1, 2, 4, or 8                     |
+| Bits | Description                                               |
+| ---- | --------------------------------------------------------- |
+| 0-2  | Version number, 0-7. Currently `0`, `1` and `2` are used. |
+| 3-5  | Reserved                                                  |
+| 6-7  | Key size in bytes. 1, 2, 4, or 8                          |
 
 !!! note "The higher bits of the version number may be repurposed some day."
 
@@ -27,6 +27,7 @@ Currently 2 versions exist:
 
 - `Version 0`: (Basic Types only)
 - `Version 1`: (Extended Types)
+- `Version 2`: (Hardware Types)
 
 Version 0 allows for twice amount of items if the config only uses basic primitives.
 That is the case for most mods at least.
@@ -35,8 +36,9 @@ That is the case for most mods at least.
 
 Following the header, the file contains a sequence of key-value pairs.
 
-The size of the key depends on the [header](#header), so if the key size is set to 2, the `Index`
-will have 12 bits available.
+The size of the key depends on the [header](#header), so if the key size is set to
+2, the `Index` for [Version 0](#key-version-0) will have 13 bits available
+(instead of 5 bits).
 
 #### Key (Version 0)
 
@@ -44,10 +46,10 @@ will have 12 bits available.
 | ----------- | --------------- |
 | `{XXXX}`    | `{YYYY}`        |
 
-| Data Type | Name      | Label | Description                                           |
-| --------- | --------- | ----- | ----------------------------------------------------- |
-| `u4`      | Index     | X     | (0-15) Corresponds to [Index][config-schema]          |
-| `u4`      | ValueType | Y     | (0-15) Type of [Value (V1)](#version-1-table) stored. |
+| Data Type | Name      | Label | Description                                          |
+| --------- | --------- | ----- | ---------------------------------------------------- |
+| `u5`      | Index     | X     | (0-31) Corresponds to [Index][config-schema]         |
+| `u3`      | ValueType | Y     | (0-7) Type of [Value (V0)](#version-0-table) stored. |
 
 #### Key (Version 1)
 
@@ -55,10 +57,21 @@ will have 12 bits available.
 | ----------- | --------------- |
 | `{XXXXX}`   | `{YYY}`         |
 
-| Data Type | Name      | Label | Description                                          |
-| --------- | --------- | ----- | ---------------------------------------------------- |
-| `u5`      | Index     | X     | (0-31) Corresponds to [Index][config-schema]         |
-| `u3`      | ValueType | Y     | (0-7) Type of [Value (V0)](#version-0-table) stored. |
+| Data Type | Name      | Label | Description                                           |
+| --------- | --------- | ----- | ----------------------------------------------------- |
+| `u4`      | Index     | X     | (0-15) Corresponds to [Index][config-schema]          |
+| `u4`      | ValueType | Y     | (0-15) Type of [Value (V1)](#version-1-table) stored. |
+
+#### Key (Version 2)
+
+| Index (0-4) | ValueType (5-7) |
+| ----------- | --------------- |
+| `{XXXXX}`   | `{YYY}`         |
+
+| Data Type | Name      | Label | Description                                           |
+| --------- | --------- | ----- | ----------------------------------------------------- |
+| `u3`      | Index     | X     | (0-7) Corresponds to [Index][config-schema]           |
+| `u5`      | ValueType | Y     | (0-31) Type of [Value (V2)](#version-2-table) stored. |
 
 ## Value
 
@@ -79,6 +92,8 @@ will have 12 bits available.
 
 !!! note "This is an extension of [Version 0](#version-0-table) table"
 
+         This table has additional entries for more rarely seen types
+
 | Type | Name       | Size (bytes) |
 | ---- | ---------- | ------------ |
 | 00   | Bool (ON)  | 0            |
@@ -96,6 +111,34 @@ will have 12 bits available.
 | 0C   | f64        | 8            |
 | 0D   | StringList | Variable     |
 | 0E   | i24        | 3            |
+| 0F   | Reserved   | N/A          |
+
+### Version 2 (Table)
+
+!!! note "This is an extension of [Version 1](#version-1-table) table"
+
+    This table has additional entries for Hardware
+
+| Type | Name                                                | Size (bytes) |
+| ---- | --------------------------------------------------- | ------------ |
+| 00   | Bool (ON)                                           | 0            |
+| 01   | Bool (OFF)                                          | 0            |
+| 02   | i8                                                  | 1            |
+| 03   | i16                                                 | 2            |
+| 04   | i32                                                 | 4            |
+| 05   | i64                                                 | 8            |
+| 06   | f32                                                 | 4            |
+| 07   | String                                              | Variable     |
+| 08   | u8                                                  | 1            |
+| 09   | u16                                                 | 2            |
+| 0A   | u32                                                 | 4            |
+| 0B   | u64                                                 | 8            |
+| 0C   | f64                                                 | 8            |
+| 0D   | StringList                                          | Variable     |
+| 0E   | i24                                                 | 3            |
+| 0F   | Reserved                                            | N/A          |
+| 10   | [Resolution](#resolution)                           | 4            |
+| 11   | [Resolution+RefreshRate](#resolution--refresh-rate) | 6            |
 
 ### Value Mapping
 
@@ -130,6 +173,26 @@ as an `07` i32.
 
 Followed by an additional null byte to indicate the end of the list. i.e. an `empty string`.
 
+### Hardware Types
+
+#### Resolution
+
+!!! info "This corresponds to [Resolution Dropdown][resolution-dropdown]"
+
+This is stored as a 4 byte value.
+It is `u16` width and `u16` height.
+
+#### Resolution & Refresh Rate
+
+!!! info "This corresponds to [Resolution & Refresh Rate Dropdown][resolution-dropdown]"
+
+This is stored as `u16` width and `u16` height.
+Then `u16` refresh rate.
+
+!!! note "I am aware that DirectX supports fractional refresh rates with rationals."
+
+    However, no other APIs do, and modern displays don't use these refresh rates.
+
 ## Parsing the File
 
 !!! tip "Read the key-value pairs until you reach the end of file."
@@ -161,3 +224,5 @@ For example, when packed as part of [Loadout][loadout].
 [setting-folder]: ./Config-Schema.md#folder-setting
 [setting-url]: ./Config-Schema.md#url-setting
 [setting-color]: ./Config-Schema.md#color-setting
+[resolution-dropdown]: ./Hardware-Configs.md#resolution_dropdown-setting
+[resolution-rr-dropdown]: ./Hardware-Configs.md#resolution_refresh_rate_dropdown-setting

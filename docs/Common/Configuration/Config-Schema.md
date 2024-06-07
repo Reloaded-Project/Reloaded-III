@@ -686,6 +686,11 @@ variables.
 
     ✅ Provide default values for new settings
 
+## Hardware Settings
+
+!!! info "[See: Hardware Settings][hardware-settings]"
+
 [localisation-format]: ../Localisation/File-Format.md
 [formatters]: #value-formatters
 [source-generation]: ./Source-Generation.md
+[hardware-settings]: ./Hardware-Configs.md

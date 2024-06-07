@@ -2,6 +2,16 @@
 
     Native support for other OSes will be added in the future.
 
+!!! warning "TODO: Add purpose of each hook"
+
+!!! warning "TODO: GetFinalPathNameByHandleW"
+
+    I didn't add this function to the flowchart yet.
+
+    But basically it's Kernel32 GetFinalPathNameByHandleW -> NTDLL NtQueryObject and NtQueryInformationFile
+
+    I wrote some [more details here](https://github.com/ModOrganizer2/modorganizer/issues/2039#issuecomment-2151221938)
+
 ## Used Hooks
 
 The VFS hooks several Win32 and NT File APIs to intercept file operations. The goal is to handle every API which:

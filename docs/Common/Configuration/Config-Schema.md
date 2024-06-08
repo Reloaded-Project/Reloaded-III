@@ -497,6 +497,7 @@ Example:
 [group]
 name = "GROUP_GRAPHICS"
 description = "GROUP_GRAPHICS_DESC"
+show_global = true
 
 [[settings]]
 index = 14
@@ -526,6 +527,12 @@ default = 0.5
 
 This creates two groups, "Graphics" and "Audio", each containing their respective settings.
 The group's `name` and `description` fields should reference localization keys.
+
+| Field         | Type   | Description                                                                                            |
+| ------------- | ------ | ------------------------------------------------------------------------------------------------------ |
+| `name`        | string | The localization key for the setting name.                                                             |
+| `description` | string | The localization key for the setting description.                                                      |
+| `show_global` | bool   | Display the setting as [Globally Configurable Across Loadouts](./About.md#ux-for-configuration-layers) |
 
 ## Variables and Special Locations
 
@@ -591,8 +598,6 @@ formatters = ["SIZE_FRIENDLY"]
 
 In this example, the `SETTING_FILE_SIZE_LIMIT` setting will display its value in MB or GB for
 better readability.
-
-Sure! Here's a new section added to the documentation about simulating multiple config files:
 
 ## Simulating Multiple Config Files
 
@@ -693,4 +698,4 @@ variables.
 [localisation-format]: ../Localisation/File-Format.md
 [formatters]: #value-formatters
 [source-generation]: ./Source-Generation.md
-[hardware-settings]: ./Hardware-Configs.md
+[hardware-settings]: ./Hardware-Configs/About.md

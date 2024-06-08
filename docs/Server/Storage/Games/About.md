@@ -1,5 +1,7 @@
 !!! info "This details the per game metadata stored in the [`Added Games (User)` (`Games/{gameId}`) folder.][added-games-location]"
 
+!!! warning "TODO: Store [Loadout Specific Info][loadout-specific-info]"
+
 Game config stores all of the user's preferences for launcher/loader behaviour related to a game.
 
 This file is intended to be user editable by hand, thus all files here are in TOML format.
@@ -183,3 +185,4 @@ This data is cached in the  [`Server Cache Files` (`Cache/Server`) folder.][adde
 [store-information]: ../../../Services/Community-Repository.md#store-information
 [loadout]: ../Loadouts/About.md
 [hashing]: ../../../Common/Hashing.md
+[loadout-specific-info]: ../../../Common/Configuration/About.md#ux-for-configuration-layers

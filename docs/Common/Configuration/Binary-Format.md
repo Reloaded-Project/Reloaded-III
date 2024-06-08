@@ -119,26 +119,27 @@ The size of the key depends on the [header](#header), so if the key size is set 
 
     This table has additional entries for Hardware
 
-| Type | Name                                                | Size (bytes) |
-| ---- | --------------------------------------------------- | ------------ |
-| 00   | Bool (ON)                                           | 0            |
-| 01   | Bool (OFF)                                          | 0            |
-| 02   | i8                                                  | 1            |
-| 03   | i16                                                 | 2            |
-| 04   | i32                                                 | 4            |
-| 05   | i64                                                 | 8            |
-| 06   | f32                                                 | 4            |
-| 07   | String                                              | Variable     |
-| 08   | u8                                                  | 1            |
-| 09   | u16                                                 | 2            |
-| 0A   | u32                                                 | 4            |
-| 0B   | u64                                                 | 8            |
-| 0C   | f64                                                 | 8            |
-| 0D   | StringList                                          | Variable     |
-| 0E   | i24                                                 | 3            |
-| 0F   | Reserved                                            | N/A          |
-| 10   | [Resolution](#resolution)                           | 4            |
-| 11   | [Resolution+RefreshRate](#resolution--refresh-rate) | 6            |
+| Type | Name                                                   | Size (bytes) |
+| ---- | ------------------------------------------------------ | ------------ |
+| 00   | Bool (ON)                                              | 0            |
+| 01   | Bool (OFF)                                             | 0            |
+| 02   | i8                                                     | 1            |
+| 03   | i16                                                    | 2            |
+| 04   | i32                                                    | 4            |
+| 05   | i64                                                    | 8            |
+| 06   | f32                                                    | 4            |
+| 07   | String                                                 | Variable     |
+| 08   | u8                                                     | 1            |
+| 09   | u16                                                    | 2            |
+| 0A   | u32                                                    | 4            |
+| 0B   | u64                                                    | 8            |
+| 0C   | f64                                                    | 8            |
+| 0D   | StringList                                             | Variable     |
+| 0E   | i24                                                    | 3            |
+| 0F   | Reserved                                               | N/A          |
+| 10   | [Resolution](#resolution)                              | 4            |
+| 11   | [Resolution+RefreshRate](#resolution-and-refresh-rate) | 6            |
+| 12   | [Controller Config](#resolution-and-refresh-rate)      | Variable     |
 
 ### Value Mapping
 
@@ -182,7 +183,7 @@ Followed by an additional null byte to indicate the end of the list. i.e. an `em
 This is stored as a 4 byte value.
 It is `u16` width and `u16` height.
 
-#### Resolution & Refresh Rate
+#### Resolution and Refresh Rate
 
 !!! info "This corresponds to [Resolution & Refresh Rate Dropdown][resolution-dropdown]"
 
@@ -192,6 +193,17 @@ Then `u16` refresh rate.
 !!! note "I am aware that DirectX supports fractional refresh rates with rationals."
 
     However, no other APIs do, and modern displays don't use these refresh rates.
+
+#### Controller Config
+
+!!! info "This is an entire embedded file within the config format."
+
+Format of the data is described in [Controller Binary Format][controller-binary-format]
+
+Extra Reading:
+
+- [About Controller Configs][about-controller-configs]
+- [Controller Configs Schema][controller-config-schema]
 
 ## Parsing the File
 
@@ -224,5 +236,8 @@ For example, when packed as part of [Loadout][loadout].
 [setting-folder]: ./Config-Schema.md#folder-setting
 [setting-url]: ./Config-Schema.md#url-setting
 [setting-color]: ./Config-Schema.md#color-setting
-[resolution-dropdown]: ./Hardware-Configs.md#resolution_dropdown-setting
-[resolution-rr-dropdown]: ./Hardware-Configs.md#resolution_refresh_rate_dropdown-setting
+[resolution-dropdown]: ./Hardware-Configs/Displays.md#resolution_dropdown-setting
+[resolution-rr-dropdown]: ./Hardware-Configs/Displays.md#resolution_refresh_rate_dropdown-setting
+[controller-config-schema]: ./Hardware-Configs/Controllers/Config-Schema.md
+[about-controller-configs]: ./Hardware-Configs/Controllers/About.md
+[controller-binary-format]: ./Hardware-Configs/Controllers/Binary-Format.md

@@ -1,28 +1,4 @@
-!!! info "Hardware settings are settings that are tied to your user."
-
-    These are not carried as part of loadouts, but rather as part of the user/profile configuration.
-
-!!! tip "To define hardware-specific settings, add an `[hardware]` section to the [config.toml][config-schema] file."
-
-!!! warning "In some cases, hardware settings may not be available depending on OS."
-
-    In those cases, you will be able to set settings for a 'generic' device, as fallback.
-    Which settings this applies to will be specified with `HasFallback`.
-
-## How are Hardware Settings Stored?
-
-!!! info "Hardware Settings are tied to your user profile."
-
-    These settings apply between all [Loadouts][loadouts].
-
-To give an example of this, suppose you have a mod that gives you widescreen with a custom resolution
-for a 2004 game (that was originally locked to 1024x768 and 4:3).
-
-If you switch a Loadout, you would not want to reconfigure those settings all over again.
-
-!!! warning "TODO: Document in [Game][games] section how this is stored."
-
-## Monitor Settings
+# Monitor Settings
 
 !!! info "This allows you to configure settings on a per-monitor basis."
 
@@ -31,6 +7,8 @@ If you switch a Loadout, you would not want to reconfigure those settings all ov
     Over 95% will, but availability of these settings may depend on the OS and display connector used.
 
     - HasFallback: `yes`
+
+!!! info "We will use SDL for this"
 
 You can add `monitor` specific settings under the `[[hardware.monitors]]` section.
 
@@ -67,7 +45,10 @@ To uniquely identify a monitor, Reloaded3 settings use the `unique_id` field, wh
     The settings defined under the monitor section are an extension of the regular settings.
     Therefore, they should have a unique `index` value.
 
-### `resolution_dropdown` Setting
+If the EDID is not available, we will try [monitor_name][monitor-name], and lastly
+[monitor_index][sdl-num-displays].
+
+## `resolution_dropdown` Setting
 
 !!! info "A dropdown to select a specified resolution for the monitor."
 
@@ -83,7 +64,7 @@ If `resolutions` is not provided, the available resolutions will be automaticall
 
     i.e. Games that only run at 60fps and have physics tied to the frame rate.
 
-### `resolution_refresh_rate_dropdown` Setting
+## `resolution_refresh_rate_dropdown` Setting
 
 !!! info "A dropdown to select a resolution and refresh rate combo for the monitor."
 
@@ -98,6 +79,5 @@ will be automatically queried from the monitor.
 
 Users can also manually enter an arbitrary resolution or refresh rate value.
 
-[config-schema]: ./Config-Schema.md
-[loadouts]: ../../Server/Storage/Loadouts/About.md
-[games]: ../../Server/Storage/Games/About.md
+[monitor-name]: https://wiki.libsdl.org/SDL2/SDL_GetDisplayName
+[sdl-num-displays]: https://wiki.libsdl.org/SDL2/SDL_GetNumVideoDisplays

@@ -2,6 +2,10 @@
 
 !!! info "This page describes Reloaded3's configuration file format details."
 
+!!! warning "TODO: Ingest for settings outside of Reloaded3 origin"
+
+!!! warning "TODO: How we store global configuration in Application Profiles"
+
 ## Requirements
 
 !!! info "These are the requirements for Reloaded3 configurations."
@@ -25,6 +29,8 @@
 - Grouping of Configuration Items
     - For example, all settings related to a specific feature.
     - Or all settings related to a 'player' in a local multiplayer game.
+- Sensible Defaults
+    - Mods and Packages should be able to ship sensible defaults.
 - Conditional Settings
     - For example, showing setting B only if setting A is enabled.
 
@@ -32,6 +38,19 @@
 
 - Support for every possible kind of data.
     - Some very domain specific configurations may still use separate binaries.
+
+## UX for Configuration 'Layers'
+
+!!! info "The UX around this is stupidly complicated."
+
+The planned UX for the time being is the following.
+
+- Package settings UI is scoped per loadout.
+- Package configs can declare groups.
+- Groups can opt in to be 'globally configurable' (a.k.a. `show_global`)
+    - This automatically puts them in a 'Global' section in the UI.
+    - Alternatively a user may manually add them to the global section.
+        - That is saved in the [Game Config][game-config].
 
 ## Sections
 
@@ -47,3 +66,4 @@
 [config-schema]: ./Config-Schema.md
 [loadouts]: ../../Server/Storage/Loadouts/About.md
 [source-gen]: ./Source-Generation.md
+[game-config]: ../../Server/Storage/Games/About.md

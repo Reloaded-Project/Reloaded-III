@@ -198,6 +198,9 @@ nav:
         - Windows - Inject Into Suspended Process: Research/Bootloaders/Windows-InjectIntoSuspended.md
     - External Services:
         - Steam Grid DB: Research/External-Services/SteamGridDB.md
+    - Binary Sizes:
+        - IPC: Research/Library-Sizes/IPC.md
+        - Serializers: Research/Library-Sizes/Serializers.md
   - Wiki:
     - Contributing Locally: Contributing-Locally.md
     - Contributing Online: Contributing-Online.md

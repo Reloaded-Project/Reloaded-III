@@ -45,6 +45,7 @@ They can have any name (as long as they use their own unique folder), in this sp
 | SteamGridDBCategoryAndId? | [SteamGridDBBannerSquare](#icons-and-banners-steamgriddb)     | SteamGridDB category and ID for the game's app grid square. Optional.                            |
 | SteamGridDBCategoryAndId? | [SteamGridDBBannerHorizontal](#icons-and-banners-steamgriddb) | SteamGridDB category and ID for the game's horizontal banner. Optional.                          |
 | SteamGridDBCategoryAndId? | [SteamGridDBBannerVertical](#icons-and-banners-steamgriddb)   | SteamGridDB category and ID for the game's vertical banner. Optional.                            |
+| Task[]                    | [Tasks](#tasks)                                               | Various maintenance tasks and executables to run for the game.                                   |
 
 !!! note "All hashes listed in this page are `XXH3_128bits` (XXH128) unless specified otherwise."
 
@@ -410,6 +411,35 @@ In some rare cases, the user may be using a modified EXE, or an unknown version 
 
 If this is the case, we simply provide a message to the user via the `BadHashMessage` field.
 
+### Tasks
+
+!!! info "Games can define additional tasks in the Community Repository."
+
+The `Tasks` field is an optional array of `Task` objects that represent additional tasks or
+actions that can be performed for the game.
+
+For detailed information about the structure and fields of a `Task` object, please refer to
+the [Tasks][tasks] page.
+
+**Example:**
+
+```toml
+[[Tasks]]
+Type = "File"
+VisualHint = "Settings"
+Name = "Configuration Tool"
+GroupNames = ["Community"]
+Description = "Launches the configuration program."
+Path = "Config2_DX9.exe"
+IsPrimary = false
+InjectLoader = false
+IsHidden = false
+Platform = 0
+```
+
+The tasks defined in the Community Repository will be merged with the tasks defined for the game
+locally, with the local tasks taking precedence in case of conflicts.
+
 ## File Layout
 
 !!! note "The folder names under the `Apps` folder are named after the IDs."
@@ -538,3 +568,4 @@ If we ever get notified from GitHub about bandwidth usage, we will migrate this 
 [gog-buildid]: ../Server/Storage/Loadouts/Stores/GOG.md#retrieving-available-game-versions
 [store-type]: ../Server/Storage/Loadouts/Events.md#storetype
 [server-cache-files-communityrepo]: ../Server/Storage/Locations.md#community-repository
+[tasks]: ../Server/Storage/Games/Tasks.md

@@ -11,6 +11,8 @@ You can think of them like the `Tasks` you have in VSCode.
     - These are persisted in the user's preferences.
 - Per Package
     - Packages can declare their own tasks to run.
+- [Community Repository][community-repository]
+    - Community Repository can define tasks for games.
 
 ## Structure
 
@@ -45,6 +47,8 @@ Arguments = ["-fullscreen", "-config", "{GameDir}/config.ini"]
 | string[]                  | [Arguments](#arguments)                   | An array of additional commandline arguments to pass to the executable. Can use placeholders like `{GameDir}`.        |
 | bool?                     | IsHidden                                  | Indicates whether the task should be hidden from the user. Defaults to `false`.                                       |
 | string?                   | [RelativeWorkingDir](#relativeworkingdir) | The working directory for the task. Defaults to the folder containing `Path`, otherwise is a folder relative to it.   |
+| [Platform](#platform)     | [Platform](#platform)                     | (Flags) The OSes this task is available for. If 0, is enabled for all.                                                |
+| [StoreType][store-type]   | [Store](#store)                           | The store to restrict this operation to.                                                                              |
 
 ### TaskType
 
@@ -194,13 +198,38 @@ When you execute the task, the following will run:
 Game.exe -fullscreen -config C:/Games/MyGame/config.ini
 ```
 
+### Platform
+
+!!! info "Some tasks can only be ran on some OSes."
+
+The `Platform` field is a bit flag that specifies the OSes this task is available for.
+
+- 0: `All`: The task is available for all OSes.
+- 1: `Windows`: The task is available for Windows.
+- 2: `Linux`: The task is available for Linux.
+- 4: `MacOS`: The task is available for MacOS.
+
+### Store
+
+!!! info "Some tasks are only available for certain game stores."
+
+The `Store` field is an optional field that specifies the store this task is associated with.
+
+The available [store values can be found here][store-type].
+
+If the `Store` field is not specified or set to `None`, the task is
+considered store-independent and can be used with any store.
+
+!!! tip "This is useful for things like adding links via [Steam Browser Protocol][steam-protocol]"
+
 ## Tasks in Code
 
 !!! tip "Some additional fields exist only in memory/code, on the actual implementation side"
 
-| Type                      | Field               | Description                             |
-| ------------------------- | ------------------- | --------------------------------------- |
-| [TaskSource](#tasksource) | [Type](#tasksource) | Where the current task originated from. |
+| Type                      | Field               | Description                                                                    |
+| ------------------------- | ------------------- | ------------------------------------------------------------------------------ |
+| [TaskSource](#tasksource) | [Type](#tasksource) | Where the current task originated from.                                        |
+| string                    | UnavailableReason   | The reason a task cannot be executed. Task is unavailable if this is not null. |
 
 ### TaskSource
 
@@ -241,7 +270,22 @@ Example from file (truncated):
 
 We should be able to import these tasks directly into the game configuration.
 
+## Edge Cases
+
+### Not All Tasks Always are Valid
+
+!!! info "Check the target file exists before showing the task."
+
+    A user who for example is dual booting their OS, might find that launching Steam on Linux,
+    after using it on Windows has replaced their game with the Linux version.
+
+A task that is not valid should set the [UnavailableReason](#tasks-in-code) field to a string
+explaining why the task is not available. And be blanked out.
+
 [gog-info-file]: ../Loadouts/Stores/GOG.md#goggame-gameidinfo
 [images]: ../../../Common/Images.md
 [package]: ../../Packaging/Package-Metadata.md
 [items-to-store]: ../Locations.md#items-to-store
+[community-repository]: ../../../Services/Community-Repository.md
+[steam-protocol]: https://developer.valvesoftware.com/wiki/Steam_browser_protocol
+[store-type]: ../Loadouts/Events.md#storetype

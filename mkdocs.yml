@@ -19,6 +19,7 @@ markdown_extensions:
   - tables
   - pymdownx.details
   - pymdownx.highlight
+  - pymdownx.tilde
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -185,6 +186,9 @@ nav:
   - Online Services:
     - Central Server: Services/Central-Server.md
     - Community Repository: Services/Community-Repository.md
+  - Code Guidelines:
+    - Hardware Requirements: Code-Guidelines/Hardware-Requirements.md
+    - Performance Guidelines: Code-Guidelines/Performance-Guidelines.md
   - FAQ: FAQ.md
   - Research & Explanations:
     - Bootloaders:

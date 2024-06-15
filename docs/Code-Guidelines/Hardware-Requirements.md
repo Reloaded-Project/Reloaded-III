@@ -18,30 +18,14 @@ For reference:
 - **Server**: The backend server that handles all of the mod management logic
 - **Loader**: Everything that runs inside game code
 
-!!! warning "Having a standard dynamically linked library is considered an essential requirement."
-
-    Reloaded3 is a plugin based system. (i.e. Mods are Plugins)
-
-    Without a standard/system library to link plugins to, R3 mods will be too
-    large to efficiently run on super niche targets; such as embedded inside
-    a GameCube game. (<1 MB RAM free)
-
-    !!! note ""
-
-        Merging mods into a single compilation will be possible, and would avoid dynamic linking.
-        However, you'd then need to install the toolchain on the end user machine, to then
-        build the user's selected set of mods into one target.
-
-    If anyone's crazy enough to try these sorts of experiments, let me know.
-
-    I'd love to lend a hand in the unexpected.
-
 ### Full Experience (Launcher + Server)
 
 !!! info "For running the UI and Backend Server on one machine"
 
 - **CPU**: Pentium III
-- **RAM**: Approximately 64MB of available RAM
+- **RAM**:
+    - 128MB (Desktop) [Avalonia, NativeAOT]
+    - 32MB (Embedded) [Not Currently Planned]
 - **Storage**: A 5400 RPM hard drive.
 
 Something around the specs of an original Xbox.
@@ -210,6 +194,35 @@ For example; this means allowing the user to extract archives on a single thread
 It does not mean that the whole thing should be designed fully around old hardware in mind.
 More memory can be used if required; for example, to display images.
 
+### About Esoteric & Experimental Platforms
+
+!!! info "Consoles, Embedded Systems, etc."
+
+!!! warning "Having a standard dynamically linked library is considered an essential requirement."
+
+Reloaded3 is a plugin based system. (i.e. Mods are Plugins)
+
+Without a standard/system library to link plugins to, R3 mods will be too
+large to efficiently run on super niche targets; such as embedded inside
+a GameCube game. (<1 MB RAM free)
+
+While I have no intention of targeting these platforms personally, the architecture will be
+nonetheless designed in a way that does not explicitly lock out such targets.
+
+Namely this boils down to:
+
+- Merging mods into a single compilation will be possible.
+    - This avoids wasting memory on multiple copies of the same common code.
+    - So user's mods may be compiled on the fly.
+    - But you may need to install a compilation toolchain in this crazy workflow.
+- Allowing loading code in custom formats.
+    - This is covered under [Custom Backends (Layer 0)][custom-backends].
+    - A custom backend could be used to load Position Independent Code (PIC) from a custom format.
+
+If anyone's crazy enough to try these sorts of experiments, let me know.
+
+I'd love to lend a hand in the unexpected.
+
 ### Misc Notes
 
 !!! note "It may be useful to allow mods to boot the server from within a game."
@@ -221,3 +234,4 @@ More memory can be used if required; for example, to display images.
 [software-disenchantment]: https://tonsky.me/blog/disenchantment/
 [diagnostics]: ../Server/Diagnostics.md
 [wirth-law]: https://en.wikipedia.org/wiki/Wirth%27s_law
+[custom-backends]: ../Loader/Core-Architecture.md#custom-backends-layer-0

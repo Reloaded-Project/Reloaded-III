@@ -20,24 +20,30 @@ Some systems are simply too complex to make replacements for.
 For example:
 
 - No sane person would make a full UI framework for R3.
-- No sane person could make an SDL replacement for controllers.
+- No sane person would make an SDL replacement for controllers.
     - You're not going to buy 100s of controllers to match SDL's [gamecontrollerdb.txt][gamecontrollerdb].
     - Having the user's gamepad pre-configured is much more valuable than the ~100kB of code size.
 
-Before over-optimizing, always consider the tradeoffs involved.
+Before over-optimizing, always consider the tradeoffs involved.<br/>
+Sometimes the extra space used by a non-specialized off the shelf library may be acceptable.
 
 Although Reloaded3 strives for maximum efficiency and 'perfectionism', sometimes having things
 'just work' on the user machines can be just as 'perfect' as squeezing every byte out.
 
+!!! note "Sometimes you can just improve the existing solution."
+
+    Replacing `gamecontrollerdb.txt` with a binary version for example, would save binary size,
+    and disk space.
+
 ### When Applying These Guidelines is Encouraged
 
-!!! tip "Apply this to any reusable code [that could possibly run inside a 32-bit environment][why-those-specs]."
+!!! tip "Apply this to any ***reusable code*** [that could possibly run inside a 32-bit environment][why-those-specs]."
 
-Below are some examples.
+Below are some examples of good places to optimize.
 
 ***General Purpose Libraries/Code***:
 
-Basically all universal 'Essential' mods in this wiki
+Basically all universal 'Essential' mods in this wiki, and the libraries they may use.
 
 - ✅ **DLL Injector**: Can be used to inject into child processes.
 - ✅ **Code Hooking Library**: Used by all code mods.
@@ -64,15 +70,73 @@ Basically all universal 'Essential' mods in this wiki
 
 These can be ported to embedded systems, so should be optimized.
 
-- ✅ Any code for the `launcher` UI.
 - ✅ Any code for the `loader` server.
+- ✅ Any code that can be used inside mods.
 
 ### Guidelines
 
+#### Be smart with library usage
 
-#### Reduce use of `std` in libraries.
+!!! info "Sometimes you can be a bit smarter than libraries."
 
+    This includes the standard library.
 
+Below is an example.
+
+Suppose you want to take an action on every directory up to a certain file path.
+For example, to ensure that all directories in a path exist.
+
+The standard 'idiomatic' way would be to write it like this:
+
+```rust
+fn process_path(path: &str) {
+    let mut current_path = PathBuf::with_capacity(path.len());
+    current_path.push("/");
+
+    for component in path.split('/') {
+        if !component.is_empty() {
+            current_path.push(component);
+
+            // Do something with directory
+            handle_directory(&current_path);
+        }
+    }
+}
+```
+
+However, you can do better. You can work with a raw string directly?
+
+```rust
+unsafe fn process_path(path: &str) {
+    let mut current_path = String::with_capacity(path.len());
+    current_path.push('/');
+    for component in path.split('/') {
+        if !component.is_empty() {
+            current_path.push_str(component);
+
+            // Do something with directory.
+            handle_directory(&current_path);
+
+            current_path.push('/');
+        }
+    }
+}
+```
+
+!!! question "But how is this better?"
+
+    Consider the [implementation of push][push-impl] in `PathBuf` and note all the edge cases:
+
+    > - If `path` is absolute, it replaces the current path
+    > - If `path` has a root but no prefix (e.g., `\windows`), it replaces everything except for the prefix (if any) of `self`.
+    > - If `path` has a prefix but no `root`, it replaces `self`.
+    > - If `self` has a verbatim prefix (e.g. `\\?\C:\windows`) and `path` is not empty, the new path is normalized: all references to . and `..` are removed.
+
+    In this context, because we are constructing a unix path, which is guaranteed to begin with `/`,
+    and are always appending a directory.
+
+    We don't need to handle any of these edge cases. The code for that is unnecessary, and will
+    unnecessarily bloat the binary.
 
 [min-sized-rust]: https://github.com/johnthagen/min-sized-rust
 [middleware-mods]: ../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
@@ -83,3 +147,4 @@ These can be ported to embedded systems, so should be optimized.
 [why-those-specs]: ./Hardware-Requirements.md#why-these-specs
 [server]: ../Server/About.md
 [gamecontrollerdb]: https://github.com/mdqinc/SDL_GameControllerDB
+[push-impl]: https://doc.rust-lang.org/std/path/struct.PathBuf.html#method.push

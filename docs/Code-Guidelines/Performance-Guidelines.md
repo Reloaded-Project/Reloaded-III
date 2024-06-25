@@ -138,13 +138,52 @@ unsafe fn process_path(path: &str) {
     We don't need to handle any of these edge cases. The code for that is unnecessary, and will
     unnecessarily bloat the binary.
 
+#### Review (Vet) Library Source Code
+
+!!! info "Have a peek into implementation of 3rd party libraries."
+
+    In particular small libraries that likely haven't had many eyes on them.
+
+When writing code, especially C# code where the barrier of entry is low, it's easy for authors
+to write code which is far from optimal.
+
+Take for example [A Semi-Popular Avalonia Icon Library][projectanker-avalonia-icons].<br/>
+To load a material design icon from this library...
+
+- [You Embed all 7447 Icons Inside your Binary (+ ~3.5MB binary size)][projectanker-icon-assets]
+- [Load an Icon from Embedded Resource][projectanker-icon-load]
+- [Parse Icon SVG for Properties using Uncompiled Regex][projectanker-parse-svg]
+- [Parse Icon SVG Path to create Icon][projectanker-parse-svg-path]
+
+The loading process restarts every single time you want to load an icon. If you have
+10 buttons with the same icon, the that entire loading process (from extracting embedded resource)
+repeats 10 times.
+
+Also [changing the colour of the icon repeats all of the loading steps again][projectanker-icon-reload].
+
+This is a bit of a more extreme example, but it is very easy to take a dependency on something
+that may not be very optimal. A lot of stars on GitHub does not necessarily always have to speak
+on the quality of the code.
+
+!!! tip "For smaller libraries, consider a quick run down through their source code."
+
+    If you see something that could be optimized, consider making a PR.
+    Or write your own alternative.
+
+<!-- Links -->
+[file-emulation-framework]: ../Mods/Essentials/File-Emulation-Framework/About.md
+[game-support-layer2]: ../Loader/Core-Architecture.md#game-support-layer-2
+[gamecontrollerdb]: https://github.com/mdqinc/SDL_GameControllerDB
 [min-sized-rust]: https://github.com/johnthagen/min-sized-rust
 [middleware-mods]: ../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
-[game-support-layer2]: ../Loader/Core-Architecture.md#game-support-layer-2
-[virtual-filesystem]: ../Mods/Essentials/Virtual-FileSystem/About.md
-[file-emulation-framework]: ../Mods/Essentials/File-Emulation-Framework/About.md
 [mod-loader-hw-requirements]: ./Hardware-Requirements.md#mod-loader
-[why-those-specs]: ./Hardware-Requirements.md#why-these-specs
-[server]: ../Server/About.md
-[gamecontrollerdb]: https://github.com/mdqinc/SDL_GameControllerDB
+[projectanker-avalonia-icons]: https://github.com/Projektanker/Icons.Avalonia
+[projectanker-icon-assets]: https://github.com/Projektanker/Icons.Avalonia/tree/main/src/Projektanker.Icons.Avalonia.MaterialDesign/Assets
+[projectanker-icon-load]: https://github.com/Projektanker/Icons.Avalonia/blob/509a9741321da5be8a9a585cb0ab3a94378712ff/src/Projektanker.Icons.Avalonia.MaterialDesign/MaterialDesignIconProvider.cs#L55-L76
+[projectanker-parse-svg]: https://github.com/Projektanker/Icons.Avalonia/blob/509a9741321da5be8a9a585cb0ab3a94378712ff/src/Projektanker.Icons.Avalonia.MaterialDesign/MaterialDesignIconProvider.cs#L39-L53
+[projectanker-parse-svg-path]: https://github.com/Projektanker/Icons.Avalonia/blob/509a9741321da5be8a9a585cb0ab3a94378712ff/src/Projektanker.Icons.Avalonia/IconImage.cs#L94
+[projectanker-icon-reload]: https://github.com/Projektanker/Icons.Avalonia/blob/509a9741321da5be8a9a585cb0ab3a94378712ff/src/Projektanker.Icons.Avalonia/Icon.axaml.cs#L56
 [push-impl]: https://doc.rust-lang.org/std/path/struct.PathBuf.html#method.push
+[server]: ../Server/About.md
+[virtual-filesystem]: ../Mods/Essentials/Virtual-FileSystem/About.md
+[why-those-specs]: ./Hardware-Requirements.md#why-these-specs

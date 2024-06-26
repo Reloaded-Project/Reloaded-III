@@ -117,6 +117,8 @@ This information can be used to provide compatibility insights to other users.
     The central server will perform requests on behalf of my account and then cache the results,
     to help ease the load.
 
+    Planned response cache time is ~24 hours.
+
 For more implementation details, see [SteamGridDB][steam-grid-db].
 
 ### Search

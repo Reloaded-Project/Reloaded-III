@@ -197,7 +197,7 @@ nav:
         - Windows - DLL Hijack: Research/Bootloaders/Windows-DllHijack.md
         - Windows - Inject Into Suspended Process: Research/Bootloaders/Windows-InjectIntoSuspended.md
     - External Services:
-        - Steam Grid DB: Research/External-Services/SteamGridDB.md
+        - SteamGridDB: Research/External-Services/SteamGridDB.md
     - Binary Sizes:
         - IPC: Research/Library-Sizes/IPC.md
         - Serializers: Research/Library-Sizes/Serializers.md

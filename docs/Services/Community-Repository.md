@@ -244,33 +244,33 @@ This gives the user a yes/no prompt. If they select 'yes', the `SuggestedExecuta
 
 !!! info "Technical Note (Icon)"
 
-    **Aspect ratio**: 1:1.
-    **Expected Resolution**: `256x256`. (4K Display ✅)
-    **Preferred Resolution**: `512x512`. (8K Display ✅)
-    **Expected Size @ `256x256`**: ~60KiB.
-    **Format**: [JPEG XL][images].
+    **Aspect ratio**: 1:1. <br/>
+    **Expected Resolution**: `256x256`. (4K Display ✅) <br/>
+    **Preferred Resolution**: `512x512`. (8K Display ✅) <br/>
+    **Expected Size @ `256x256`**: ~60KiB. <br/>
+    **Format**: [JPEG XL][images]. <br/>
 
 !!! info "Technical Note (Banner Square)"
 
-    **Aspect ratio**: 1:1.
-    **Expected Resolution**: `512x512`. (4K Display ✅)
-    **Preferred Resolution**: `1024x1024`. (8K Display ✅)
-    **Expected Size @ `512x512`**: ~120KiB.
-    **Format**: [JPEG XL][images].
+    **Aspect ratio**: 1:1. <br/>
+    **Expected Resolution**: `512x512`. (4K Display ✅) <br/>
+    **Preferred Resolution**: `1024x1024`. (8K Display ✅) <br/>
+    **Expected Size @ `512x512`**: ~120KiB. <br/>
+    **Format**: [JPEG XL][images]. <br/>
 
 !!! info "Technical Note (BannerV)"
 
-    **Aspect ratio**: 2:3.
-    **Expected Resolution (BannerV)**: `600x900`. (4K Display ✅)
-    **Expected Size @ `600x900`**: ~210KiB.
-    **Format**: [JPEG XL][images].
+    **Aspect ratio**: 2:3. <br/>
+    **Expected Resolution (BannerV)**: `600x900`. (4K Display ✅) <br/>
+    **Expected Size @ `600x900`**: ~210KiB.<br/>
+    **Format**: [JPEG XL][images].<br/>
 
 !!! info "Technical Note (BannerH)"
 
-    **Aspect ratio**: 92:43.
-    **Expected Resolution (BannerV)**: `920x430`. (4K Display ✅)
-    **Expected Size @ `920x430`**: ~180KiB.
-    **Format**: [JPEG XL][images].
+    **Aspect ratio**: 92:43. <br/>
+    **Expected Resolution (BannerV)**: `920x430`. (4K Display ✅) <br/>
+    **Expected Size @ `920x430`**: ~180KiB. <br/>
+    **Format**: [JPEG XL][images]. <br/>
 
 !!! question "Where is are these images used?"
 
@@ -278,19 +278,23 @@ This gives the user a yes/no prompt. If they select 'yes', the `SuggestedExecuta
     So for 4K, double the resolution.
 
     **Icons (1:1)**:
-        - 48x48 in Windows Desktop Shortcut
-        - 96x96 in Spine
-        - 100x100 in Gnome 3 Shortcut (All Apps View)
+
+      - 48x48 in Windows Desktop Shortcut
+      - 96x96 in Spine
+      - 100x100 in Gnome 3 Shortcut (All Apps View)
 
     **BannerSquare (1:1)**:
-        - 192x192 in Game Grid (Default)
-        - 256x256 in Game Grid (Larger)
+
+      - 192x192 in Game Grid (Default)
+      - 256x256 in Game Grid (Larger)
 
     **BannerH (92:43)**:
-        - 460x215 App View (Grid Horizontal)
+
+      - 460x215 App View (Grid Horizontal)
 
     **BannerV (2:3)**:
-        - 300x450 App View (Grid Vertical)
+
+      - 300x450 App View (Grid Vertical)
 
 The `SteamGridDbCategoryAndId` struct is defined as follows:
 

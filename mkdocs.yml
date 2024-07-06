@@ -188,7 +188,7 @@ nav:
     - Community Repository: Services/Community-Repository.md
   - Code Guidelines:
     - Hardware Requirements: Code-Guidelines/Hardware-Requirements.md
-    - Performance Guidelines: Code-Guidelines/Performance-Guidelines.md
+    - Code Guidelines: Code-Guidelines/Code-Guidelines.md
   - FAQ: FAQ.md
   - Research & Explanations:
     - Bootloaders:

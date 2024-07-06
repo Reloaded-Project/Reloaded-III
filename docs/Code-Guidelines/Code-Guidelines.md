@@ -50,7 +50,7 @@ Although Reloaded3 strives for maximum efficiency and 'perfectionism', sometimes
     Replacing `gamecontrollerdb.txt` with a binary version for example, would save binary size,
     and disk space.
 
-### When Applying These Guidelines is Encouraged
+### When Optimizing for Size is Encouraged
 
 !!! tip "Apply this to any ***reusable code*** [that could possibly run inside a 32-bit environment][why-those-specs]."
 
@@ -145,7 +145,7 @@ unsafe fn process_path(path: &str) {
     > - If `path` is absolute, it replaces the current path
     > - If `path` has a root but no prefix (e.g., `\windows`), it replaces everything except for the prefix (if any) of `self`.
     > - If `path` has a prefix but no `root`, it replaces `self`.
-    > - If `self` has a verbatim prefix (e.g. `\\?\C:\windows`) and `path` is not empty, the new path is normalized: all references to . and `..` are removed.
+    > - If `self` has a verbatim prefix (e.g. `\\?\C:\windows`) and `path` is not empty, the new path is normalized: all references to `.` and `..` are removed.
 
     In this context, because we are constructing a unix path, which is guaranteed to begin with `/`,
     and are always appending a directory.
@@ -548,11 +548,18 @@ Note that these sizes can vary based on specific configurations:
 - **Linux**:
     - Default: 8 MiB
 
-For esoteric platforms such as sixth-generation consoles [GCN, Xbox, PS2], assume the stack size is
-around 64K on main thread and around 4K on non-main threads (as a rule of thumb).
+As a general rule of thumb, try to avoid allocating objects larger than 100K on the stack.
 
-As a general rule of thumb, avoid >1000 byte allocations on stack for the esoterics, and >100KB for
-the common platforms.
+##### Esoteric & Embedded Platforms
+
+!!! note "This is provided for completion."
+
+    If you're an external contributor, you're not expected to keep these in mind.
+    [More Info Here][mod-loader-esoteric]
+
+For these sorts of platforms, such as sixth-generation consoles and embedded devices, assume the
+stack size is around 64K on main thread and around 4K on non-main threads. For these platforms,
+avoid >1000 byte stack allocations.
 
 #### 4.2 Mixing Stack and Heap Allocation
 

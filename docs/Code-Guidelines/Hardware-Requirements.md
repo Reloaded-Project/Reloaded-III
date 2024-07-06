@@ -9,6 +9,8 @@
     For example if you're writing game mods that run only on modern 64-bit
     machines, then pay no mind to this section.
 
+This page simply provides an insight into my (Sewer's) personal targets.
+
 ## Minimum Requirements
 
 !!! info "Below are the minimum requirements for running Reloaded3."
@@ -81,7 +83,7 @@ to hitting that limit.
 !!! tip "Large Address Aware a.k.a. '4GB Patch'"
 
     Many games can be patched to extend memory to 4GiB.<br/>
-    Reloaded3 will offer this, but this is not always guaranteed to work.
+    Reloaded3 will offer this, but it's not always guaranteed every game will work.
 
 But guess what... ***it's not even 1.5GiB***.<br/>
 ***We have even less memory.***
@@ -109,8 +111,8 @@ software on default settings.
 | Steam Overlay (After Opening Once)            | 65MiB                                |
 | RivaTuner Statistics Server (RTSS) 'Disabled' | 63MiB                                |
 | RivaTuner Statistics Server (RTSS)            | 67MiB                                |
-| GeForce Experience                            | 0? ⚠                                 |
-| Nvidia App                                    | 5MiB ⚠                               |
+| GeForce Experience                            | UNKNOWN ⚠                            |
+| Nvidia App                                    | UNKNOWN ⚠                            |
 
 Notes:
 

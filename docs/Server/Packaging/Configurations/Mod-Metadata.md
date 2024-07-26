@@ -152,4 +152,4 @@ By default this value is false. So mod would get disabled.
 [ready-to-run]: ../../../Loader/Backends/CoreCLR.md#ready-to-run
 [reloaded2-backend]: ../../../Loader/Backends/CoreCLR.md#reloaded-ii
 [images]: ../../../Common/Images.md
-[grid-display-mode]: ../../../Server/Storage/Loadouts/Events.md#griddisplaymode
+[grid-display-mode]: ../../../Server/Storage/Loadouts/File-Format/DataTypes.md#griddisplaymode

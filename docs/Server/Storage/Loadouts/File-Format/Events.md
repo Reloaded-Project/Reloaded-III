@@ -1,102 +1,15 @@
-!!! info "This is a full list of events in [events.bin][events-bin]"
+!!! info "This is a full list of events that can be stored in [events.bin][events-bin]"
 
-All bit packed fields are in little endian unless specified otherwise.
-They are shown in lowest to highest bit order.
+!!! note "All bit packed fields are in little endian unless specified otherwise."
 
-So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
+    They are shown in lowest to highest bit order.
 
-## Shared Structures
-
-### Max Numbers
-
-- Max number of Package Download Data/Metadata (MetadataIdx): `268,435,456` (28 bits)
-- Max number of Configs (ConfigIdx): `134,217,727` (27 bits)
-- Max number of Events: `4,294,967,295` (32 bits)
-- Max number of Game Versions/Revisions (GameVerIdx): `65,536` (16 bits)
-- Max timestamp. R3TimeStamp: `4,294,967,295` (32 bits).
-    - This is the number of seconds since `1st January 2024`.
-    - Max year 2160.
-
-### PackageState
-
-!!! info "Represents the state of a package in the loadout."
-
-    - Size: 3 bits
-    - Possible values: 0-7
-
-`PackageState` is defined as:
-
-- `0`: `Removed`. The package was removed from the loadout.
-- `1`: `Hidden`. The package was hidden from the loadout.
-- `2`: `Disabled` (Default State). The package was disabled in the loadout.
-- `3`: `Added`. The package was added to the loadout.
-- `4`: `Enabled`. The package was enabled in the loadout.
-
-### SortingMode
-
-!!! info "Represents the sorting mode for packages in the LoadoutGrid."
-
-    - Size: 7 bits
-    - Possible values: 0-127
-
-`SortingMode` is defined as:
-
-- `0`: Unchanged
-- `1`: `Static`. The order of mods is fixed and does not change between reboots.
-- `2`: `Release Date Ascending`. Show from oldest to newest.
-- `3`: `Release Date Descending`. Show from newest to oldest.
-- `4`: `Install Date Ascending`. Show from oldest to newest.
-- `5`: `Install Date Descending`. Show from newest to oldest.
-
-### SortOrder
-
-!!! info "Represents the sort order for the load order reorderer."
-
-    - Size: 2 bits
-    - Possible values: 0-3
-
-`SortOrder` is defined as:
-
-- `0`: Unchanged
-- `1`: `BottomToTop` (Default). Mods at bottom load first, mods at top load last and 'win'.
-- `2`: `TopToBottom`. Sort in ascending order.
-
-### GridDisplayMode
-
-!!! info "Represents the display mode for the LoadoutGrid."
-
-    - Size: 4 bits
-    - Possible values: 0-15
-
-`GridDisplayMode` is defined as:
-
-- `0`: Unchanged
-- `1`: List (Compact)
-- `2`: List (Thick)
-- `3`: Grid (Search)
-
-### StoreType
-
-!!! info "Represents the store or location from which a game has shipped from."
-
-    - Size: 8 bits
-    - Possible values: 0-15
-
-- 0: `Unknown` (Disk)
-- 1: `GOG`
-- 2: `Steam`
-- 3: `Epic`
-- 4: `Microsoft`
-
-This can also include game launchers.
-
-## Events
-
-!!! info "Lists each event type that can be stored in [events.bin][events-bin]."
+    So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
 
 Each event is represented by a 1 byte `EventType` (denoted in section title).
-This is a power of 2, and can be followed by a 1, 3 or 7 byte payload. This makes each event 1, 2,
-4 or 8 bytes long.
+
+This is a power of 2, and can be followed by a 1, 3 or 7 byte payload.<br/>
+This makes each event 1, 2, 4 or 8 bytes long.
 
 !!! tip "We take advantage of modern 64-bit processors here."
 
@@ -114,7 +27,55 @@ accessed by index.
 
     This allows extending the total number of opcodes to 4336.
 
-### Optimizing for Compression
+## An Example
+
+Let's consider a sequence of events to illustrate how padding and reading work in this system.
+We'll use a mix of different event types to show various scenarios.
+
+### Writing Events
+
+Suppose we want to write the following sequence of events:
+
+1. [GameLaunched](#gamelaunched) (1 byte)
+2. [PackageStatusChanged8](#0100-packagestatuschanged8) (2 bytes)
+3. [ConfigUpdated8](#0101-configupdated8) (2 bytes)
+4. [PackageUpdated16](#1005-packageupdated16) (4 bytes)
+
+Here's how these events would be written to the file:
+
+```
+| Byte 0-7    | Meaning                                                    |
+| ----------- | ---------------------------------------------------------- |
+| 01          | [GameLaunched](#gamelaunched) event                        |
+| 40 ??       | [PackageStatusChanged8](#0100-packagestatuschanged8) event |
+| 41 ??       | [ConfigUpdated8](#0101-configupdated8) event               |
+| 00 00 00    | NOP padding to align next event to 8-byte boundary         |
+| 85 85 ?? ?? | [PackageUpdated16](#1005-packageupdated16) event           |
+```
+
+Explanation:
+
+- The [GameLaunched](#gamelaunched) event (`01`) takes 1 byte.
+- The [PackageStatusChanged8](#0100-packagestatuschanged8) event (`40 XX`) takes 2 bytes.
+- The [ConfigUpdated8](#0101-configupdated8) event (`41 XX`) takes 2 bytes.
+- At this point, we've written 5 bytes. To ensure the next 4-byte event ([PackageUpdated16](#1005-packageupdated16)) starts on an 8-byte boundary, we add 3 bytes of [NOP](#0000-nop) padding (`00 00 00`).
+- Finally, we write the [PackageUpdated16](#1005-packageupdated16) event (`85 85 XX XX`), which takes 4 bytes.
+
+### Reading Events
+
+When reading these events, the system would perform full 8-byte reads:
+
+1. First read (8 bytes): `01 40 ?? 41 ?? 00 00 00`
+    - Processes [GameLaunched](#gamelaunched) (1 byte)
+    - Processes [PackageStatusChanged8](#0100-packagestatuschanged8) (2 bytes)
+    - Processes [ConfigUpdated8](#0101-configupdated8) (2 bytes)
+    - Skips NOP padding (3 bytes)
+
+2. Second read (8 bytes): `85 85 ?? ?? ?? ?? ?? ??`
+   - Processes [PackageUpdated16](#1005-packageupdated16) (4 bytes)
+   - The last 2 bytes (XX XX) would be the start of the next event or additional padding
+
+## Optimizing for Compression
 
 !!! tip "The events are heavily optimized to maximize compression ratios."
 
@@ -123,7 +84,7 @@ To achieve this we do the following:
 - Padding bytes use same byte as EventType to increase repeated bytes.
 - EventType(s) have forms with multiple lengths (to minimize unused bytes).
 
-### Event Ranges
+## Event Ranges
 
 The payload size is determined by the 2 high bits of the event type.
 
@@ -138,7 +99,7 @@ This leaves the remaining next 6 bits (0-63) for the event type.
 
 i.e. `{YY}{XXXXXX}`.
 
-### Event Representation
+## Event Representation
 
 Each event is represented with something like this:
 
@@ -154,7 +115,7 @@ in 3 bits'. These provide a visual representation of the ranges to prevent ambig
 In the EventType, the `{00}` denotes the size prefix, and the `+` shows the offset into
 the given prefix (0-63, in hex).
 
-### {00}+00: NOP
+## {00}+00: NOP
 
 !!! info "Dummy no-op event for restoring alignment."
 
@@ -173,11 +134,11 @@ This way we can ensure alignment is maintained.
 
     There are no timestamps or other data associated with this event.
 
-### PackageStatusChanged
+## PackageStatusChanged
 
 !!! info "A new package has been added to `Package References` and can be seen from loadout."
 
-#### Messages
+### Messages
 
 `PackageType` is the type of package referred to `MetadataIdx`.
 
@@ -202,7 +163,7 @@ This way we can ensure alignment is maintained.
 - [tool-disabled][tool-disabled] when `NewStatus == Disabled` and `PackageType == Tool`.
 - [tool-enabled][tool-enabled] when `NewStatus == Enabled` and `PackageType == Tool`.
 
-#### {01}+00: PackageStatusChanged8
+### {01}+00: PackageStatusChanged8
 
 | EventType (0-7)  | NewStatus (8-10) | MetadataIdx (11-15) |
 | ---------------- | ---------------- | ------------------- |
@@ -210,10 +171,10 @@ This way we can ensure alignment is maintained.
 
 | Data Type    | Name        | Label | Description                                                          |
 | ------------ | ----------- | ----- | -------------------------------------------------------------------- |
-| PackageState | NewStatus   | X     | See [PackageState](#packagestate)                                    |
+| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                     |
 | `u5`         | MetadataIdx | Y     | [0-31] Index of metadata in [Package References][packagemetadatabin] |
 
-#### {10}+00: PackageStatusChanged16
+### {10}+00: PackageStatusChanged16
 
 | EventType (0-7)  | Padding (8-15) | NewStatus (16-18) | MetadataIdx (19-31)  |
 | ---------------- | -------------- | ----------------- | -------------------- |
@@ -222,10 +183,10 @@ This way we can ensure alignment is maintained.
 | Data Type    | Name        | Label | Description                                                            |
 | ------------ | ----------- | ----- | ---------------------------------------------------------------------- |
 | `u8`         | Padding     | 80    | Constant `80`. Repeats previous byte.                                  |
-| PackageState | NewStatus   | X     | See [PackageState](#packagestate)                                      |
+| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                       |
 | `u13`        | MetadataIdx | Y     | [0-8192] Index of metadata in [Package References][packagemetadatabin] |
 
-#### {10}+01: PackageStatusChanged24
+### {10}+01: PackageStatusChanged24
 
 | EventType (0-7)  | NewStatus (8-10) | MetadataIdx (11-31)             |
 | ---------------- | ---------------- | ------------------------------- |
@@ -233,10 +194,10 @@ This way we can ensure alignment is maintained.
 
 | Data Type    | Name        | Label | Description                                                          |
 | ------------ | ----------- | ----- | -------------------------------------------------------------------- |
-| PackageState | NewStatus   | X     | See [PackageState](#packagestate)                                    |
+| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                     |
 | `u21`        | MetadataIdx | Y     | [0-2M] Index of metadata in [Package References][packagemetadatabin] |
 
-#### {11}+00: PackageStatusChanged32
+### {11}+00: PackageStatusChanged32
 
 | EventType (0-7)  | Padding (8-31) | Unused (32-32) | NewStatus (33-35) | MetadataIdx (36-63)                       |
 | ---------------- | -------------- | -------------- | ----------------- | ----------------------------------------- |
@@ -246,10 +207,10 @@ This way we can ensure alignment is maintained.
 | ------------ | ----------- | ----- | ---------------------------------------------------------------------- |
 | `u24`        | Padding     | C0    | Constant `C0`. Repeats previous byte.                                  |
 | `u1`         | Unused      | 0     |                                                                        |
-| PackageState | NewStatus   | X     | See [PackageState](#packagestate)                                      |
+| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                       |
 | `u28`        | MetadataIdx | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin] |
 
-### GameLaunched
+## GameLaunched
 
 !!! info "This event is extremely common. So gets its own opcode."
 
@@ -260,26 +221,26 @@ This event has no extra data.
 
     If the launcher detects that Reloaded has been ran through an external logger.
 
-#### Messages
+### Messages
 
 - [game-launched][game-launched]
 
-#### {00}+01: GameLaunched
+### {00}+01: GameLaunched
 
 | EventType (0-7)  |
 | ---------------- |
 | 01 (`{00} + 01`) |
 
-### ConfigUpdated
+## ConfigUpdated
 
 !!! info "This event indicates that a package configuration was updated."
 
-#### Messages
+### Messages
 
 - [mod-config-updated][mod-config-updated] when `PackageType == Mod`.
 - [tool-config-updated][tool-config-updated] when `PackageType == Tool`.
 
-#### {01}+01: ConfigUpdated8
+### {01}+01: ConfigUpdated8
 
 | EventType (0-7)  | NewStatus (8-11) | MetadataIdx (12-15) |
 | ---------------- | ---------------- | ------------------- |
@@ -290,7 +251,7 @@ This event has no extra data.
 | `u4` (ConfigIdx)   | ConfigIdx   | X     | [0-15] Index of associated configuration in [config.bin][configbin]  |
 | `u4` (MetadataIdx) | MetadataIdx | Y     | [0-15] Index of metadata in [Package References][packagemetadatabin] |
 
-#### {10}+02: ConfigUpdated16
+### {10}+02: ConfigUpdated16
 
 | EventType (0-7)  | Padding (8-15) | ConfigIdx (16-22) | MetadataIdx (23-31) |
 | ---------------- | -------------- | ----------------- | ------------------- |
@@ -302,7 +263,7 @@ This event has no extra data.
 | `u7` (ConfigIdx)   | ConfigIdx   | X     | [0-127] Index of associated configuration in [config.bin][configbin]  |
 | `u9` (MetadataIdx) | MetadataIdx | Y     | [0-511] Index of metadata in [Package References][packagemetadatabin] |
 
-#### {10}+03: ConfigUpdated24
+### {10}+03: ConfigUpdated24
 
 | EventType (0-7)  | ConfigIdx (8-18)              | MetadataIdx (19-31)             |
 | ---------------- | ----------------------------- | ------------------------------- |
@@ -313,7 +274,7 @@ This event has no extra data.
 | `u11` (ConfigIdx)   | ConfigIdx   | X     | [0-2047] Index of associated configuration in [config.bin][configbin]  |
 | `u13` (MetadataIdx) | MetadataIdx | Y     | [0-8191] Index of metadata in [Package References][packagemetadatabin] |
 
-#### {11}+01 ConfigUpdated32
+### {11}+01 ConfigUpdated32
 
 | EventType (0-7)  | Padding (8-31) | ConfigIdx (32-46)      | MetadataIdx (47-63)         |
 | ---------------- | -------------- | ---------------------- | --------------------------- |
@@ -325,7 +286,7 @@ This event has no extra data.
 | `u15` (ConfigIdx)   | ConfigIdx   | X     | [0-32767] Index of associated configuration in [config.bin][configbin]   |
 | `u17` (MetadataIdx) | MetadataIdx | Y     | [0-131071] Index of metadata in [Package References][packagemetadatabin] |
 
-#### {11}+02 ConfigUpdatedFull
+### {11}+02 ConfigUpdatedFull
 
 | EventType (0-7)  | ConfigIdx (8-35)       | MetadataIdx (36-63)         |
 | ---------------- | ---------------------- | --------------------------- |
@@ -336,13 +297,13 @@ This event has no extra data.
 | `u27` (ConfigIdx)   | ConfigIdx   | X     | [0-134M] Index of associated configuration in [config.bin][configbin]  |
 | `u28` (MetadataIdx) | MetadataIdx | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin] |
 
-### LoadoutDisplaySettingChanged
+## LoadoutDisplaySettingChanged
 
 !!! info "A setting related to how mods are displayed in the UI has changed."
 
 This is rarely changed so has a large 4-byte payload and can change multiple events at once.
 
-#### Messages
+### Messages
 
 - [loadout-display-setting-changed][loadout-display-setting-changed]
 - [loadout-grid-enabled-sort-mode-changed][loadout-grid-enabled-sort-mode-changed] when only `LoadoutGridEnabledSortMode` has changed.
@@ -350,20 +311,20 @@ This is rarely changed so has a large 4-byte payload and can change multiple eve
 - [mod-load-order-sort-changed][mod-load-order-sort-changed] when only `ModLoadOrderSort` has changed.
 - [loadout-grid-style-changed][loadout-grid-style-changed] when only `LoadoutGridStyle` has changed.
 
-#### {10}+04 LoadoutDisplaySettingChanged
+### {10}+04 LoadoutDisplaySettingChanged
 
 | EventType (0-7)  | Unused (8-11) | LoadoutGridEnabledSortMode (12-18) | LoadoutGridDisabledSortMode (19-25) | ModLoadOrderSort (26-27) | LoadoutGridStyle (28-31) |
 | ---------------- | ------------- | ---------------------------------- | ----------------------------------- | ------------------------ | ------------------------ |
 | 84 (`{10} + 04`) |               | `{WWWWWWW}`                        | `{XXXXXXX}`                         | `{YY}`                   | `{ZZZZ}`                 |
 
-| Data Type                                  | Name                        | Label | Description                                     |
-| ------------------------------------------ | --------------------------- | ----- | ----------------------------------------------- |
-| `u7` [(SortingMode)](#sortingmode)         | LoadoutGridEnabledSortMode  | W     | Sorting mode for enabled items in LoadoutGrid.  |
-| `u7` [(SortingMode)](#sortingmode)         | LoadoutGridDisabledSortMode | X     | Sorting mode for disabled items in LoadoutGrid. |
-| `u2` [(SortOrder)](#sortorder)             | ModLoadOrderSort            | Y     | Sorting mode for load order reorderer.          |
-| `u4` [(GridDisplayMode)](#griddisplaymode) | LoadoutGridStyle            | Z     | Display mode for LoadoutGrid.                   |
+| Data Type                                 | Name                        | Label | Description                                     |
+| ----------------------------------------- | --------------------------- | ----- | ----------------------------------------------- |
+| `u7` [(SortingMode)][sortingmode]         | LoadoutGridEnabledSortMode  | W     | Sorting mode for enabled items in LoadoutGrid.  |
+| `u7` [(SortingMode)][sortingmode]         | LoadoutGridDisabledSortMode | X     | Sorting mode for disabled items in LoadoutGrid. |
+| `u2` [(SortOrder)][sortorder]             | ModLoadOrderSort            | Y     | Sorting mode for load order reorderer.          |
+| `u4` [(GridDisplayMode)][griddisplaymode] | LoadoutGridStyle            | Z     | Display mode for LoadoutGrid.                   |
 
-### PackageUpdated
+## PackageUpdated
 
 !!! info "This event indicates that a package has been updated to a new version."
 
@@ -377,14 +338,14 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 
     That's why `OldMetadatIdx` and `NewMetadataIdx` are evenly distributed in bits.
 
-#### Messages
+### Messages
 
 - [package-updated][package-updated] when `PackageType` is not known.
 - [mod-updated][mod-updated] when `PackageType == Mod`.
 - [translation-updated][translation-updated] when `PackageType == Translation`.
 - [tool-updated][tool-updated] when `PackageType == Tool`.
 
-#### {10}+05: PackageUpdated16
+### {10}+05: PackageUpdated16
 
 | EventType (0-7)  | Padding (8-15) | OldMetadataIdx (16-23) | NewMetadataIdx (24-31) |
 | ---------------- | -------------- | ---------------------- | ---------------------- |
@@ -396,7 +357,7 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 | `u8` (MetadataIdx) | OldMetadataIdx | X     | [0-255] Index of old version in [Package References][packagemetadatabin] |
 | `u8` (MetadataIdx) | NewMetadataIdx | Y     | [0-255] Index of new version in [Package References][packagemetadatabin] |
 
-#### {10}+06: PackageUpdated24
+### {10}+06: PackageUpdated24
 
 | EventType (0-7)  | OldMetadataIdx (8-19)          | NewMetadataIdx (20-31)         |
 | ---------------- | ------------------------------ | ------------------------------ |
@@ -407,7 +368,7 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 | `u12` (MetadataIdx) | OldMetadataIdx | X     | [0-4095] Index of old version in [Package References][packagemetadatabin] |
 | `u12` (MetadataIdx) | NewMetadataIdx | Y     | [0-4095] Index of new version in [Package References][packagemetadatabin] |
 
-#### {11}+03 PackageUpdated32
+### {11}+03 PackageUpdated32
 
 | EventType (0-7)  | Padding (8-31) | OldMetadataIdx (8-35)                     | NewMetadataIdx (36-63)                    |
 | ---------------- | -------------- | ----------------------------------------- | ----------------------------------------- |
@@ -419,7 +380,7 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 | `u16` (MetadataIdx) | OldMetadataIdx | X     | [0-65535] Index of old version in [Package References][packagemetadatabin] |
 | `u16` (MetadataIdx) | NewMetadataIdx | Y     | [0-65535] Index of new version in [Package References][packagemetadatabin] |
 
-#### {11}+04 PackageUpdated56
+### {11}+04 PackageUpdated56
 
 | EventType (0-7)  | OldMetadataIdx (8-35)                     | NewMetadataIdx (36-63)                    |
 | ---------------- | ----------------------------------------- | ----------------------------------------- |
@@ -430,7 +391,7 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 | `u28` (MetadataIdx) | OldMetadataIdx | X     | [0-268M] Index of old version in [Package References][packagemetadatabin] |
 | `u28` (MetadataIdx) | NewMetadataIdx | Y     | [0-268M] Index of new version in [Package References][packagemetadatabin] |
 
-### PackageLoadOrderChanged
+## PackageLoadOrderChanged
 
 !!! info "This event indicates that the load order of packages has changed."
 
@@ -507,12 +468,12 @@ In a slightly unrealistic scenario of a 10000 mod loadout. Assuming mods were mo
 Or roughly `5ms` seconds of time, before factoring additional inefficiencies of small copies.
 On something like a GameCube, `50ms`.
 
-#### Messages
+### Messages
 
 - [mod-load-order-changed][mod-load-order-changed] when `PackageType == Mod`.
 - [translation-load-order-changed][translation-load-order-changed] when `PackageType == Translation`.
 
-#### {10}+07: PackageLoadOrderChanged16
+### {10}+07: PackageLoadOrderChanged16
 
 | EventType (0-7)  | OldPosition (8-15) | NewPosition (16-23) |
 | ---------------- | ------------------ | ------------------- |
@@ -523,7 +484,7 @@ On something like a GameCube, `50ms`.
 | `u8`      | OldPosition | X     | [0-255] Old position of the mod in the load order. |
 | `u8`      | NewPosition | Y     | [0-255] New position of the mod in the load order. |
 
-#### {10}+08: PackageLoadOrderChanged24
+### {10}+08: PackageLoadOrderChanged24
 
 | EventType (0-7)  | OldPosition (8-19)  | NewPosition (20-31) |
 | ---------------- | ------------------- | ------------------- |
@@ -534,7 +495,7 @@ On something like a GameCube, `50ms`.
 | `u12`     | OldPosition | X     | [0-4095] Old position of the mod in the load order. |
 | `u12`     | NewPosition | Y     | [0-4095] New position of the mod in the load order. |
 
-#### {10}+09: PackageLoadOrderMovedToBottom24
+### {10}+09: PackageLoadOrderMovedToBottom24
 
 Optimized form for common action of moving a mod to the bottom of the load order.
 
@@ -547,7 +508,7 @@ Optimized form for common action of moving a mod to the bottom of the load order
 | `u20`     | OldPosition      | X     | [0-1M] Old position of the mod in the load order. |
 | `u4`      | OffsetFromBottom | Y     | [0-15] Offset from bottom.                        |
 
-#### {10}+0A: PackageLoadOrderMovedToTop24
+### {10}+0A: PackageLoadOrderMovedToTop24
 
 Optimized form for common action of moving a mod to the top of the load order.
 
@@ -560,7 +521,7 @@ Optimized form for common action of moving a mod to the top of the load order.
 | `u20`     | OldPosition   | X     | [0-1M] Old position of the mod in the load order. |
 | `u4`      | OffsetFromTop | Y     | [0-15] Offset from top.                           |
 
-#### {11}+05: PackageLoadOrderChanged32
+### {11}+05: PackageLoadOrderChanged32
 
 | EventType (0-7)  | Padding (8-31) | OldPosition (32-47)     | NewPosition (48-63)     |
 | ---------------- | -------------- | ----------------------- | ----------------------- |
@@ -572,7 +533,7 @@ Optimized form for common action of moving a mod to the top of the load order.
 | `u16`     | OldPosition | X     | [0-65535] Old position of the mod in the load order. |
 | `u16`     | NewPosition | Y     | [0-65535] New position of the mod in the load order. |
 
-#### {11}+06: PackageLoadOrderChanged56
+### {11}+06: PackageLoadOrderChanged56
 
 | EventType (0-7)  | OldPosition (8-35)                        | NewPosition (36-63)                       |
 | ---------------- | ----------------------------------------- | ----------------------------------------- |
@@ -583,7 +544,7 @@ Optimized form for common action of moving a mod to the top of the load order.
 | `u28`     | OldPosition | X     | [0-268M] Old position of the mod in the load order. |
 | `u28`     | NewPosition | Y     | [0-268M] New position of the mod in the load order. |
 
-### UpdateGameStoreManifest
+## UpdateGameStoreManifest
 
 !!! info "This is used for upgrading/downgrading a game on supported stores."
 
@@ -595,7 +556,7 @@ This revision corresponds to an entry in the [stores.bin][stores-bin] file.
 
 This event is emitted the files of the game match a known new store manifest/revision.
 
-#### Messages
+### Messages
 
 - [update-game-store-manifest][update-game-store-manifest]
 - [update-game-store-manifest-steam][update-game-store-manifest-steam] when the store is Steam.
@@ -603,7 +564,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 - [update-game-store-manifest-microsoft][update-game-store-manifest-microsoft] when the store is Microsoft Store.
 - [update-game-store-manifest-epic][update-game-store-manifest-epic] when the store is Epic Games Store.
 
-#### {01}+02: UpdateGameStoreManifest
+### {01}+02: UpdateGameStoreManifest
 
 | EventType (0-7)  | NewRevision (8-15) |
 | ---------------- | ------------------ |
@@ -613,7 +574,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 | ----------------- | ----------- | ----- | ---------------------------------- |
 | `u8` (GameVerIdx) | NewRevision | X     | [0-255] New game version revision. |
 
-#### {10}+0B: UpdateGameStoreManifest
+### {10}+0B: UpdateGameStoreManifest
 
 !!! note "Unlikely this will ever be used, but just in case."
 
@@ -625,7 +586,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 | ----------------- | ----------- | ----- | ------------------------------------ |
 | `u8` (GameVerIdx) | NewRevision | X     | [0-16.8M] New game version revision. |
 
-### UpdateCommandline
+## UpdateCommandline
 
 !!! info "This event updates the commandline parameters passed to the game."
 
@@ -634,11 +595,11 @@ This event is emitted the files of the game match a known new store manifest/rev
     If someone needs a longer commandline, just make an issue please.
     We could encode that as null terminated, probably, while keeping the space savings intact.
 
-#### Messages
+### Messages
 
 - [update-commandline][update-commandline]
 
-#### {01}+03: UpdateCommandline8
+### {01}+03: UpdateCommandline8
 
 | EventType (0-7)  | Length (8-15) |
 | ---------------- | ------------- |
@@ -648,9 +609,9 @@ This event is emitted the files of the game match a known new store manifest/rev
 | --------- | ------ | ----- | ---------------------------------------------------------------------------------------------------------------- |
 | `u8`      | Length | X     | [0-255] Length of new commandline parameters in [commandline-parameter-data.bin][commandline-parameter-data.bin] |
 
-[configbin]: About.md#configbin
-[events-bin]: About.md#eventsbin
-[packagemetadatabin]: About.md#package-references
+[configbin]: Unpacked.md#configbin
+[events-bin]: Unpacked.md#eventsbin
+[packagemetadatabin]: Unpacked.md#package-references
 [package-added]: ./Commit-Messages.md#packageadded
 [package-removed]: ./Commit-Messages.md#packageremoved
 [package-hidden]: ./Commit-Messages.md#packagehidden
@@ -691,8 +652,8 @@ This event is emitted the files of the game match a known new store manifest/rev
 [mod-load-order-sort-changed]: ./Commit-Messages.md#modloadordersortchanged
 [loadout-grid-style-changed]: ./Commit-Messages.md#loadoutgridstylechanged
 [game-launched]: ./Commit-Messages.md#game-launched
-[stores-bin]: ./About.md#storesbin
-[commandline-parameter-data.bin]: ./About.md#commandline-parameter-databin
+[stores-bin]: ./Unpacked.md#storesbin
+[commandline-parameter-data.bin]: ./Unpacked.md#commandline-parameter-databin
 [update-game-store-manifest]: ./Commit-Messages.md#updategamestoremanifest
 [update-game-store-manifest-steam]: ./Commit-Messages.md#steam
 [update-game-store-manifest-gog]: ./Commit-Messages.md#gog
@@ -700,3 +661,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 [update-game-store-manifest-microsoft]: ./Commit-Messages.md#microsoft-store
 [update-commandline]: ./Commit-Messages.md#updatecommandline
 [featuresbin]: ./About.md#featuresbin
+[packagestate]: ./DataTypes.md#packagestate
+[sortingmode]: ./DataTypes.md#sortingmode
+[sortorder]: ./DataTypes.md#sortorder
+[griddisplaymode]: ./DataTypes.md#griddisplaymode

@@ -565,11 +565,11 @@ If we ever get notified from GitHub about bandwidth usage, we will migrate this 
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
 [steamdb]: https://steamdb.info/
 [images]: ../Common/Images.md
-[grid-display-mode]: ../Server/Storage/Loadouts/Events.md#griddisplaymode
+[grid-display-mode]: ../Server/Storage/Loadouts/File-Format/DataTypes.md#griddisplaymode
 [steam-grid-db-docs]: ../Research/External-Services/SteamGridDB.md
 [reloaded-central-server]: ./Central-Server.md
 [stores-bin]: ../Server/Storage/Loadouts/About.md#storesbin
 [gog-buildid]: ../Server/Storage/Loadouts/Stores/GOG.md#retrieving-available-game-versions
-[store-type]: ../Server/Storage/Loadouts/Events.md#storetype
+[store-type]: ../Server/Storage/Loadouts/File-Format/DataTypes.md#storetype
 [server-cache-files-communityrepo]: ../Server/Storage/Locations.md#community-repository
 [tasks]: ../Server/Storage/Games/Tasks.md

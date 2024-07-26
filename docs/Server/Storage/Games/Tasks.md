@@ -288,4 +288,4 @@ explaining why the task is not available. And be blanked out.
 [items-to-store]: ../Locations.md#items-to-store
 [community-repository]: ../../../Services/Community-Repository.md
 [steam-protocol]: https://developer.valvesoftware.com/wiki/Steam_browser_protocol
-[store-type]: ../Loadouts/Events.md#storetype
+[store-type]: ../Loadouts/File-Format/DataTypes.md#storetype

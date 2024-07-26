@@ -107,8 +107,13 @@ nav:
         - Tasks: Server/Storage/Games/Tasks.md
       - Loadouts:
         - About: Server/Storage/Loadouts/About.md
-        - Events: Server/Storage/Loadouts/Events.md
-        - Commit Messages: Server/Storage/Loadouts/Commit-Messages.md
+        - File Format:
+          - Snapshots: Server/Storage/Loadouts/File-Format/Snapshot.md
+          - Unpacked Loadout: Server/Storage/Loadouts/File-Format/Unpacked.md
+          - Packed Loadout: Server/Storage/Loadouts/File-Format/Packed.md
+          - Events: Server/Storage/Loadouts/File-Format/Events.md
+          - Commit Messages: Server/Storage/Loadouts/File-Format/Commit-Messages.md
+          - Data Types: Server/Storage/Loadouts/File-Format/DataTypes.md
         - Stores:
           - GOG: Server/Storage/Loadouts/Stores/GOG.md
     - Diagnostics: Server/Diagnostics.md

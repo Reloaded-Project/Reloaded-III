@@ -134,13 +134,15 @@ we'll use the local cache.
 
 Loadouts are stored in the `Loadouts` folder.
 
-Each loadout is stored in an `.nx` archive, names `{UID}.nx` where `{UID}` is a randomly generated
-64-bit integer.
+```
+Loadouts
+├── 7f2cc8b7d9f1e3a5
+│   └── ... unpacked files
+├── 7f2cc8b7d9f1e3a5.r3l
+└── 7f2cc8b7d9f1e3a5.snapshot.bin
+```
 
-When a loadout is loaded, it gets extracted to a folder named `{UID}` in the same folder as the `.nx`,
-and the orignal `.nx` file is deleted.
-
-The format of the extracted folder is documented under [Loadout File Format][loadout-file-format].
+For the exact details, see the [Loadouts][loadouts-location] page.
 
 ## About Multi User Networked Systems
 
@@ -157,7 +159,9 @@ reduce the impact of high latency.
 
 [game-metadata]: ../Storage/Games/About.md
 [loadouts]: ./Loadouts/About.md
+[loadouts-location]: ./Loadouts/About.md#location
 [loadout-file-format]: ./Loadouts/About.md#loadout-file-format
 [package-metadata]: ../Packaging/Package-Metadata.md
 [community-repository]: ../../Services/Community-Repository.md
 [community-repository-hosting]: ../../Services/Community-Repository.md#hosting
+[loadout-snapshot]: ./Loadouts/About.md#snapshots

@@ -380,8 +380,7 @@ The individual enum values are translated to the following.
 - `3`: "Grid (Horizontal Rectangles, Steam Size)"
 - `4`: "Grid (Vertical Rectangles, Steam Size)"
 
-
-[events-bin]: ../Loadouts/About.md#eventsbin
+[events-bin]: ./Unpacked.md#eventsbin
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
 [event-config-updated]: ./Events.md#configupdated
 [event-loadout-display-setting-changed]: ./Events.md#1004-loadoutdisplaysettingchanged
@@ -390,5 +389,5 @@ The individual enum values are translated to the following.
 [event-configupdated]: ./Events.md#configupdated
 [event-packageloadorderchanged]: ./Events.md#packageloadorderchanged
 [event-updategamestoremanifest]: ./Events.md#updategamestoremanifest
-[store-data]: ./About.md#store-databin
+[store-data]: ./Unpacked.md#store-databin
 [event-updatecommandline]: ./Events.md#updatecommandline

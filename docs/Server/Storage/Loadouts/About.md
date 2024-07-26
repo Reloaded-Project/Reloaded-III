@@ -126,8 +126,8 @@ When a loadout is loaded, it is unpacked and memory mapped onto disk.
 
 More specifically, we create memory mapped files and decompress the package contents into them.
 
-This way, we can load loadouts with the latency of a memory mapped file while still maintaining
-the ability to handle faults and crashes.
+This way, we can load loadouts with the latency of a memory mapped file (no need to wait till disk write)
+while still maintaining the ability to handle faults and crashes.
 
 ### Rolling Back a Loadout
 

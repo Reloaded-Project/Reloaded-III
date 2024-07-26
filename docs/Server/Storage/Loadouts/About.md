@@ -75,10 +75,10 @@ stored in a compact format.
 
 Loadouts just like pretty much everything else in Reloaded3 are packages. This means they can be
 packed and downloaded by another user as a single file. The only caveat is they are stored outside
-of the main `Packages` directory.
+of the main [`Packages` directory][locations-packages].
 
 Loadouts can be shared with other users with or without historical data. If shared without historical data,
-a 'snapshot' of the current state is created, and event history is trimmed to reduce the package size.
+it is distributed as a [snapshot][snapshot]; with stripped out event history is trimmed to reduce the package size.
 
 ### Sync Methods
 
@@ -176,6 +176,7 @@ and the orignal `.r3l` file is deleted.
 
 [event-count-header]: ./File-Format/Unpacked.md#headerbin
 [locations]: ../Locations.md
+[locations-packages]: ../Locations.md#where-are-the-files-stored
 [packed]: ./File-Format/Packed.md
 [packed-loadout]: ./File-Format/Packed.md
 [packed-loadout-format]: ./File-Format/Packed.md

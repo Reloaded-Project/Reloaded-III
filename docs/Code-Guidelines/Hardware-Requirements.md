@@ -196,7 +196,7 @@ For example; this means allowing the user to extract archives on a single thread
 It does not mean that the whole thing should be designed fully around old hardware in mind.
 More memory can be used if required; for example, to display images.
 
-### About Esoteric & Experimental Platforms
+### About Esoteric and Experimental Platforms
 
 !!! info "Consoles, Embedded Systems, etc."
 

@@ -733,7 +733,7 @@ As a general rule of thumb, test your code against:
 [min-sized-rust]: https://github.com/johnthagen/min-sized-rust
 [middleware-mods]: ../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
 [mod-loader-hw-requirements]: ./Hardware-Requirements.md#mod-loader
-[mod-loader-esoteric]: ./Hardware-Requirements.md#about-esoteric--experimental-platforms
+[mod-loader-esoteric]: ./Hardware-Requirements.md#about-esoteric-and-experimental-platforms
 [projectanker-avalonia-icons]: https://github.com/Projektanker/Icons.Avalonia
 [projectanker-icon-assets]: https://github.com/Projektanker/Icons.Avalonia/tree/main/src/Projektanker.Icons.Avalonia.MaterialDesign/Assets
 [projectanker-icon-load]: https://github.com/Projektanker/Icons.Avalonia/blob/509a9741321da5be8a9a585cb0ab3a94378712ff/src/Projektanker.Icons.Avalonia.MaterialDesign/MaterialDesignIconProvider.cs#L55-L76

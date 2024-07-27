@@ -34,7 +34,7 @@ The value is read from the start of the next line.
 
 ## Comments
 
-Comments may be represented by a `#` at the start of a line,
+Comments may be represented by a `##` at the start of a line,
 in which case the entire line is ignored by the parser
 
 ```toml
@@ -45,10 +45,10 @@ in which case the entire line is ignored by the parser
 Alternatively, it's possible to put comments next to the keys.
 
 ```toml
-[[KEY]] # This is a comment
+[[KEY]] ## This is a comment
 ```
 
-Since all characters after `]]` are ignored.
+Since all characters after `]]` are ignored until end of line.
 
 ## Escape Characters
 

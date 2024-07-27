@@ -138,7 +138,7 @@ Loadouts are stored in the `Loadouts` folder.
 Loadouts
 ├── 7f2cc8b7d9f1e3a5
 │   └── ... unpacked files
-├── 7f2cc8b7d9f1e3a5.r3l
+├── 7f2cc8b7d9f1e3a5.nx
 └── 7f2cc8b7d9f1e3a5.snapshot.bin
 ```
 

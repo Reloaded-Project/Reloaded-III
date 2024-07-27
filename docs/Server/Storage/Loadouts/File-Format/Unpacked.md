@@ -2,17 +2,17 @@
 
     For the location of folder containing unpacked loadout, see the [Locations][locations] page.
 
-| Item                                                     | Path                                                                                               | Description                                                           |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [Header](#headerbin)                                     | `header.bin`                                                                                       | Header with current loadout pointers. Facilitates 'transactions'.     |
-| [Events](#eventsbin)                                     | `events.bin`                                                                                       | List of all emitted events in the loadout.                            |
-| [Timestamps](#timestampsbin)                             | `timestamps.bin`                                                                                   | Timestamps for each commit.                                           |
+| Item                                                     | Path                                                                                                   | Description                                                           |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| [Header](#headerbin)                                     | `header.bin`                                                                                           | Header with current loadout pointers. Facilitates 'transactions'.     |
+| [Events](#eventsbin)                                     | `events.bin`                                                                                           | List of all emitted events in the loadout.                            |
+| [Timestamps](#timestampsbin)                             | `timestamps.bin`                                                                                       | Timestamps for each commit.                                           |
 | [Commit Parameters](#commit-parameters)                  | `commit-parameter-types.bin`<br/>+`commit-parameter-lengths-{x}.bin`<br/>+ `commit-parameters-{x}.bin` | List of commit message parameters for each event.                     |
-| [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                                               | Package Configurations.                                               |
-| [Package Reference (IDs)](#package-references)           | `package-reference-ids.bin`                                                                        | Hashes of package IDs in this loadout.                                |
-| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin`                        | String versions of package IDs in this loadout.                       |
-| [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                                                | Game store specific info to restore game to last version if possible. |
-| [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                                                   | Raw data for commandline parameters. Length specified in event.       |
+| [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                                                   | Package Configurations.                                               |
+| [Package Reference (IDs)](#package-references)           | `package-reference-ids.bin`                                                                            | Hashes of package IDs in this loadout.                                |
+| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin`                            | String versions of package IDs in this loadout.                       |
+| [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                                                    | Game store specific info to restore game to last version if possible. |
+| [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                                                       | Raw data for commandline parameters. Length specified in event.       |
 
 These files are deliberately set up in such a way that making a change in a loadout means appending
 to the existing files. No data is overwritten. Rolling back in turn means truncating the files to the desired length.
@@ -370,7 +370,7 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 
     The [Commit Message][commit-messages] file lists when messages appear in this file for each message.
 
-    When the message is not a [built-in][commit-messages-builtin], it is stored in this file.
+    When the message is not a [contextual-parameter][commit-messages-contextual], it is stored in this file.
 
 !!! note "A timestamp is shown beside each event, it does not need to be embedded into description."
 
@@ -418,6 +418,14 @@ This would be encoded as:
     These strings are written directly to the `commit-parameters-text.bin` file, without any null
     terminator or padding.
 
+4. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
+
+    Explanation:
+
+    - 0: Version of the commit message.
+
+    It's 0 because this is the initial version of the message format.
+
 #### With [Back References](#back-references)
 
 !!! info "Suppose you wanted to repeat the earlier parameter, we would use [back references](#back-references)."
@@ -426,9 +434,9 @@ This would be encoded as:
 
     Explanation:
 
-    - 5: BackReference8 for `"Super Cool Mod"`
-    - 5: BackReference8 for `"reloaded3.utility.scmexample"`
-    - 5: BackReference8 for `"1.0.0"`
+    - 7: BackReference8 for `"Super Cool Mod"`
+    - 7: BackReference8 for `"reloaded3.utility.scmexample"`
+    - 7: BackReference8 for `"1.0.0"`
 
 2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
 
@@ -437,6 +445,14 @@ This would be encoded as:
     - 0: Index of `"Super Cool Mod"`
     - 1: Index of `"reloaded3.utility.scmexample"`
     - 2: Index of `"1.0.0"`
+
+3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
+
+    Explanation:
+
+    - 0: Version of the commit message.
+
+    It's still 0 because we're using the same message format, just with back references.
 
 !!! note "There are also more optimized backreferences, e.g. [BackReference2_8](#back-references)."
 
@@ -447,6 +463,37 @@ This is an array of:
 | Data Type | Name                            | Description            |
 | --------- | ------------------------------- | ---------------------- |
 | `u8`      | [ParameterType](#parametertype) | Type of the parameter. |
+
+### commit-parameters-versions.bin
+
+!!! info "This enables versioning, ensuring that different variations of the same commit message can coexist."
+
+This is an array of:
+
+| Data Type | Name    | Description                    |
+| --------- | ------- | ------------------------------ |
+| `u8`      | Version | Version of the commit message. |
+
+This is an array of `u8` values which correspond to the version of the commit message last issued.
+
+For example, if the message for an event like [PackageStatusChanged][message-packagestatuschanged]
+is encoded in its current version, it would be written as `0`:
+
+```
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+However if the ***meaning*** or ***number of parameters changes***, for example:
+
+```
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**' at '**{Timestamp}**'.
+```
+
+Then the number will be `1`.
+
+In practice expect to see only `0`, the text for most commit messages is unlikely to ever change.
+
+!!! note "Compressing 1M zeroes with zstd yields file size of ~50 bytes."
 
 ### commit-parameters-lengths-8.bin
 
@@ -625,8 +672,9 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [gog]: ../Stores/GOG.md
 [gog-buildid]: ../Stores/GOG.md#retrieving-available-game-versions
 [ms-store-pfm]: ../../../../Loader/Copy-Protection/Windows-MSStore.md
-[commit-messages-builtin]: ./Commit-Messages.md#built-in-parameters
+[commit-messages-contextual]: ./Commit-Messages.md#contextual-parameters
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
+[message-packagestatuschanged]: ./Commit-Messages.md#package-status-changed
 [commit-messages-packageadded]: ./Commit-Messages.md#packageadded
 [commitparam8len]: #commit-parameters-lengths-8bin
 [commitparam16len]: #commit-parameters-lengths-16bin

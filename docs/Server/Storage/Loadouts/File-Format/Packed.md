@@ -1,6 +1,6 @@
 
 ## Packed Loadout File Format
 
-!!! info "This describes the format of the [.r3l files][r3l]."
+!!! info "This describes the format of the [.nx files][location] containing packed loadouts."
 
-[r3l]: ../About.md#location
+[location]: ../About.md#location

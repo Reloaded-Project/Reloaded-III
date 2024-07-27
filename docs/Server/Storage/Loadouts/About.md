@@ -158,21 +158,21 @@ Loadouts are stored in the `Loadouts` folder.
 Loadouts
 ├── 7f2cc8b7d9f1e3a5
 │   └── ... unpacked files
-├── 7f2cc8b7d9f1e3a5.r3l
+├── 7f2cc8b7d9f1e3a5.nx
 └── 7f2cc8b7d9f1e3a5.snapshot.bin
 ```
 
 Each loadout has the following:
 
-- An `.r3l` binary file with [packed loadout data][packed-loadout-format].
+- An `.nx` binary file with [packed loadout data][packed-loadout-format].
 - A `.snapshot.bin` [snapshot][snapshot] file, with last state of loadout (no history).
 - A folder with [unpacked files][unpacked-format].
 
-Each loadout is stored in an `.r3l` archive, named `{UID}.r3l` where `{UID}` is a randomly generated
+Each loadout is stored in an `.nx` archive, named `{UID}.nx` where `{UID}` is a randomly generated
 64-bit integer.
 
-When a loadout is loaded, it gets extracted to a folder named `{UID}` in the same folder as the `.r3l`,
-and the orignal `.r3l` file is deleted.
+When a loadout is loaded, it gets extracted to a folder named `{UID}` in the same folder as the `.nx`,
+and the orignal `.nx` file is deleted.
 
 [event-count-header]: ./File-Format/Unpacked.md#headerbin
 [locations]: ../Locations.md

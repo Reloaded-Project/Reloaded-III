@@ -9,7 +9,7 @@ in the respective section.
 
 !!! tip "Commit Messages use Markdown, with placeholders for parameters."
 
-## Built In Parameters
+## Contextual Parameters
 
 !!! info "Some parameters can be derived from the context of the event, these are listed below."
 
@@ -17,6 +17,9 @@ For example, for the [Package Status Changed](#package-status-changed) event, th
 parameters can be inferred:
 
 - `Version`: The name of the package, mod, translation or tool.
+- `EventTime`: The timestamp of the event.
+
+Parameters marked `[Contextual]` are inferred from the event context.
 
 ## Package Status Changed
 
@@ -24,7 +27,11 @@ parameters can be inferred:
 
 ### Parameters
 
-- `Name`: The name of the package, mod, translation or tool.
+[Version][commit-param-version]: 0
+
+- `Name`: The name of the package, mod, translation or tool. [String][commit-param-type]
+- `ID`: The package ID. [String][commit-param-type]
+- `Version`: The package version. [String [Contextual]](#contextual-parameters)
 
 ### PackageAdded
 
@@ -187,6 +194,8 @@ Launched game at {EventTimestamp}.
 
 `EventTimestamp` is human readable absolute date.
 e.g. `11th of May 2020`.
+
+- `EventTimestamp`:
 
 ## Config Updated
 
@@ -408,3 +417,5 @@ The individual enum values are translated to the following.
 [event-updategamestoremanifest]: ./Events.md#updategamestoremanifest
 [store-data]: ./Unpacked.md#store-databin
 [event-updatecommandline]: ./Events.md#updatecommandline
+[commit-param-type]: ./Unpacked.md#parametertype
+[commit-param-version]: ./Unpacked.md#commit-parameters-versionsbin

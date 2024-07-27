@@ -2,17 +2,17 @@
 
     For the location of folder containing unpacked loadout, see the [Locations][locations] page.
 
-| Item                                                     | Path                                                                        | Description                                                           |
-| -------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [Header](#headerbin)                                     | `header.bin`                                                                | Header with current loadout pointers. Facilitates 'transactions'.     |
-| [Events](#eventsbin)                                     | `events.bin`                                                                | List of all emitted events in the loadout.                            |
-| [Timestamps](#timestampsbin)                             | `timestamps.bin`                                                            | Timestamps for each commit.                                           |
-| [Commit Parameters](#commit-parametersbin)               | `commit-parameters.bin`<br/>+ `commit-parameters-{x}.bin`                   | List of commit message parameters for each event.                     |
-| [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                        | Package Configurations.                                               |
-| [Package Reference (IDs)](#package-references)           | `package-reference-ids.bin`                                                 | Hashes of package IDs in this loadout.                                |
-| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin` | String versions of package IDs in this loadout.                       |
-| [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                         | Game store specific info to restore game to last version if possible. |
-| [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                            | Raw data for commandline parameters. Length specified in event.       |
+| Item                                                     | Path                                                                                               | Description                                                           |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| [Header](#headerbin)                                     | `header.bin`                                                                                       | Header with current loadout pointers. Facilitates 'transactions'.     |
+| [Events](#eventsbin)                                     | `events.bin`                                                                                       | List of all emitted events in the loadout.                            |
+| [Timestamps](#timestampsbin)                             | `timestamps.bin`                                                                                   | Timestamps for each commit.                                           |
+| [Commit Parameters](#commit-parameters)                  | `commit-parameter-types.bin`<br/>+`commit-parameter-lengths-{x}.bin`<br/>+ `commit-parameters-{x}.bin` | List of commit message parameters for each event.                     |
+| [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                                               | Package Configurations.                                               |
+| [Package Reference (IDs)](#package-references)           | `package-reference-ids.bin`                                                                        | Hashes of package IDs in this loadout.                                |
+| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin`                        | String versions of package IDs in this loadout.                       |
+| [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                                                | Game store specific info to restore game to last version if possible. |
+| [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                                                   | Raw data for commandline parameters. Length specified in event.       |
 
 These files are deliberately set up in such a way that making a change in a loadout means appending
 to the existing files. No data is overwritten. Rolling back in turn means truncating the files to the desired length.
@@ -88,130 +88,6 @@ Situations where optimizations are applied at pack stage will be noted in the ev
 
 This is an array of 32-bit timestamps ([`R3TimeStamp[]`][max-numbers]). The number of items is defined in
 [header.bin](#headerbin).
-
-## commit-parameters.bin
-
-!!! tip "This file contains the parameters for any event that requires additional info in its commit message."
-
-    The commit messages can usually be derived directly from the event.<br/>
-    However, in some cases, additional information may be desireable to embed.
-
-    For example, modifying a package configuration requires a description of the changes made.<br/>
-    Because, we may not have the actual mod configuration metadata to determine what has changed.
-
-    This file stores parameters for these rare cases.
-
-!!! note "A timestamp is shown beside each event, it does not need to be embedded into description."
-
-### Parameter
-
-The `Parameter` struct is defined as:
-
-| Data Type | Name            | Description                       |
-| --------- | --------------- | --------------------------------- |
-| `u8`      | ParameterType   | Type of the parameter.            |
-| `u24`     | ParameterLength | Length of the parameter in bytes. |
-
-### ParameterType
-
-`ParameterType` is defined as:
-
-| Type | Data Type                          | Example                                 | Description                                                           |
-| ---- | ---------------------------------- | --------------------------------------- | --------------------------------------------------------------------- |
-| `0`  | `UTF-8 Char Array`                 | `Hello, World!`                         | UTF-8 characters.                                                     |
-| `1`  | `u32` ([R3TimeStamp][max-numbers]) | `1st of January 2024`                   | Renders as human readable time.                                       |
-| `2`  | `u32` ([R3TimeStamp][max-numbers]) | `5 minutes ago`                         | Renders as relative time.                                             |
-| `3`  | `u0`                               | `1st of January 2024`                   | Human readable timestamp. Time sourced from message timestamp.        |
-| `4`  | `u0`                               | `5 minutes ago`                         | Relative time. Time sourced from message timestamp.                   |
-| `5`  | `BackReference`                    | 10 entries ago                          | Reference to a previous item. See [backreferences](#back-references). |
-| `6`  | `List`                             | See [Parameter Lists](#parameter-lists) | Defines the start of a list. See [Parameter Lists](#parameter-lists). |
-
-The parameter data is split into multiple files to aid compression:
-
-- Text is expected to be mostly (English) ASCII and thus be mostly limited to a certain character set.
-- Timestamps are expected to mostly be increasing.
-- Other/Misc integers go in a separate file.
-- Other/Misc floats go in a separate file.
-
-Here is a listing of which parameter types go where:
-
-| Type | Data Type                          | File                               |
-| ---- | ---------------------------------- | ---------------------------------- |
-| `0`  | `UTF-8 Char Array`                 | `commit-parameters-text.bin`       |
-| `1`  | `u32` ([R3TimeStamp][max-numbers]) | `commit-parameters-timestamps.bin` |
-| `2`  | `u32` ([R3TimeStamp][max-numbers]) | `commit-parameters-timestamps.bin` |
-
-
-
-### Back References
-
-!!! info "Back References are a Special Type of Parameter that references a previous item."
-
-!!! note "Back References are used to deduplicate parameters."
-
-    The writer maintains a hash of all parameters so far and reuses the same
-    parameter index if the parameter ends up being a duplicate.
-
-This improves loadout sizes by reducing existing previous data.
-
-| Data Type | Name            | Description                              |
-| --------- | --------------- | ---------------------------------------- |
-| `u8`      | ParameterType   | Type of the parameter.                   |
-| `u24`     | ParameterOffset | Negative offset to referenced parameter. |
-
-A `ParameterOffset` of `1` means 'the previous parameter'. `2` means 'the one before that' etc.
-
-### Parameter Lists
-
-!!! info "This primitive is used when you have an unknown number of items."
-
-Imagine you have a message which says:
-
-```
-Changes were made, here they are:
-
-{ChangeList}
-```
-
-And you want `ChangeList` to have multiple items.
-
-These items need to be localizable, for example a single `Change` item could be:
-
-```
-- Value **{Name}** changed to **{NewValue}**
-```
-
-This is where `Parameter Lists` come in.
-
-A `Parameter List` is defined as:
-
-| Data Type | Name          | Description                           |
-| --------- | ------------- | ------------------------------------- |
-| `u8`      | ParameterType | Type of the parameter.                |
-| `u4`      | Version       | [Event Specific] version of the list. |
-| `u20`     | NumParameters | Number of parameters.                 |
-
-For the example above, we can treat each `Change` as 2 parameters.
-In which case, if we had 2 changes, we would set `NumParameters` to `4`.
-
-The individual parameters for `Name` and `NewValue` would then follow
-as regular parameters in [commit-parameters.bin](#commit-parametersbin).
-
-!!! question "Why is there a `Version` field?"
-
-    Sometimes it may be desireable to change the structure.
-    Suppose you wanted to change `Change` item to also have the previous value:
-
-    ```
-    - Value **{Name}** changed from **{OldValue}** to **{NewValue}**
-    ```
-
-    In order to perform this change, you would set the `Version` field to `1`.
-    So when you read loadouts you can interpret both the old and new format side by side.
-
-### Message Template List
-
-!!! info "Find the full list of templates on the [Commit Messages Page][commit-messages]."
 
 ## config.bin
 
@@ -488,6 +364,253 @@ version exists in some manifest, we will string it.
 This file contains the raw strings for commandline parameters.
 The lengths of the parameters are specified in the [UpdateCommandline event][update-command-line].
 
+## Commit Parameters
+
+!!! tip "These files contain the parameters for any event that requires additional info in its commit message."
+
+    The [Commit Message][commit-messages] file lists when messages appear in this file for each message.
+
+    When the message is not a [built-in][commit-messages-builtin], it is stored in this file.
+
+!!! note "A timestamp is shown beside each event, it does not need to be embedded into description."
+
+### An Example
+
+You emit the [PackageStatusChanged event][event-packagestatuschanged] with the message
+[commit-messages-packageadded][commit-messages-packageadded]:
+
+```
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+Which could be marked as:
+
+```
+Added '**Super Cool Mod**' with ID '**reloaded3.utility.scmexample**' and version '**1.0.0**'
+```
+
+#### Encoding
+
+This would be encoded as:
+
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [0, 0, 0]
+
+    Explanation:
+
+    - 0: UTF-8 Char Array for "Super Cool Mod"
+    - 0: UTF-8 Char Array for "reloaded3.utility.scmexample"
+    - 0: UTF-8 Char Array for "1.0.0"
+
+2. [commit-parameters-lengths.bin][commitparam8len]: [14, 28, 5]
+
+    Explanation:
+
+    - 14: Length of "Super Cool Mod"
+    - 28: Length of "reloaded3.utility.scmexample"
+    - 5: Length of "1.0.0"
+
+3. [commit-parameters-text.bin](#parametertype):
+
+    - `Super Cool Mod`
+    - `reloaded3.utility.scmexample`
+    - `1.0.0`
+
+    These strings are written directly to the `commit-parameters-text.bin` file, without any null
+    terminator or padding.
+
+#### With [Back References](#back-references)
+
+!!! info "Suppose you wanted to repeat the earlier parameter, we would use [back references](#back-references)."
+
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [7, 7, 7]
+
+    Explanation:
+
+    - 5: BackReference8 for `"Super Cool Mod"`
+    - 5: BackReference8 for `"reloaded3.utility.scmexample"`
+    - 5: BackReference8 for `"1.0.0"`
+
+2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
+
+    Explanation:
+
+    - 0: Index of `"Super Cool Mod"`
+    - 1: Index of `"reloaded3.utility.scmexample"`
+    - 2: Index of `"1.0.0"`
+
+!!! note "There are also more optimized backreferences, e.g. [BackReference2_8](#back-references)."
+
+### commit-parameters-types.bin
+
+This is an array of:
+
+| Data Type | Name                            | Description            |
+| --------- | ------------------------------- | ---------------------- |
+| `u8`      | [ParameterType](#parametertype) | Type of the parameter. |
+
+### commit-parameters-lengths-8.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u8`      | ParameterLength | Length of the parameter in bytes. |
+
+### commit-parameters-lengths-16.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u16`     | ParameterLength | Length of the parameter in bytes. |
+
+### commit-parameters-lengths-32.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u32`     | ParameterLength | Length of the parameter in bytes. |
+
+### ParameterType
+
+`ParameterType` is defined as:
+
+| Type | Data Type                                               | Example                                 | Description                                                                             |
+| ---- | ------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------- |
+| `0`  | `UTF-8 Char Array (u8 length)`                          | `Hello, World!`                         | UTF-8 characters, length stored in [commit-parameters-lengths-8.bin][commitparam8len]   |
+| `1`  | `UTF-8 Char Array (u16 length)`                         | `A longer string...`                    | UTF-8 characters, length stored in [commit-parameters-lengths-16.bin][commitparam16len] |
+| `2`  | `UTF-8 Char Array (u32 length)`                         | `An even longer string...`              | UTF-8 characters, length stored in [commit-parameters-lengths-32.bin][commitparam32len] |
+| `3`  | `u32` ([R3TimeStamp][max-numbers])                      | `1st of January 2024`                   | Renders as human readable time.                                                         |
+| `4`  | `u32` ([R3TimeStamp][max-numbers])                      | `5 minutes ago`                         | Renders as relative time.                                                               |
+| `5`  | `u0`                                                    | `1st of January 2024`                   | Human readable timestamp. Time sourced from event (commit) timestamp.                   |
+| `6`  | `u0`                                                    | `5 minutes ago`                         | Relative time. Time sourced from event (commit) timestamp.                              |
+| `7`  | `u8` [(BackReference8)](#back-references)               | Entry 1                                 | Reference to a single previous item.                                                    |
+| `8`  | `u16` [(BackReference16)](#back-references)             | Entry 2                                 | Reference to a single previous item.                                                    |
+| `9`  | `u24` [(BackReference24)](#back-references)             | Entry 3                                 | Reference to a single previous item.                                                    |
+| `10` | `u32` [(BackReference32)](#back-references)             | Entry 4                                 | Reference to a single previous item.                                                    |
+| `11` | `variable` [List](#parameter-lists)                     | See [Parameter Lists](#parameter-lists) | Defines the start of a list.                                                            |
+| `12` | `u8, u8` [(BackReference2_8)](#back-references)         | Entries 1, 2                            | Reference to two previous items, each index stored as u8.                               |
+| `13` | `u8, u8, u8` [(BackReference3_8)](#back-references)     | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u8.                             |
+| `14` | `u16, u16` [(BackReference2_16)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u16.                              |
+| `15` | `u16, u16, u16` [(BackReference3_16)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u16.                            |
+| `16` | `u24, u24` [(BackReference2_24)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u24.                              |
+| `17` | `u24, u24, u24` [(BackReference3_24)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u24.                            |
+| `18` | `u32, u32` [(BackReference2_32)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u32.                              |
+| `19` | `u32, u32, u32` [(BackReference3_32)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u32.                            |
+
+The parameter data is split into multiple files to aid compression:
+
+- Text is expected to be mostly (English) ASCII and thus be mostly limited to a certain character set.
+- Timestamps are expected to mostly be increasing.
+- Other/Misc integers go in a separate file.
+- Other/Misc floats go in a separate file.
+
+Here is a listing of which parameter types go where:
+
+| Type | Data Type                                               | File                                |
+| ---- | ------------------------------------------------------- | ----------------------------------- |
+| `0`  | `UTF-8 Char Array (u8 length)`                          | `commit-parameters-text.bin`        |
+| `1`  | `UTF-8 Char Array (u16 length)`                         | `commit-parameters-text.bin`        |
+| `2`  | `UTF-8 Char Array (u32 length)`                         | `commit-parameters-text.bin`        |
+| `3`  | `u32` ([R3TimeStamp][max-numbers])                      | `commit-parameters-timestamps.bin`  |
+| `4`  | `u32` ([R3TimeStamp][max-numbers])                      | `commit-parameters-timestamps.bin`  |
+| `7`  | `u8` [(BackReference8)](#back-references)               | `commit-parameters-backrefs-8.bin`  |
+| `8`  | `u16` [(BackReference16)](#back-references)             | `commit-parameters-backrefs-16.bin` |
+| `9`  | `u24` [(BackReference24)](#back-references)             | `commit-parameters-backrefs-24.bin` |
+| `10` | `u32` [(BackReference32)](#back-references)             | `commit-parameters-backrefs-32.bin` |
+| `11` | `variable` [List](#parameter-lists)                     | `commit-parameters-lists.bin`       |
+| `12` | `u8, u8` [(BackReference2_8)](#back-references)         | `commit-parameters-backrefs-8.bin`  |
+| `13` | `u8, u8, u8` [(BackReference3_8)](#back-references)     | `commit-parameters-backrefs-8.bin`  |
+| `14` | `u16, u16` [(BackReference2_16)](#back-references)      | `commit-parameters-backrefs-16.bin` |
+| `15` | `u16, u16, u16` [(BackReference3_16)](#back-references) | `commit-parameters-backrefs-16.bin` |
+| `16` | `u24, u24` [(BackReference2_24)](#back-references)      | `commit-parameters-backrefs-24.bin` |
+| `17` | `u24, u24, u24` [(BackReference3_24)](#back-references) | `commit-parameters-backrefs-24.bin` |
+| `18` | `u32, u32` [(BackReference2_32)](#back-references)      | `commit-parameters-backrefs-32.bin` |
+| `19` | `u32, u32, u32` [(BackReference3_32)](#back-references) | `commit-parameters-backrefs-32.bin` |
+
+### Back References
+
+!!! info "Back References are a Special Type of Parameter that references a previous item."
+
+!!! note "Back References are used to deduplicate parameters."
+
+    The writer maintains a hash of all parameters so far and reuses the same
+    parameter index if the parameter ends up being a duplicate.
+
+This improves loadout sizes by reducing existing previous data.
+
+Back References are defined as 1 or more `ParameterIndex` fields, whose location and data type
+depends on [ParameterType](#parametertype).
+
+A `ParameterIndex` of `0` means 'the first commit parameter' in file.
+`1` means 'the second commit parameter' etc.
+
+These are essentially indices into the [commit-parameters-types.bin](#commit-parameters-typesbin) file.
+
+!!! tip "In order to quickly handle back-references, the `reader` should keep offsets of all parameters."
+
+    That is offsets in their perspective files, e.g. offsets into `commit-parameters-text.bin` etc.
+
+### Parameter Lists
+
+!!! info "This primitive is used when you have an unknown number of items."
+
+Imagine you have a message which says:
+
+```
+Changes were made, here they are:
+
+{ChangeList}
+```
+
+And you want `ChangeList` to have multiple items, so it could be something like:
+
+```
+Changes were made, here they are:
+
+- Value **ResolutionX** changed to **1920**
+- Value **ResolutionY** changed to **1080**
+```
+
+Where each localizable `Change` item could be:
+
+```
+- Value **{Name}** changed to **{NewValue}**
+```
+
+This is where `Parameter Lists` come in.
+
+A `Parameter List` is defined as:
+
+| Data Type | Name                            | Description                           |
+| --------- | ------------------------------- | ------------------------------------- |
+| `u8`      | [ParameterType](#parametertype) | Type of the parameter.                |
+| `u4`      | Version                         | [Event Specific] version of the list. |
+| `u20`     | NumParameters                   | Number of parameters.                 |
+
+For the example above, we can treat each `Change` as 2 parameters.
+In which case, if we had 2 changes, we would set `NumParameters` to `4`.
+
+The individual parameters for `Name` and `NewValue` would then follow
+as regular parameters in [Commit Parameters](#commit-parameters).
+
+!!! question "Why is there a `Version` field?"
+
+    Sometimes it may be desireable to change the structure.
+    Suppose you wanted to change `Change` item to also have the previous value:
+
+    ```
+    - Value **{Name}** changed from **{OldValue}** to **{NewValue}**
+    ```
+
+    In order to perform this change, you would set the `Version` field to `1`.
+    So when you read loadouts you can interpret both the old and new format side by side.
+
+### Message Template List
+
+!!! info "Find the full list of templates on the [Commit Messages Page][commit-messages]."
+
 [locations]: ../About.md#location
 [update-command-line]: ./Events.md#updatecommandline
 [events]: ./Events.md
@@ -502,3 +625,9 @@ The lengths of the parameters are specified in the [UpdateCommandline event][upd
 [gog]: ../Stores/GOG.md
 [gog-buildid]: ../Stores/GOG.md#retrieving-available-game-versions
 [ms-store-pfm]: ../../../../Loader/Copy-Protection/Windows-MSStore.md
+[commit-messages-builtin]: ./Commit-Messages.md#built-in-parameters
+[event-packagestatuschanged]: ./Events.md#packagestatuschanged
+[commit-messages-packageadded]: ./Commit-Messages.md#packageadded
+[commitparam8len]: #commit-parameters-lengths-8bin
+[commitparam16len]: #commit-parameters-lengths-16bin
+[commitparam32len]: #commit-parameters-lengths-32bin

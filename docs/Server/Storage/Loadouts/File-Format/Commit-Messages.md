@@ -5,9 +5,26 @@ Note that these use markdown formatting, so double stars `**` mean **bold**.
 Most parameters are auto inferred from [(events.bin)][events-bin], any parameters not inferred are listed
 in the respective section.
 
+## Formatting
+
+!!! tip "Commit Messages use Markdown, with placeholders for parameters."
+
+## Built In Parameters
+
+!!! info "Some parameters can be derived from the context of the event, these are listed below."
+
+For example, for the [Package Status Changed](#package-status-changed) event, the following
+parameters can be inferred:
+
+- `Version`: The name of the package, mod, translation or tool.
+
 ## Package Status Changed
 
 !!! info "Source: Event [PackageStatusChanged][event-packagestatuschanged]"
+
+### Parameters
+
+- `Name`: The name of the package, mod, translation or tool.
 
 ### PackageAdded
 

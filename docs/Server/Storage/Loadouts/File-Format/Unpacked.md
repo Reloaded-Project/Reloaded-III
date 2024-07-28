@@ -391,6 +391,8 @@ Added '**Super Cool Mod**' with ID '**reloaded3.utility.scmexample**' and versio
 
 #### Encoding
 
+!!! note "Parameters are encoded in the order in which they appear in the template!!"
+
 This would be encoded as:
 
 1. [commit-parameter-types.bin](#commit-parameters-typesbin): [0, 0, 0]
@@ -456,6 +458,34 @@ This would be encoded as:
 
 !!! note "There are also more optimized backreferences, e.g. [BackReference2_8](#back-references)."
 
+#### Decoding
+
+!!! info "To construct commit messages from the unpacked loadout data, follow these steps."
+
+1. **Read Events Sequentially**:<br/>
+   Process the events in [events.bin][events-bin] in the order they appear.
+
+2. **Determine Commit Message Type**:<br/>
+   Based on the event type, identify the corresponding commit message template from [Commit-Messages.md][commit-messages].<br/><br/>
+   These are listed in the [Event List][events] page for each event under the `Messages` section ([Example][events-messages])
+
+3. **Check Message Version**:<br/>
+   Read the version of the commit message from [commit-parameters-versions.bin][commit-param-versions].<br/>
+   This ensures you're using the correct message format for that event type.
+
+4. **Read and Process Parameters**:<br/>
+   a. Fetch the pre-parsed message template. (and number of parameters)
+   b. Read the parameter types from [commit-parameter-types.bin][commit-param-types].
+   c. Based on the parameter types, retrieve the actual parameter data from the appropriate locations:
+      - Contextual parameters like `EventTime` can be inferred from the event context.
+      - Text data from [commit-parameters-text.bin](#parametertype)
+      - Timestamps from [commit-parameters-timestamps.bin](#parametertype)
+      - Back references from the appropriate [commit-parameters-backrefs-*.bin][commit-param-backrefs] file
+      - Lists from [commit-parameters-lists.bin][commit-param-lists]
+
+5. **Construct the Message**:
+   Use the template from step 2 and fill in the parameters obtained in steps 4 and 5.
+
 ### commit-parameters-types.bin
 
 This is an array of:
@@ -467,6 +497,8 @@ This is an array of:
 ### commit-parameters-versions.bin
 
 !!! info "This enables versioning, ensuring that different variations of the same commit message can coexist."
+
+!!! warning "There should be 1 entry for each event!! Regardless of whether it has a message or not!!"
 
 This is an array of:
 
@@ -483,7 +515,7 @@ is encoded in its current version, it would be written as `0`:
 Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-However if the ***meaning*** or ***number of parameters changes***, for example:
+However if the ***meaning***, **order of parameters** or ***number of parameters changes***, for example:
 
 ```
 Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**' at '**{Timestamp}**'.
@@ -661,6 +693,7 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [locations]: ../About.md#location
 [update-command-line]: ./Events.md#updatecommandline
 [events]: ./Events.md
+[events-messages]: ./Events.md#messages
 [max-numbers]: ./DataTypes.md#max-numbers
 [commit-messages]: ./Commit-Messages.md
 [hashing]: ../../../../Common/Hashing.md
@@ -674,8 +707,16 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [ms-store-pfm]: ../../../../Loader/Copy-Protection/Windows-MSStore.md
 [commit-messages-contextual]: ./Commit-Messages.md#contextual-parameters
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
-[message-packagestatuschanged]: ./Commit-Messages.md#package-status-changed
-[commit-messages-packageadded]: ./Commit-Messages.md#packageadded
+[message-packagestatuschanged]: ./Commit-Messages.md#package-status-changed-v0
+[commit-messages-packageadded]: ./Commit-Messages.md#package_added_v0
 [commitparam8len]: #commit-parameters-lengths-8bin
 [commitparam16len]: #commit-parameters-lengths-16bin
 [commitparam32len]: #commit-parameters-lengths-32bin
+[events-bin]: ./Unpacked.md#eventsbin
+[commit-messages]: ./Commit-Messages.md
+[commit-param-versions]: ./Unpacked.md#commit-parameters-versionsbin
+[commit-param-types]: ./Unpacked.md#commit-parameters-typesbin
+[commit-param-backrefs]: ./Unpacked.md#back-references
+[commit-param-lists]: ./Unpacked.md#parameter-lists
+[event-packagestatuschanged]: ./Events.md#packagestatuschanged
+[package-added]: ./Commit-Messages.md#package_added_v0

@@ -142,26 +142,26 @@ This way we can ensure alignment is maintained.
 
 `PackageType` is the type of package referred to `MetadataIdx`.
 
-- [package-added][package-added] when `NewStatus == Added` when `PackageType` is not known.
-- [package-removed][package-removed] when `NewStatus == Removed` when `PackageType` is not known.
-- [package-hidden][package-hidden] when `NewStatus == Hidden` when `PackageType` is not known.
-- [package-disabled][package-disabled] when `NewStatus == Disabled` when `PackageType` is not known.
-- [package-enabled][package-enabled] when `NewStatus == Enabled` when `PackageType` is not known.
-- [mod-added][mod-added] when `NewStatus == Added` and `PackageType == Mod`.
-- [mod-removed][mod-removed] when `NewStatus == Removed` and `PackageType == Mod`.
-- [mod-hidden][mod-hidden] when `NewStatus == Hidden` and `PackageType == Mod`.
-- [mod-disabled][mod-disabled] when `NewStatus == Disabled` and `PackageType == Mod`.
-- [mod-enabled][mod-enabled] when `NewStatus == Enabled` and `PackageType == Mod`.
-- [translation-added][translation-added] when `NewStatus == Added` and `PackageType == Translation`.
-- [translation-removed][translation-removed] when `NewStatus == Removed` and `PackageType == Translation`.
-- [translation-hidden][translation-hidden] when `NewStatus == Hidden` and `PackageType == Translation`.
-- [translation-disabled][translation-disabled] when `NewStatus == Disabled` and `PackageType == Translation`.
-- [translation-enabled][translation-enabled] when `NewStatus == Enabled` and `PackageType == Translation`.
-- [tool-added][tool-added] when `NewStatus == Added` and `PackageType == Tool`.
-- [tool-removed][tool-removed] when `NewStatus == Removed` and `PackageType == Tool`.
-- [tool-hidden][tool-hidden] when `NewStatus == Hidden` and `PackageType == Tool`.
-- [tool-disabled][tool-disabled] when `NewStatus == Disabled` and `PackageType == Tool`.
-- [tool-enabled][tool-enabled] when `NewStatus == Enabled` and `PackageType == Tool`.
+- [PACKAGE_ADDED_V0][package-added-v0] when `NewStatus == Added` when `PackageType` is not known.
+- [PACKAGE_REMOVED_V0}][package-removed-v0] when `NewStatus == Removed` when `PackageType` is not known.
+- [PACKAGE_HIDDEN_V0][package-hidden-v0] when `NewStatus == Hidden` when `PackageType` is not known.
+- [PACKAGE_DISABLED_V0][package-disabled-v0] when `NewStatus == Disabled` when `PackageType` is not known.
+- [PACKAGE_ENABLED_V0][package-enabled-v0] when `NewStatus == Enabled` when `PackageType` is not known.
+- [MOD_ADDED_V0][mod-added-v0] when `NewStatus == Added` and `PackageType == Mod`.
+- [MOD_REMOVED_V0][mod-removed-v0] when `NewStatus == Removed` and `PackageType == Mod`.
+- [MOD_HIDDEN_V0][mod-hidden-v0] when `NewStatus == Hidden` and `PackageType == Mod`.
+- [MOD_DISABLED_V0][mod-disabled-v0] when `NewStatus == Disabled` and `PackageType == Mod`.
+- [MOD_ENABLED_V0][mod-enabled-v0] when `NewStatus == Enabled` and `PackageType == Mod`.
+- [TRANSLATION_ADDED_V0][translation-added-v0] when `NewStatus == Added` and `PackageType == Translation`.
+- [TRANSLATION_REMOVED_V0][translation-removed-v0] when `NewStatus == Removed` and `PackageType == Translation`.
+- [TRANSLATION_HIDDEN_V0][translation-hidden-v0] when `NewStatus == Hidden` and `PackageType == Translation`.
+- [TRANSLATION_DISABLED_V0][translation-disabled-v0] when `NewStatus == Disabled` and `PackageType == Translation`.
+- [TRANSLATION_ENABLED_V0][translation-enabled-v0] when `NewStatus == Enabled` and `PackageType == Translation`.
+- [TOOL_ADDED_V0][tool-added-v0] when `NewStatus == Added` and `PackageType == Tool`.
+- [TOOL_REMOVED_V0][tool-removed-v0] when `NewStatus == Removed` and `PackageType == Tool`.
+- [TOOL_HIDDEN_V0][tool-hidden-v0] when `NewStatus == Hidden` and `PackageType == Tool`.
+- [TOOL_DISABLED_V0][tool-disabled-v0] when `NewStatus == Disabled` and `PackageType == Tool`.
+- [TOOL_ENABLED_V0][tool-enabled-v0] when `NewStatus == Enabled` and `PackageType == Tool`.
 
 ### {01}+00: PackageStatusChanged8
 
@@ -223,7 +223,7 @@ This event has no extra data.
 
 ### Messages
 
-- [game-launched][game-launched]
+- [GAME_LAUNCHED_V0][game-launched-v0]
 
 ### {00}+01: GameLaunched
 
@@ -237,8 +237,13 @@ This event has no extra data.
 
 ### Messages
 
-- [mod-config-updated][mod-config-updated] when `PackageType == Mod`.
-- [tool-config-updated][tool-config-updated] when `PackageType == Tool`.
+- [MOD_CONFIG_UPDATED_V0][mod-config-updated-v0] when `PackageType == Mod`.
+- [TOOL_CONFIG_UPDATED_V0][tool-config-updated-v0] when `PackageType == Tool`.
+
+When the exact changes are not known, the event is [written as V1][commit-message-versioning]:
+
+- [MOD_CONFIG_UPDATED_V1][mod-config-updated-v1] when `PackageType == Mod` and exact changes are not known.
+- [TOOL_CONFIG_UPDATED_V1][tool-config-updated-v1] when `PackageType == Tool` and exact changes are not known.
 
 ### {01}+01: ConfigUpdated8
 
@@ -305,11 +310,12 @@ This is rarely changed so has a large 4-byte payload and can change multiple eve
 
 ### Messages
 
-- [loadout-display-setting-changed][loadout-display-setting-changed]
-- [loadout-grid-enabled-sort-mode-changed][loadout-grid-enabled-sort-mode-changed] when only `LoadoutGridEnabledSortMode` has changed.
-- [loadout-grid-disabled-sort-mode-changed][loadout-grid-disabled-sort-mode-changed] when only `LoadoutGridDisabledSortMode` has changed.
-- [mod-load-order-sort-changed][mod-load-order-sort-changed] when only `ModLoadOrderSort` has changed.
-- [loadout-grid-style-changed][loadout-grid-style-changed] when only `LoadoutGridStyle` has changed.
+- [LOADOUT_DISPLAY_SETTINGS_CHANGED_V0][loadout-display-settings-changed-v0] when multiple settings have changed.
+
+- [LOADOUT_GRID_ENABLED_SORT_MODE_CHANGED_V0][loadout-grid-enabled-sort-mode-changed-v0] when only `LoadoutGridEnabledSortMode` has changed.
+- [LOADOUT_GRID_DISABLED_SORT_MODE_CHANGED_V0][loadout-grid-disabled-sort-mode-changed-v0] when only `LoadoutGridDisabledSortMode` has changed.
+- [MOD_LOAD_ORDER_SORT_CHANGED_V0][mod-load-order-sort-changed-v0] when only `ModLoadOrderSort` has changed.
+- [LOADOUT_GRID_STYLE_CHANGED_V0][loadout-grid-style-changed-v0] when only `LoadoutGridStyle` has changed.
 
 ### {10}+04 LoadoutDisplaySettingChanged
 
@@ -340,10 +346,10 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 
 ### Messages
 
-- [package-updated][package-updated] when `PackageType` is not known.
-- [mod-updated][mod-updated] when `PackageType == Mod`.
-- [translation-updated][translation-updated] when `PackageType == Translation`.
-- [tool-updated][tool-updated] when `PackageType == Tool`.
+- [PACKAGE_UPDATED_V0][package-updated-v0] when `PackageType` is not known.
+- [MOD_UPDATED_V0][mod-updated-v0] when `PackageType == Mod`.
+- [TRANSLATION_UPDATED_V0][translation-updated-v0] when `PackageType == Translation`.
+- [TOOL_UPDATED_V0][tool-updated-v0] when `PackageType == Tool`.
 
 ### {10}+05: PackageUpdated16
 
@@ -470,8 +476,8 @@ On something like a GameCube, `50ms`.
 
 ### Messages
 
-- [mod-load-order-changed][mod-load-order-changed] when `PackageType == Mod`.
-- [translation-load-order-changed][translation-load-order-changed] when `PackageType == Translation`.
+- [MOD_LOAD_ORDER_CHANGED_V0][mod-load-order-changed-v0] when `PackageType == Mod`.
+- [TRANSLATION_LOAD_ORDER_CHANGED_V0][translation-load-order-changed-v0] when `PackageType == Translation`.
 
 ### {10}+07: PackageLoadOrderChanged16
 
@@ -558,11 +564,11 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 ### Messages
 
-- [update-game-store-manifest][update-game-store-manifest]
-- [update-game-store-manifest-steam][update-game-store-manifest-steam] when the store is Steam.
-- [update-game-store-manifest-gog][update-game-store-manifest-gog] when the store is GOG.
-- [update-game-store-manifest-microsoft][update-game-store-manifest-microsoft] when the store is Microsoft Store.
-- [update-game-store-manifest-epic][update-game-store-manifest-epic] when the store is Epic Games Store.
+- [UPDATE_GAME_STORE_MANIFEST_V0][update-game-store-manifest-v0]
+- [UPDATE_GAME_STORE_MANIFEST_STEAM_V0][update-game-store-manifest-steam-v0] when the store is Steam.
+- [UPDATE_GAME_STORE_MANIFEST_GOG_V0][update-game-store-manifest-gog-v0] when the store is GOG.
+- [UPDATE_GAME_STORE_MANIFEST_XBOX_V0][update-game-store-manifest-xbox-v0] when the store is Microsoft (Xbox) Store.
+- [UPDATE_GAME_STORE_MANIFEST_EGS_V0][update-game-store-manifest-egs-v0] when the store is Epic Games Store.
 
 ### {01}+02: UpdateGameStoreManifest
 
@@ -597,7 +603,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 ### Messages
 
-- [update-commandline][update-commandline]
+- [UPDATE_COMMANDLINE_V0][update-commandline]
 
 ### {01}+03: UpdateCommandline8
 
@@ -612,56 +618,54 @@ This event is emitted the files of the game match a known new store manifest/rev
 [configbin]: Unpacked.md#configbin
 [events-bin]: Unpacked.md#eventsbin
 [packagemetadatabin]: Unpacked.md#package-references
-[package-added]: ./Commit-Messages.md#packageadded
-[package-removed]: ./Commit-Messages.md#packageremoved
-[package-hidden]: ./Commit-Messages.md#packagehidden
-[package-disabled]: ./Commit-Messages.md#packagedisabled
-[package-enabled]: ./Commit-Messages.md#packageenabled
-[package-added]: ./Commit-Messages.md#packageadded
-[package-removed]: ./Commit-Messages.md#packageremoved
-[package-hidden]: ./Commit-Messages.md#packagehidden
-[package-disabled]: ./Commit-Messages.md#packagedisabled
-[package-enabled]: ./Commit-Messages.md#packageenabled
-[mod-added]: ./Commit-Messages.md#modadded
-[mod-removed]: ./Commit-Messages.md#modremoved
-[mod-hidden]: ./Commit-Messages.md#modhidden
-[mod-disabled]: ./Commit-Messages.md#moddisabled
-[mod-enabled]: ./Commit-Messages.md#modenabled
-[translation-added]: ./Commit-Messages.md#translationadded
-[translation-removed]: ./Commit-Messages.md#translationremoved
-[translation-hidden]: ./Commit-Messages.md#translationhidden
-[translation-disabled]: ./Commit-Messages.md#translationdisabled
-[translation-enabled]: ./Commit-Messages.md#translationenabled
-[tool-added]: ./Commit-Messages.md#tooladded
-[tool-removed]: ./Commit-Messages.md#toolremoved
-[tool-hidden]: ./Commit-Messages.md#toolhidden
-[tool-disabled]: ./Commit-Messages.md#tooldisabled
-[tool-enabled]: ./Commit-Messages.md#toolenabled
-[package-updated]: ./Commit-Messages.md#packageupdated
-[mod-updated]: ./Commit-Messages.md#modupdated
-[translation-updated]: ./Commit-Messages.md#translationupdated
-[tool-updated]: ./Commit-Messages.md#toolupdated
+[package-added-v0]: ./Commit-Messages.md#package_added_v0
+[package-removed-v0]: ./Commit-Messages.md#package_removed_v0
+[package-hidden-v0]: ./Commit-Messages.md#package_hidden_v0
+[package-disabled-v0]: ./Commit-Messages.md#package_disabled_v0
+[package-enabled-v0]: ./Commit-Messages.md#package_enabled_v0
+[mod-added-v0]: ./Commit-Messages.md#mod_added_v0
+[mod-removed-v0]: ./Commit-Messages.md#mod_removed_v0
+[mod-hidden-v0]: ./Commit-Messages.md#mod_hidden_v0
+[mod-disabled-v0]: ./Commit-Messages.md#mod_disabled_v0
+[mod-enabled-v0]: ./Commit-Messages.md#mod_enabled_v0
+[translation-added-v0]: ./Commit-Messages.md#translation_added_v0
+[translation-removed-v0]: ./Commit-Messages.md#translation_removed_v0
+[translation-hidden-v0]: ./Commit-Messages.md#translation_hidden_v0
+[translation-disabled-v0]: ./Commit-Messages.md#translation_disabled_v0
+[translation-enabled-v0]: ./Commit-Messages.md#translation_enabled_v0
+[tool-added-v0]: ./Commit-Messages.md#tool_added_v0
+[tool-removed-v0]: ./Commit-Messages.md#tool_removed_v0
+[tool-hidden-v0]: ./Commit-Messages.md#tool_hidden_v0
+[tool-disabled-v0]: ./Commit-Messages.md#tool_disabled_v0
+[tool-enabled-v0]: ./Commit-Messages.md#tool_enabled_v0
+[package-updated-v0]: ./Commit-Messages.md#package_updated_v0
+[mod-updated-v0]: ./Commit-Messages.md#mod_updated_v0
+[translation-updated-v0]: ./Commit-Messages.md#translation_updated_v0
+[tool-updated-v0]: ./Commit-Messages.md#tool_updated_v0
 [event-packageloadorderchanged]: ./Events.md#packageloadorderchanged
-[mod-load-order-changed]: ./Commit-Messages.md#modloadorderchanged
-[translation-load-order-changed]: ./Commit-Messages.md#translationloadorderchanged
-[mod-config-updated]: ./Commit-Messages.md#modconfigupdated
-[tool-config-updated]: ./Commit-Messages.md#toolconfigupdated
-[loadout-display-setting-changed]: ./Commit-Messages.md#display-setting-changed
-[loadout-grid-enabled-sort-mode-changed]: ./Commit-Messages.md#loadoutgridenabledsortmodechanged
-[loadout-grid-disabled-sort-mode-changed]: ./Commit-Messages.md#loadoutgriddisabledsortmodechanged
-[mod-load-order-sort-changed]: ./Commit-Messages.md#modloadordersortchanged
-[loadout-grid-style-changed]: ./Commit-Messages.md#loadoutgridstylechanged
-[game-launched]: ./Commit-Messages.md#game-launched
+[mod-load-order-changed-v0]: ./Commit-Messages.md#mod_load_order_changed_v0
+[translation-load-order-changed-v0]: ./Commit-Messages.md#translation_load_order_changed_v0
+[mod-config-updated-v0]: ./Commit-Messages.md#mod_config_updated_v0
+[tool-config-updated-v0]: ./Commit-Messages.md#tool_config_updated_v0
+[loadout-display-settings-changed-v0]: ./Commit-Messages.md#loadout_display_settings_changed_v0
+[loadout-grid-enabled-sort-mode-changed-v0]: ./Commit-Messages.md#loadout_grid_enabled_sort_mode_changed_v0
+[loadout-grid-disabled-sort-mode-changed-v0]: ./Commit-Messages.md#loadout_grid_disabled_sort_mode_changed_v0
+[mod-load-order-sort-changed-v0]: ./Commit-Messages.md#mod_load_order_sort_changed_v0
+[loadout-grid-style-changed-v0]: ./Commit-Messages.md#loadout_grid_style_changed_v0
+[game-launched-v0]: ./Commit-Messages.md#game_launched_v0
 [stores-bin]: ./Unpacked.md#storesbin
 [commandline-parameter-data.bin]: ./Unpacked.md#commandline-parameter-databin
-[update-game-store-manifest]: ./Commit-Messages.md#updategamestoremanifest
-[update-game-store-manifest-steam]: ./Commit-Messages.md#steam
-[update-game-store-manifest-gog]: ./Commit-Messages.md#gog
-[update-game-store-manifest-epic]: ./Commit-Messages.md#epic-games-store
-[update-game-store-manifest-microsoft]: ./Commit-Messages.md#microsoft-store
-[update-commandline]: ./Commit-Messages.md#updatecommandline
+[update-game-store-manifest-v0]: ./Commit-Messages.md#update_game_store_manifest_v0
+[update-game-store-manifest-steam-v0]: ./Commit-Messages.md#update_game_store_manifest_steam_v0
+[update-game-store-manifest-gog-v0]: ./Commit-Messages.md#update_game_store_manifest_gog_v0
+[update-game-store-manifest-egs-v0]: ./Commit-Messages.md#update_game_store_manifest_egs_v0
+[update-game-store-manifest-xbox-v0]: ./Commit-Messages.md#update_game_store_manifest_xbox_v0
+[update-commandline]: ./Commit-Messages.md#update_commandline_v0
 [featuresbin]: ./About.md#featuresbin
 [packagestate]: ./DataTypes.md#packagestate
 [sortingmode]: ./DataTypes.md#sortingmode
 [sortorder]: ./DataTypes.md#sortorder
 [griddisplaymode]: ./DataTypes.md#griddisplaymode
+[mod-config-updated-v1]: ./Commit-Messages.md#mod_config_updated_v1
+[mod-config-updated-v1]: ./Commit-Messages.md#tool_config_updated_v1
+[commit-message-versioning]: ./Unpacked.md#commit-parameters-versionsbin

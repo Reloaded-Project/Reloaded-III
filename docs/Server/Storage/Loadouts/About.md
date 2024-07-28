@@ -165,7 +165,7 @@ Loadouts
 Each loadout has the following:
 
 - An `.nx` binary file with [packed loadout data][packed-loadout-format].
-- A `.snapshot.bin` [snapshot][snapshot] file, with last state of loadout (no history).
+- A `.snapshot.bin` [snapshot][snapshot] file, with last state in-memory state of unpacked loadout.
 - A folder with [unpacked files][unpacked-format].
 
 Each loadout is stored in an `.nx` archive, named `{UID}.nx` where `{UID}` is a randomly generated

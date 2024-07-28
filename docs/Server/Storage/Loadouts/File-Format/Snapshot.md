@@ -15,7 +15,7 @@ struct Snapshot {
     packages: Vec<PackageInfo>,
 
     // Mod Load Order
-    mod_load_order: Vec<u64>, // Vec of PackageIds
+    mod_load_order: Vec<u32>, // Vec of indices into packages
 
     // Loadout Display Settings
     display_settings: LoadoutDisplaySettings,
@@ -29,7 +29,7 @@ struct Snapshot {
 
 struct PackageInfo {
     package_id: u64, // XXH3(PackageID)
-    version: String,
+    version: String, // Semantic version
     state: PackageState,
     configuration: Option<Vec<u8>>, // Raw configuration data
 }
@@ -43,7 +43,44 @@ struct LoadoutDisplaySettings {
 
 struct GameStoreManifest {
     store_type: StoreType,
-    new_revision: u16, // GameVerIdx
+    store_data: StoreData,
+}
+
+struct StoreData {
+    // Common fields
+    exe_hash: u64,
+    exe_path: String,
+    app_id: String,
+
+    // Store-specific data
+    gog: Option<GOGStoreData>,
+    steam: Option<SteamStoreData>,
+    epic: Option<EpicStoreData>,
+    microsoft: Option<MicrosoftStoreData>,
+}
+
+struct GOGStoreData {
+    game_id: u64,
+    build_id: u64,
+    version_name: String,
+}
+
+struct SteamStoreData {
+    app_id: u64,
+    depot_id: u64,
+    manifest_id: u64,
+    branch: String,
+    branch_password: String,
+}
+
+struct EpicStoreData {
+    catalog_item_id: String, // 128-bit identifier stored as a string
+    app_version_string: String,
+}
+
+struct MicrosoftStoreData {
+    package_family_name: String,
+    package_version: String,
 }
 ```
 
@@ -56,50 +93,58 @@ struct GameStoreManifest {
 2. **Packages**
     - A list of all packages in the loadout, each containing:
         - Package ID: A unique identifier for the package ([XXH3 hash][hashing] of the package ID).
-        - Version: The version of the package as a string.
+        - Version: The semantic version of the package as a string (e.g., "1.2.3").
         - State: The current state of the package using the [`PackageState`][packagestate] enum.
         - Configuration: Optional raw configuration data for the package.
 
 3. **Mod Load Order**
-    - An ordered list of Package IDs representing the current load order of mods.
+    - An ordered list of indices representing the current load order of mods.
+    - These indices correspond to the positions in the `packages` list.
 
 4. **Loadout Display Settings**
-    - Enabled Grid Sort Mode: How enabled mods are sorted in the grid view ([`SortingMode`][sortingmode]).
-    - Disabled Grid Sort Mode: How disabled mods are sorted in the grid view ([`SortingMode`][sortingmode]).
-    - Mod Load Order Sort: How mods are sorted in the load order view ([`SortOrder`][sortorder]).
-    - Grid Display Style: The visual style of the grid ([`GridDisplayMode`][griddisplaymode]).
+    - Enabled Grid Sort Mode: How enabled mods are sorted in the mod view ([`SortingMode`][sortingmode]).
+    - Disabled Grid Sort Mode: How disabled mods are sorted in the mod view ([`SortingMode`][sortingmode]).
+    - Mod Load Order Sort: Whether mods are shown `top to bottom` or `bottom to top` for load ordering ([`SortOrder`][sortorder]).
+    - Grid Display Style: The visual style of the grid that displays enabled mods ([`GridDisplayMode`][griddisplaymode]).
 
 5. **Game Store Manifest**
     - Store Type: Which store the game is from ([`StoreType`][storetype]).
-    - New Revision: A version number for the game (u16).
+    - Store Data: A structure containing common fields and store-specific data:
+        - Common fields for all store types:
+            - `exe_hash`: Hash of the game executable ([XXH3 hash][hashing]).
+            - `exe_path`: Path to the game executable.
+            - `app_id`: Application ID of the game (string format for flexibility).
+        - Store-specific data is included in separate sub-structs:
+            - [GOG][gog-store-data]: `game_id`, `build_id`, `version_name`.
+            - [Steam][steam-store-data]: `app_id` (as u64), `depot_id`, `manifest_id`, `branch`, `branch_password`.
+            - [Epic][epic-store-data]: `catalog_item_id`, `app_version_string`.
+            - [Microsoft][microsoft-store-data]: `package_family_name`, `package_version`.
+
+        The `store_type` field determines which store-specific struct is populated and should be used.
 
 6. **Commandline Parameters**
     - A string containing the current commandline parameters for the game.
 
-## Technical Details
+## How Snapshots are Used
+
+!!! info "Snapshots are the ***current*** in-memory representation of the current state of the [unpacked loadout][unpacked]."
+
+Snapshots are used to restore the [unpacked loadout][unpacked] without replaying all events.
+
+## How Snapshots are Stored
+
+!!! info "Snapshots are stored as a [single `.snapshot.bin` file][loadout-location]."
 
 - Serialized with MessagePack
     - Allows easy access by external software
 - Compressed with Zstandard
 - Updated incrementally as new events occur
 
-## Snapshot Usage
 
-- Loaded first when opening a loadout
-- Provides fast access to current state
-- Used as a base for applying recent events
+## Extra Benefits
 
-## Benefits
-
-- Faster loadout loading times
-- Quick access to current state
-- Maintains full event history
-- Efficient updates (apply only changes since last snapshot)
-
-## Fault Tolerance
-
-- Can reconstruct event history if needed
-- Used in [fault handling][fault-handling] to recover from crashes
+- Used in [fault handling][fault-handling] to recover from crashes.
+    - Can partially reconstruct event history if needed.
 
 !!! tip "Snapshots balance performance with the flexibility of event sourcing."
 
@@ -112,3 +157,9 @@ struct GameStoreManifest {
 [storetype]: ./DataTypes.md#storetype
 [fault-handling]: ../About.md#fault-handling
 [headerbin]: ./Unpacked.md#headerbin
+[gog-store-data]: ./Unpacked.md#gog
+[steam-store-data]: ./Unpacked.md#steam
+[epic-store-data]: ./Unpacked.md#epic
+[microsoft-store-data]: ./Unpacked.md#microsoft
+[unpacked]: ./Unpacked.md
+[loadout-location]: ../About.md#location

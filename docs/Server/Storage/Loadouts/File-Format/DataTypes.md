@@ -92,7 +92,7 @@ For example:
 !!! info "Represents the store or location from which a game has shipped from."
 
     - Size: 8 bits
-    - Possible values: 0-15
+    - Possible values: 0-255
 
 - 0: `Unknown` (Disk)
 - 1: `GOG`

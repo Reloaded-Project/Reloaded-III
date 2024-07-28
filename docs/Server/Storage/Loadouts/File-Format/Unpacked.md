@@ -537,24 +537,30 @@ This is an array of:
 | --------- | ------- | ------------------------------ |
 | `u8`      | Version | Version of the commit message. |
 
-This is an array of `u8` values which correspond to the version of the commit message last issued.
+The version number corresponds to the version suffix in the message key.
+
+For example:
+
+- If the message key is `PACKAGE_ADDED_V0`, the version would be `0`.
+- If the message key is `MOD_CONFIG_UPDATED_V1`, the version would be `1`.
+
+This array contains `u8` values which correspond to the version of the commit message last issued
+for each event.
 
 For example, if the message for an event like [PackageStatusChanged][message-packagestatuschanged]
-is encoded in its current version, it would be written as `0`:
+is encoded with the key `PACKAGE_ADDED_V0`, it would be written as `0`:
 
 ```
 Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
-However if the ***meaning***, **order of parameters** or ***number of parameters changes***, for example:
+However, if a new version of the message is introduced with a ***different meaning***, ***order of
+parameters***, or ***number of parameters***, it would use a new key like `PACKAGE_ADDED_V1`, and
+the version number would be `1`.
 
-```
-Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**' at '**{Timestamp}**'.
-```
-
-Then the number will be `1`.
-
-In practice expect to see only `0`, the text for most commit messages is unlikely to ever change.
+In practice, expect to see mostly `0`, as the text for most commit messages is unlikely to change
+often. When changes are needed, a new version of the message is created with an incremented version
+number in its key.
 
 !!! note "Compressing 1M zeroes with zstd yields file size of ~50 bytes."
 

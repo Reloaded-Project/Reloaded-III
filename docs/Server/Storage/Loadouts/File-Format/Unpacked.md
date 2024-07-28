@@ -504,14 +504,15 @@ previous event.
    This ensures you're using the correct message format for that event type.
 
 4. **Read and Process Parameters**:<br/>
-   a. Fetch the pre-parsed message template. (and number of parameters)
-   b. Read the parameter types from [commit-parameter-types.bin][commit-param-types].
-   c. Based on the parameter types, retrieve the actual parameter data from the appropriate locations:
-      - Contextual parameters like `EventTime` can be inferred from the event context.
-      - Text data from [commit-parameters-text.bin](#parametertype)
-      - Timestamps from [commit-parameters-timestamps.bin](#parametertype)
-      - Back references from the appropriate [commit-parameters-backrefs-*.bin][commit-param-backrefs] file
-      - Lists from [commit-parameters-lists.bin][commit-param-lists]
+
+    1. Fetch the pre-parsed message template. (and number of parameters)
+    2. Read the parameter types from [commit-parameter-types.bin][commit-param-types].
+    3. Based on the parameter types, retrieve the actual parameter data from the appropriate locations:
+        - Contextual parameters like `EventTime` can be inferred from the event context.
+        - Text data from [commit-parameters-text.bin](#parametertype)
+        - Timestamps from [commit-parameters-timestamps.bin](#parametertype)
+        - Back references from the appropriate [commit-parameters-backrefs-*.bin][commit-param-backrefs] file
+        - Lists from [commit-parameters-lists.bin][commit-param-lists]
 
 5. **Construct the Message**:
    Use the template from step 2 and fill in the parameters obtained in steps 4 and 5.

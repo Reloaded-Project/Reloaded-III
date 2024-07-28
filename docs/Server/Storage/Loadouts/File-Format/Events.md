@@ -667,5 +667,5 @@ This event is emitted the files of the game match a known new store manifest/rev
 [sortorder]: ./DataTypes.md#sortorder
 [griddisplaymode]: ./DataTypes.md#griddisplaymode
 [mod-config-updated-v1]: ./Commit-Messages.md#mod_config_updated_v1
-[mod-config-updated-v1]: ./Commit-Messages.md#tool_config_updated_v1
+[tool-config-updated-v1]: ./Commit-Messages.md#tool_config_updated_v1
 [commit-message-versioning]: ./Unpacked.md#commit-parameters-versionsbin

@@ -169,10 +169,10 @@ This way we can ensure alignment is maintained.
 | ---------------- | ---------------- | ------------------- |
 | 40 (`{01} + 00`) | `{XXX}`          | `{YYYYY}`           |
 
-| Data Type    | Name        | Label | Description                                                          |
-| ------------ | ----------- | ----- | -------------------------------------------------------------------- |
-| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                     |
-| `u5`         | MetadataIdx | Y     | [0-31] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type          | Name        | Label | Description                                                          |
+| ------------------ | ----------- | ----- | -------------------------------------------------------------------- |
+| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                             |
+| `u5`               | MetadataIdx | Y     | [0-31] Index of metadata in [Package References][packagemetadatabin] |
 
 ### {10}+00: PackageStatusChanged16
 
@@ -180,11 +180,11 @@ This way we can ensure alignment is maintained.
 | ---------------- | -------------- | ----------------- | -------------------- |
 | 80 (`{10} + 00`) | 80             | `{XXX}`           | `{YYYYY} {YYYYYYYY}` |
 
-| Data Type    | Name        | Label | Description                                                            |
-| ------------ | ----------- | ----- | ---------------------------------------------------------------------- |
-| `u8`         | Padding     | 80    | Constant `80`. Repeats previous byte.                                  |
-| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                       |
-| `u13`        | MetadataIdx | Y     | [0-8192] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type          | Name        | Label | Description                                                            |
+| ------------------ | ----------- | ----- | ---------------------------------------------------------------------- |
+| `u8`               | Padding     | 80    | Constant `80`. Repeats previous byte.                                  |
+| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                               |
+| `u13`              | MetadataIdx | Y     | [0-8192] Index of metadata in [Package References][packagemetadatabin] |
 
 ### {10}+01: PackageStatusChanged24
 
@@ -192,10 +192,10 @@ This way we can ensure alignment is maintained.
 | ---------------- | ---------------- | ------------------------------- |
 | 81 (`{10} + 01`) | `{XXX}`          | `{YYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type    | Name        | Label | Description                                                          |
-| ------------ | ----------- | ----- | -------------------------------------------------------------------- |
-| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                     |
-| `u21`        | MetadataIdx | Y     | [0-2M] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type          | Name        | Label | Description                                                          |
+| ------------------ | ----------- | ----- | -------------------------------------------------------------------- |
+| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                             |
+| `u21`              | MetadataIdx | Y     | [0-2M] Index of metadata in [Package References][packagemetadatabin] |
 
 ### {11}+00: PackageStatusChanged32
 
@@ -203,12 +203,12 @@ This way we can ensure alignment is maintained.
 | ---------------- | -------------- | -------------- | ----------------- | ----------------------------------------- |
 | C0 (`{11} + 00`) | C0 C0 C0       | 0              | `{XXX}`           | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type    | Name        | Label | Description                                                            |
-| ------------ | ----------- | ----- | ---------------------------------------------------------------------- |
-| `u24`        | Padding     | C0    | Constant `C0`. Repeats previous byte.                                  |
-| `u1`         | Unused      | 0     |                                                                        |
-| PackageState | NewStatus   | X     | See [PackageState][packagestate]                                       |
-| `u28`        | MetadataIdx | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type          | Name        | Label | Description                                                            |
+| ------------------ | ----------- | ----- | ---------------------------------------------------------------------- |
+| `u24`              | Padding     | C0    | Constant `C0`. Repeats previous byte.                                  |
+| `u1`               | Unused      | 0     |                                                                        |
+| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                               |
+| `u28`              | MetadataIdx | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin] |
 
 ## GameLaunched
 
@@ -662,7 +662,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 [update-game-store-manifest-xbox-v0]: ./Commit-Messages.md#update_game_store_manifest_xbox_v0
 [update-commandline]: ./Commit-Messages.md#update_commandline_v0
 [featuresbin]: ./About.md#featuresbin
-[packagestate]: ./DataTypes.md#packagestate
+[pkgstatechange]: ./DataTypes.md#packagestatechange
 [sortingmode]: ./DataTypes.md#sortingmode
 [sortorder]: ./DataTypes.md#sortorder
 [griddisplaymode]: ./DataTypes.md#griddisplaymode

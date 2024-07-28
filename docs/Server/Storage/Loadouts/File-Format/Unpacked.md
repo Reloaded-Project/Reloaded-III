@@ -436,9 +436,9 @@ This would be encoded as:
 
     Explanation:
 
-    - 7: BackReference8 for `"Super Cool Mod"`
-    - 7: BackReference8 for `"reloaded3.utility.scmexample"`
-    - 7: BackReference8 for `"1.0.0"`
+    - 5: BackReference8 for `"Super Cool Mod"`
+    - 5: BackReference8 for `"reloaded3.utility.scmexample"`
+    - 5: BackReference8 for `"1.0.0"`
 
 2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
 
@@ -456,7 +456,37 @@ This would be encoded as:
 
     It's still 0 because we're using the same message format, just with back references.
 
-!!! note "There are also more optimized backreferences, e.g. [BackReference2_8](#back-references)."
+#### With [Back References](#back-references) (Optimized)
+
+!!! info "Suppose you have multiple parameters to backreference, there are optimized variants."
+
+Let's say we want to reference all three parameters from the previous example in a new event:
+
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [11]
+
+    Explanation:
+
+    - 11: BackReference3_8 for all three parameters
+
+2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
+
+    Explanation:
+
+    - 0: Index of `"Super Cool Mod"`
+    - 1: Index of `"reloaded3.utility.scmexample"`
+    - 2: Index of `"1.0.0"`
+
+3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
+
+    Explanation:
+
+    - 0: Version of the commit message.
+
+This optimized approach uses a single [ParameterType](#parametertype) (`11: BackReference3_8`) to
+reference all three parameters at once, reducing the overall size of the encoded data.
+
+It's particularly efficient when you need to reference multiple consecutive parameters from a
+previous event.
 
 #### Decoding
 
@@ -562,21 +592,19 @@ This is an array of:
 | `2`  | `UTF-8 Char Array (u32 length)`                         | `An even longer string...`              | UTF-8 characters, length stored in [commit-parameters-lengths-32.bin][commitparam32len] |
 | `3`  | `u32` ([R3TimeStamp][max-numbers])                      | `1st of January 2024`                   | Renders as human readable time.                                                         |
 | `4`  | `u32` ([R3TimeStamp][max-numbers])                      | `5 minutes ago`                         | Renders as relative time.                                                               |
-| `5`  | `u0`                                                    | `1st of January 2024`                   | Human readable timestamp. Time sourced from event (commit) timestamp.                   |
-| `6`  | `u0`                                                    | `5 minutes ago`                         | Relative time. Time sourced from event (commit) timestamp.                              |
-| `7`  | `u8` [(BackReference8)](#back-references)               | Entry 1                                 | Reference to a single previous item.                                                    |
-| `8`  | `u16` [(BackReference16)](#back-references)             | Entry 2                                 | Reference to a single previous item.                                                    |
-| `9`  | `u24` [(BackReference24)](#back-references)             | Entry 3                                 | Reference to a single previous item.                                                    |
-| `10` | `u32` [(BackReference32)](#back-references)             | Entry 4                                 | Reference to a single previous item.                                                    |
-| `11` | `variable` [List](#parameter-lists)                     | See [Parameter Lists](#parameter-lists) | Defines the start of a list.                                                            |
-| `12` | `u8, u8` [(BackReference2_8)](#back-references)         | Entries 1, 2                            | Reference to two previous items, each index stored as u8.                               |
-| `13` | `u8, u8, u8` [(BackReference3_8)](#back-references)     | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u8.                             |
-| `14` | `u16, u16` [(BackReference2_16)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u16.                              |
-| `15` | `u16, u16, u16` [(BackReference3_16)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u16.                            |
-| `16` | `u24, u24` [(BackReference2_24)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u24.                              |
-| `17` | `u24, u24, u24` [(BackReference3_24)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u24.                            |
-| `18` | `u32, u32` [(BackReference2_32)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u32.                              |
-| `19` | `u32, u32, u32` [(BackReference3_32)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u32.                            |
+| `5`  | `u8` [(BackReference8)](#back-references)               | Entry 1                                 | Reference to a single previous item.                                                    |
+| `6`  | `u16` [(BackReference16)](#back-references)             | Entry 2                                 | Reference to a single previous item.                                                    |
+| `7`  | `u24` [(BackReference24)](#back-references)             | Entry 3                                 | Reference to a single previous item.                                                    |
+| `8`  | `u32` [(BackReference32)](#back-references)             | Entry 4                                 | Reference to a single previous item.                                                    |
+| `9`  | `variable` [List](#parameter-lists)                     | See [Parameter Lists](#parameter-lists) | Defines the start of a list.                                                            |
+| `10` | `u8, u8` [(BackReference2_8)](#back-references)         | Entries 1, 2                            | Reference to two previous items, each index stored as u8.                               |
+| `11` | `u8, u8, u8` [(BackReference3_8)](#back-references)     | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u8.                             |
+| `12` | `u16, u16` [(BackReference2_16)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u16.                              |
+| `13` | `u16, u16, u16` [(BackReference3_16)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u16.                            |
+| `14` | `u24, u24` [(BackReference2_24)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u24.                              |
+| `15` | `u24, u24, u24` [(BackReference3_24)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u24.                            |
+| `16` | `u32, u32` [(BackReference2_32)](#back-references)      | Entries 1, 2                            | Reference to two previous items, each index stored as u32.                              |
+| `17` | `u32, u32, u32` [(BackReference3_32)](#back-references) | Entries 1, 2, 3                         | Reference to three previous items, each index stored as u32.                            |
 
 The parameter data is split into multiple files to aid compression:
 
@@ -594,19 +622,19 @@ Here is a listing of which parameter types go where:
 | `2`  | `UTF-8 Char Array (u32 length)`                         | `commit-parameters-text.bin`        |
 | `3`  | `u32` ([R3TimeStamp][max-numbers])                      | `commit-parameters-timestamps.bin`  |
 | `4`  | `u32` ([R3TimeStamp][max-numbers])                      | `commit-parameters-timestamps.bin`  |
-| `7`  | `u8` [(BackReference8)](#back-references)               | `commit-parameters-backrefs-8.bin`  |
-| `8`  | `u16` [(BackReference16)](#back-references)             | `commit-parameters-backrefs-16.bin` |
-| `9`  | `u24` [(BackReference24)](#back-references)             | `commit-parameters-backrefs-24.bin` |
-| `10` | `u32` [(BackReference32)](#back-references)             | `commit-parameters-backrefs-32.bin` |
-| `11` | `variable` [List](#parameter-lists)                     | `commit-parameters-lists.bin`       |
-| `12` | `u8, u8` [(BackReference2_8)](#back-references)         | `commit-parameters-backrefs-8.bin`  |
-| `13` | `u8, u8, u8` [(BackReference3_8)](#back-references)     | `commit-parameters-backrefs-8.bin`  |
-| `14` | `u16, u16` [(BackReference2_16)](#back-references)      | `commit-parameters-backrefs-16.bin` |
-| `15` | `u16, u16, u16` [(BackReference3_16)](#back-references) | `commit-parameters-backrefs-16.bin` |
-| `16` | `u24, u24` [(BackReference2_24)](#back-references)      | `commit-parameters-backrefs-24.bin` |
-| `17` | `u24, u24, u24` [(BackReference3_24)](#back-references) | `commit-parameters-backrefs-24.bin` |
-| `18` | `u32, u32` [(BackReference2_32)](#back-references)      | `commit-parameters-backrefs-32.bin` |
-| `19` | `u32, u32, u32` [(BackReference3_32)](#back-references) | `commit-parameters-backrefs-32.bin` |
+| `5`  | `u8` [(BackReference8)](#back-references)               | `commit-parameters-backrefs-8.bin`  |
+| `6`  | `u16` [(BackReference16)](#back-references)             | `commit-parameters-backrefs-16.bin` |
+| `7`  | `u24` [(BackReference24)](#back-references)             | `commit-parameters-backrefs-24.bin` |
+| `8`  | `u32` [(BackReference32)](#back-references)             | `commit-parameters-backrefs-32.bin` |
+| `9`  | `variable` [List](#parameter-lists)                     | `commit-parameters-lists.bin`       |
+| `10` | `u8, u8` [(BackReference2_8)](#back-references)         | `commit-parameters-backrefs-8.bin`  |
+| `11` | `u8, u8, u8` [(BackReference3_8)](#back-references)     | `commit-parameters-backrefs-8.bin`  |
+| `12` | `u16, u16` [(BackReference2_16)](#back-references)      | `commit-parameters-backrefs-16.bin` |
+| `13` | `u16, u16, u16` [(BackReference3_16)](#back-references) | `commit-parameters-backrefs-16.bin` |
+| `14` | `u24, u24` [(BackReference2_24)](#back-references)      | `commit-parameters-backrefs-24.bin` |
+| `15` | `u24, u24, u24` [(BackReference3_24)](#back-references) | `commit-parameters-backrefs-24.bin` |
+| `16` | `u32, u32` [(BackReference2_32)](#back-references)      | `commit-parameters-backrefs-32.bin` |
+| `17` | `u32, u32, u32` [(BackReference3_32)](#back-references) | `commit-parameters-backrefs-32.bin` |
 
 ### Back References
 

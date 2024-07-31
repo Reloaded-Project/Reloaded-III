@@ -135,11 +135,23 @@ Snapshots are used to restore the [unpacked loadout][unpacked] without replaying
 
 !!! info "Snapshots are stored as a [single `.snapshot.bin` file][loadout-location]."
 
-- Serialized with MessagePack
-    - Allows easy access by external software
-- Compressed with Zstandard
-- Updated incrementally as new events occur
+- Serialized with [bitcode][bitcode].
+    - This data will be mutated after loading, so `zero-copy` serialization is not desireable.
+- Compressed with Zstandard.
+- Updated periodically, or when a loadout is flushed back to disk.
 
+Snapshots will be prefixed with a version declared as `u32` integer.
+
+Any incompatible changes to the snapshot schema; for example:
+
+- Changing the order of a field.
+- Adding a new field.
+- Removing a field.
+- Changing the type of a field.
+
+Will increment the version number. Migration is a possibility, but changes in schema are not
+expected to be frequent, and replaying events is expected to be very fast; therefore initially
+there will be no migration code; as to avoid bloating the binary.
 
 ## Extra Benefits
 
@@ -163,3 +175,4 @@ Snapshots are used to restore the [unpacked loadout][unpacked] without replaying
 [microsoft-store-data]: ./Unpacked.md#microsoft
 [unpacked]: ./Unpacked.md
 [loadout-location]: ../About.md#location
+[bitcode]: ../../../../Research/Library-Sizes/Serializers.md#bitcode

@@ -220,6 +220,21 @@ X number of bytes.
 The generics could be pointed at a shared implementation using `u8` as the type, like malloc/free
 in C. Though it may incur an additional jmp instruction of overhead.
 
+### Use `rkyv` for serializing read-only data.
+
+It performs the best in deserialization and has the smallest binary size.
+
+An example of where using `rkyv` is suitable therefore is for saving loader settings from the
+server.
+
+### Use `bitcode` for serializing data where copy may be beneficial
+
+It's a bit heavier on code size than `rkyv` but tends to
+serialize structured data faster, and it's very compression friendly.
+
+A good usage for a library like `bitcode` is for serializing loadout `snapshots` that require
+mutating *after* they are loaded.
+
 [rkyv]: https://rkyv.org/motivation.html
 [postcard]: https://github.com/jamesmunns/postcard
 [bincode]: https://github.com/bincode-org/bincode

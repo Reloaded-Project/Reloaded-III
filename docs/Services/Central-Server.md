@@ -929,7 +929,7 @@ By default, I recommend searching by substring. In Name and ModId. Summary can b
 [r2-all-deps-idx]: https://github.com/Reloaded-Project/Reloaded-II.Index/blob/main/AllDependencies.json.br
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [package-id]: ../Server/Packaging/Package-Metadata.md#id
-[sync-loadout]: ../Server/Storage/Loadouts/About.md#restoring-actual-package-files
-[package-reference-ids]: ../Server/Storage/Loadouts/About.md#package-reference-idsbin
+[sync-loadout]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#restoring-actual-package-files
+[package-reference-ids]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#package-reference-idsbin
 [hashing]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use
 [mod-metadata-search-image]: ../Server/Packaging/Configurations/Mod-Metadata.md#icon-search

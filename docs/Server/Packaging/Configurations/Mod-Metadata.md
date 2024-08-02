@@ -138,7 +138,6 @@ By default this value is false. So mod would get disabled.
 [coreclr-backend]: ../../../Loader/Backends/CoreCLR.md
 [game-id]: ../../Storage/Games/About.md#id
 [instruction-sets]: ../../../Loader/Backends/Native.md#instruction-sets
-[mod-configurations]: ./Mod-Configurations.md
 [native-backend]: ../../../Loader/Backends/Native.md
 [package-toml]: ../Package-Metadata.md
 [package-images]: ../About.md#images

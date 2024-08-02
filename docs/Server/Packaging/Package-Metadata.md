@@ -260,7 +260,7 @@ Examples of dependencies include:
 - Runtimes, e.g. `.NET Runtime`.
 
 When `mod` packages are distributed as dependencies, they may be hidden from the loadout (profile) view
-inside a mod manager; provided it does not have a [configuration][mod-configurations].
+inside a mod manager; provided it does not have a [configuration][package-configuration].
 
 !!! tip "When a dependency is present that no mod depends on, it can be removed from the system."
 
@@ -449,7 +449,7 @@ If the `IgnoredDiagnostics` field is not specified or is an empty array, no diag
 [language-code]: ../../Common/Localisation/Adding-Localisations.md#language-naming-convention
 [license]: ./About.md#license
 [middleware-api-hooks]: ../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
-[mod-configurations]: ./Configurations/Mod-Configurations.md
+[package-configuration]: ../../Common/Configuration/About.md
 [mod-metadata]: ./Configurations/Mod-Metadata.md
 [nexus-mods]: https://www.nexusmods.com
 [native-backend]: ../../Loader/Backends/Native.md

@@ -143,7 +143,7 @@ This way we can ensure alignment is maintained.
 `PackageType` is the type of package referred to `MetadataIdx`.
 
 - [PACKAGE_ADDED_V0][package-added-v0] when `NewStatus == Added` when `PackageType` is not known.
-- [PACKAGE_REMOVED_V0}][package-removed-v0] when `NewStatus == Removed` when `PackageType` is not known.
+- [PACKAGE_REMOVED_V0][package-removed-v0] when `NewStatus == Removed` when `PackageType` is not known.
 - [PACKAGE_HIDDEN_V0][package-hidden-v0] when `NewStatus == Hidden` when `PackageType` is not known.
 - [PACKAGE_DISABLED_V0][package-disabled-v0] when `NewStatus == Disabled` when `PackageType` is not known.
 - [PACKAGE_ENABLED_V0][package-enabled-v0] when `NewStatus == Enabled` when `PackageType` is not known.

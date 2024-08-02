@@ -13,6 +13,7 @@ Inside each package folder is a file named `package.toml`; which stores the meta
 | PackageType         | [PackageType](#packagetype)                | Type of the package. See [PackageType](#packagetype) for possible values. |
 | string              | [DocsFile](#docsfile)                      | [Optional] Entry point for this package documentation.                    |
 | SemVer              | [Version](#version)                        | Semantic versioning version of the package.                               |
+| bool                | [IsDependency](#is-dependency)             | This package is a dependency (e.g. library) and not directly consumable.  |
 | string              | LicenseId                                  | [SPDX License Identifier][spdx-license]                                   |
 | string[]            | [Tags](#tags)                              | Used to make searching easier within mod managers.                        |
 | Credit[]            | [Credits](#credits)                        | [Optional] Stores information about who contributed what to the project.  |
@@ -188,12 +189,12 @@ Use lowercase, no spaces, no special characters.
 
     For mods that are non-game specific such as backends; set the `game` identifier as `reloaded3` and use one of the following.
 
-| Type         | Description                                       | Example                           |
-| ------------ | ------------------------------------------------- | --------------------------------- |
-| backend      | For [backends][backend].                          | `reloaded3.backend.coreclr.s56`   |
-| api          | For [middleware/API hooks][middleware-api-hooks]. | `reloaded3.api.windows.vfs.s56`   |
+| Type         | Description                                       | Example                                   |
+| ------------ | ------------------------------------------------- | ----------------------------------------- |
+| backend      | For [backends][backend].                          | `reloaded3.backend.coreclr.s56`           |
+| api          | For [middleware/API hooks][middleware-api-hooks]. | `reloaded3.api.windows.vfs.s56`           |
 | game support | For [game support mods][game-support].            | `reloaded3.gamesupport.persona5royal.s56` |
-| utility      | For utility mods with reusable code.              | `reloaded3.utility.hooks.s56`     |
+| utility      | For utility mods with reusable code.              | `reloaded3.utility.hooks.s56`             |
 
 Server can choose whether to show non game-specific mods (`reloaded3` id) on a specific game's page or not.
 
@@ -245,6 +246,23 @@ See [Docs][docs] for more details.
 
     For legacy/foreign packages with non-semver versions, we will use `0.0.0.{originalVersion}`.
     Stripping all spaces and/or invalid characters.
+
+## Is Dependency
+
+!!! info "Specifies that this is a package that is not directly consumable by the user."
+
+`Dependency` packages are not directly consumable by the user, and are instead used as dependencies
+for other packages. That is to say, you can't enable a 'dependency mod'.
+
+Examples of dependencies include:
+
+- Libraries used by mods at runtime.
+- Runtimes, e.g. `.NET Runtime`.
+
+When `mod` packages are distributed as dependencies, they may be hidden from the loadout (profile) view
+inside a mod manager; provided it does not have a [configuration][mod-configurations].
+
+!!! tip "When a dependency is present that no mod depends on, it can be removed from the system."
 
 ## Tags
 
@@ -429,7 +447,7 @@ If the `IgnoredDiagnostics` field is not specified or is an empty array, no diag
 [language-code]: ../../Common/Localisation/Adding-Localisations.md#language-naming-convention
 [license]: ./About.md#license
 [middleware-api-hooks]: ../../Loader/Core-Architecture.md#middlewareos-handling-mods-layer-1
-[mod-configurations]: ./Mod-Configurations.md
+[mod-configurations]: ./Configurations/Mod-Configurations.md
 [mod-metadata]: ./Configurations/Mod-Metadata.md
 [nexus-mods]: https://www.nexusmods.com
 [native-backend]: ../../Loader/Backends/Native.md

@@ -9,7 +9,6 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 | string                           | [IconSquare](#icon-square)         | Relative path of preview icon (square format).                                                                      |
 | string                           | [IconSearch](#icon-search)         | Relative path of preview icon (search format).                                                                      |
 | GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                                                                                 |
-| bool                             | [IsLibrary](#is-library)           | If true this mod cannot be explicitly enabled by the user.                                                          |
 | Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend]                                                       |
 | string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                                                                                     |
 | bool                             | [ClientSide](#clientside)          | [Optional] Indicates if the mod is a client-side mod and does not need to be disabled when joining an online lobby. |
@@ -76,12 +75,6 @@ This image is expected to be around 5KiB.
 | ------- | -------- | -------------------------------------------------- |
 | string  | FileName | Name of file in [images][package-images] folder.   |
 | string? | Caption  | [Optional] One line description of the screenshot. |
-
-## Is Library
-
-!!! info "If this is true, the mod cannot be explicitly enabled by the user in the manager."
-
-!!! info "Some libraries may have user [configuration(s)][mod-configurations]. Manager is free to hide other libraries."
 
 ## Targets
 

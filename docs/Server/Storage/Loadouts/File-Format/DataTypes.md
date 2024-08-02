@@ -61,6 +61,8 @@ For example:
 - `3`: `Release Date Descending`. Show from newest to oldest.
 - `4`: `Install Date Ascending`. Show from oldest to newest.
 - `5`: `Install Date Descending`. Show from newest to oldest.
+- `6`: `Alphabetical Ascending`. Sort alphabetically from A to Z.
+- `7`: `Alphabetical Descending`. Sort alphabetically from Z to A.
 
 ## SortOrder
 

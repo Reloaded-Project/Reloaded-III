@@ -6,12 +6,18 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 | Type                             | Name                               | Description                                                                                                         |
 | -------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| string                           | [IconSquare](#icon-square)         | Relative path of preview icon (square format).                                                                      |
-| string                           | [IconSearch](#icon-search)         | Relative path of preview icon (search format).                                                                      |
 | GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                                                                                 |
 | Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend]                                                       |
 | string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                                                                                     |
 | bool                             | [ClientSide](#clientside)          | [Optional] Indicates if the mod is a client-side mod and does not need to be disabled when joining an online lobby. |
+
+## Implicit Fields
+
+Some items are stored as separate files:
+
+- [IconSearch](#icon-search): Search icon file, located at `package/images/icon-search.jxl`.
+- [IconListCompact](#icon-list-compact-view): List compact view icon file, located at `package/images/icon-list-compact.jxl`.
+- [IconList](#icon-list-view): List view icon file, located at `package/images/icon-list.jxl`.
 
 ## Icons
 
@@ -21,9 +27,35 @@ Mod Metadata extends from standard ([package.toml][package-toml]).
 
 !!! info "Images use [JPEG XL (`.jxl`)][images]"
 
-### Icon (Square)
+### Icon (List Compact View)
 
-!!! info "Should be a multiple of `256x256`. Recommended `512x512`."
+!!! info "This is the preview icon used when displaying mods as a list (compact)."
+
+    It corresponds to [GridDisplayMode 1][grid-display-mode].
+
+The size of this image should be `84x48`.
+
+This image is expected to be around 2KiB.
+
+!!! note "The `84x48` is the target resolution for 4K displays."
+
+!!! note "This view is meanf for showing only 1 line of text, alongside the image."
+
+### Icon (List View)
+
+!!! info "This is the preview icon used when displaying mods as a list."
+
+    It corresponds to [GridDisplayMode 2][grid-display-mode].
+
+The size of this image should be `168x96`.
+
+This image is expected to be around 5KiB.
+
+!!! note "The `168x96` is the target resolution for 4K displays."
+
+!!! note "This view enables a second line of text for additional mod info in the list."
+
+    As opposed to the [compact view](#icon-list-compact-view) which is meant for only showing 1 line.
 
 ### Icon (Search)
 
@@ -41,29 +73,7 @@ This image is expected to be around 50KiB.
 
 !!! note "The `880x440` is the target resolution for 4K displays."
 
-### Icon (List Compact View)
-
-!!! info "This is the preview icon used when displaying mods as a list (compact)."
-
-    It corresponds to [GridDisplayMode 1][grid-display-mode].
-
-The size of this image should be `84x48`.
-
-This image is expected to be around 2KiB.
-
-!!! note "The `84x48` is the target resolution for 4K displays."
-
-### Icon (List View)
-
-!!! info "This is the preview icon used when displaying mods as a list."
-
-    It corresponds to [GridDisplayMode 2][grid-display-mode].
-
-The size of this image should be `168x96`.
-
-This image is expected to be around 5KiB.
-
-!!! note "The `84x48` is the target resolution for 4K displays."
+!!! note "This image size is directly lifted from Reloaded-II's mod search results scale."
 
 ## Gallery
 

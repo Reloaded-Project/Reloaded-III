@@ -86,8 +86,10 @@ For example:
 
 - `0`: Unchanged
 - `1`: List (Compact)
-- `2`: List (Thick)
+- `2`: List
 - `3`: Grid (Search)
+
+The actual sizes of these images is stated in [mod metadata][mod-metadata].
 
 ## StoreType
 
@@ -103,3 +105,5 @@ For example:
 - 4: `Microsoft`
 
 This can also include game launchers.
+
+[mod-metadata]: ../../../Packaging/Configurations/Mod-Metadata.md#icon-square

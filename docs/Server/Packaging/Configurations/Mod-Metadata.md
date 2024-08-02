@@ -4,12 +4,13 @@
 
 Mod Metadata extends from standard ([package.toml][package-toml]).
 
-| Type                             | Name                               | Description                                                                                                         |
-| -------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| GalleryItem[]                    | [Gallery](#gallery)                | Stores preview images for this mod.                                                                                 |
-| Dictionary&lt;string, Target&gt; | [Targets](#targets)                | Specifies the DLLs/binaries used [for each backend.][backend]                                                       |
-| string[]                         | [SupportedGames](#supported-games) | List of supported titles/games.                                                                                     |
-| bool                             | [ClientSide](#clientside)          | [Optional] Indicates if the mod is a client-side mod and does not need to be disabled when joining an online lobby. |
+| Type                             | Name                                          | Description                                                                                     |
+| -------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| GalleryItem[]                    | [Gallery](#gallery)                           | Stores preview images for this mod.                                                             |
+| Dictionary&lt;string, Target&gt; | [Targets](#targets)                           | Specifies the DLLs/binaries used [for each backend.][backend]                                   |
+| string[]                         | [SupportedGames](#supported-games)            | List of supported titles/games.                                                                 |
+| bool                             | [ClientSide](#client-side)                    | [Optional] True if the mod is purely cosmetic and does not have non-visual effects on gameplay. |
+| bool                             | [AllowRuntimeLoading](#allow-runtime-loading) | [Optional] Allows the mod to be loaded in real-time at runtime, instead of only on startup.     |
 
 ## Implicit Fields
 
@@ -134,13 +135,24 @@ Alternatively, when experimenting with new games which do not have a specified G
 
 Mod managers will automatically update this to appropriate ID during process of querying [Community Repository][community-repository].
 
-## ClientSide
+## Client Side
 
 !!! info "If true, this mod won't be disabled when joining an online multiplayer lobby."
 
 This allows for mods such as UI mods to be used in mods that add online play without forcibly being disabled.
 
 By default this value is false. So mod would get disabled.
+
+## Allow Runtime Loading
+
+!!! info "If true, then this mod can be loaded after the game has been started."
+
+This can be used for mods which don't require hooking critical game code that is only ran
+at startup. This can be useful for rapid testing of mods and speeding up debugging.
+
+By default this value is `false` for code mods and `true` for asset mods. However
+the mods which read the contents of asset mods may choose to ignore the unload request
+if they themselves don't support it. (These mods should log a warning to console if they do so.)
 
 <!-- Links -->
 [backend]: ../../../Loader/Backends/About.md

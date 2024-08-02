@@ -264,6 +264,8 @@ inside a mod manager; provided it does not have a [configuration][mod-configurat
 
 !!! tip "When a dependency is present that no mod depends on, it can be removed from the system."
 
+    This allows the user to save space on their system.
+
 ## Tags
 
 !!! info "Used to make searching within mod managers easier; i.e. `filter by tag`."

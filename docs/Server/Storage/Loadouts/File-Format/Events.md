@@ -162,6 +162,11 @@ This way we can ensure alignment is maintained.
 - [TOOL_HIDDEN_V0][tool-hidden-v0] when `NewStatus == Hidden` and `PackageType == Tool`.
 - [TOOL_DISABLED_V0][tool-disabled-v0] when `NewStatus == Disabled` and `PackageType == Tool`.
 - [TOOL_ENABLED_V0][tool-enabled-v0] when `NewStatus == Enabled` and `PackageType == Tool`.
+- [PACKAGE_INSTALLED_AS_DEPENDENCY_V0][package-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` when `PackageType` is not known.
+- [MOD_INSTALLED_AS_DEPENDENCY_V0][mod-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` and `PackageType == Mod`.
+- [TRANSLATION_INSTALLED_AS_DEPENDENCY_V0][translation-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` and `PackageType == Translation`.
+- [TOOL_INSTALLED_AS_DEPENDENCY_V0][tool-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` and `PackageType == Tool`.
+
 
 ### {01}+00: PackageStatusChanged8
 
@@ -669,3 +674,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 [mod-config-updated-v1]: ./Commit-Messages.md#mod_config_updated_v1
 [tool-config-updated-v1]: ./Commit-Messages.md#tool_config_updated_v1
 [commit-message-versioning]: ./Unpacked.md#commit-parameters-versionsbin
+[package-installed-as-dependency-v0]: ./Commit-Messages.md#package_installed_as_dependency_v0
+[mod-installed-as-dependency-v0]: ./Commit-Messages.md#mod_installed_as_dependency_v0
+[translation-installed-as-dependency-v0]: ./Commit-Messages.md#translation_installed_as_dependency_v0
+[tool-installed-as-dependency-v0]: ./Commit-Messages.md#tool_installed_as_dependency_v0

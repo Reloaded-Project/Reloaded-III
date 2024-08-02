@@ -22,6 +22,7 @@
 - `2`: `Disabled` (Default State). The package was disabled in the loadout.
 - `3`: `Added`. The package was added to the loadout.
 - `4`: `Enabled`. The package was enabled in the loadout.
+- `5`: `InstalledAsDependency`. The package was installed as a dependency.
 
 ## PackageState
 
@@ -33,6 +34,7 @@
 
 - `0x01`: `Hidden`. The package is hidden from view in the loadout.
 - `0x02`: `Enabled`. The package is disabled in the loadout.
+- `0x04`: `InstalledAsDependency`. The package is installed as a dependency.
 
 Multiple flags can be combined to represent different states.
 For example:

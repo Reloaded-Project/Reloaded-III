@@ -178,6 +178,30 @@ Disabled tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 Enabled tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 ```
 
+### PACKAGE_INSTALLED_AS_DEPENDENCY_V0
+
+```
+Installed '**{Name}**' with ID '**{ID}**' and version '**{Version}**' as a dependency.
+```
+
+### MOD_INSTALLED_AS_DEPENDENCY_V0
+
+```
+Installed mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**' as a dependency.
+```
+
+### TRANSLATION_INSTALLED_AS_DEPENDENCY_V0
+
+```
+Installed translation '**{Name}**' with ID '**{ID}**' and version '**{Version}**' as a dependency.
+```
+
+### TOOL_INSTALLED_AS_DEPENDENCY_V0
+
+```
+Installed tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**' as a dependency.
+```
+
 ## Package Updated (V0)
 
 !!! info "Source: Event [PackageUpdated][event-packageupdated]"

@@ -49,32 +49,7 @@ provided they don't store any user specific data, for example ***mod settings***
     - macOS: `~/Library/Application Support/Reloaded3`
     - Linux: `~/.local/share/Reloaded3` (a.k.a. `XDG_DATA_HOME`)
 
-### Portable Install
-
-!!! warning "Portable Use is Discouraged"
-
-    Unless the game you're modding is itself portable, i.e. on a USB stick,
-    use of portable mode should be discouraged.
-
-The Server & Loader will recognise the following condition as 'portable':
-
-> *A folder named `.Reloaded3` exists in the same folder as the game and Server binary.*
-
-In this case the following locations should be used.
-
-- **Machine (Persistent)**: `.Reloaded3/Main`
-- **Machine (Cache)**: `.Reloaded3/Cache`
-- **User**: `.Reloaded3/User`
-
-For `Tools` downloaded via the R3 package manager, they should assume portable mode if `.Reloaded3`
-is part of the path to the main binary.
-
-!!! note "About Portable Installs"
-
-    Some users will (very strongly) insist that they want to run Reloaded3 in a 'portable' way.
-
-    Sometimes it's personal preference, sometimes it's a more niche use case like running a modded
-    game on a USB stick.
+Also see: [Portable Installs](#portable-install).
 
 ## Items to Store
 
@@ -156,7 +131,9 @@ Loadouts
 
 For the exact details, see the [Loadouts][loadouts-location] page.
 
-## Multi-User Networked Systems
+## Extra
+
+### Multi-User Networked Systems
 
 - On Windows, files in `AppData/Roaming` are usually downloaded upon login in multi-user setup
   configurations, and this download typically happens on every login.
@@ -167,6 +144,33 @@ For the exact details, see the [Loadouts][loadouts-location] page.
 
 - To optimize performance, keep user data as small as possible, and ensure we don't unnecessarily
   access too many small files. Parallelize file access if possible to reduce the impact of high latency.
+
+### Portable Install
+
+!!! warning "Portable Use is Discouraged"
+
+    Unless the game you're modding is itself portable, i.e. on a USB stick,
+    use of portable mode should be discouraged.
+
+The Server & Loader will recognise the following condition as 'portable':
+
+> *A folder named `.Reloaded3` exists in the same folder as the game and Server binary.*
+
+In this case the following locations should be used.
+
+- **Machine (Persistent)**: `.Reloaded3/Main`
+- **Machine (Cache)**: `.Reloaded3/Cache`
+- **User**: `.Reloaded3/User`
+
+For `Tools` downloaded via the R3 package manager, they should assume portable mode if `.Reloaded3`
+is part of the path to the main binary.
+
+!!! note "About Portable Installs"
+
+    Some users will (very strongly) insist that they want to run Reloaded3 in a 'portable' way.
+
+    Sometimes it's personal preference, sometimes it's a more niche use case like running a modded
+    game on a USB stick.
 
 [game-metadata]: ../Storage/Games/About.md
 [loadouts]: ./Loadouts/About.md

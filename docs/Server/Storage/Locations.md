@@ -156,18 +156,17 @@ Loadouts
 
 For the exact details, see the [Loadouts][loadouts-location] page.
 
-## About Multi User Networked Systems
+## Multi-User Networked Systems
 
-On Windows, files in `AppData/Roaming` are usually downloaded upon login in multi-user
-setup configurations, and this download typically happens on every login.
+- On Windows, files in `AppData/Roaming` are usually downloaded upon login in multi-user setup
+  configurations, and this download typically happens on every login.
 
-On the other hand, on Linux systems, it's much more likely that the Home Directory is accessed
-over the network in real-time, resulting in no wait time at the expense of high latency. Likely
-with some sort of caching mechanism in place.
+- On Linux systems, it's much more likely that the Home Directory is accessed over the network in
+  real-time, resulting in no wait time at the expense of high latency. Likely with some sort of
+  caching mechanism in place.
 
-Taking these factors into account, we should aim to keep the user data as small as possible,
-and ensure we don't unnecessarily access too many small files. Parralelise file access if possible to
-reduce the impact of high latency.
+- To optimize performance, keep user data as small as possible, and ensure we don't unnecessarily
+  access too many small files. Parallelize file access if possible to reduce the impact of high latency.
 
 [game-metadata]: ../Storage/Games/About.md
 [loadouts]: ./Loadouts/About.md

@@ -51,13 +51,6 @@ provided they don't store any user specific data, for example ***mod settings***
 
 ### Portable Install
 
-!!! info "About Portable Installs"
-
-    Some users will (very strongly) insist that they want to run Reloaded3 in a 'portable' way.
-
-    Sometimes it's personal preference, sometimes it's a more niche use case like running a modded
-    game on a USB stick.
-
 !!! warning "Portable Use is Discouraged"
 
     Unless the game you're modding is itself portable, i.e. on a USB stick,
@@ -75,6 +68,13 @@ In this case the following locations should be used.
 
 For `Tools` downloaded via the R3 package manager, they should assume portable mode if `.Reloaded3`
 is part of the path to the main binary.
+
+!!! note "About Portable Installs"
+
+    Some users will (very strongly) insist that they want to run Reloaded3 in a 'portable' way.
+
+    Sometimes it's personal preference, sometimes it's a more niche use case like running a modded
+    game on a USB stick.
 
 ## Items to Store
 

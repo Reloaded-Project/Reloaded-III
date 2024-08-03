@@ -2,7 +2,8 @@
 
 !!! info "Reloaded3 loadouts use a single snapshot for quick loading and fault tolerance."
 
-A snapshot contains the current state of all loadout data, allowing for fast loading and efficient updates.
+A snapshot contains the current state of the parser containing the [Unpacked Loadout Data][unpacked],
+allowing for fast loading and efficient updates.
 
 ## Snapshot Contents (Schema)
 
@@ -16,7 +17,7 @@ struct Snapshot {
 
     // Configurations
     configurations: Vec<Vec<u8>>,
-    config_hashes: HashMap<XXH3_64, u32>, // Hash to index in 'configurations'
+    config_hashes: HashMap<XXH3, u32>, // Hash to index in 'configurations'
 
     // Mod Load Order
     mod_load_order: Vec<u32>, // Vec of indices into packages
@@ -32,7 +33,7 @@ struct Snapshot {
 }
 
 struct PackageInfo {
-    package_id: u64, // XXH3(PackageID)
+    package_id: XXH3, // XXH3(PackageID)
     version: String, // Semantic version
     state: PackageState,
     configuration_index: Option<u32>, // Index into configurations Vec
@@ -100,7 +101,7 @@ struct MicrosoftStoreData {
         - Version: The semantic version of the package as a string (e.g., "1.2.3").
         - State: The current state of the package using the [`PackageState`][packagestate] enum.
         - Configuration Index: An optional index into the configurations Vec.
-    - Corresponds to [package-reference-ids.bin][packagereferenceidsbin].
+    - Corresponds to [Package References][packagereferenceidsbin].
 
 3. **Configurations**
     - A list of raw configuration data for packages.

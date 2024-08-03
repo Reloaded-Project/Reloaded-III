@@ -182,6 +182,8 @@ a probability of 0.0000000027%, or more than 1 in 3.7 trillion.
 If I'm ever *that* successful, I'd probably be funded enough that I could extend this to 128-bit hash,
 and at that point a meteor is more likely to land on your house (no joke).
 
+!!! note "This ID is used to [restore the package](#restoring-actual-package-files)."
+
 ### package-reference-versions-len.bin
 
 Contains the lengths of entries in [package-reference-versions.bin](#package-reference-idsbin).

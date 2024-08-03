@@ -25,7 +25,7 @@ provided they don't store any user specific data, for example ***mod settings***
 - **Machine (Persistent)**: Machine specific data that cannot be regenerated.
     - Should not be deleted by user manually.
     - For example, Game Backups.
-- **Machine (Cache)**: Machine specific data that can be regenerated.
+- **Machine (Non-Persistent)**: Machine specific data that can be regenerated.
     - These items can be safely deleted when not used.
     - For example, Downloaded packages (Mods, Tools etc.)
     - Items that can always be restored with [Package Metadata][package-metadata].
@@ -39,7 +39,7 @@ provided they don't store any user specific data, for example ***mod settings***
     - macOS: `/Library/Application Support/Reloaded3`
     - Linux: `/var/lib/Reloaded3` ([Filesystem Hierarchy Standard Info][var-lib])
 
-- **Machine (Cache)**:
+- **Machine (Non-Persistent)**:
     - Windows: `C:\ProgramData\Reloaded3\Cache` (a.k.a. `$CommonApplicationData`+`Cache`)
     - macOS: `/Library/Caches/Reloaded3`
     - Linux: `/var/cache/Reloaded3` ([Filesystem Hierarchy Standard Info][var-cache])
@@ -69,7 +69,7 @@ Also see: [Portable Installs](#portable-install).
 auto deleted by the server. To avoid files in use accidentally being deleted, temporary files are stored
 in persistent storage. We will auto clean them ourselves.
 
-### Machine (Cache)
+### Machine (Non-Persistent)
 
 | Item                         | Subfolder  | Description                                                |
 | ---------------------------- | ---------- | ---------------------------------------------------------- |
@@ -159,7 +159,7 @@ The Server & Loader will recognise the following condition as 'portable':
 In this case the following locations should be used.
 
 - **Machine (Persistent)**: `.Reloaded3/Main`
-- **Machine (Cache)**: `.Reloaded3/Cache`
+- **Machine (Non-Persistent)**: `.Reloaded3/Cache`
 - **User**: `.Reloaded3/User`
 
 For `Tools` downloaded via the R3 package manager, they should assume portable mode if `.Reloaded3`

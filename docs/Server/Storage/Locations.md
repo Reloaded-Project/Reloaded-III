@@ -77,18 +77,6 @@ in persistent storage. We will auto clean them ourselves.
 | Package Configs                                   | `PackageConfigs/{packageId}` | Config/Save files for packages. ***This contains user data***. |
 | [Package Cache Files](#cache-files-user-specific) | `Cache/Package/{packageId}`  | Cache files that have inputs ***with user data***.             |
 
-#### Community Repository
-
-!!! info "This contains a local cache of the [Community Repository][community-repository]"
-
-This folder consists of a file named `etag.txt` and a copy of the `Nx` packed
-[CommunityRepository.nx][community-repository-hosting].
-
-The ETag will be used to determine if the local cached archive is outdated.
-
-If it is, we will download the new [CommunityRepository.nx][community-repository-hosting], else
-we'll use the local cache.
-
 ## Extra Details on Stored Items
 
 ### Cache Files
@@ -129,6 +117,18 @@ It has the following structure:
 ```
 CommunityRepository
 ```
+
+#### Community Repository
+
+!!! info "This contains a local cache of the [Community Repository][community-repository]"
+
+This folder consists of a file named `etag.txt` and a copy of the `Nx` packed
+[CommunityRepository.nx][community-repository-hosting].
+
+The ETag will be used to determine if the local cached archive is outdated.
+
+If it is, we will download the new [CommunityRepository.nx][community-repository-hosting], else
+we'll use the local cache.
 
 ### Loadouts
 

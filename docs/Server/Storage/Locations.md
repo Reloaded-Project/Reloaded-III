@@ -57,13 +57,11 @@ Also see: [Portable Installs](#portable-install).
 
 ### Machine (Persistent)
 
-| Item                   | Subfolder                    | Description                                                            |
-| ---------------------- | ---------------------------- | ---------------------------------------------------------------------- |
-| Temporary Files (Mods) | `Temp/{processId}`[1]        | Runtime-generated temporary files. Not persisted across runs.          |
-| Server Cache Files     | `Cache/Server`               | Cache files tied to the Reloaded3 server.                              |
-| Loadouts (Shared)      | `Loadouts`                   | Loadouts that are shared between all users.                            |
-| Package Cache Files    | `Cache/Package/{packageId}`  | Cache files that consist of inputs that ***don't include user data***. |
-| Package Configs        | `PackageConfigs/{packageId}` | Config/Save files for packages.                                        |
+| Item                   | Subfolder                   | Description                                                                |
+| ---------------------- | --------------------------- | -------------------------------------------------------------------------- |
+| Temporary Files (Mods) | `Temp/{processId}`[1]       | Runtime-generated temporary files. Not persisted across runs.              |
+| Server Cache Files     | `Cache/Server`              | Cache files tied to the Reloaded3 server.                                  |
+| Package Cache Files    | `Cache/Package/{packageId}` | Cache files that consist of inputs that do not contain [User](#user) data. |
 
 [1] Temporary Files should be tied to `ProcessID`, if a process with that ID is dead, they should be
 auto deleted by the server. To avoid files in use accidentally being deleted, temporary files are stored
@@ -171,6 +169,15 @@ is part of the path to the main binary.
 
     Sometimes it's personal preference, sometimes it's a more niche use case like running a modded
     game on a USB stick.
+
+## Future Considerations
+
+Loadouts and package configs may be shared in the future on a machine level.
+
+| Item                     | Subfolder                    | Description                                 |
+| ------------------------ | ---------------------------- | ------------------------------------------- |
+| Loadouts (Shared)        | `Loadouts`                   | Loadouts that are shared between all users. |
+| Package Configs (Shared) | `PackageConfigs/{packageId}` | Config/Save files for packages.             |
 
 [game-metadata]: ../Storage/Games/About.md
 [loadouts]: ./Loadouts/About.md

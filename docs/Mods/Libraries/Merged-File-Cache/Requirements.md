@@ -66,6 +66,8 @@ one.
 
 Using [rkyv][rkyv] for Rust is recommended.
 
+TODO: Use `bincode` here, because what we load should be mutable.
+
 In the event a game with many merged files comes along, adding ZStandard compression will also
 be beneficial. For now however, pure serialization should be sufficient.
 

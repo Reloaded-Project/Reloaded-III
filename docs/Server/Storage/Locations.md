@@ -55,51 +55,27 @@ Also see: [Portable Installs](#portable-install).
 
 !!! info "What do we want to store and where do we store it?"
 
-### Machine (Persistent)
+### Machine (Non-Persistent)
 
-| Item                   | Subfolder                   | Description                                                                |
-| ---------------------- | --------------------------- | -------------------------------------------------------------------------- |
-| Temporary Files (Mods) | `Temp/{processId}`[1]       | Runtime-generated temporary files. Not persisted across runs.              |
-| Server Cache Files     | `Cache/Server`              | Cache files tied to the Reloaded3 server.                                  |
-| Package Cache Files    | `Cache/Package/{packageId}` | Cache files that consist of inputs that do not contain [User](#user) data. |
+| Item                                                 | Subfolder                   | Description                                                                |
+| ---------------------------------------------------- | --------------------------- | -------------------------------------------------------------------------- |
+| [Packages][package-metadata]                         | `Packages`                  | Pretty much anything you can download (Mods, Tools, etc.).                 |
+| Temporary Files (Mods)                               | `Temp/{processId}`[1]       | Runtime-generated temporary files. Not persisted across runs.              |
+| [Server Cache Files](#server-cache-files)            | `Cache/Server`              | Cache files tied to the Reloaded3 server.                                  |
+| [Package Cache Files](#cache-files-machine-specific) | `Cache/Package/{packageId}` | Cache files that consist of inputs that do not contain [User](#user) data. |
 
 [1] Temporary Files should be tied to `ProcessID`, if a process with that ID is dead, they should be
 auto deleted by the server. To avoid files in use accidentally being deleted, temporary files are stored
 in persistent storage. We will auto clean them ourselves.
 
-### Machine (Non-Persistent)
-
-| Item                         | Subfolder  | Description                                                |
-| ---------------------------- | ---------- | ---------------------------------------------------------- |
-| [Packages][package-metadata] | `Packages` | Pretty much anything you can download (Mods, Tools, etc.). |
-
 ### User
 
-| Item                         | Subfolder                    | Description                                                    |
-| ---------------------------- | ---------------------------- | -------------------------------------------------------------- |
-| [Loadouts](#loadouts)        | `Loadouts`                   | Loadouts that are private to the current user.                 |
-| [Added Games][game-metadata] | `Games/{gameId}`             | And all of user's global preferences for that game.            |
-| Package Cache Files          | `Cache/Package/{packageId}`  | Cache files that have inputs ***with user data***.             |
-| Package Configs              | `PackageConfigs/{packageId}` | Config/Save files for packages. ***This contains user data***. |
-
-### Cache Files
-
-!!! note "Cache format is specific to the package/implementation."
-
-Each package gets its own cache folder. The package itself is responsible it can handle errors
-with the cache, such as a version/format upgrade.
-
-Note the presence of a `Cache` folder with and without user data.
-
-### Server Cache Files
-
-!!! note "These are cache files tied to the Reloaded3 server."
-
-It has the following structure:
-
-```
-CommunityRepository
-```
+| Item                                              | Subfolder                    | Description                                                    |
+| ------------------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
+| [Loadouts](#loadouts)                             | `Loadouts`                   | Loadouts that are private to the current user.                 |
+| [Added Games][game-metadata]                      | `Games/{gameId}`             | And all of user's global preferences for that game.            |
+| Package Configs                                   | `PackageConfigs/{packageId}` | Config/Save files for packages. ***This contains user data***. |
+| [Package Cache Files](#cache-files-user-specific) | `Cache/Package/{packageId}`  | Cache files that have inputs ***with user data***.             |
 
 #### Community Repository
 
@@ -112,6 +88,47 @@ The ETag will be used to determine if the local cached archive is outdated.
 
 If it is, we will download the new [CommunityRepository.nx][community-repository-hosting], else
 we'll use the local cache.
+
+## Extra Details on Stored Items
+
+### Cache Files
+
+!!! note "Cache format is specific to the package/implementation."
+
+Each package gets its own cache folder. The package itself is responsible it can handle errors
+with the cache, such as a version/format upgrade.
+
+!!! note "There are 2 `Cache` folders, *machine* and *user* specific."
+
+#### Cache Files (Machine Specific)
+
+!!! info "These are cache files that are not specific to a loadout or any user data."
+
+This category covers >90% (most) of cache files, including:
+
+- [Merged Files][merged-files].
+- Pre-parsed metadata for game files.
+
+#### Cache Files (User Specific)
+
+!!! info "These are cache files that are specific to a user."
+
+Basically stuff that doesn't make sense to share between users.
+
+Examples include:
+
+- User's replays of last *X* games.
+- Cookies, tokens, etc.
+
+### Server Cache Files
+
+!!! note "These are cache files tied to the Reloaded3 server."
+
+It has the following structure:
+
+```
+CommunityRepository
+```
 
 ### Loadouts
 
@@ -189,3 +206,4 @@ Loadouts and package configs may be shared in the future on a machine level.
 [loadout-snapshot]: ./Loadouts/About.md#snapshots
 [var-lib]: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s08.html
 [var-cache]: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s05.html
+[merged-files]: ../../Mods/Libraries/Merged-File-Cache/About.md

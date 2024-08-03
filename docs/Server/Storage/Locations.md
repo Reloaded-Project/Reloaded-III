@@ -165,3 +165,5 @@ reduce the impact of high latency.
 [community-repository]: ../../Services/Community-Repository.md
 [community-repository-hosting]: ../../Services/Community-Repository.md#hosting
 [loadout-snapshot]: ./Loadouts/About.md#snapshots
+[var-lib]: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s08.html
+[var-cache]: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s05.html

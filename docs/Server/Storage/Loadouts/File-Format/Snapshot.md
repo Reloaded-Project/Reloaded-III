@@ -14,6 +14,10 @@ struct Snapshot {
     // Packages
     packages: Vec<PackageInfo>,
 
+    // Configurations
+    configurations: Vec<Vec<u8>>,
+    config_hashes: HashMap<XXH3_64, u32>, // Hash to index in 'configurations'
+
     // Mod Load Order
     mod_load_order: Vec<u32>, // Vec of indices into packages
 
@@ -31,7 +35,7 @@ struct PackageInfo {
     package_id: u64, // XXH3(PackageID)
     version: String, // Semantic version
     state: PackageState,
-    configuration: Option<Vec<u8>>, // Raw configuration data
+    configuration_index: Option<u32>, // Index into configurations Vec
 }
 
 struct LoadoutDisplaySettings {
@@ -95,19 +99,25 @@ struct MicrosoftStoreData {
         - Package ID: A unique identifier for the package ([XXH3 hash][hashing] of the package ID).
         - Version: The semantic version of the package as a string (e.g., "1.2.3").
         - State: The current state of the package using the [`PackageState`][packagestate] enum.
-        - Configuration: Optional raw configuration data for the package.
+        - Configuration Index: An optional index into the configurations Vec.
+    - Corresponds to [package-reference-ids.bin][packagereferenceidsbin].
 
-3. **Mod Load Order**
+3. **Configurations**
+    - A list of raw configuration data for packages.
+    - Indexed by the `configuration_index` in `PackageInfo`.
+    - Corresponds to [config.bin & config-data.bin][configbin].
+
+4. **Mod Load Order**
     - An ordered list of indices representing the current load order of mods.
     - These indices correspond to the positions in the `packages` list.
 
-4. **Loadout Display Settings**
+5. **Loadout Display Settings**
     - Enabled Grid Sort Mode: How enabled mods are sorted in the mod view ([`SortingMode`][sortingmode]).
     - Disabled Grid Sort Mode: How disabled mods are sorted in the mod view ([`SortingMode`][sortingmode]).
     - Mod Load Order Sort: Whether mods are shown `top to bottom` or `bottom to top` for load ordering ([`SortOrder`][sortorder]).
     - Grid Display Style: The visual style of the grid that displays enabled mods ([`GridDisplayMode`][griddisplaymode]).
 
-5. **Game Store Manifest**
+6. **Game Store Manifest**
     - Store Type: Which store the game is from ([`StoreType`][storetype]).
     - Store Data: A structure containing common fields and store-specific data:
         - Common fields for all store types:
@@ -122,7 +132,7 @@ struct MicrosoftStoreData {
 
         The `store_type` field determines which store-specific struct is populated and should be used.
 
-6. **Commandline Parameters**
+7. **Commandline Parameters**
     - A string containing the current commandline parameters for the game.
 
 ## How Snapshots are Used
@@ -176,3 +186,5 @@ there will be no migration code; as to avoid bloating the binary.
 [unpacked]: ./Unpacked.md
 [loadout-location]: ../About.md#location
 [bitcode]: ../../../../Research/Library-Sizes/Serializers.md#bitcode
+[configbin]: ./Unpacked.md#configbin
+[packagereferenceidsbin]: ./Unpacked.md#package-reference-idsbin

@@ -113,8 +113,9 @@ every time a config is added. Emitted events refer to this index.
     - Second is at 0 + `FileSize(first)`
     - Third is at `second` + `FileSize(second)`.
 
-    etc. As you do this also, hash the configs. ([AHash][hashing] recommended)
+    etc.
 
+    As you do this, hash the configs. For this, the [snapshots][snapshots] use XXH3.
     When a new config is created, hash it and check if it's a duplicate, if it isn't, add it to the
     config list.
 
@@ -755,3 +756,4 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [commit-param-lists]: ./Unpacked.md#parameter-lists
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
 [package-added]: ./Commit-Messages.md#package_added_v0
+[snapshots]: ./Snapshot.md

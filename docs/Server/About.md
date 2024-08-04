@@ -16,6 +16,7 @@ Basically all the actual work of a 'mod manager', but as a server.
 | [Configurations][configurations] | Stores schemas and explanations of configuration formats shipped in packages.                |
 | [Diagnostics][diagnostics]       | Explains the diagnostic system that informs the frontend about issues with the user's setup. |
 | [Load Ordering][load-ordering]   | Rules used for deprecation & automatic reordering of mods based on dependencies.             |
+| [Workflows][workflows]           | Template system used to help make mod creation easier.                                       |
 
 <!-- Links -->
 [packaging]: ./Packaging/About.md
@@ -23,3 +24,4 @@ Basically all the actual work of a 'mod manager', but as a server.
 [configurations]: ./Packaging/Configurations/About.md
 [diagnostics]: ./Diagnostics.md
 [load-ordering]: ./Load-Ordering.md
+[workflows]: ./Workflows.md

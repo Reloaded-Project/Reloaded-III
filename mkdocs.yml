@@ -147,6 +147,11 @@ nav:
       - Adding Localisations: Common/Localisation/Adding-Localisations.md
       - Loading Localisations: Common/Localisation/Loading-Localisations.md
       - Implementation Details: Common/Localisation/Implementation-Details.md
+    - Hash Cache: 
+      - About: Common/Hash-Cache/About.md
+      - File Format: Common/Hash-Cache/File-Format.md
+      - Implementation Details: Common/Hash-Cache/Implementation-Details.md
+      - API: Common/Hash-Cache/API.md
     - Hashing: Common/Hashing.md
     - Files: Common/Files.md
   - Mods:

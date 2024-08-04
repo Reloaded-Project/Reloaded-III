@@ -1,44 +1,50 @@
-!!! info "`'Workflows'` are a templating system used to help people create mods easier."
+# Workflows: A Templating System for Easier Mod Creation
 
-The core idea behind `Workflows` is the following:
+!!! info "'Workflows' are a templating system designed to simplify the mod creation process."
 
-1. A user wants to create a mod with a specific goal.
-2. If it's a common goal, we should help them achieve that goal.
+The primary goals are:
 
-Most mods created by non-technical users are usually simple, common modifications that replace
-models, textures or audio.
+1. Identify common mod creation objectives
+2. Provide streamlined assistance for these objectives
 
-Eventually, some of these non-technical users may become more technical,
-and the modding community grows.
+Most mods created by non-technical users typically involve simple modifications such as replacing models, textures, or audio.
 
-## An Example
+By simplifying this process, we can help grow the modding community and potentially inspire some users to become more technically proficient over time.
 
-!!! example "Imagine you are an end user trying to make a [Persona 5 Royal][p5r] mod."
+## The Current User Journey
 
-A typical user journey would go something like:
+!!! example "You are an end user trying to make a [Persona 5 Royal][p5r] mod."
 
-1. Perform a web search like:
-    - `how to make a persona 5 royal mod`
-    - `how to create a persona 5 royal mod`
-2. Find a guide (hopefully), which will take you to:
-    - The [Persona Essentials][persona-essentials] documentation.
-    - And [Reloaded-II Mod Creation Documentation][r2-mod-creation-docs] as a sidequest.
-3. Perform a series of manual steps to set up your mod from the [Persona Essentials][persona-essentials] documentation.
+1. **Initial Search**:
+    - User searches for phrases like `how to make a Persona 5 Royal mod`
+    - Often leads to guides on how to *use* mods ‼️, not create them
 
-Step `3` needs to always be done, while steps `1` and `2` are a one-time learning experience.
+2. **Finding the Right Resources**:
+    - If lucky, user finds the [Persona Essentials][persona-essentials] documentation
+    - And will also encounter [Reloaded-II Mod Creation Documentation][r2-mod-creation-docs]
 
-***Unfortunately***, the user experience for this journey is not very good:
+3. **Manual Setup**:
+    - User follows a series of manual steps from the [Persona Essentials][persona-essentials] documentation
 
-1. Searching `how to create mod`, will likely not yield the desired results, and instead
-lead the user to guides on how to `use` mods.
-    - In this case, the proper docs can only be found in a link on the second page of search results.
-1. Once you do get going, the series of manual steps that need to be performed are tedious.
+While steps 1 and 2 are one-time experiences, step 3 must be repeated for each new mod.
 
-### An Ideal Workflow
+## Current Challenges
+
+!!! failure "The user experience for mod creation is often suboptimal"
+
+1. **Discoverability Issues**:
+    - General searches like `how to create mod` rarely yield relevant results
+    - Proper documentation is often buried in search results
+
+2. **Tedious Manual Processes**:
+    - Once documentation is found, users face a series of repetitive, manual steps
+
+## The Vision: An Ideal Workflow
+
+!!! tip "Streamline the creation of common types of mods with a templating system"
 
 
 
 [p5r]: https://store.steampowered.com/app/1687950/Persona_5_Royal/
 [persona-essentials]: https://sewer56.dev/p5rpc.modloader/usage/
-[persons-essentials-steps]: https://sewer56.dev/p5rpc.modloader/usage/#set-dependency-on-p5r-essentials
 [r2-mod-creation-docs]: https://reloaded-project.github.io/Reloaded-II/CreatingMods/

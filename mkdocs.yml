@@ -152,6 +152,7 @@ nav:
       - File Format: Common/Hash-Cache/File-Format.md
       - Implementation Details: Common/Hash-Cache/Implementation-Details.md
       - API: Common/Hash-Cache/API.md
+      - Hash Cache Usage in Server: Common/Hash-Cache/Usage-In-Server.md
     - Hashing: Common/Hashing.md
     - Files: Common/Files.md
   - Mods:

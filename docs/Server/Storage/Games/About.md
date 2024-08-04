@@ -128,18 +128,22 @@ This structure is defined as: `HashMap<EntryID, MachineInfo>`.
 
 `MachineInfo` is defined as:
 
-| Type           | Name                              | Description                                                   |
-| -------------- | --------------------------------- | ------------------------------------------------------------- |
-| bool           | DisplayedCreateShortcutPrompt     | Displayed the [Create Shortcut](#autocreateshortcuts) prompt. |
-| string         | FriendlyName                      | Friendly Name for the Machine.                                |
-| string         | MainExePath                       | Last path to the main executable.                             |
-| string         | MainExeHash                       | Original hash of the main executable. [XXH128][hashing]       |
-| DeploymentType | [DeploymentType](#deploymenttype) | Dictates how the loader is injected into the game.            |
+| Type           | Name                              | Description                                                                                                          |
+| -------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| bool           | DisplayedCreateShortcutPrompt     | Displayed the [Create Shortcut](#autocreateshortcuts) prompt.                                                        |
+| string         | FriendlyName                      | Friendly Name for the Machine.                                                                                       |
+| string         | MainExePath                       | Last path to the main executable.                                                                                    |
+| string         | MainExeHash                       | Original hash of the main executable. [XXH128][hashing]                                                              |
+| string         | FileHashCacheName                 | Name of the file containing the [File Hash Cache][file-hash-cache] in the ['Games'][file-hash-cache-location] folder |
+| DeploymentType | [DeploymentType](#deploymenttype) | Dictates how the loader is injected into the game.                                                                   |
 
 The `FriendlyName` is derived from `UserName` and `MachineName`.
 `MachineName` is derived as `hostname` on Linux/macOS and `ComputerName` on Windows.
 
 Usually it's formatted as `{UserName}'s {MachineName}`.
+
+The `FileHashCacheName` can be any name, but it is generally recommended to use `UUID v7` (timestamp + random)
+for this. The name should be `{UUID}.hashcache`.
 
 ##### DeploymentType
 
@@ -186,3 +190,5 @@ This data is cached in the  [`Server Cache Files` (`Cache/Server`) folder.][adde
 [loadout]: ../Loadouts/About.md
 [hashing]: ../../../Common/Hashing.md
 [loadout-specific-info]: ../../../Common/Configuration/About.md#ux-for-configuration-layers
+[file-hash-cache]: ../../../Common/Hash-Cache/About.md
+[file-hash-cache-location]: ../Locations.md#hash-cache-files

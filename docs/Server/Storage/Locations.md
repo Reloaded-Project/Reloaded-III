@@ -63,6 +63,7 @@ Also see: [Portable Installs](#portable-install).
 | Temporary Files (Mods)                               | `Temp/{processId}`[1]       | Runtime-generated temporary files. Not persisted across runs.              |
 | [Server Cache Files](#server-cache-files)            | `Cache/Server`              | Cache files tied to the Reloaded3 server.                                  |
 | [Package Cache Files](#cache-files-machine-specific) | `Cache/Package/{packageId}` | Cache files that consist of inputs that do not contain [User](#user) data. |
+| [Hash Cache Files](#hash-cache-files)                | `Hashes`                    | File hash caches.                                                          |
 
 [1] Temporary Files should be tied to `ProcessID`, if a process with that ID is dead, they should be
 auto deleted by the server. To avoid files in use accidentally being deleted, temporary files are stored
@@ -146,6 +147,24 @@ Loadouts
 
 For the exact details, see the [Loadouts][loadouts-location] page.
 
+### Hash Cache Files
+
+!!! info "This folder stores the unmodified last states of files in packages and games."
+
+    [Documentation can be found here][hashcache-docs].
+
+This folder has the following layout:
+
+```
+Hashes
+├── Games
+│   └──  24c69d40-090e-406b-9a1b-2487571a568c.hashcache
+└── Packages
+    └── reloaded3.utility.examplemod.s56+1.2.3.hashcache
+```
+
+Details on how the hash cache files are is in the [Usage in Server][hash-cache-usage] page.
+
 ## Extra
 
 ### Multi-User Networked Systems
@@ -207,3 +226,5 @@ Loadouts and package configs may be shared in the future on a machine level.
 [var-lib]: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s08.html
 [var-cache]: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s05.html
 [merged-files]: ../../Mods/Libraries/Merged-File-Cache/About.md
+[hashcache-docs]: ../../Common/Hash-Cache/About.md
+[hash-cache-usage]: ../../Common/Hash-Cache/Usage-In-Server.md

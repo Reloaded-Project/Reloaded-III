@@ -155,7 +155,7 @@ The flags (`A0000`) for this section are:
 ### Name Lengths Section
 
 This is an array of path lengths in bytes expressed as `u8`(s).
-(Or `u16` if the `A` flag [in header](#header-1) is set)
+(Or `u16` if the `A` flag [in header](#paths-section) is set)
 
 Each array entry corresponds to a file at same index in previous sections.
 

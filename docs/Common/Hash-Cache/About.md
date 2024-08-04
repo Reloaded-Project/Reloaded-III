@@ -28,10 +28,12 @@ The Hash Cache system must meet the following requirements:
 
 ## Sections
 
-| Section                    | Description                                                           |
-| -------------------------- | --------------------------------------------------------------------- |
-| [File Format][file-format] | Describes specification of how hash cache data is serialized to disk. |
-| [API][file-format]         | Describes how to work with the hash cache implementation.             |
+| Section                                          | Description                                                           |
+| ------------------------------------------------ | --------------------------------------------------------------------- |
+| [File Format][file-format]                       | Describes specification of how hash cache data is serialized to disk. |
+| [Implementation Details][implementation-details] | Extra info on how to implement the hash cache.                        |
+| [API][file-format]                               | Describes how to work with the hash cache implementation.             |
 
 [file-format]: ./File-Format.md
+[implementation-details]: ./Implementation-Details.md
 [api]: ./API.md

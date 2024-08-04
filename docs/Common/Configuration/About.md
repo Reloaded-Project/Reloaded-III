@@ -56,14 +56,16 @@ The planned UX for the time being is the following.
 
 !!! tip "In reading order."
 
-| Section                         | Description                                            |
-| ------------------------------- | ------------------------------------------------------ |
-| [Config Schema][config-schema]  | How configuration options are defined.                 |
-| [Source Generation][source-gen] | How we generate source code from config schema.        |
-| [Binary Format][binary-format]  | How Reloaded3 configuration files are written to disk. |
+| Section                              | Description                                            |
+| ------------------------------------ | ------------------------------------------------------ |
+| [Config Schema][config-schema]       | How configuration options are defined.                 |
+| [Hardware Configs][hardware-configs] | Per hardware settings configuration.                   |
+| [Source Generation][source-gen]      | How we generate source code from config schema.        |
+| [Binary Format][binary-format]       | How Reloaded3 configuration files are written to disk. |
 
 [binary-format]: ./Binary-Format.md
 [config-schema]: ./Config-Schema.md
+[hardware-configs]: ./Hardware-Configs/About.md
 [loadouts]: ../../Server/Storage/Loadouts/About.md
 [source-gen]: ./Source-Generation.md
 [game-config]: ../../Server/Storage/Games/About.md

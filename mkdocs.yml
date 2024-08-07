@@ -215,6 +215,7 @@ nav:
     - Binary Sizes:
         - IPC: Research/Library-Sizes/IPC.md
         - Serializers: Research/Library-Sizes/Serializers.md
+    - FileSystem Performance: Research/FileSystem-Performance.md
   - Wiki:
     - Contributing Locally: Contributing-Locally.md
     - Contributing Online: Contributing-Online.md

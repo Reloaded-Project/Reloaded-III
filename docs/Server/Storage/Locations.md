@@ -157,13 +157,14 @@ This folder has the following layout:
 
 ```
 Hashes
-├── Games
-│   └──  24c69d40-090e-406b-9a1b-2487571a568c.hashcache
-└── Packages
-    └── reloaded3.utility.examplemod.s56+1.2.3.hashcache
+└── hashes.mdb
+    ├── 24c69d40-090e-406b-9a1b-2487571a568c.hashcache
+    └── reloaded3.utility.examplemod.s56+1.2.3.hashcache
 ```
 
 Details on how the hash cache files are is in the [Usage in Server][hash-cache-usage] page.
+
+The hash cache files are stored inside a [lmdb][fs-performance] database, named `hashes.mdb`.
 
 ## Extra
 
@@ -228,3 +229,4 @@ Loadouts and package configs may be shared in the future on a machine level.
 [merged-files]: ../../Mods/Libraries/Merged-File-Cache/About.md
 [hashcache-docs]: ../../Common/Hash-Cache/About.md
 [hash-cache-usage]: ../../Common/Hash-Cache/Usage-In-Server.md
+[fs-performance]: ../../Research/FileSystem-Performance.md

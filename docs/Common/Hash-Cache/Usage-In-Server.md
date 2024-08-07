@@ -34,7 +34,7 @@ Where:
 When the server needs to access or update the hash cache for a specific package:
 
 1. Construct the file name using the package name and version.
-2. Try to open the file in the designated [hash cache directory for packages][location-hashcache-package].
+2. Try to open the file in the designated [hash cache database][location-hashcache-package].
 3. If the open operation succeeds, read the [hash cache file][hash-cache-file].
 4. If the file doesn't exist, create a new hash cache file for the package.
 
@@ -51,7 +51,7 @@ structure of each installed game entry.
 
 ### Usage
 
-1. Check the hash cache directory for the game as it's loaded.
+1. Check the [hash cache database][location-hashcache-package] for the game as it's loaded.
 2. Compare timestamps and short hashes of files.
 3. If any file is different, suggest to the user that the game folder has been modified.
 4. This can be done via a [Diagnostic][diagnostic].

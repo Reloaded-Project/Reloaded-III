@@ -127,6 +127,7 @@ nav:
         - Mod Metadata: Server/Packaging/Configurations/Mod-Metadata.md
     - Workflows: 
       - About: Server/Workflows/About.md
+      - Guidelines: Server/Workflows/Guidelines.md
   - Launcher (Manager Frontend):
     - About: Launcher/About.md
     - Best Practices: Launcher/Best-Practices.md

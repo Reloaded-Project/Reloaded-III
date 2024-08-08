@@ -43,8 +43,45 @@ While steps 1 and 2 are one-time experiences, step 3 must be repeated for each n
 
 !!! tip "Streamline the creation of common types of mods with a templating system"
 
+1. **User Selects Workflow**:
+    - User selects a workflow that matches their modding objective
+    - For example:
+        - Change a Character
+        - Change an Object
+        - Change a Music Track
+        - Change a Stage
 
+2. **Follow Steps Relevant to Workflow**:
+    - Should we add a new item or replace an existing one?
+    - For example:
+        - Which character to replace?
+        - Which object to replace?
+        - Which music track to replace?
+        - Which stage to replace?
+    - This auto selects parts of [mod id][package-id], and other relevant details.
+
+3. **Assist User with Replacement**:
+    - Shipping tools as packages is really useful here.
+    - For example:
+        - Placing original files where new files should be (to help users understand the structure).
+            - Maybe even converting them to user modifiable formats.
+        - Helping the user loop an audio track. (e.g. with tools like [PyMusicLooper][pymusiclooper])
+    - Some of these 'tasks' should maybe be reusable in right click context menus.
+
+4. **Final Details**:
+    - Setting up name, tags, and other metadata.
+
+## Questions
+
+1. **Should the user be able to select multiple workflows?**
+
+    No. Reloaded3 encourages modularity, ideally mods should do only one thing, and do it well.
+    Users can then mix mods by choosing which mods to enable and which to disable.
+
+    Therefore it is advised to only allow users to create with one workflow.
 
 [p5r]: https://store.steampowered.com/app/1687950/Persona_5_Royal/
 [persona-essentials]: https://sewer56.dev/p5rpc.modloader/usage/
 [r2-mod-creation-docs]: https://reloaded-project.github.io/Reloaded-II/CreatingMods/
+[package-id]: ../Packaging/Package-Metadata.md#id
+[pymusiclooper]: https://github.com/arkrow/PyMusicLooper

@@ -163,10 +163,12 @@ This allows the user to enable or disable a setting
 
 Additional Fields:
 
-| Field           | Type     | Description                                                                          |
-| --------------- | -------- | ------------------------------------------------------------------------------------ |
-| `choices`       | [string] | An array of localization keys for the available options.                             |
-| `choice_images` | [string] | [Optional] An array of images for each choice, corresponding to the `choices` array. |
+| Field                 | Type     | Description                                                                                |
+| --------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `choices`             | [string] | An array of localization keys for the available options.                                   |
+| `choice_images`       | [string] | [Optional] An array of images for each choice, corresponding to the `choices` array.       |
+| `choice_descriptions` | [string] | [Optional] An array of descriptions for each choice in the `choices` array.                |
+| `style`               | [string] | [Optional] How the setting is presented. Values: `dropdown`, `radio`  Default: `dropdown`. |
 
 !!! example "Example: A 'render quality' dropdown."
 
@@ -181,13 +183,30 @@ description = "SHADOW_RESOLUTION_DESC"
 choices = ["LOW_QUALITY", "MEDIUM_QUALITY", "HIGH_QUALITY"]
 choice_images = ["shadow_low.jxl", "shadow_medium.jxl", "shadow_high.jxl"]
 default = "MEDIUM_QUALITY"
+style = "dropdown"
+# choice_descriptions =
 # apply_on =
 # variable =
 # client_side =
 # show_if =
 ```
 
-Shown as: `Render Quality: [Medium Quality ▼]`
+!!! info "This control is displayed as."
+
+    Style `dropdown`:
+
+    - `Render Quality: [Medium Quality ▼]`
+
+    Style `radio`:
+
+    ```
+    Render Quality
+
+    ( ) Low Quality
+    (o) Medium Quality
+    ( ) High Quality
+    ```
+
 
 !!! danger "It's a breaking change to remove an entry from `choices`."
 

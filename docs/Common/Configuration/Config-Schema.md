@@ -711,8 +711,9 @@ to modify how the value is displayed in the UI.
 
 The available formatters are:
 
-- `FRIENDLY`: Displays large numbers in a friendly format (e.g. 1,000,000 -> 1M).
-- `SIZE_FRIENDLY`: Displays value in MB or GB for readability.
+- `FRIENDLY`: Displays large numbers in a friendly format (e.g. `1000000` -> 1M).
+- `USE_CULTURE`: Displays numbers in user's language culture (e.g. `1000000` -> `1,000,000`).
+- `SIZE_FRIENDLY`: Displays value in KB, MB or GB (etc.) for readability.
 - `SIZE_FRIENDLY_RATE`: Same as `SIZE_FRIENDLY` but appends rate, e.g. `MB/s`.
 - `PERCENTAGE`: Displays value as percentage (0-100).
 - `ROUNDED`: Rounds value to the nearest integer.
@@ -734,6 +735,11 @@ formatters = ["SIZE_FRIENDLY"]
 
 In this example, the `SETTING_FILE_SIZE_LIMIT` setting will display its value in MB or GB for
 better readability.
+
+!!! note "Formatting is ***NOT*** culture specific."
+
+    Writing the number `1000000` as a string, will always be printed as `1000000`, and not
+    `1,000,000` or `1.000.000`. User's locale is not considered unless opted into.
 
 ## Simulating Multiple Config Files
 

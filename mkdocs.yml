@@ -128,6 +128,11 @@ nav:
     - Workflows: 
       - About: Server/Workflows/About.md
       - Guidelines: Server/Workflows/Guidelines.md
+      - Implementation:
+        - About: Server/Workflows/Implementation/About.md
+        - Schema: Server/Workflows/Implementation/Schema.md
+        - Scripting: Server/Workflows/Implementation/Scripting.md
+        - Templates: Server/Workflows/Implementation/Templates.md
   - Launcher (Manager Frontend):
     - About: Launcher/About.md
     - Best Practices: Launcher/Best-Practices.md

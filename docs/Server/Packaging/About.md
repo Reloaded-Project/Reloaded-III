@@ -2,7 +2,6 @@
 
 !!! info "This page contains all information related to how mods are packaged and distributed."
 
-
 ## Package Structure
 
 Each mod package contains the following approximate structure.
@@ -10,15 +9,14 @@ Each mod package contains the following approximate structure.
 ```
 reloaded3.utility.examplemod.s56
 ├── config
-│   ├── config-image-1.jxl
-│   └──
+│   └── config.toml
 ├── languages
 │   ├── config
 │   │   ├── en-GB.toml
 │   │   └── uwu-en.toml
 │   └── dll
 │       ├── en-GB.toml
-│       └── uwu-en.toml
+│       └── uwu.toml
 ├── modfiles
 │   ├── redirector
 │   │   └── skill-game-asset.bin
@@ -33,12 +31,12 @@ reloaded3.utility.examplemod.s56
 │   │   │   └── 2.0.0.md
 │   │   └── index.html
 │   ├── images
+│   │   ├── config-image-1.jxl
 │   │   ├── skill-1.jxl
 │   │   ├── skill-2.jxl
 │   │   └── skill-3.jxl
 │   ├── description.md
 │   └── license.md
-├── config.toml
 └── package.toml
 ```
 
@@ -113,6 +111,15 @@ The entry point for the documentation is specified in the [DocsFile][docs-file] 
 This contains any supplementary images that are used in the package.
 These images can be referenced from the main `package.toml` file, for example in
 [gallery items][gallery-items].
+
+They can also be used in any other supporting files, such as workflows or configuration files.
+
+!!! note "This is a unified `images` folder"
+
+    When used in the Reloaded3 ecosystem, all images are in this folder to allow for deduplication.
+
+    However the individual components such as `workflows`, configs etc. are designed to allow for
+    setting an arbitrary folder when used outside of the R3 ecosystem.
 
 ### License
 

@@ -24,4 +24,4 @@ Basically all the actual work of a 'mod manager', but as a server.
 [configurations]: ./Packaging/Configurations/About.md
 [diagnostics]: ./Diagnostics.md
 [load-ordering]: ./Load-Ordering.md
-[workflows]: ./Workflows.md
+[workflows]: ./Workflows/About.md

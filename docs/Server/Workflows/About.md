@@ -80,6 +80,8 @@ While steps 1 and 2 are one-time experiences, step 3 must be repeated for each n
 
     Therefore it is advised to only allow users to create with one workflow.
 
+!! TODO: Where workflows are sourced from.
+
 [p5r]: https://store.steampowered.com/app/1687950/Persona_5_Royal/
 [persona-essentials]: https://sewer56.dev/p5rpc.modloader/usage/
 [r2-mod-creation-docs]: https://reloaded-project.github.io/Reloaded-II/CreatingMods/

@@ -215,6 +215,14 @@ In the form `tl-{code}`.
 For example, for the package name `reloaded3server.diagnostic.general`, use the name
 `reloaded3server.diagnostic.general.tl-de`.
 
+### Workflows
+
+!!! info "For workflows, use the format: `reloaded3.workflow.game.name.author`"
+
+| Type       | Description                 | Example                                            |
+| ---------- | --------------------------- | -------------------------------------------------- |
+| diagnostic | For [workflows][workflows]. | `reloaded3.workflow.sonicheroes.addacharacter.s56` |
+
 ## PackageType
 
 !!! info "Represents the type of the package."
@@ -444,6 +452,7 @@ If the `IgnoredDiagnostics` field is not specified or is an empty array, no diag
 [description]: ./About.md#description
 [docs]: ./About.md#docs
 [diagnostics]: ../Diagnostics.md
+[workflows]: ../Workflows/About.md
 [gamebanana]: https://gamebanana.com
 [game-support]: ../../Loader/Core-Architecture.md#game-support-layer-2
 [language-code]: ../../Common/Localisation/Adding-Localisations.md#language-naming-convention

@@ -9,14 +9,25 @@
 ```
 reloaded3.workflow.sonicheroes.addacharacter.s56
 ├── languages
-│   └── create-a-character
+│   └── create-a-stage
 │       ├── en-GB.toml
 │       └── uwu-en.toml
 ├── package
 │   └── images
-│       └── workflow-image-1.jxl
+│       ├── bingo_highway.jxl
+│       ├── casino_icon.jxl
+│       ├── casino_park.jxl
+│       ├── city_icon.jxl
+│       ├── egg_hawk.jxl
+│       ├── grand_metrpolis.jxl
+│       ├── ocean_palace.jxl
+│       ├── power_plant.jxl
+│       ├── robot_carnival.jxl
+│       ├── seaside_hill.jxl
+│       ├── seaside_icon.jxl
+│       └── team_battle_1.jxl
 ├── workflows
-│   └── create-a-character
+│   └── create-a-stage
 │       ├── files
 │       │   └── package.toml
 │       └── workflow.toml

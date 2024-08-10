@@ -10,7 +10,7 @@ TODO: 'Include' external file. e.g. 'Standard Workflow'
 
 !!! info "A typical `workflow.toml` has the following structure"
 
-    I will use an imaginary workflow for changing a stage in `Sonic Heroes`
+    I will use an imaginary workflow for creating or replacing a stage in `Sonic Heroes`
     as an example, as it can make good use of the required functionality.
 
 ### Workflow
@@ -20,141 +20,164 @@ TODO: 'Include' external file. e.g. 'Standard Workflow'
 format-version = 0
 name = "WORKFLOW_NAME"
 summary = "WORKFLOW_SUMMARY"
+icon = "WORKFLOW_SUMMARY"
 gameId = "sonicheroes"
 version = "1.0.0"
 author = "Sewer56"
 files = [
     "files/package.toml",
 ]
-language-subfolder = "create-a-character"
+language-subfolder = "create-a-stage"
 default_language = "en-GB.toml"
-
-# Package id: sonicheroes.character.kaos.s56
-
-# x Author [Special Variable] via Setting
-# x Name via Setting
-# x Summary via Setting
-# x character_name [in ID] via Setting
-# x character_name [Full] via Setting
-# x license via Choice Setting
-# x tags via Setting
-# x allow 'extra tags' via Setting
-# x add or replace via Selection
-
-# A way to set dependencies between steps.
-# A way to link the script to the workflow.
-# A way to specify whether to replace voices.
-# A way to specify whether to replace sound effects.
-
-# Workflow Flow
-# Brackets [ ] Indicate Groups, these should be shown together in UI.
-
-# [EntryPoint]
-# Select Add/Replace
-#    if (add) goto CharacterChosen
-#    if (replace) goto SelectTeam
-
-# SelectTeam: ->
-#     Select Character in Team ->
-#     [Select Voice Replacement ON/OFF + Select Sound Effect Replacement ON/OFF] ->
-#     goto CharacterChosen
-
-# CharacterChosen:
-#     [Set Character Name + Set Character Name (Short)] ->
-#     call `StandardInfo` with `ExtraTags = ReplacedCharacterName`
-
-# [Import from Standard] StandardInfo:
-# Parameters: `ExtraTags`
-# NOTE: Normally don't include details of 'Standard' in actual workflow file, this is just for demonstration.
-#     [Set Name + Set Author + Set Summary + Set License + Set Tags] ->
 
 [[settings]]
 index = 0
 type = "choice"
-name = "SETTING_ADD_REPLACE"
-description = "SETTING_ADD_REPLACE_DESC"
-choices = ["SETTING_CHARACTER_ADD", "SETTING_CHARACTER_REPLACE"]
-choice_images = ["shadow_icon.jxl", "rouge_icon.jxl", "omega_icon.jxl"]
-variable = "selected_character"
+name = "SETTING_ZONE"
+description = "SETTING_ZONE_DESC"
+choices = ["ZONE_SEASIDE", "ZONE_CITY", "ZONE_CASINO"]
+choice_images = ["seaside_zone.jxl", "city_zone.jxl", "casino_zone.jxl"]
+variable = "selected_zone"
 style = "radio"
 
 [[settings]]
 index = 1
 type = "choice"
-name = "SETTING_TEAM"
-description = "SETTING_TEAM_DESC"
-choices = ["TEAM_SONIC", "TEAM_DARK"]
-choice_images = ["team_sonic.jxl", "team_dark.jxl"]
-variable = "selected_team"
+name = "SETTING_ADD_REPLACE"
+description = "SETTING_ADD_REPLACE_DESC"
+choices = ["SETTING_STAGE_ADD", "SETTING_STAGE_REPLACE"]
+choice_images = ["add_icon.jxl", "replace_icon.jxl"]
+variable = "add_or_replace"
 style = "radio"
+show_if = [
+    { variable = "selected_zone", comparator = "!=", value = "" }
+]
 
 [[settings]]
 index = 2
 type = "choice"
-name = "SETTING_CHARACTER"
-description = "SETTING_CHARACTER_DESC"
-choices = ["CHARACTER_SONIC", "CHARACTER_TAILS", "CHARACTER_KNUCKLES"]
-choice_images = ["sonic_icon.jxl", "tails_icon.jxl", "knuckles_icon.jxl"]
-variable = "selected_character"
-style = "radio"
+name = "SETTING_SEASIDE_STAGE"
+description = "SETTING_SEASIDE_STAGE_DESC"
+choices = ["STAGE_SEASIDE_1", "STAGE_SEASIDE_2", "STAGE_SEASIDE_3"]
+choice_images = ["seaside_hill.jxl", "ocean_palace.jxl", "egg_hawk.jxl"]
+variable = "seaside_stage"
+style = "dropdown"
+show_if = [
+    { variable = "selected_zone", comparator = "=", value = "ZONE_SEASIDE" }
+]
 
 [[settings]]
 index = 3
 type = "choice"
-name = "SETTING_CHARACTER"
-description = "SETTING_CHARACTER_DESC"
-choices = ["CHARACTER_SHADOW", "CHARACTER_ROUGE", "CHARACTER_OMEGA"]
-choice_images = ["shadow_icon.jxl", "rouge_icon.jxl", "omega_icon.jxl"]
-variable = "selected_character"
-style = "radio"
+name = "SETTING_CITY_STAGE"
+description = "SETTING_CITY_STAGE_DESC"
+choices = ["STAGE_CITY_1", "STAGE_CITY_2", "STAGE_CITY_3"]
+choice_images = ["grand_metropolis.jxl", "power_plant.jxl", "team_battle_1.jxl"]
+variable = "city_stage"
+style = "dropdown"
+show_if = [
+    { variable = "selected_zone", comparator = "=", value = "ZONE_CITY" }
+]
+
+[[settings]]
+index = 4
+type = "choice"
+name = "SETTING_CASINO_STAGE"
+description = "SETTING_CASINO_STAGE_DESC"
+choices = ["STAGE_CASINO_1", "STAGE_CASINO_2", "STAGE_CASINO_3"]
+choice_images = ["casino_park.jxl", "bingo_highway.jxl", "robot_carnival.jxl"]
+variable = "casino_stage"
+style = "dropdown"
+show_if = [
+    { variable = "selected_zone", comparator = "=", value = "ZONE_CASINO" }
+]
+
+[[settings]]
+index = 5
+type = "string"
+name = "SETTING_STAGE_NAME"
+description = "SETTING_STAGE_NAME_DESC"
+default = ""
+variable = "stage_name"
+show_if = [
+    { variable = "add_or_replace", comparator = "!=", value = "" },
+    { variable = "selected_zone", comparator = "!=", value = "" }
+]
+
+[[settings]]
+index = 6
+type = "string"
+name = "SETTING_STAGE_SHORT_NAME"
+description = "SETTING_STAGE_SHORT_NAME_DESC"
+default = ""
+variable = "stage_short_name"
+show_if = [
+    { variable = "stage_name", comparator = "!=", value = "" }
+]
+
+[[settings]]
+index = 7
+type = "bool"
+name = "SETTING_REPLACE_MUSIC"
+description = "SETTING_REPLACE_MUSIC_DESC"
+default = false
+variable = "replace_music"
+show_if = [
+    { variable = "add_or_replace", comparator = "=", value = "SETTING_STAGE_REPLACE" },
+    { variable = "stage_short_name", comparator = "!=", value = "" }
+]
+
+[[settings]]
+index = 8
+type = "bool"
+name = "SETTING_REPLACE_SFX"
+description = "SETTING_REPLACE_SFX_DESC"
+default = false
+variable = "replace_sfx"
+show_if = [
+    { variable = "replace_music", comparator = "=", value = "true" }
+]
 ```
 
-!!! note "Some choices for team/character emitted for simplicity."
+!!! note "Some choices for zone/stage emitted for simplicity."
 
 ```mermaid
 graph TD
-    A[Start] --> B[Select Team]
-    B --> C1[Team Sonic]
-    B --> C2[Team Dark]
+    A[Start] --> B{"[0] Select Zone<br>OUT `selected_zone`"}
+    B --> C1{"[1] Choose Action<br>OUT `add_or_replace`"}
 
-    C1 --> D1[Sonic]
-    C1 --> D2[Tails]
-    C1 --> D3[Knuckles]
+    C1 --> |selected_zone=='seaside'| D1["[2] Pick Seaside Stage"]
+    C1 --> |selected_zone=='city'| D2["[3] Pick City Stage"]
+    C1 --> |selected_zone=='casino'| D3["[4] Pick Casino Stage"]
 
-    C2 --> E1[Shadow]
-    C2 --> E2[Rouge]
-    C2 --> E3[E-123 Omega]
+    D1 --> G["[5] Set Stage Name"]
+    D2 --> G
+    D3 --> G
 
-    D1 & D2 & D3 & E1 & E2 & E3 --> H[Select Add/Replace]
-    H --> I[Voice Replacement ON/OFF]
-    I --> J[Sound Effect Replacement ON/OFF]
-    J --> K[Set Character Name]
-    K --> L[Set Character Name Short]
-    L --> M[Call StandardInfo]
-    M --> N[Set Name]
-    N --> O[Set Author]
-    O --> P[Set Summary]
-    P --> Q[Set License]
-    Q --> R[Set Tags]
-    R --> S[End]
+    G --> H["[6] Set Short Stage Name"]
+
+    H --> |When 'add_or_replace == add'| L[Set Name]
+    H --> |When 'add_or_replace == replace'| I[Replace Music?]
+    I --> J[Replace Sound Effects?]
+    J --> L
 
     subgraph StandardInfo
-    M
-    N
-    O
-    P
-    Q
-    R
+    L --> M[Set Author]
+    M --> N[Set Summary]
+    N --> O[Set License]
+    O --> P[Set Tags]
     end
 
-    subgraph CharacterChosen
-    H
-    I
-    J
-    K
-    L
-    end
+    P --> Q[End]
+
+    style B diamond
+    style C1 diamond
+    style I diamond
+    style J diamond
 ```
+
+The `◇ diamonds` in the flowchart represent selections which lead to different paths
+later in the workflow.
 
 ### Localization
 
@@ -167,53 +190,139 @@ Localization files should be placed in the [`languages` folder of the package][w
 following the Reloaded3 localization file format. For example:
 
 ```toml
-## languages/create-a-character/en-GB.toml
+## languages/create-a-stage/en-GB.toml
+
 [[WORKFLOW_NAME]]
-Change a Character
+Create or Replace a Stage
 
 [[WORKFLOW_SUMMARY]]
-Allows you to add or replace a character in the game.
+Allows you to add a new stage or replace an existing stage in the game.
 
-# Select a Team
-[[SETTING_TEAM]]
-Select a Team
+# Select a Zone
+[[SETTING_ZONE]]
+Select a Zone
 
-[[SETTING_TEAM_DESC]]
-Which team is your character in?
+[[SETTING_ZONE_DESC]]
+Which zone do you want to work with?
 
-[[TEAM_SONIC]]
-Team Sonic
+[[ZONE_SEASIDE]]
+Seaside Zone
 
-[[TEAM_DARK]]
-Team Dark
+[[ZONE_CITY]]
+City Zone
 
-# Select a Character
-[[SETTING_CHARACTER]]
-Select a Character
+[[ZONE_CASINO]]
+Casino Zone
 
-[[SETTING_CHARACTER_DESC]]
-Choose a Character within your Chosen Team
+# Select Add or Replace
+[[SETTING_ADD_REPLACE]]
+Select Action
 
-[[CHARACTER_SONIC]]
-Sonic
+[[SETTING_ADD_REPLACE_DESC]]
+Choose whether to add a new stage or replace an existing one
 
-[[CHARACTER_TAILS]]
-Tails
+[[SETTING_STAGE_ADD]]
+Add New Stage
 
-[[CHARACTER_KNUCKLES]]
-Knuckles
+[[SETTING_STAGE_REPLACE]]
+Replace Existing Stage
 
-[[CHARACTER_SHADOW]]
-Shadow
+# Select a Stage (for each zone)
+[[SETTING_SEASIDE_STAGE]]
+Select Seaside Stage
 
-[[CHARACTER_ROUGE]]
-Rouge
+[[SETTING_SEASIDE_STAGE_DESC]]
+Choose which Seaside Zone stage you want to replace
 
-[[CHARACTER_OMEGA]]
-Omega
+[[SETTING_CITY_STAGE]]
+Select City Stage
 
-[[SETTING_CHARACTER_ADD]]
-Adds a new character
+[[SETTING_CITY_STAGE_DESC]]
+Choose which City Zone stage you want to replace
+
+[[SETTING_CASINO_STAGE]]
+Select Casino Stage
+
+[[SETTING_CASINO_STAGE_DESC]]
+Choose which Casino Zone stage you want to replace
+
+[[STAGE_SEASIDE_1]]
+Seaside Hill
+
+[[STAGE_SEASIDE_2]]
+Ocean Palace
+
+[[STAGE_SEASIDE_3]]
+Egg Hawk
+
+[[STAGE_CITY_1]]
+Grand Metropolis
+
+[[STAGE_CITY_2]]
+Power Plant
+
+[[STAGE_CITY_3]]
+Team Battle 1
+
+[[STAGE_CASINO_1]]
+Casino Park
+
+[[STAGE_CASINO_2]]
+Bingo Highway
+
+[[STAGE_CASINO_3]]
+Robot Carnival
+
+# Stage Details
+[[SETTING_STAGE_NAME]]
+Stage Name
+
+[[SETTING_STAGE_NAME_DESC]]
+Enter the full name for your new or replacement stage
+
+[[SETTING_STAGE_SHORT_NAME]]
+Short Stage Name
+
+[[SETTING_STAGE_SHORT_NAME_DESC]]
+Enter a short name or abbreviation for your stage (used in some UI elements)
+
+# Replacement Options
+[[SETTING_REPLACE_MUSIC]]
+Replace Background Music
+
+[[SETTING_REPLACE_MUSIC_DESC]]
+Choose whether to replace the background music for this stage
+
+[[SETTING_REPLACE_SFX]]
+Replace Sound Effects
+
+[[SETTING_REPLACE_SFX_DESC]]
+Choose whether to replace the sound effects for this stage
+
+# StandardInfo settings
+[[SETTING_AUTHOR]]
+Author
+
+[[SETTING_AUTHOR_DESC]]
+Enter the name of the stage creator
+
+[[SETTING_SUMMARY]]
+Stage Summary
+
+[[SETTING_SUMMARY_DESC]]
+Provide a brief description of your stage
+
+[[SETTING_LICENSE]]
+License
+
+[[SETTING_LICENSE_DESC]]
+Specify the license for your stage (e.g., CC BY-NC, All Rights Reserved)
+
+[[SETTING_TAGS]]
+Tags
+
+[[SETTING_TAGS_DESC]]
+Add relevant tags for your stage, separated by commas (e.g., fast, water, loops)
 ```
 
 The workflow system will use these localization keys to display text in the user's preferred language,
@@ -250,11 +359,11 @@ Each setting must specify a [`variable` name][configuration-settings-common-fiel
 ```toml
 [[settings]]
 type = "choice"
-name = "SETTING_CHARACTER"
-description = "SETTING_CHARACTER_DESC"
-choices = ["CHARACTER_SONIC", "CHARACTER_TAILS", "CHARACTER_KNUCKLES"]
-default = "CHARACTER_SONIC"
-variable = "selected_character"
+name = "SETTING_STAGE"
+description = "SETTING_STAGE_DESC"
+choices = ["STAGE_SEASIDE_1", "STAGE_SEASIDE_2", "STAGE_SEASIDE_3"]
+default = "STAGE_SEASIDE_1"
+variable = "selected_stage"
 ```
 
 The results of these settings are substituted into the package metadata.

@@ -232,9 +232,7 @@ let is_new_stage = (add_or_replace == "SETTING_STAGE_ADD");
 // If adding a new stage, find the next available stage number
 let target_stage_number;
 if is_new_stage {
-    // Logic to find the next available stage number
-    // This is a placeholder and should be implemented based on your specific requirements
-    target_stage_number = "90"; // Example: using 90 as the first new stage number
+    target_stage_number = "99"; // Assume some external mod handles this at runtime.
 } else {
     target_stage_number = stage_number;
 }
@@ -244,15 +242,6 @@ variable::set("target_stage_id", target_stage_number);
 
 // Copy the files
 copy_stage_files(stage_number, target_stage_number);
-
-// Update the stage name in the appropriate files
-// This is a placeholder and should be implemented based on your specific requirements
-let stage_name_file = `dvdroot/s${target_stage_number}_stagename.bin`;
-if output::exists(stage_name_file) {
-    output::write(stage_name_file, stage_name);
-    print(`Updated stage name in ${stage_name_file}`);
-}
-
 print(`Stage "${stage_name}" (s${target_stage_number}) has been ${is_new_stage ? "created" : "replaced"}.`);
 
 // Function to copy files with both 's' and 'stg' prefixes

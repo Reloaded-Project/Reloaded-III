@@ -1,6 +1,6 @@
+!!! info "After Rhai scripts have executed, MiniJinja is used for the final template substitution step."
 
-
-After Rhai scripts have executed, MiniJinja is used for the final template substitution step. All variables set during the workflow chain and modified by Rhai scripts are available for use in templates.
+ All variables set during the workflow chain and modified by Rhai scripts are available for use in templates.
 
 ## Template Files
 

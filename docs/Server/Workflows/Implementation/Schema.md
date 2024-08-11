@@ -31,6 +31,7 @@ files = [
 language-subfolder = "create-a-stage"
 default_language = "en-GB.toml"
 next_workflow_id = "reloaded3.workflow.standard.createmod.s56"
+rhai_script = "scripts/create_stage.rhai"
 
 [[settings]]
 index = 0
@@ -60,7 +61,7 @@ index = 2
 type = "choice"
 name = "SETTING_SEASIDE_STAGE"
 description = "SETTING_SEASIDE_STAGE_DESC"
-choices = ["STAGE_SEASIDE_1", "STAGE_SEASIDE_2", "STAGE_SEASIDE_3"]
+choices = ["STAGE_SEASIDEHILL", "STAGE_OCEANPALACE", "STAGE_EGGHAWK"]
 choice_images = ["seaside_hill.jxl", "ocean_palace.jxl", "egg_hawk.jxl"]
 variable = "seaside_stage"
 style = "dropdown"
@@ -73,7 +74,7 @@ index = 3
 type = "choice"
 name = "SETTING_CITY_STAGE"
 description = "SETTING_CITY_STAGE_DESC"
-choices = ["STAGE_CITY_1", "STAGE_CITY_2", "STAGE_CITY_3"]
+choices = ["STAGE_GRANDMETROPOLIS", "STAGE_POWERPLANT", "STAGE_TEAMBATTLE1"]
 choice_images = ["grand_metropolis.jxl", "power_plant.jxl", "team_battle_1.jxl"]
 variable = "city_stage"
 style = "dropdown"
@@ -86,7 +87,7 @@ index = 4
 type = "choice"
 name = "SETTING_CASINO_STAGE"
 description = "SETTING_CASINO_STAGE_DESC"
-choices = ["STAGE_CASINO_1", "STAGE_CASINO_2", "STAGE_CASINO_3"]
+choices = ["STAGE_CASINOPARK", "STAGE_BINGOHIGHWAY", "STAGE_ROBOTCARNIVAL"]
 choice_images = ["casino_park.jxl", "bingo_highway.jxl", "robot_carnival.jxl"]
 variable = "casino_stage"
 style = "dropdown"
@@ -248,31 +249,31 @@ Select Casino Stage
 [[SETTING_CASINO_STAGE_DESC]]
 Choose which Casino Zone stage you want to replace
 
-[[STAGE_SEASIDE_1]]
+[[STAGE_SEASIDEHILL]]
 Seaside Hill
 
-[[STAGE_SEASIDE_2]]
+[[STAGE_OCEANPALACE]]
 Ocean Palace
 
-[[STAGE_SEASIDE_3]]
+[[STAGE_EGGHAWK]]
 Egg Hawk
 
-[[STAGE_CITY_1]]
+[[STAGE_GRANDMETROPOLIS]]
 Grand Metropolis
 
-[[STAGE_CITY_2]]
+[[STAGE_POWERPLANT]]
 Power Plant
 
-[[STAGE_CITY_3]]
+[[STAGE_TEAMBATTLE1]]
 Team Battle 1
 
-[[STAGE_CASINO_1]]
+[[STAGE_CASINOPARK]]
 Casino Park
 
-[[STAGE_CASINO_2]]
+[[STAGE_BINGOHIGHWAY]]
 Bingo Highway
 
-[[STAGE_CASINO_3]]
+[[STAGE_ROBOTCARNIVAL]]
 Robot Carnival
 
 # Stage Details
@@ -353,6 +354,7 @@ The `[metadata]` section contains information about the workflow itself:
 | `language-subfolder` | string | The name of the subfolder in the `languages` folder used for localizing. |
 | `default_language`   | string | The default language file to use, relative to the `language_folder`.     |
 | `next_workflow_id`   | string | The ID of the next workflow to execute after this one completes.         |
+| `rhai_script`        | string | File path to a [Rhai script] supporting the workload.                    |
 
 !!! tip "The `language-subfolder` field is used when you're shipping multiple workflows within one package."
 
@@ -369,8 +371,8 @@ Each setting must specify a [`variable` name][configuration-settings-common-fiel
 type = "choice"
 name = "SETTING_STAGE"
 description = "SETTING_STAGE_DESC"
-choices = ["STAGE_SEASIDE_1", "STAGE_SEASIDE_2", "STAGE_SEASIDE_3"]
-default = "STAGE_SEASIDE_1"
+choices = ["STAGE_SEASIDEHILL", "STAGE_OCEANPALACE", "STAGE_EGGHAWK"]
+default = "STAGE_SEASIDEHILL"
 variable = "selected_stage"
 ```
 
@@ -403,3 +405,4 @@ This will run the `reloaded3.workflow.standard.createmod.s56` workflow after the
 [configuration-settings-common-fields]: ../../../Common/Configuration/Config-Schema.md#common-setting-fields
 [where-to-add-locales]: ../../../Common/Localisation/Adding-Localisations.md#where-to-add-localisations
 [workflow-execution-steps]: ./About.md#workflow-execution-steps
+[Rhai script]: ./Scripting.md

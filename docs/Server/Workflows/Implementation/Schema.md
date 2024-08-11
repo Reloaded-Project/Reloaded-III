@@ -17,6 +17,7 @@ TODO: 'Include' external file. e.g. 'Standard Workflow'
 
 ```toml
 [metadata]
+id = "reloaded3.workflow.sonicheroes.createstage.s56"
 format-version = 0
 name = "WORKFLOW_NAME"
 summary = "WORKFLOW_SUMMARY"
@@ -29,6 +30,7 @@ files = [
 ]
 language-subfolder = "create-a-stage"
 default_language = "en-GB.toml"
+next_workflow_id = "reloaded3.workflow.standard.createmod.s56"
 
 [[settings]]
 index = 0
@@ -332,12 +334,15 @@ falling back to the default language if a translation is not available.
 
 !!! info "Some variables are 'special' and may have predetermined default values based on the environment."
 
+- `author`: Defaults to your user name (if available).
+
 ## Metadata Section
 
 The `[metadata]` section contains information about the workflow itself:
 
 | Field                | Type   | Description                                                              |
 | -------------------- | ------ | ------------------------------------------------------------------------ |
+| `id`                 | string | A unique identifier for the workflow.                                    |
 | `format-version`     | int    | The version of the workflow format. (Currently `0`)                      |
 | `name`               | string | Localization key for the name of the workflow.                           |
 | `summary`            | string | Localization key for the 1 line description summary.                     |
@@ -347,10 +352,13 @@ The `[metadata]` section contains information about the workflow itself:
 | `files`              | string | The files where variable substitutions should be performed.              |
 | `language-subfolder` | string | The name of the subfolder in the `languages` folder used for localizing. |
 | `default_language`   | string | The default language file to use, relative to the `language_folder`.     |
+| `next_workflow_id`   | string | The ID of the next workflow to execute after this one completes.         |
 
 !!! tip "The `language-subfolder` field is used when you're shipping multiple workflows within one package."
 
-## Settings
+!!! tip "The `id` is used to reference other workflows within a workflow."
+
+### Settings
 
 !!! info "The `[[settings]]` entry defines [configuration settings][configuration-settings] for the package."
 
@@ -368,7 +376,24 @@ variable = "selected_stage"
 
 The results of these settings are substituted into the package metadata.
 
-The `[config]` section defines the configuration settings for the package:
+### Next Workflow
+
+!!! info "The [next_workflow_id](#metadata-section) field in the metadata section specifies the ID of the next workflow to run."
+
+This field allows for daisy-chaining workflows.
+The workflow execution system should be aware of all available workflows and be able to locate them
+by their IDs.
+
+Example:
+
+```toml
+[metadata]
+# ... other metadata fields ...
+next_workflow_id = "reloaded3.workflow.standard.createmod.s56"
+```
+
+This will run the `reloaded3.workflow.standard.createmod.s56` workflow after the current one; and
+[before][workflow-execution-steps] the post scripts are ran for each workflow.
 
 [game-id]: ../../Storage/Games/About.md#id
 [r3-localization-system]: ../../../Common/Localisation/About.md
@@ -377,3 +402,4 @@ The `[config]` section defines the configuration settings for the package:
 [configuration-settings]: ../../../Common/Configuration/Config-Schema.md
 [configuration-settings-common-fields]: ../../../Common/Configuration/Config-Schema.md#common-setting-fields
 [where-to-add-locales]: ../../../Common/Localisation/Adding-Localisations.md#where-to-add-localisations
+[workflow-execution-steps]: ./About.md#workflow-execution-steps

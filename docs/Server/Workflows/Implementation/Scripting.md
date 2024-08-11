@@ -4,6 +4,9 @@
 
 This document outlines the scripting capabilities available in Reloaded3 workflows.
 
+It's recommended to write [Rhai] scripts with the [Rhai for Visual Studio Code][rhai-vsc] extension
+for syntax highlighting.
+
 <!-- Note: Material MkDosc doesn't highlight `rhai`, so we used `rust` as a substitute in code blocks. -->
 
 ## Script Location
@@ -73,17 +76,15 @@ Here are the available modules:
 
 !!! info "Allows you to read/write/create files."
 
-!!! warning "Be careful about casing in file operations."
-
-    File operations are case-sensitive on some platforms.
-    Be sure to use the correct casing when working with files.
-
-    If the case does not match, the template system will try doing a non-case sensitive search
-    as a fallback. That may mean a different file is found than the one you intended.
-
 !!! example "An Example"
 
     ```rust
+    // Get full system paths
+    // These are useful if you need to run external tools via CLI commands
+    let full_game_path = game::path("data/levels.dat");
+    let full_output_path = output::path("config.txt");
+    let full_workflow_path = workflow::path("templates/config.txt");
+
     // Check if a file exists in the output directory
     let exists_in_output = output::exists("config.txt");
 
@@ -100,21 +101,42 @@ Here are the available modules:
     let workflow_file_content = workflow::read("templates/stage_template.txt");
     ```
 
+!!! warning "Be careful about casing in file operations."
+
+    File operations are case-sensitive on some platforms.
+    Be sure to use the correct casing when working with files.
+
+    If the case does not match, the template system will try doing a non-case sensitive search
+    as a fallback. That may mean a different file is found than the one you intended.
+
+!!! tip "Use the `path` APIs when calling external CLI commands."
+
+    These will fix the path to the correct case; ensuring the command runs as expected.
+
 #### Output File Operations
 
 !!! info "This lets you work with [files] declared in [workflow metadata][files], prior to [template substitution]."
 
-* **`output::exists(relativepath: &str) -> bool`**: Returns `true` if the file or directory at `relativepath` exists in the output directory, `false` otherwise.
+* **`output::path(relativepath: &str) -> &str`**: Returns the full system path for a file in the output
+  directory.
 
-* **`output::rename(from: &str, to: &str)`**: Renames the file or directory from `from` to `to` in the output directory.
+* **`output::exists(relativepath: &str) -> bool`**: Returns `true` if the file or directory at
+  `relativepath` exists in the output directory, `false` otherwise.
 
-* **`output::delete(relativepath: &str)`**: Deletes the file or directory at `relativepath` in the output directory.
+* **`output::rename(from: &str, to: &str)`**: Renames the file or directory from `from` to `to` in the
+  output directory.
 
-* **`output::write(relativepath: &str, content: &str)`**: Writes `content` to the file at `relativepath` in the output directory.
+* **`output::delete(relativepath: &str)`**: Deletes the file or directory at `relativepath` in the output
+  directory.
 
-* **`output::write(relativepath: &str, content: Array)`**: Writes each element of the `content` array to a new line in the file at `relativepath` in the output directory.
+* **`output::write(relativepath: &str, content: &str)`**: Writes `content` to the file at `relativepath`
+  in the output directory. If the directory does not exist, it is created.
 
-* **`output::read(relativepath: &str) -> Array<u8>`**: Reads the contents of the file at `relativepath` in the output directory and returns it as a byte array.
+* **`output::write(relativepath: &str, content: Array)`**: Writes each element of the `content` array to
+  a new line in the file at `relativepath` in the output directory. If the directory does not exist, it is created.
+
+* **`output::read(relativepath: &str) -> Array<u8>`**: Reads the contents of the file at `relativepath`
+  in the output directory and returns it as a byte array.
 
 #### Game File Operations
 
@@ -122,11 +144,14 @@ Here are the available modules:
 
     These operations provide access to the game files that the mod is being created for.
 
-    You are ***NOT*** supposed to write anything to this folder.
+* **`game::path(relativepath: &str) -> &str`**: Returns the full system path for a file in the game
+  directory.
 
-* **`game::exists(relativepath: &str) -> bool`**: Returns `true` if the file or directory at `relativepath` exists in the game directory, `false` otherwise.
+* **`game::exists(relativepath: &str) -> bool`**: Returns `true` if the file or directory at
+  `relativepath` exists in the game directory, `false` otherwise.
 
-* **`game::read(relativepath: &str) -> Array<u8>`**: Reads the contents of the file at `relativepath` in the game directory and returns it as a byte array.
+* **`game::read(relativepath: &str) -> Array<u8>`**: Reads the contents of the file at `relativepath` in
+  the game directory and returns it as a byte array.
 
 #### Workflow File Operations
 
@@ -134,11 +159,14 @@ Here are the available modules:
 
     These operations provide access to the files that are part of the workflow itself.
 
-    You are ***NOT*** supposed to write anything to this folder.
+* **`workflow::path(path: &str) -> &str`**: Returns the full system path for a file in the workflow
+  directory.
 
-* **`workflow::exists(path: &str) -> bool`**: Returns `true` if the file or directory at `path` exists in the workflow directory, `false` otherwise.
+* **`workflow::exists(path: &str) -> bool`**: Returns `true` if the file or directory at `path` exists
+  in the workflow directory, `false` otherwise.
 
-* **`workflow::read(path: &str) -> Array<u8>`**: Reads the contents of the file at `path` in the workflow directory and returns it as a byte array.
+* **`workflow::read(path: &str) -> Array<u8>`**: Reads the contents of the file at `path` in the
+  workflow directory and returns it as a byte array.
 
 ### System Module
 
@@ -164,19 +192,6 @@ Here are the available modules:
 Here's an example of a Rhai script that might be used in a Reloaded3 workflow:
 
 ```rust
-// New API functions for getting full system paths
-fn game_path(relative_path) {
-    return system::game_path(relative_path);
-}
-
-fn workflow_path(relative_path) {
-    return system::workflow_path(relative_path);
-}
-
-fn output_path(relative_path) {
-    return system::output_path(relative_path);
-}
-
 // Get user inputs from previous workflow steps
 let selected_zone = variable::get("selected_zone");
 let stage_name = variable::get("stage_name");
@@ -232,7 +247,7 @@ copy_stage_files(stage_number, target_stage_number);
 
 // Update the stage name in the appropriate files
 // This is a placeholder and should be implemented based on your specific requirements
-let stage_name_file = output_path(`dvdroot/s${target_stage_number}_stagename.bin`);
+let stage_name_file = `dvdroot/s${target_stage_number}_stagename.bin`;
 if output::exists(stage_name_file) {
     output::write(stage_name_file, stage_name);
     print(`Updated stage name in ${stage_name_file}`);
@@ -284,8 +299,8 @@ fn copy_stage_files(source_number, target_number) {
 
     for prefix in prefixes {
         for file in file_list {
-            let source_path = game_path(`dvdroot/${file.replace("${prefix}${num}", "${prefix}${source_number}")}`);
-            let target_path = output_path(`dvdroot/${file.replace("${prefix}${num}", "${prefix}${target_number}")}`);
+            let source_path = `dvdroot/${file.replace("${prefix}${num}", "${prefix}${source_number}")}`;
+            let target_path = `dvdroot/${file.replace("${prefix}${num}", "${prefix}${target_number}")}`;
 
             if game::exists(source_path) {
                 let content = game::read(source_path);
@@ -302,3 +317,4 @@ fn copy_stage_files(source_number, target_number) {
 [Workflow Execution Steps]: ./About.md#workflow-execution-steps
 [files]: ./About.md#workflow-schema
 [template substitution]: ./Templates.md
+[rhai-vsc]: https://marketplace.visualstudio.com/items?itemName=rhaiscript.vscode-rhai

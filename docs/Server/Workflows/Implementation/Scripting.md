@@ -9,6 +9,40 @@ for syntax highlighting.
 
 <!-- Note: Material MkDosc doesn't highlight `rhai`, so we used `rust` as a substitute in code blocks. -->
 
+## Why Rhai?
+
+!!! info "When looking for a suitable scripting engine, I considered the following factors"
+
+High Priority:
+
+- ***Portability***: This involves a few factors:
+    - ***FileSystem Access***: Calls to FileSystem must be case insensitive.No write access by default where it shouldn't be used.
+    - ***Esoteric Platform Compatibility***: Can this engine run on [estoeric platforms?][esoteric-platforms]
+        - Does it support `no_std` if possible?
+
+- ***Sandboxing***:
+    - Scripts should run in isolation from other scripts.
+    - Fully sandboxed workflows can be marked with a 'safe' UI moniker.
+    - Escaping the sandbox *is allowed*, since scripts will require calling external binaries, to e.g.
+      unpack game files; but for safety reasons it will be limited.
+
+- ***Ease of Use***: Should be something that's close to C-like syntax, but not too complex.
+    - Dynamic typing should be ok, this is intended for very small scripts.
+
+- ***Interop with Host/Rust***:
+    - Rust host should be able to provide APIs to the script.
+    - This is important for running custom binaries, reading/writing files, etc.
+
+Lower Priority:
+
+- ***Pure Execution Speed***: The size of the data being processed here is expected to be very small,
+  therefore a full engine with a JIT/Bytecode is not strictly necessary.
+
+With these points in mind, [Rhai] was chosen, as it nicely integrates into Rust and provides the
+above requirements. While it is not recommended for large-scale code, it is perfect for small scripts,
+which should make up the majority of the use cases. For more complex workloads, you can always call a binary
+from within a script.
+
 ## Script Location
 
 Rhai scripts are specified in the `workflow.toml` file under the `[metadata]` section:
@@ -307,3 +341,4 @@ fn copy_stage_files(source_number, target_number) {
 [files]: ./About.md#workflow-schema
 [template substitution]: ./Templates.md
 [rhai-vsc]: https://marketplace.visualstudio.com/items?itemName=rhaiscript.vscode-rhai
+[esoteric-platforms]: ../../../Code-Guidelines/Hardware-Requirements.md#about-esoteric-and-experimental-platforms

@@ -1,3 +1,8 @@
+---
+# YAML header
+render_macros: false
+---
+
 # Workflow Scripting
 
 !!! info "Reloaded3 workflows use [Rhai] scripts for adding additional arbitrary logic to templates."
@@ -69,6 +74,11 @@ Here are the available modules:
 
 !!! info "Allows for interaction with variables set during workflow execution."
 
+!!! tip "Localized keys are available as variables in Rhai scripts."
+
+    `variable::get("WORKFLOW_NAME")` is a valid way to read the key that has the
+    [name of the workflow][workflow-localization].
+
 !!! example "An Example"
 
     ```rust
@@ -105,6 +115,47 @@ Here are the available modules:
 
 * **`variable::prompt(text: &str, default_value: &str, choices: Array) -> value`**: Prompts the user
   to choose from the given `choices` array, with `default_value` as the default option.
+
+!!! note "Variables set here are available in [MiniJinja templates][for-loop-mj]."
+
+### List Module
+
+!!! info "The List module allows you to create lists that can be used in [MiniJinja templates][for-loop-mj]."
+
+!!! example "Example Usage with Localization"
+
+    ```rust
+    // Create a new list using localized keys for items
+    list::create("features", [
+        variable::get("FEATURE_SPEED_BOOST"),
+        variable::get("FEATURE_NEW_ABILITIES"),
+        variable::get("FEATURE_CUSTOM_SKINS")
+    ]);
+
+    // Add a localized item to an existing list
+    list::add("features", variable::get("FEATURE_CONFIGURABLE_OPTIONS"));
+
+    // Remove an item from a list
+    list::remove("features", variable::get("FEATURE_CUSTOM_SKINS"));
+
+    // Get the current items in a list
+    let current_features = list::get("features");
+    for feature in current_features {
+        print(`Feature: ${feature}`);
+    }
+    ```
+
+* **`list::create(name: &str, items: Array)`**: Creates a new list with the given name and initial items.
+
+* **`list::add(name: &str, item: value)`**: Adds an item to the end of the specified list. If the list doesn't exist, it will be created.
+
+* **`list::remove(name: &str, item: value)`**: Removes the first occurrence of the specified item from the list. Does nothing if the item is not found.
+
+* **`list::clear(name: &str)`**: Removes all items from the specified list.
+
+* **`list::exists(name: &str) -> bool`**: Returns `true` if a list with the given name exists, `false` otherwise.
+
+* **`list::get(name: &str) -> Array`**: Returns the current items in the specified list as an array. Returns an empty array if the list doesn't exist.
 
 ### File Operations
 
@@ -342,3 +393,5 @@ fn copy_stage_files(source_number, target_number) {
 [template substitution]: ./Templates.md
 [rhai-vsc]: https://marketplace.visualstudio.com/items?itemName=rhaiscript.vscode-rhai
 [esoteric-platforms]: ../../../Code-Guidelines/Hardware-Requirements.md#about-esoteric-and-experimental-platforms
+[workflow-localization]: ./Schema.md#localization
+[for-loop-mj]: ./Templates.md#for-loop

@@ -49,6 +49,8 @@ written to the final mod package.
 
 !!! info "Localization keys defined in the language files are available as variables for rendering in templates."
 
+    This is also true for `variables` created in [`metadata`][schema] and [`rhai scripts`][rhai-scripts]!
+
 This feature allows for complete translation of template outputs, making it possible to generate
 fully localized mod configurations and documentation.
 
@@ -160,6 +162,8 @@ Here's an example of how you might use localization keys to create a fully local
 !!! info "This cheat sheet provides a quick reference for Jinja syntax"
 
     Along with Reloaded3-themed examples and their rendered output.
+
+!!! tip "The MiniJinja templates can access all `variables` created in [`metadata`][schema], [`localization`][metadata-localization] and [`rhai scripts`][rhai-scripts]."
 
 ### Basic Syntax
 
@@ -423,3 +427,5 @@ Here's an example of how you might use localization keys to create a fully local
 [workflow.toml]: ./Schema.md
 [metadata]: ./Schema.md#metadata-section
 [metadata-localization]: ./Schema.md#localization
+[rhai-scripts]: ./Scripting.md
+[schema]: ./Schema.md

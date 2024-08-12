@@ -35,7 +35,7 @@ reloaded3.workflow.sonicheroes.addacharacter.s56
 ```
 
 - Each workflow is stored in a subfolder of the `workflows` folder.
-    - The `files` subfolder contains templates on which we perform [`substitution`][substitution] on.
+    - The `files` subfolder contains templates on which we perform [`substitution`][templates] on.
     - After `substitution`, the files are copied to the user's mod folder.
 - The `languages` folder contains the localization files for each workflow.
 - The `package/images` folder contains the images for each workflow (see [Packaging: Images][packaging-images] for more info).
@@ -71,7 +71,7 @@ Here's a detailed breakdown of the process:
     - Collect all files specified in the `files` field of each executed workflow.
     - For each file:
         a. Load the file content.
-        b. Use the MiniJinja engine to perform variable substitutions.
+        b. Use the MiniJinja engine to perform [variable substitutions][templates].
         c. Write the result to the output folder.
 
 4. **Finalization**
@@ -143,7 +143,7 @@ workflows while maintaining flexibility and power through scripting and template
 
 [workflow-toml]: ./Schema.md
 [packaging-images]: ../../Packaging/About.md#images
-[substitution]: ./Templates.md#substitution
+[templates]: ./Templates.md
 [scripting]: ./Scripting.md
 [schema]: ./Schema.md
 [next-workflow]: ./Schema.md#next-workflow

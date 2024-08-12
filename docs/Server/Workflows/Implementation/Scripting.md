@@ -12,7 +12,7 @@ This document outlines the scripting capabilities available in Reloaded3 workflo
 It's recommended to write [Rhai] scripts with the [Rhai for Visual Studio Code][rhai-vsc] extension
 for syntax highlighting.
 
-<!-- Note: Material MkDosc doesn't highlight `rhai`, so we used `rust` as a substitute in code blocks. -->
+<!-- Note: Material MkDocs doesn't highlight `rhai`, so we used `rust` as a substitute in code blocks. -->
 
 ## Why Rhai?
 

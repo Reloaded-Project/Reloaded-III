@@ -4,8 +4,6 @@
 
 TODO: A way to run external tools in workflows.
 
-TODO: 'Include' external file. e.g. 'Standard Workflow'
-
 ## Example File
 
 !!! info "A typical `workflow.toml` has the following structure"

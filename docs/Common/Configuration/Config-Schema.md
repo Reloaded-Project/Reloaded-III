@@ -16,7 +16,6 @@ The `config.toml` file has the following structure:
 ```toml
 [general]
 name = "Mod Name"
-author = "Author Name"
 language_folder = "config"
 default_language = "en-GB.toml"
 
@@ -47,30 +46,37 @@ The `[general]` section contains the following fields:
 
 | Field              | Type   | Description                                                          |
 | ------------------ | ------ | -------------------------------------------------------------------- |
-| `name`             | string | The name of the mod. Used in the UI.                                 |
-| `author`           | string | The author of the mod.                                               |
+| `name`             | string | The name of the mod configuration. May be used in the UI.            |
 | `language_folder`  | string | The subfolder containing the language files for the config.          |
 | `default_language` | string | The default language file to use, relative to the `language_folder`. |
 
-### Language Location
+### File Locations
 
-!!! example "An example of how language files are set."
+!!! example "An example of how various files are set."
 
 Given a mod folder structured like
 
 ```
 reloaded3.utility.examplemod.s56
-├── modfiles
-│   └── mod.dll
+├── config
+│   └── config.toml
 ├── languages
-│   └── config
-│       ├── en-GB.toml
-│       └── uwu-en.toml
-├── config.toml
+│   └── config
+│       ├── en-GB.toml
+│       └── uwu-en.toml
+├── modfiles
+│   └── mod.dll
+├── package
+│   └── images
+│       └── config-image-1.jxl
 └── package.toml
 ```
 
 Setting `language_folder = "config"` and `default_language = "en-GB.toml"` would use the `en-GB.toml` file.
+
+Setting an image field to `config-image-1.jxl` would use the image located in `package/images/config-image-1.jxl`.
+
+For more details regarding why the files are separated in this way, see the note in [Packaging: Images][packaging-images].
 
 ## Common Setting Fields
 
@@ -124,12 +130,16 @@ What the Launcher UI displays should match 1:1 with the order of settings in the
 
 !!! info "A boolean value, presented as a checkbox."
 
+
 | Field       | Type   | Description                                      |
 | ----------- | ------ | ------------------------------------------------ |
 | `image_on`  | string | [Optional] Image to display when value is true.  |
 | `image_off` | string | [Optional] Image to display when value is false. |
 
+Shown as: `[✓] Enable Feature X` or `Enable Feature X ( O)`
+
 Example:
+
 ```toml
 [[settings]]
 index = 0
@@ -139,7 +149,13 @@ description = "SETTING_ENABLE_X_DESC"
 default = false
 image_on = "enable_x_on.jxl"
 image_off = "enable_x_off.jxl"
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+This allows the user to enable or disable a setting
 
 ### Choice (Enum) Setting
 
@@ -147,32 +163,60 @@ image_off = "enable_x_off.jxl"
 
 Additional Fields:
 
-| Field           | Type     | Description                                                                          |
-| --------------- | -------- | ------------------------------------------------------------------------------------ |
-| `choices`       | [string] | An array of localization keys for the available options.                             |
-| `choice_images` | [string] | [Optional] An array of images for each choice, corresponding to the `choices` array. |
+| Field                 | Type     | Description                                                                                |
+| --------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `choices`             | [string] | An array of localization keys for the available options.                                   |
+| `choice_images`       | [string] | [Optional] An array of images for each choice, corresponding to the `choices` array.       |
+| `choice_descriptions` | [string] | [Optional] An array of descriptions for each choice in the `choices` array.                |
+| `style`               | [string] | [Optional] How the setting is presented. Values: `dropdown`, `radio`  Default: `dropdown`. |
 
-Example:
+!!! example "Example: A 'render quality' dropdown."
+
+    This setting allows the user to choose between different rendering resolutions for shadows.
+
 ```toml
 [[settings]]
 index = 1
 type = "choice"
-name = "SETTING_RENDER_MODE"
-description = "SETTING_RENDER_MODE_DESC"
-choices = ["RENDER_MODE_A", "RENDER_MODE_B", "RENDER_MODE_C"]
-choice_images = ["render_mode_a.jxl", "render_mode_b.jxl", "render_mode_c.jxl"]
-default = "RENDER_MODE_B"
+name = "SHADOW_RESOLUTION"
+description = "SHADOW_RESOLUTION_DESC"
+choices = ["LOW_QUALITY", "MEDIUM_QUALITY", "HIGH_QUALITY"]
+choice_images = ["shadow_low.jxl", "shadow_medium.jxl", "shadow_high.jxl"]
+default = "MEDIUM_QUALITY"
+style = "dropdown"
+# choice_descriptions =
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+!!! info "This control is displayed as."
+
+    Style `dropdown`:
+
+    - `Render Quality: [Medium Quality ▼]`
+
+    Style `radio`:
+
+    ```
+    Render Quality
+
+    ( ) Low Quality
+    (o) Medium Quality
+    ( ) High Quality
+    ```
+
 
 !!! danger "It's a breaking change to remove an entry from `choices`."
 
     You can hide a choice by replacing it with a blank string, `""`, this will hide it from the user UI.
 
     ```toml
-    choices = ["RENDER_MODE_A", "", "RENDER_MODE_C", "RENDER_MODE_D"]
+    choices = ["LOW_QUALITY", "", "HIGH_QUALITY", "ULTRA_QUALITY"]
     ```
 
-    Here, `MODE_B` was hidden.
+    Here, `MEDIUM_QUALITY` was hidden.
 
 ### Integer Setting
 
@@ -186,18 +230,27 @@ Additional Fields:
 | `max`        | int      | (Default: -2^63) The maximum allowed value.     |
 | `formatters` | [string] | [Formatters][formatters] to apply to the value. |
 
-Example:
+!!! example "Example: Changing the size of an inventory"
+
+    This setting allows the user to set the max number of items in their inventory, from 0 to 100.
+
 ```toml
 [[settings]]
 index = 2
 type = "int"
-name = "SETTING_COUNT"
-description = "SETTING_COUNT_DESC"
+name = "INVENTORY_SIZE"
+description = "INVENTORY_SIZE_DESC"
 default = 5
 min = 0
 max = 100
 formatters = ["FRIENDLY"]
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+Shown as: `Inventory Size: [50]`
 
 ### Integer Range Setting
 
@@ -214,7 +267,11 @@ Additional Fields:
 | `formatters`   | [string]         | [Formatters][formatters] to apply to the value. |
 | `range_images` | [[int, string]]  | [Optional] The image to display for each value. |
 
-Example:
+!!! example "Example: Changing the intensity of a visual effect"
+
+    This setting controls the intensity of a visual effect, from 0% (low) to 100% (high), with
+    images showing the effect at different levels.
+
 ```toml
 [[settings]]
 index = 3
@@ -232,6 +289,18 @@ range_images = [
     [50, "intensity_medium.jxl"],
     [80, "intensity_high.jxl"]
 ]
+# apply_on =
+# variable =
+# client_side =
+# show_if =
+```
+
+Shown as:
+
+```
+                           50%
+Effect Intensity: [••••••••••--------]
+                 LOW                HIGH
 ```
 
 !!! note "About `range_images`"
@@ -252,19 +321,29 @@ Additional Fields:
 | `places`     | int      | The number of decimal places (0-5).             |
 | `formatters` | [string] | [Formatters][formatters] to apply to the value. |
 
-Example:
+!!! example "Example: Change the boss health multiplier"
+
+    This setting allows the user to adjust the health of boss HP between 0.1x and 10.0x,
+    with two decimal places of precision.
+
 ```toml
 [[settings]]
 index = 4
 type = "float"
-name = "SETTING_SCALE"
-description = "SETTING_SCALE_DESC"
+name = "SETTING_BOSS_HEALTH_SCALE"
+description = "SETTING_BOSS_HEALTH_SCALE_DESC"
 default = 1.0
 min = 0.1
 max = 10.0
 places = 2
 formatters = ["ROUNDED"]
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+Shown as: `Boss Health: [1.50]`
 
 ### Float Range Setting
 
@@ -281,7 +360,11 @@ Additional Fields:
 | `formatters`   | [string]         | [Formatters][formatters] to apply to the value. |
 | `range_images` | [[int, string]]  | [Optional] The image to display for each value. |
 
-Example:
+!!! example "Example: Change the boss health multiplier"
+
+    This setting allows the user to adjust the health of boss HP between 0.1x and 10.0x,
+    with two decimal places of precision.
+
 ```toml
 [[settings]]
 index = 5
@@ -299,6 +382,18 @@ range_images = [
     [0.5, "volume_medium.jxl"],
     [0.8, "volume_high.jxl"]
 ]
+# apply_on =
+# variable =
+# client_side =
+# show_if =
+```
+
+Shown as:
+
+```
+                        50%
+Master Volume: [••••••••••--------]
+              MUTE                MAX
 ```
 
 !!! note "About `range_images`"
@@ -320,10 +415,16 @@ Additional Fields:
 | `multiple` | bool   | If `true`, allows selecting multiple files.               |
 
 !!! warning
-    Use of absolute paths or paths outside of a Reloaded3 package folder is discouraged as it breaks
-    reproducibility. The setting will not be shared across different machines or installations.
 
-Example:
+    Use of absolute paths or paths outside of a Reloaded3 package folder is discouraged as it breaks
+    reproducibility. The setting cannot be shared across different machines or installations.
+
+    Whenever possible, we will auto convert to [Special Location References](#special-location-references).
+
+!!! example "Example: Select a custom 3D model file"
+
+    This setting allows the user to select a custom 3D model file for their character.
+
 ```toml
 [[settings]]
 index = 6
@@ -334,7 +435,13 @@ default = "models/custom.obj"
 filter = "*.obj"
 title = "TITLE_SELECT_MODEL"
 multiple = false
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+Shown as: `Custom Model: [models/custom.obj] [Browse...]`
 
 ### Folder Setting
 
@@ -348,19 +455,32 @@ Additional Fields:
 | `title`   | string | Localization key for the title of the folder picker dialog. |
 
 !!! warning
+
     Use of absolute paths or paths outside of a Reloaded3 package folder is discouraged as it breaks
     reproducibility. The setting will not be shared across different machines or installations.
 
-Example:
+    Whenever possible, we will auto convert to [Special Location References](#special-location-references).
+
+!!! example "Example: Selecting a custom folder for Replay Backups"
+
+    This setting allows the user to choose a custom folder for saving replays of online races.
+    These could later be played back.
+
 ```toml
 [[settings]]
 index = 7
 type = "folder"
-name = "SETTING_OUTPUT"
-description = "SETTING_OUTPUT_DESC"
+name = "SETTING_REPLAY_FOLDER"
+description = "SETTING_REPLAY_FOLDER_DESC"
 default = "output"
-title = "TITLE_SELECT_OUTPUT"
+title = "TITLE_SELECT_REPLAY_FOLDER"
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+Shown as: `Output Folder: [C:\Users\Username\Documents\MyGame\Output] [Select Folder...]`
 
 ### Color Setting
 
@@ -372,18 +492,27 @@ Additional Fields:
 | ------- | ---- | --------------------------------- |
 | `alpha` | bool | Whether to include alpha channel. |
 
-Example:
+!!! example "Example: Select a colour for car nitro"
+
+    This setting allows the user to pick a custom color for a car's nitrous exhaust.
+
 ```toml
 [[settings]]
 index = 8
 type = "color"
-name = "SETTING_BG_COLOR"
-description = "SETTING_BG_COLOR_DESC"
+name = "SETTING_NITRO_COLOR"
+description = "SETTING_NITRO_COLOR_DESC"
 default = "#FF0000"
 alpha = true
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
 
 !!! note "The default is specified as `RGBA`"
+
+Shown as: `[■] #FF5500AA [Pick Color...]`
 
 ### String Setting
 
@@ -394,22 +523,35 @@ alpha = true
 | ----------- | ---- | ------------------------------- |
 | `hide_text` | bool | Hides the text (password input) |
 
-Example:
+!!! example "Example: Rename Player"
+
+    This setting allows the user to rename their player in multiplayer games.
+
 ```toml
 [[settings]]
 index = 9
 type = "string"
-name = "SETTING_USERNAME"
-description = "SETTING_USERNAME_DESC"
-default = "LABEL_DEFAULT_USER"
+name = "SETTING_PLAYERNAME"
+description = "SETTING_PLAYERNAME_DESC"
+default = "LABEL_DEFAULT_PLAYERNAME"
 hide_text = false
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+Shown as: `Player Name: [PlayerOne]`
 
 ### String List Setting
 
 !!! info "A list of strings, presented as a comma-separated text input."
 
-Example:
+!!! example "Example: Specify excluded file extensions"
+
+    This setting allows the user to specify a list of file extensions to exclude
+    from an operation.
+
 ```toml
 [[settings]]
 index = 10
@@ -417,15 +559,22 @@ type = "string_list"
 name = "SETTING_EXCLUDED_EXT"
 description = "SETTING_EXCLUDED_EXT_DESC"
 default = ["dll", "exe"]
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
 
-Internally, the value is stored as a single string with elements separated by `|`.
+Shown as: `Excluded Extensions: [dll, exe, tmp]`
 
 ### URL Setting
 
 !!! info "A read-only setting that opens a URL when clicked."
 
-Example:
+!!! example "Example: Homepage URL"
+
+    This setting displays a link to the mod's homepage.
+
 ```toml
 [[settings]]
 index = 11
@@ -433,7 +582,13 @@ type = "url"
 name = "SETTING_HOMEPAGE"
 description = "SETTING_HOMEPAGE_DESC"
 default = "https://example.com"
+# apply_on =
+# variable =
+# client_side =
+# show_if =
 ```
+
+Shown as: `Mod Homepage: [Visit Website]`
 
 ## Conditional Settings
 
@@ -575,8 +730,9 @@ to modify how the value is displayed in the UI.
 
 The available formatters are:
 
-- `FRIENDLY`: Displays large numbers in a friendly format (e.g. 1,000,000 -> 1M).
-- `SIZE_FRIENDLY`: Displays value in MB or GB for readability.
+- `FRIENDLY`: Displays large numbers in a friendly format (e.g. `1000000` -> 1M).
+- `USE_CULTURE`: Displays numbers in user's language culture (e.g. `1000000` -> `1,000,000`).
+- `SIZE_FRIENDLY`: Displays value in KB, MB or GB (etc.) for readability.
 - `SIZE_FRIENDLY_RATE`: Same as `SIZE_FRIENDLY` but appends rate, e.g. `MB/s`.
 - `PERCENTAGE`: Displays value as percentage (0-100).
 - `ROUNDED`: Rounds value to the nearest integer.
@@ -598,6 +754,11 @@ formatters = ["SIZE_FRIENDLY"]
 
 In this example, the `SETTING_FILE_SIZE_LIMIT` setting will display its value in MB or GB for
 better readability.
+
+!!! note "Formatting is ***NOT*** culture specific."
+
+    Writing the number `1000000` as a string, will always be printed as `1000000`, and not
+    `1,000,000` or `1.000.000`. User's locale is not considered unless opted into.
 
 ## Simulating Multiple Config Files
 
@@ -699,3 +860,4 @@ variables.
 [formatters]: #value-formatters
 [source-generation]: ./Source-Generation.md
 [hardware-settings]: ./Hardware-Configs/About.md
+[packaging-images]: ../../Server/Packaging/About.md#images

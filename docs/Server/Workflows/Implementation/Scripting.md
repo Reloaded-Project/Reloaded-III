@@ -17,7 +17,7 @@ High Priority:
 
 - ***Portability***: This involves a few factors:
     - ***FileSystem Access***: Calls to FileSystem must be case insensitive.No write access by default where it shouldn't be used.
-    - ***Esoteric Platform Compatibility***: Can this engine run on [estoeric platforms?][esoteric-platforms]
+    - ***Esoteric Platform Compatibility***: Can this engine run on [esoteric platforms?][esoteric-platforms]
         - Does it support `no_std` if possible?
 
 - ***Sandboxing***:

@@ -4,26 +4,35 @@
 
 Inside each package folder is a file named `package.toml`; which stores the metadata of each package.
 
-| Type                | Name                                       | Description                                                               |
-| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
-| string              | [Id](#id)                                  | A name that uniquely identifies the package.                              |
-| string              | Name                                       | Human friendly name of the package.                                       |
-| string              | Author                                     | Main author of the package. (Individual or Team Name)                     |
-| string              | Summary                                    | Short summary of the package. Max 2 sentences.                            |
-| PackageType         | [PackageType](#packagetype)                | Type of the package. See [PackageType](#packagetype) for possible values. |
-| string              | [DocsFile](#docsfile)                      | [Optional] Entry point for this package documentation.                    |
-| SemVer              | [Version](#version)                        | Semantic versioning version of the package.                               |
-| bool                | [IsDependency](#is-dependency)             | This package is a dependency (e.g. library) and not directly consumable.  |
-| string              | LicenseId                                  | [SPDX License Identifier][spdx-license]                                   |
-| string[]            | [Tags](#tags)                              | Used to make searching easier within mod managers.                        |
-| Credit[]            | [Credits](#credits)                        | [Optional] Stores information about who contributed what to the project.  |
-| string?             | SourceUrl                                  | [Optional] Link to source code (if applicable).                           |
-| string?             | ProjectUrl                                 | [Optional] Link to website to learn more about the project.               |
-| UpdateData          | [UpdateData](#update-data)                 | Stores package specific update information.                               |
-| DependencyInfo[]    | [Dependencies](#dependency-info)           | Stores information about this package's dependencies.                     |
-| DateTime            | [Published](#published)                    | The time when this package was packed.                                    |
-| StoragePreference   | [StoragePreference](#storage-preference)   | Specifies the preferred storage tier for the package.                     |
-| IgnoredDiagnostic[] | [IgnoredDiagnostics](#ignored-diagnostics) | List of diagnostics to ignore as false positives.                         |
+| Type                             | Name                                          | Description                                                                                     |
+| -------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| string                           | [Id](#id)                                     | A name that uniquely identifies the package.                                                    |
+| string                           | Name                                          | Human friendly name of the package.                                                             |
+| string                           | Author                                        | Main author of the package. (Individual or Team Name)                                           |
+| string                           | Summary                                       | Short summary of the package. Max 2 sentences.                                                  |
+| PackageType                      | [PackageType](#packagetype)                   | Type of the package. See [PackageType](#packagetype) for possible values.                       |
+| string                           | [DocsFile](#docsfile)                         | [Optional] Entry point for this package documentation.                                          |
+| SemVer                           | [Version](#version)                           | Semantic versioning version of the package.                                                     |
+| bool                             | [IsDependency](#is-dependency)                | This package is a dependency (e.g. library) and not directly consumable.                        |
+| string                           | LicenseId                                     | [SPDX License Identifier][spdx-license]                                                         |
+| string[]                         | [Tags](#tags)                                 | Used to make searching easier within mod managers.                                              |
+| Credit[]                         | [Credits](#credits)                           | [Optional] Stores information about who contributed what to the project.                        |
+| string?                          | SourceUrl                                     | [Optional] Link to source code (if applicable).                                                 |
+| string?                          | ProjectUrl                                    | [Optional] Link to website to learn more about the project.                                     |
+| UpdateData                       | [UpdateData](#update-data)                    | Stores package specific update information.                                                     |
+| DependencyInfo[]                 | [Dependencies](#dependency-info)              | Stores information about this package's dependencies.                                           |
+| DateTime                         | [Published](#published)                       | The time when this package was packed.                                                          |
+| StoragePreference                | [StoragePreference](#storage-preference)      | Specifies the preferred storage tier for the package.                                           |
+
+These fields are usually only found when [PackageType](#packagetype) == `Mod`:
+
+| Type                             | Name                                          | Description                                                                                     |
+| -------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| GalleryItem[]                    | [Gallery](#gallery)                           | Stores preview images for this package.                                                         |
+| Dictionary&lt;string, Target&gt; | [Targets](#targets)                           | Specifies the DLLs/binaries used [for each backend.][backend]                                   |
+| string[]                         | [SupportedGames](#supported-games)            | List of supported titles/games.                                                                 |
+| bool                             | [ClientSide](#client-side)                    | [Optional] True if the mod is purely cosmetic and does not have non-visual effects on gameplay. |
+| bool                             | [AllowRuntimeLoading](#allow-runtime-loading) | [Optional] Allows the mod to be loaded in real-time at runtime, instead of only on startup.     |
 
 ## Implicit Fields
 
@@ -150,10 +159,11 @@ FileName = "screenshot2.jxl"
 Caption = "Gameplay screenshot 2"
 
 [Targets]
-[Targets."win-x64"]
+[Targets."win"]
 any = "reloaded3.gamesupport.persona5royal.dll"
-x64-v2 = "reloaded3.gamesupport.persona5royal.v2.dll"
-x64-v3 = "reloaded3.gamesupport.persona5royal.v3.dll"
+# x86, x64, x64-v2 and x64-v3 etc. will automatically be generated during packaging of relevant package.
+# x64-v2 = "reloaded3.gamesupport.persona5royal.dll"
+# x64-v3 = "reloaded3.gamesupport.persona5royal.dll"
 ```
 
 ## Id
@@ -164,13 +174,16 @@ x64-v3 = "reloaded3.gamesupport.persona5royal.v3.dll"
 
 This format is designed to minimize collisions while providing a human-readable name.
 
-The suggested format to use for names is `game.type.subtype.name.author`.
+The suggested format to use for names is `game.type.subtype.name.author.target`.
 
 - `game` see [Game 'Id'][game-metadata-id] for more info.
 - `type` name should ideally match category of the package on a site like [GameBanana][gamebanana] or [NexusMods][nexus-mods].
 - `subtype` [Optional] provides additional information about the item.
 - `name` unique name for the package. Can use another `.` dot if additional info is needed.
 - `author` primary package author (prefer abbreviated).
+- `target` [Optional] target platform and instruction set, can come in one of the following forms
+    - [Platform only][platforms]: `win`, `linux`. When package has all architecture binaries.
+    - [Platform+Arch][architecture]: `win+x64-v3`, `linux+x64-v3`. When package has only one specific architecture.
 
 Example(s):
 
@@ -182,6 +195,33 @@ Use lowercase, no spaces, no special characters.
 !!! tip "The author field may be omitted, if e.g. creating GitHub repositories."
 
     It's only there to avoid conflicts.
+
+### Architecture Specific Packages
+
+!!! note "The `architecture` field is not usually set by humans."
+
+This field is primarily intended to be used by automated build scripts.
+
+`Build scripts` should amend the original `package.toml` (this file) for each
+automatically generated package. Specifically by:
+
+- Setting the [Is Dependency](#is-dependency) field to true.
+- Prepending `[Platform]` or `[Platform+Arch]` to the `Name` field.
+- Appending the `architecture` part to the [Id](#id) field.
+- Updating the [Targets](#targets) field to include the correct architecture.
+
+
+!!! warning "***DO NOT*** use architectures be used in [dependency references](#dependency-info)."
+
+  - ✅ `reloaded3.api.windows.vfs.s56`
+  - ❌ `reloaded3.api.windows.vfs.s56.win+x64-v3`
+
+!!! note "The `architecture` field is set only by automated build scripts."
+
+    During dependency resolution, the system will try to append the correct architecture.
+    If your PC is `win+x64-v3`, it will try searching the package name with `win+x64-v3` appended
+    at the end, then it will try searching with `win` appended at the end, until it will search
+    with no architecture appended.
 
 ### Universal Mods
 
@@ -229,10 +269,10 @@ For example, for the package name `reloaded3server.diagnostic.general`, use the 
 
 `PackageType` is an enumerable with the following possible values:
 
-- [Mod][mod-metadata] (Default): Stores a game modification.
+- `Mod` (Default): Stores a game modification.
 - `Profile`: Stores user profile.
 - `Translation`: Stores a [translation for another package][overriding-translations].
-- `Tool`: Represents a modding tool.
+- `Tool`: Represents a modding tool or binary.
 
 This field helps identify the purpose and nature of the package.
 
@@ -442,6 +482,146 @@ treating them as false positives.
 
 If the `IgnoredDiagnostics` field is not specified or is an empty array, no diagnostics will be ignored.
 
+## Implicit Fields
+
+Some items are stored as separate files:
+
+- [IconSearch](#icon-search): Search icon file, located at `package/images/icon-search.jxl`.
+- [IconListCompact](#icon-list-compact-view): List compact view icon file, located at `package/images/icon-list-compact.jxl`.
+- [IconList](#icon-list-view): List view icon file, located at `package/images/icon-list.jxl`.
+
+## Icons
+
+!!! info "Gallery images are stored in [images][package-images] folder."
+
+!!! info "Each entry is a name of file in [images][package-images] folder."
+
+!!! info "Images use [JPEG XL (`.jxl`)][images]"
+
+### Icon (List Compact View)
+
+!!! info "This is the preview icon used when displaying mods as a list (compact)."
+
+    It corresponds to [GridDisplayMode 1][grid-display-mode].
+
+The size of this image should be `84x48`.
+
+This image is expected to be around 2KiB.
+
+!!! note "The `84x48` is the target resolution for 4K displays."
+
+!!! note "This view is meanf for showing only 1 line of text, alongside the image."
+
+### Icon (List View)
+
+!!! info "This is the preview icon used when displaying mods as a list."
+
+    It corresponds to [GridDisplayMode 2][grid-display-mode].
+
+The size of this image should be `168x96`.
+
+This image is expected to be around 5KiB.
+
+!!! note "The `168x96` is the target resolution for 4K displays."
+
+!!! note "This view enables a second line of text for additional mod info in the list."
+
+    As opposed to the [compact view](#icon-list-compact-view) which is meant for only showing 1 line.
+
+### Icon (Search)
+
+!!! info "This is the preview icon used for mod search results."
+
+    It corresponds to [GridDisplayMode 3][grid-display-mode].
+
+The size of this image should be `880x440` (2:1) with a `content` area of `600x440`.
+
+Depending on the user's window size, the will be cropped to some size
+between `880x440` and `600x440`. Thus you should aim to put all the important
+detail within the `600x440` area.
+
+This image is expected to be around 50KiB.
+
+!!! note "The `880x440` is the target resolution for 4K displays."
+
+!!! note "This image size is directly lifted from Reloaded-II's mod search results scale."
+
+## Gallery
+
+!!! info "Gallery images are stored in [images][package-images] folder."
+
+### GalleryItem
+
+| Type    | Name     | Description                                        |
+| ------- | -------- | -------------------------------------------------- |
+| string  | FileName | Name of file in [images][package-images] folder.   |
+| string? | Caption  | [Optional] One line description of the screenshot. |
+
+## Targets
+
+!!! info "This section specifies info for the individual [backends.][backend]"
+
+!!! info "These specify file paths relative to `modfiles` folder."
+
+Find more info on the pages for the [individual backends][backend], but we'll provide some examples.
+
+[Native Mod][native-backend]:
+```json
+[Targets."win-x64"]
+default = "reloaded3.gamesupport.persona5royal.dll"
+```
+
+!!! note "It's not expected for mod authors to ship with multiple [instruction sets][instruction-sets] outside of super high perf scenarios. This is just for example."
+
+[.NET CoreCLR Mod][coreclr-backend]:
+
+```json
+[Targets."dotnet-latest"]
+default = "Heroes.Graphics.Essentials.dll"
+x86 = "x86/Heroes.Graphics.Essentials.dll"
+x64 = "x86/Heroes.Graphics.Essentials.dll"
+```
+
+[Reloaded-II Mod][reloaded2-backend]:
+
+```json
+[Targets."sewer56.reloadedii-custom"]
+default = "Heroes.Graphics.Essentials.dll"
+x86 = "x86/Heroes.Graphics.Essentials.dll"
+x64 = "x86/Heroes.Graphics.Essentials.dll"
+CanUnload = true
+HasExports = true
+```
+
+!!! info "For .NET, the `x86` and `x64` fields indicate binaries using [ReadyToRun][ready-to-run] technology. Usually a mod will only specify `any` or a `x86`+`x64` pair."
+
+## Supported Games
+
+!!! info "Stores a list of supported games; by using their known [Game ID][game-id]."
+
+Alternatively, when experimenting with new games which do not have a specified Game ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
+
+Mod managers will automatically update this to appropriate ID during process of querying [Community Repository][community-repository].
+
+## Client Side
+
+!!! info "If true, this mod won't be disabled when joining an online multiplayer lobby."
+
+This allows for mods such as UI mods to be used in mods that add online play without forcibly being disabled.
+
+By default this value is false. So mod would get disabled.
+
+## Allow Runtime Loading
+
+!!! info "If true, then this mod can be loaded after the game has been started."
+
+This can be used for mods which don't require hooking critical game code that is only ran
+at startup. This can be useful for rapid testing of mods and speeding up debugging.
+
+By default this value is `false` for code mods and `true` for asset mods. However
+the mods which read the contents of asset mods may choose to ignore the unload request
+if they themselves don't support it. (These mods should log a warning to console if they do so.)
+
 <!-- Links -->
 [game-metadata-id]: ../Storage/Games/About.md#id
 [backend]: ../../Loader/Backends/About.md
@@ -467,3 +647,5 @@ If the `IgnoredDiagnostics` field is not specified or is an empty array, no diag
 [reloaded2-backend]: ../../Loader/Backends/CoreCLR.md#reloaded-ii
 [semantic-versioning]: https://semver.org
 [spdx-license]: https://spdx.org/licenses/
+[platforms]: ../../Loader/Backends/Native.md#native-support
+[architecture]: ../../Loader/Backends/Native.md#instruction-sets

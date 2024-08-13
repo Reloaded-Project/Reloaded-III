@@ -122,9 +122,6 @@ nav:
       - About: Server/Packaging/About.md
       - Package Metadata: Server/Packaging/Package-Metadata.md
       - Publishing Packages: Server/Packaging/Publishing-Packages.md
-      - Package Configurations:
-        - About: Server/Packaging/Configurations/About.md
-        - Mod Metadata: Server/Packaging/Configurations/Mod-Metadata.md
     - Workflows: 
       - About: Server/Workflows/About.md
       - Guidelines: Server/Workflows/Guidelines.md

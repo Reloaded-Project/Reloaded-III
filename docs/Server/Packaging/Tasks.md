@@ -26,7 +26,12 @@ VisualHint = "Game"
 Name = "Launch Game"
 GroupNames = ["GOG"]
 Description = "Launches the game."
-Path = "Game.exe"
+Path = {
+  Default = "", # Cross Platform Binary
+  Windows = "Game.exe",
+  Linux = "Game.sh",
+  MacOS = "Game.app"
+}
 IsPrimary = true
 IsHidden = false
 InjectLoader = true
@@ -43,13 +48,12 @@ Arguments = ["-fullscreen", "-config", "{GameDir}/config.ini"]
 | string                    | Name                                      | A user-friendly name for the task.                                                                                    |
 | string[]                  | [GroupNames](#group-names)                | A user-friendly name for 'group' containing this task.                                                                |
 | string?                   | [Description](#description)               | A brief description of the task. Ideally limited to 2 short lines.                                                    |
-| string                    | [Path](#path)                             | The relative path to the executable file or the URL to open. See [Path](#path) for details.                           |
+| [CrossPath](#path)        | [Path](#path)                             | The relative path to the executable file or the URL to open. See [Path](#path) for details.                           |
 | bool                      | [IsPrimary](#isprimary)                   | Indicates whether this task launches the game's main executable. Only one task should have `IsPrimary` set to `true`. |
 | bool                      | [InjectLoader](#injectloader)             | Indicates whether the loader should be injected. Usually only true for the `IsPrimary` task.                          |
 | string[]                  | [Arguments](#arguments)                   | An array of additional commandline arguments to pass to the executable. Can use placeholders like `{GameDir}`.        |
 | bool?                     | IsHidden                                  | Indicates whether the task should be hidden from the user. Defaults to `false`.                                       |
 | string?                   | [RelativeWorkingDir](#relativeworkingdir) | The working directory for the task. Defaults to the folder containing `Path`, otherwise is a folder relative to it.   |
-| [Platform](#platform)     | [Platform](#platform)                     | (Flags) The OSes this task is available for. If 0, is enabled for all.                                                |
 | [StoreType][store-type]   | [Store](#store)                           | The store to restrict this operation to.                                                                              |
 
 ### Id
@@ -118,7 +122,47 @@ The `Path` field specifies the relative path to the executable file or the URL t
 
 - If the task is declared in a [Package][package], the `Path` is relative to the folder the package is located in.
 - If the task is declared for a game, the `Path` is relative to the folder that contains the main executable of the game.
-    - The one marked `IsPrimary`.
+    - The one marked [IsPrimary](#isprimary).
+
+**Examples:**
+
+1. Cross-platform executable:
+   ```toml
+   Path = { Default = "Tool.dll" } # .NET
+   ```
+
+2. Platform-specific paths:
+   ```toml
+   Path = {
+     Windows = "Tool.exe",
+     Linux = "Tool.elf",
+     MacOS = "Tool.app"
+   }
+   ```
+
+3. Windows only
+   ```toml
+   Path = {
+     Default = "",
+     Windows = "Tool.exe"
+   }
+   ```
+
+At least one of these keys must be specified.
+If a platform-specific key is not present, the `Default` path will be used if.
+This can be used to ship cross-platform binaries.
+
+If there's no `Default` and no platform-specific path for the current platform,
+the task will not be available on that platform.
+
+!!! note "The `CrossPath` object to support both cross-platform and platform-specific paths."
+
+The following `Platforms` are valid:
+
+- `Default`: The default path to use if no platform-specific path is defined.
+- `Windows`: The path for Windows systems.
+- `Linux`: The path for Linux systems.
+- `MacOS`: The path for macOS systems.
 
 ### IsPrimary
 
@@ -215,17 +259,6 @@ When you execute the task, the following will run:
 ```
 Game.exe -fullscreen -config C:/Games/MyGame/config.ini
 ```
-
-### Platform
-
-!!! info "Some tasks can only be ran on some OSes."
-
-The `Platform` field is a bit flag that specifies the OSes this task is available for.
-
-- 0: `All`: The task is available for all OSes.
-- 1: `Windows`: The task is available for Windows.
-- 2: `Linux`: The task is available for Linux.
-- 4: `MacOS`: The task is available for MacOS.
 
 ### Store
 

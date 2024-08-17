@@ -280,6 +280,7 @@ Here are the available modules:
 * **`system::execute_task(task_id: &str, args: Array) -> TaskResult`**: Executes the [task][task] with the given `task_id`. The task must be defined in a package. Additional command-line arguments can be provided in the `args` array. Returns a `TaskResult` object.
 
 The `TaskResult` object has the following properties:
+
 - `exit_code`: An integer representing the exit code of the executed task or command.
 - `stdout`: A string containing the stdout of the task or command.
 - `stderr`: A string containing the stderr of the task or command.
@@ -289,9 +290,12 @@ The `TaskResult` object has the following properties:
     Use this for advanced functionality such as ***extracting archived game files*** that may
     require external CLI tools.
 
+    Set a [dependency][packages-deps] on the [package][packages] that contains the binary that
+    needs to be ran.
+
 !!! tip "Combine `system::command` with `workflow::path` to run native binaries within the workflow."
 
-    Do not use this to run generic modding tools, for these please create [`Tool` Packages with Tasks][packages].
+    Only use this to run binaries specifically created for the workflow.
 
 ## Example Rhai Script
 
@@ -417,4 +421,5 @@ fn copy_stage_files(source_number, target_number) {
 [workflow-localization]: ./Schema.md#localization
 [for-loop-mj]: ./Templates.md#for-loop
 [Packages]: ../../Packaging/Package-Metadata.md
+[packages-deps]: ../../Packaging/Package-Metadata.md#dependency-info
 [task]: ../../Packaging/Tasks.md

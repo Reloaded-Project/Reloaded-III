@@ -188,8 +188,8 @@ The suggested format to use for names is `game.type.subtype.name.author.target`.
 - `name` unique name for the package. Can use another `.` dot if additional info is needed.
 - `author` primary package author (prefer abbreviated).
 - `target` [Optional] target platform and instruction set, can come in one of the following forms
-    - [Platform only][platforms]: `win`, `linux`. When package has all architecture binaries.
-    - [Platform+Arch][architecture]: `win+x64-v3`, `linux+x64-v3`. When package has only one specific architecture.
+    - [Platform][platforms] only: `win`, `linux`. When package has all architecture binaries.
+    - [Platform][platforms]+[Arch][architecture]: `win+x64-v3`, `linux+x64-v3`. When package has only one specific architecture.
 
 Example(s):
 
@@ -214,7 +214,7 @@ automatically generated package. Specifically by:
 - Setting the [Is Dependency](#is-dependency) field to true.
 - Prepending `[Platform]` or `[Platform+Arch]` to the `Name` field.
 - Appending the `architecture` part to the [Id](#id) field.
-- Updating the [Targets](#targets) field to include the correct architecture.
+- Updating the [Targets](#targets) field to include the correct architecture (if needed).
 
 
 !!! warning "***DO NOT*** use architectures be used in [dependency references](#dependency-info)."

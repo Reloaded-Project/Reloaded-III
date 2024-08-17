@@ -30,7 +30,12 @@ This is the only backend that is directly implemented in the mod loader itself
 
 The `default` name has a special meaning, platform default extensions are assumed.
 
-!!! tip "[Microarchitecture levels][microarchitecture-levels] are also supported"
+!!! tip "[Microarchitecture levels][microarchitecture-levels] for purposes of micro-optimisation are also supported."
+
+    This is present for high performance dependencies, where every nanosecond counts.
+
+    Generally, it is not expected that mod authors will manually leverage this functionality however,
+    that said; it is hoped we can make it easy to use during the [publish process][mod-publishing] if possible.
 
 | Type   | Name   | Description                     |
 | ------ | ------ | ------------------------------- |
@@ -45,17 +50,6 @@ Compilers based on LLVM (Clang, Rust etc.) can directly target these.
 
 For example, if the backend specified is `win-x64`, it is assumed the CPU supports SSE2;
 which is required by `x64` spec.
-
-!!! tip "Support for [Microarchitecture levels][microarchitecture-levels] is provided for high performance dependencies, where every fraction of a nanosecond counts."
-
-### Instruction Sets
-
-!!! info "Configurations can define DLLs built for processor-specific feature sets."
-
-
-
-It is not expected that mod authors will manually leverage this functionality; that said; it is
-hoped we can make it easy to use during the [publish process][mod-publishing] if possible.
 
 #### Determining Supported Instruction Set on Local Machine
 

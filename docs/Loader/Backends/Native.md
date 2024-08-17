@@ -4,48 +4,52 @@
 
 For example:
 
-| Backend       | Description                     |
-| ------------- | ------------------------------- |
-| `win-x86`     | Native x86 Support on Windows   |
-| `win-x64`     | Native x64 Support on Windows   |
-| `win-arm64`   | Native ARM64 Support on Windows |
-| `linux-x86`   | Native x86 Support on Linux     |
-| `linux-x64`   | Native x64 Support on Linux     |
-| `linux-arm64` | Native ARM64 Support on Linux   |
+| Backend | Description      |
+| ------- | ---------------- |
+| `win`   | Windows (`.dll`) |
+| `linux` | Linux (`.so`)    |
+| `macos` | macOS (`.dylib`) |
 
 This is the only backend that is directly implemented in the mod loader itself
 (as we are already in a native environment). All other backends are implemented as external mods.
 
-## Configuration Fields
+!!! note "WHen an OS is shared between multiple platforms, but they differ, use the hardware name as suffix."
+
+    For example: `horizon-3ds`, `horizon-switch`.
+
+## Instruction Sets
 
 !!! info "These are the configuration properties that apply to [Mod Metadata Targets][mod-metadata-targets]"
 
-| Type   | Name | Description  |
-| ------ | ---- | ------------ |
-| string | any  | Path to DLL. |
+| Type   | Name      | Description                                   |
+| ------ | --------- | --------------------------------------------- |
+| string | default   | Path to DLL (default for architecture).       |
+| string | x64-any   | Path to DLL targeting x86-64-v1               |
+| string | x86-any   | Path to DLL targeting x86 (i686 specifically) |
+| string | aarch-any | Path to DLL targeting aarch64                 |
 
-For `any`, platform default extensions are assumed.
-For example, if the backend specified is `win-x64`, it is assumed the CPU supports SSE2;
-which is required by `x64` spec.
+The `default` name has a special meaning, platform default extensions are assumed.
 
-### Instruction Sets
+!!! tip "[Microarchitecture levels][microarchitecture-levels] for purposes of micro-optimisation are also supported."
 
-!!! info "Configurations can define DLLs built for processor-specific feature sets."
+    This is present for high performance dependencies, where every nanosecond counts.
 
-We use [microarchitecture levels][microarchitecture-levels] to define the supported targets:
+    Generally, it is not expected that mod authors will manually leverage this functionality however,
+    that said; it is hoped we can make it easy to use during the [publish process][mod-publishing] if possible.
 
 | Type   | Name   | Description                     |
 | ------ | ------ | ------------------------------- |
 | string | x64-v2 | Path to DLL targeting x86-64-v2 |
 | string | x64-v3 | Path to DLL targeting x86-64-v3 |
 | string | x64-v4 | Path to DLL targeting x86-64-v4 |
+| string | x86-v2 | Path to DLL targeting x86-64-v2 |
+| string | x86-v3 | Path to DLL targeting x86-64-v3 |
+| string | x86-v4 | Path to DLL targeting x86-64-v4 |
 
 Compilers based on LLVM (Clang, Rust etc.) can directly target these.
 
-!!! tip "This functionality is provided for high performance dependencies, where every fraction of a nanosecond counts."
-
-It is not expected that mod authors will manually leverage this functionality; that said; it is
-hoped we can make it easy to use during the [publish process][mod-publishing] if possible.
+For example, if the backend specified is `win-x64`, it is assumed the CPU supports SSE2;
+which is required by `x64` spec.
 
 #### Determining Supported Instruction Set on Local Machine
 
@@ -106,5 +110,5 @@ For the following reasons:
 <!-- Links -->
 [core-detect]: https://docs.rs/core_detect/latest/core_detect/
 [microarchitecture-levels]: https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels
-[mod-metadata-targets]: ../../Server/Packaging/Configurations/Mod-Metadata.md#targets
+[mod-metadata-targets]: ../../Server/Packaging/Package-Metadata.md#targets
 [mod-publishing]: ../../Server/Packaging/Publishing-Packages.md

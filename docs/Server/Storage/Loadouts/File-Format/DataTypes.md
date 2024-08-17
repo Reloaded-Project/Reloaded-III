@@ -108,4 +108,4 @@ The actual sizes of these images is stated in [mod metadata][mod-metadata].
 
 This can also include game launchers.
 
-[mod-metadata]: ../../../Packaging/Configurations/Mod-Metadata.md#icons
+[mod-metadata]: ../../../Packaging/Package-Metadata.md#icons

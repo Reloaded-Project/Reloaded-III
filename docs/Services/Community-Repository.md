@@ -560,7 +560,7 @@ If we ever get notified from GitHub about bandwidth usage, we will migrate this 
 [github-pages]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages
 [gog-db]: https://www.gogdb.org/
 [hashing]: ../Common/Hashing.md
-[mod-metadata]: ../Server/Packaging/Configurations/Mod-Metadata.md
+[mod-metadata]: ../Server/Packaging/Package-Metadata.md
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
 [steamdb]: https://steamdb.info/

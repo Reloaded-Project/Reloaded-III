@@ -932,4 +932,4 @@ By default, I recommend searching by substring. In Name and ModId. Summary can b
 [sync-loadout]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#restoring-actual-package-files
 [package-reference-ids]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#package-reference-idsbin
 [hashing]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use
-[mod-metadata-search-image]: ../Server/Packaging/Configurations/Mod-Metadata.md#icon-search
+[mod-metadata-search-image]: ../Server/Packaging/Package-Metadata.md#icon-search

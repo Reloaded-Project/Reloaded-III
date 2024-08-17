@@ -174,9 +174,9 @@ This data is cached in the  [`Server Cache Files` (`Cache/Server`) folder.][adde
 [event-sourcing]: ../Loadouts/About.md#event-sourcing
 [images]: ../../../Common/Images.md
 [reloaded-community]: https://github.com/Reloaded-Project/Reloaded.Community
-[task-placeholders]: Tasks.md#commandline-placeholders
-[tasks]: ./Tasks.md
-[tasks-arguments]: Tasks.md#arguments
+[task-placeholders]: ../../Packaging/Tasks.md#commandline-placeholders
+[tasks]: ../../Packaging/Tasks.md
+[tasks-arguments]: ../../Packaging/Tasks.md#arguments
 [community-repository-icon]: ../../../Services/Community-Repository.md#icons-and-banners-steamgriddb
 [community-repository-banner]: ../../../Services/Community-Repository.md#icons-and-banners-steamgriddb
 [store-info]: ../../../Services/Community-Repository.md#store-information

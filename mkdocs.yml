@@ -104,7 +104,6 @@ nav:
       - Package Tiering: Server/Storage/Package-Tiering.md
       - Games:
         - About: Server/Storage/Games/About.md
-        - Tasks: Server/Storage/Games/Tasks.md
       - Loadouts:
         - About: Server/Storage/Loadouts/About.md
         - File Format:
@@ -122,6 +121,7 @@ nav:
       - About: Server/Packaging/About.md
       - Package Metadata: Server/Packaging/Package-Metadata.md
       - Publishing Packages: Server/Packaging/Publishing-Packages.md
+      - Tasks: Server/Packaging/Tasks.md
     - Workflows: 
       - About: Server/Workflows/About.md
       - Guidelines: Server/Workflows/Guidelines.md

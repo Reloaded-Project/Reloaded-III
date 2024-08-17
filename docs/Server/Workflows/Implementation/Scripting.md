@@ -266,11 +266,32 @@ Here are the available modules:
     // Get current date
     let date = system::date();
     print(`Year: ${date.year}, Month: ${date.month}, Day: ${date.day}`);
+
+    // Execute a task defined in a package declared task
+    let task_result = system::execute_task("launch-game", ["-fullscreen", "-nosound"]);
+    print(`Task execution result: ${task_result.exit_code}`);
+    print(`Task stdout: ${task_result.stdout}`);
     ```
 
-* **`system::command(cmd: &str, args: Array) -> value`**: Executes the system command `cmd` with the given `args` array. Returns the command's output as a string.
+* **`system::command(cmd: &str, args: Array) -> TaskResult`**: Executes the system command `cmd` with the given `args` array. Returns a `TaskResult` object.
 
 * **`system::date() -> Date`**: Returns a `Date` object representing the current date in UTC. The `Date` object has `year`, `month`, and `day` properties.
+
+* **`system::execute_task(task_id: &str, args: Array) -> TaskResult`**: Executes the [task][task] with the given `task_id`. The task must be defined in a package. Additional command-line arguments can be provided in the `args` array. Returns a `TaskResult` object.
+
+The `TaskResult` object has the following properties:
+- `exit_code`: An integer representing the exit code of the executed task or command.
+- `stdout`: A string containing the stdout of the task or command.
+- `stderr`: A string containing the stderr of the task or command.
+
+!!! tip "The `system::execute_task` function allows you to run [tasks][task] defined in the Reloaded [packages]."
+
+    Use this for advanced functionality such as ***extracting archived game files*** that may
+    require external CLI tools.
+
+!!! tip "Combine `system::command` with `workflow::path` to run native binaries within the workflow."
+
+    Do not use this to run generic modding tools, for these please create [`Tool` Packages with Tasks][packages].
 
 ## Example Rhai Script
 
@@ -395,3 +416,5 @@ fn copy_stage_files(source_number, target_number) {
 [esoteric-platforms]: ../../../Code-Guidelines/Hardware-Requirements.md#about-esoteric-and-experimental-platforms
 [workflow-localization]: ./Schema.md#localization
 [for-loop-mj]: ./Templates.md#for-loop
+[Packages]: ../../Packaging/Package-Metadata.md
+[task]: ../../Packaging/Tasks.md

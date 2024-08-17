@@ -4,25 +4,25 @@
 
 Inside each package folder is a file named `package.toml`; which stores the metadata of each package.
 
-| Type                             | Name                                          | Description                                                                                     |
-| -------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| string                           | [Id](#id)                                     | A name that uniquely identifies the package.                                                    |
-| string                           | Name                                          | Human friendly name of the package.                                                             |
-| string                           | Author                                        | Main author of the package. (Individual or Team Name)                                           |
-| string                           | Summary                                       | Short summary of the package. Max 2 sentences.                                                  |
-| PackageType                      | [PackageType](#packagetype)                   | Type of the package. See [PackageType](#packagetype) for possible values.                       |
-| string                           | [DocsFile](#docsfile)                         | [Optional] Entry point for this package documentation.                                          |
-| SemVer                           | [Version](#version)                           | Semantic versioning version of the package.                                                     |
-| bool                             | [IsDependency](#is-dependency)                | This package is a dependency (e.g. library) and not directly consumable.                        |
-| string                           | LicenseId                                     | [SPDX License Identifier][spdx-license]                                                         |
-| string[]                         | [Tags](#tags)                                 | Used to make searching easier within mod managers.                                              |
-| Credit[]                         | [Credits](#credits)                           | [Optional] Stores information about who contributed what to the project.                        |
-| string?                          | SourceUrl                                     | [Optional] Link to source code (if applicable).                                                 |
-| string?                          | ProjectUrl                                    | [Optional] Link to website to learn more about the project.                                     |
-| UpdateData                       | [UpdateData](#update-data)                    | Stores package specific update information.                                                     |
-| DependencyInfo[]                 | [Dependencies](#dependency-info)              | Stores information about this package's dependencies.                                           |
-| DateTime                         | [Published](#published)                       | The time when this package was packed.                                                          |
-| StoragePreference                | [StoragePreference](#storage-preference)      | Specifies the preferred storage tier for the package.                                           |
+| Type              | Name                                     | Description                                                               |
+| ----------------- | ---------------------------------------- | ------------------------------------------------------------------------- |
+| string            | [Id](#id)                                | A name that uniquely identifies the package.                              |
+| string            | Name                                     | Human friendly name of the package.                                       |
+| string            | Author                                   | Main author of the package. (Individual or Team Name)                     |
+| string            | Summary                                  | Short summary of the package. Max 2 sentences.                            |
+| PackageType       | [PackageType](#packagetype)              | Type of the package. See [PackageType](#packagetype) for possible values. |
+| string            | [DocsFile](#docsfile)                    | [Optional] Entry point for this package documentation.                    |
+| SemVer            | [Version](#version)                      | Semantic versioning version of the package.                               |
+| bool              | [IsDependency](#is-dependency)           | This package is a dependency (e.g. library) and not directly consumable.  |
+| string            | LicenseId                                | [SPDX License Identifier][spdx-license]                                   |
+| string[]          | [Tags](#tags)                            | Used to make searching easier within mod managers.                        |
+| Credit[]          | [Credits](#credits)                      | [Optional] Stores information about who contributed what to the project.  |
+| string?           | SourceUrl                                | [Optional] Link to source code (if applicable).                           |
+| string?           | ProjectUrl                               | [Optional] Link to website to learn more about the project.               |
+| UpdateData        | [UpdateData](#update-data)               | Stores package specific update information.                               |
+| DependencyInfo[]  | [Dependencies](#dependency-info)         | Stores information about this package's dependencies.                     |
+| DateTime          | [Published](#published)                  | The time when this package was packed.                                    |
+| StoragePreference | [StoragePreference](#storage-preference) | Specifies the preferred storage tier for the package.                     |
 
 These fields are usually only found when [PackageType](#packagetype) == `Mod`:
 
@@ -33,6 +33,12 @@ These fields are usually only found when [PackageType](#packagetype) == `Mod`:
 | string[]                         | [SupportedGames](#supported-games)            | List of supported titles/games.                                                                 |
 | bool                             | [ClientSide](#client-side)                    | [Optional] True if the mod is purely cosmetic and does not have non-visual effects on gameplay. |
 | bool                             | [AllowRuntimeLoading](#allow-runtime-loading) | [Optional] Allows the mod to be loaded in real-time at runtime, instead of only on startup.     |
+
+These fields are usually only found when [PackageType](#packagetype) == `Tool`:
+
+| Type   | Name           | Description                                          |
+| ------ | -------------- | ---------------------------------------------------- |
+| Task[] | [Tasks][tasks] | List of binaries that the `tool` package ships with. |
 
 ## Implicit Fields
 
@@ -235,6 +241,7 @@ automatically generated package. Specifically by:
 | api          | For [middleware/API hooks][middleware-api-hooks]. | `reloaded3.api.windows.vfs.s56`           |
 | game support | For [game support mods][game-support].            | `reloaded3.gamesupport.persona5royal.s56` |
 | utility      | For utility mods with reusable code.              | `reloaded3.utility.hooks.s56`             |
+| tool         | For non-game specific modding tools.              | `reloaded3.tool.steamlaunchupdater.s56`   |
 
 Server can choose whether to show non game-specific mods (`reloaded3` id) on a specific game's page or not.
 
@@ -649,3 +656,4 @@ if they themselves don't support it. (These mods should log a warning to console
 [spdx-license]: https://spdx.org/licenses/
 [platforms]: ../../Loader/Backends/Native.md#native-support
 [architecture]: ../../Loader/Backends/Native.md#instruction-sets
+[tasks]: ./Tasks.md

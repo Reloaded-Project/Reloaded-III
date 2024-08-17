@@ -572,4 +572,4 @@ If we ever get notified from GitHub about bandwidth usage, we will migrate this 
 [gog-buildid]: ../Server/Storage/Loadouts/Stores/GOG.md#retrieving-available-game-versions
 [store-type]: ../Server/Storage/Loadouts/File-Format/DataTypes.md#storetype
 [server-cache-files-communityrepo]: ../Server/Storage/Locations.md#community-repository
-[tasks]: ../Server/Storage/Games/Tasks.md
+[tasks]: ../Server/Packaging/Tasks.md

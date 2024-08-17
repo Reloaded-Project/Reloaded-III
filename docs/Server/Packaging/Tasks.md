@@ -9,8 +9,8 @@ You can think of them like the `Tasks` you have in VSCode.
 - Per Game
     - These tasks are automatically created when you add a game to the launcher.
     - These are persisted in the user's preferences.
-- Per Package
-    - Packages can declare their own tasks to run.
+- [Per Package][package]
+    - `Tool` Packages can declare their own tasks to run.
 - [Community Repository][community-repository]
     - Community Repository can define tasks for games.
 
@@ -20,7 +20,8 @@ The `Tasks` field when present is an array of `Task` objects, where each `Task` 
 
 ```toml
 [[Tasks]]
-Type = "File"
+Id = "" # No ID. Imported from GOG.
+Type = "Executable"
 VisualHint = "Game"
 Name = "Launch Game"
 GroupNames = ["GOG"]
@@ -36,7 +37,8 @@ Arguments = ["-fullscreen", "-config", "{GameDir}/config.ini"]
 
 | Type                      | Field                                     | Description                                                                                                           |
 | ------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [TaskType](#tasktype)     | [TaskType](#tasktype)                     | The type of the task (e.g., "File", "Url").                                                                           |
+| [Id](#id)                 | [Id](#id)                                 | Unique Identifier for Task.                                                                                           |
+| [TaskType](#tasktype)     | [TaskType](#tasktype)                     | The type of the task (e.g., "Executable", "Url").                                                                     |
 | [VisualHint](#visualhint) | [VisualHint](#visualhint)                 | Visual hint for the UIs.                                                                                              |
 | string                    | Name                                      | A user-friendly name for the task.                                                                                    |
 | string[]                  | [GroupNames](#group-names)                | A user-friendly name for 'group' containing this task.                                                                |
@@ -50,11 +52,27 @@ Arguments = ["-fullscreen", "-config", "{GameDir}/config.ini"]
 | [Platform](#platform)     | [Platform](#platform)                     | (Flags) The OSes this task is available for. If 0, is enabled for all.                                                |
 | [StoreType][store-type]   | [Store](#store)                           | The store to restrict this operation to.                                                                              |
 
+### Id
+
+!!! info "This is a `unique identifier` for the task."
+
+This allows for tasks to be used in [workflow scripts][workflows] and other places where uniquely
+identifying a task is useful.
+
+!!! tip "For tasks defined in [packages][package], please always use an ID"
+
+    Set the `Task Id` to `packageId+TaskName` to ensure uniqueness. For example, for a package named
+    `sonicheroes.tool.heroesone.s56`, give the `main` tool the ID of
+    `sonicheroes.tool.heroesone.s56.main`.
+
+    If you have multiple binaries, you would do, `sonicheroes.tool.heroesone.s56.extractor`,
+    `sonicheroes.tool.heroesone.s56.archiver` etc.
+
 ### TaskType
 
 !!! info "The `TaskType` can be one of the following"
 
-- 0: `File`: Represents a task that launches an executable file.
+- 0: `Executable`: Represents a task that launches an executable file.
 - 1: `Url`: Launches an URL. [Path](#path) specifies the full URL to open.
 
 ### VisualHint
@@ -282,10 +300,11 @@ We should be able to import these tasks directly into the game configuration.
 A task that is not valid should set the [UnavailableReason](#tasks-in-code) field to a string
 explaining why the task is not available. And be blanked out.
 
-[gog-info-file]: ../Loadouts/Stores/GOG.md#goggame-gameidinfo
-[images]: ../../../Common/Images.md
-[package]: ../../Packaging/Package-Metadata.md
-[items-to-store]: ../Locations.md#items-to-store
-[community-repository]: ../../../Services/Community-Repository.md
+[gog-info-file]: ../Storage/Loadouts/Stores/GOG.md#goggame-gameidinfo
+[images]: ../../Common/Images.md
+[package]: ./Package-Metadata.md
+[items-to-store]: ../Storage/Locations.md#items-to-store
+[community-repository]: ../../Services/Community-Repository.md
 [steam-protocol]: https://developer.valvesoftware.com/wiki/Steam_browser_protocol
-[store-type]: ../Loadouts/File-Format/DataTypes.md#storetype
+[store-type]: ../Storage/Loadouts/File-Format/DataTypes.md#storetype
+[workflows]: ../Workflows/Implementation/Scripting.md#workflow-scripting

@@ -26,13 +26,13 @@ Inside each package folder is a file named `package.toml`; which stores the meta
 
 These fields are usually only found when [PackageType](#packagetype) == `Mod`:
 
-| Type                             | Name                                          | Description                                                                                     |
-| -------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| GalleryItem[]                    | [Gallery](#gallery)                           | Stores preview images for this package.                                                         |
-| Dictionary&lt;string, Target&gt; | [Targets](#targets)                           | Specifies the DLLs/binaries used [for each backend.][backend]                                   |
-| string[]                         | [SupportedGames](#supported-games)            | List of supported titles/games.                                                                 |
-| bool                             | [ClientSide](#client-side)                    | [Optional] True if the mod is purely cosmetic and does not have non-visual effects on gameplay. |
-| bool                             | [AllowRuntimeLoading](#allow-runtime-loading) | [Optional] Allows the mod to be loaded in real-time at runtime, instead of only on startup.     |
+| Type                                                      | Name                                          | Description                                                                                     |
+| --------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| GalleryItem[]                                             | [Gallery](#gallery)                           | Stores preview images for this package.                                                         |
+| Dictionary&lt;string, Dictionary&lt;string,string&gt;&gt; | [Targets](#targets)                           | Specifies the settings [for each backend.][backend]                                             |
+| string[]                                                  | [SupportedGames](#supported-games)            | List of supported titles/games.                                                                 |
+| bool                                                      | [ClientSide](#client-side)                    | [Optional] True if the mod is purely cosmetic and does not have non-visual effects on gameplay. |
+| bool                                                      | [AllowRuntimeLoading](#allow-runtime-loading) | [Optional] Allows the mod to be loaded in real-time at runtime, instead of only on startup.     |
 
 These fields are usually only found when [PackageType](#packagetype) == `Tool`:
 
@@ -568,39 +568,42 @@ This image is expected to be around 50KiB.
 
 !!! info "This section specifies info for the individual [backends.][backend]"
 
-!!! info "These specify file paths relative to `modfiles` folder."
-
-Find more info on the pages for the [individual backends][backend], but we'll provide some examples.
+!!! info "These specify file paths relative to [`modfiles`][package-structure] folder."
 
 [Native Mod][native-backend]:
 ```json
-[Targets."win-x64"]
-default = "reloaded3.gamesupport.persona5royal.dll"
+[Targets."win"]
+x64-v1 = "reloaded3.gamesupport.persona5royal.dll"
 ```
 
 !!! note "It's not expected for mod authors to ship with multiple [instruction sets][instruction-sets] outside of super high perf scenarios. This is just for example."
 
-[.NET CoreCLR Mod][coreclr-backend]:
+[.NET CoreCLR Mod (Any OS)][coreclr-backend]:
 
 ```json
-[Targets."dotnet-latest"]
-default = "Heroes.Graphics.Essentials.dll"
-x86 = "x86/Heroes.Graphics.Essentials.dll"
-x64 = "x86/Heroes.Graphics.Essentials.dll"
+[Targets."dotnet"]
+any = "Heroes.Graphics.Essentials.dll"
 ```
 
-[Reloaded-II Mod][reloaded2-backend]:
+[.NET CoreCLR Mod (With `ReadyToRun`)][coreclr-backend]:
+
+```json
+[Targets."dotnet"]
+any = "Heroes.Graphics.Essentials.dll"
+x86 = "x86/Heroes.Graphics.Essentials.dll"
+x64 = "x64/Heroes.Graphics.Essentials.dll"
+```
+
+[Reloaded-II Mod (Example)][reloaded2-backend]:
 
 ```json
 [Targets."sewer56.reloadedii-custom"]
 default = "Heroes.Graphics.Essentials.dll"
 x86 = "x86/Heroes.Graphics.Essentials.dll"
-x64 = "x86/Heroes.Graphics.Essentials.dll"
+x64 = "x64/Heroes.Graphics.Essentials.dll"
 CanUnload = true
 HasExports = true
 ```
-
-!!! info "For .NET, the `x86` and `x64` fields indicate binaries using [ReadyToRun][ready-to-run] technology. Usually a mod will only specify `any` or a `x86`+`x64` pair."
 
 ## Supported Games
 
@@ -648,12 +651,13 @@ if they themselves don't support it. (These mods should log a warning to console
 [package-configuration]: ../../Common/Configuration/About.md
 [mod-metadata]: ./Configurations/Mod-Metadata.md
 [nexus-mods]: https://www.nexusmods.com
-[native-backend]: ../../Loader/Backends/Native.md
+[native-backend]: ../../Loader/Backends/About.md#platforms
 [overriding-translations]: ../../Common/Localisation/Adding-Localisations.md#sideloading-translations
 [ready-to-run]: ../../Loader/Backends/CoreCLR.md#ready-to-run
 [reloaded2-backend]: ../../Loader/Backends/CoreCLR.md#reloaded-ii
 [semantic-versioning]: https://semver.org
 [spdx-license]: https://spdx.org/licenses/
-[platforms]: ../../Loader/Backends/Native.md#native-support
-[architecture]: ../../Loader/Backends/Native.md#instruction-sets
+[platforms]: ../../Loader/Backends/About.md#platforms
+[architecture]: ../../Loader/Backends/About.md#architectures
 [tasks]: ./Tasks.md
+[package-structure]: ./About.md#package-structure

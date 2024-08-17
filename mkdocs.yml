@@ -76,7 +76,6 @@ nav:
     - About (Overview): Loader/About.md
     - Backends:
       - About: Loader/Backends/About.md
-      - Native: Loader/Backends/Native.md
       - .NET (CoreCLR):
         - About: Loader/Backends/CoreCLR.md
         - Dependency Injection: Loader/Backends/CoreCLR-Dependency-Injection.md
@@ -221,6 +220,7 @@ nav:
         - IPC: Research/Library-Sizes/IPC.md
         - Serializers: Research/Library-Sizes/Serializers.md
     - FileSystem Performance: Research/FileSystem-Performance.md
+    - Microarchitecture Levels: Research/Microarchitecture-Levels.md
   - Wiki:
     - Contributing Locally: Contributing-Locally.md
     - Contributing Online: Contributing-Online.md

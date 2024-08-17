@@ -128,23 +128,23 @@ The `Path` field specifies the relative path to the executable file or the URL t
 
 1. Cross-platform executable:
    ```toml
-   Path = { Default = "Tool.dll" } # .NET
+   Path = { any = "Tool.dll" } # .NET
    ```
 
 2. Platform-specific paths:
    ```toml
    Path = {
-     Windows = "Tool.exe",
-     Linux = "Tool.elf",
-     MacOS = "Tool.app"
+     win+x64-any = "Tool.exe",
+     linux+x64-any = "Tool.elf",
+     macos+x64-any = "Tool.app"
    }
    ```
 
 3. Windows only
    ```toml
    Path = {
-     Default = "",
-     Windows = "Tool.exe"
+     any = "",
+     win+x64-any = "Tool.exe"
    }
    ```
 
@@ -154,15 +154,6 @@ This can be used to ship cross-platform binaries.
 
 If there's no `Default` and no platform-specific path for the current platform,
 the task will not be available on that platform.
-
-!!! note "The `CrossPath` object to support both cross-platform and platform-specific paths."
-
-The following `Platforms` are valid:
-
-- `Default`: The default path to use if no platform-specific path is defined.
-- `Windows`: The path for Windows systems.
-- `Linux`: The path for Linux systems.
-- `MacOS`: The path for macOS systems.
 
 ### IsPrimary
 

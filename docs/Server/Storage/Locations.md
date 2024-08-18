@@ -247,4 +247,4 @@ Loadouts and package configs may be shared in the future on a machine level.
 [hashcache-docs]: ../../Common/Hash-Cache/About.md
 [hash-cache-usage]: ../../Common/Hash-Cache/Usage-In-Server.md
 [fs-performance]: ../../Research/FileSystem-Performance.md
-[esoteric platforms]: ../../Code-Guidelines/Code-Guidelines.md#esoteric--embedded-platforms
+[esoteric platforms]: ../../Code-Guidelines/Code-Guidelines.md#esoteric-and-embedded-platforms

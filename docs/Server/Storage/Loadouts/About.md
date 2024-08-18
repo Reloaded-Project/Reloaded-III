@@ -201,4 +201,4 @@ and the orignal `.nx` file is deleted.
 [unpacked-format]: ./File-Format/Unpacked.md
 [unpacked-loadout]: ./File-Format/Unpacked.md
 [loadout-file-format]: ./File-Format/Unpacked.md
-[esoteric platforms]: ../../../Code-Guidelines/Code-Guidelines.md#esoteric--embedded-platforms
+[esoteric platforms]: ../../../Code-Guidelines/Code-Guidelines.md#esoteric-and-embedded-platforms

@@ -550,7 +550,7 @@ Note that these sizes can vary based on specific configurations:
 
 As a general rule of thumb, try to avoid allocating objects larger than 100K on the stack.
 
-##### Esoteric & Embedded Platforms
+##### Esoteric and Embedded Platforms
 
 !!! note "This is provided for completion."
 

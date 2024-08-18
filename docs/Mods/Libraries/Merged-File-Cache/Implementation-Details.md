@@ -15,14 +15,27 @@ Each mod + mod version having their own cache folder.
 
 !!! info "The entry folder of the cache mod looks like this"
 
-```
-.
-├── reloaded3.utility.examplemod.s56+1.0.0
-│   └── cache.bin
-├── reloaded3.utility.examplemod.s56+2.0.0
-│   └── cache.bin
-└── caches.bin
-```
+=== "FileSystem Implementation"
+
+    ```
+    .
+    ├── reloaded3.utility.examplemod.s56+1.0.0
+    │   └── cache.bin
+    ├── reloaded3.utility.examplemod.s56+2.0.0
+    │   └── cache.bin
+    └── caches.bin
+    ```
+
+=== "LMDB Implementation"
+
+    ```
+    .
+    ├── reloaded3.utility.examplemod.s56+1.0.0.mdb
+    │   └── cache.bin
+    ├── reloaded3.utility.examplemod.s56+2.0.0.mdb
+    │   └── cache.bin
+    └── caches.bin
+    ```
 
 We read `caches.bin` in order to discover all cache folders.
 
@@ -74,22 +87,44 @@ expiration duration, which we default to 14 days.
 
 If we further expand the view, we may get something like this:
 
-```
-.
-├── reloaded3.utility.examplemod.s56+1.0.0
-│   ├── somefolder
-│   │   └── cachedfile.bin
-│   ├── someotherfolder
-│   │   └── anothercachedfile.bin
-│   └── cache.bin
-├── reloaded3.utility.examplemod.s56+2.0.0
-│   ├── somefolder
-│   │   └── cachedfile.bin
-│   ├── someotherfolder
-│   │   └── anothercachedfile.bin
-│   └── cache.bin
-└── caches.bin
-```
+=== "FileSystem Implementation"
+
+    ```
+    .
+    ├── reloaded3.utility.examplemod.s56+1.0.0
+    │   ├── somefolder
+    │   │   └── cachedfile.bin
+    │   ├── someotherfolder
+    │   │   └── anothercachedfile.bin
+    │   └── cache.bin
+    ├── reloaded3.utility.examplemod.s56+2.0.0
+    │   ├── somefolder
+    │   │   └── cachedfile.bin
+    │   ├── someotherfolder
+    │   │   └── anothercachedfile.bin
+    │   └── cache.bin
+    └── caches.bin
+    ```
+
+=== "LMDB Implementation"
+
+    ```
+    .
+    ├── reloaded3.utility.examplemod.s56+1.0.0.mdb
+    │   ├── somefolder
+    │   │   └── cachedfile.bin
+    │   ├── someotherfolder
+    │   │   └── anothercachedfile.bin
+    │   └── cache.bin
+    ├── reloaded3.utility.examplemod.s56+2.0.0.mdb
+    │   ├── somefolder
+    │   │   └── cachedfile.bin
+    │   ├── someotherfolder
+    │   │   └── anothercachedfile.bin
+    │   └── cache.bin
+    └── caches.bin
+    ```
+
 
 And if we scope it to a given mod+version's cache folder, we get:
 
@@ -151,6 +186,10 @@ This creates an [IMergedFileCache](#imergedfilecache-interface).
 | `Remove`             | Removes a cache entry with the specified cache key.                        | `CacheFileKey key`                   |
 | `Clear`              | Removes all cache entries.                                                 | -                                    |
 | `RemoveExpiredItems` | Removes all stale cache entries based on the expiration duration.          | -                                    |
+
+!!! note "Files obtained from the cache are `read-only`."
+
+    Do not modify any file returned by `TryGet`.
 
 ## Usage Example
 
@@ -276,6 +315,15 @@ This can also be force triggered when the `RemoveExpiredItems` method is called 
 The directory structure of the cached files mimics the actual file paths used in the cache, in order
 to minimize the amount of files per directory.
 
+## LMDB Implementation Behaviour
+
+!!! question "The cache returns paths to files, how can it work with a key/value store like LMDB??"
+
+Pretty simple, through the [File Emulation Framework][fef-virtfiles]'s Virtual Files API,
+which in turn also calls [Virtual File System's][vfs-service-api] Register Virtual File API.
+
+Using that, we can add a virtual file that is normally accessible for read-only access.
+
 ## Thread Safety
 
 !!! tip "The merged file cache can have multiple readers or 1 writer at once."
@@ -296,3 +344,5 @@ operation is completed.
 
 [mod-id]: ../../../Server/Packaging/Package-Metadata.md#id
 [mod-version]: ../../../Server/Packaging/Package-Metadata.md#version
+[fef-virtfiles]: ../../Essentials/File-Emulation-Framework/Emulator-Development/Framework-API.md#register_virtual_file
+[vfs-service-api]: ../../Essentials/Virtual-FileSystem/Programmer-Usage.md#ivfsservice-api

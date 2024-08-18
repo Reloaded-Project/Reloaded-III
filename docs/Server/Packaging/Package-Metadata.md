@@ -607,7 +607,7 @@ HasExports = true
 
 ## Supported Games
 
-!!! info "Stores a list of supported games; by using their known [Game ID][game-id]."
+!!! info "Stores a list of supported games; by using their known [Game ID][game-metadata-id]."
 
 Alternatively, when experimenting with new games which do not have a specified Game ID, you can also specify `.exe` name, e.g. `tsonic_win.exe`.
 

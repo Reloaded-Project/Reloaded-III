@@ -137,13 +137,30 @@ we'll use the local cache.
 
 Loadouts are stored in the `Loadouts` folder.
 
-```
-Loadouts
-├── 7f2cc8b7d9f1e3a5
-│   └── ... unpacked files
-├── 7f2cc8b7d9f1e3a5.nx
-└── 7f2cc8b7d9f1e3a5.snapshot.bin
-```
+=== "LMDB Implementation"
+
+    Packed loadouts and snapshots are stored inside `database.mdb`.
+
+    ```
+    .
+    ├── 7f2cc8b7d9f1e3a5
+    └── database.mdb
+        ├── 7f2cc8b7d9f1e3a5.nx
+        └── 7f2cc8b7d9f1e3a5.snapshot.bin
+    ```
+
+=== "FileSystem Reference Implementation"
+
+    This is a reference implementation for testing and for use in
+    [esoteric platforms] where LMDB may be hard to compile.
+
+    ```
+    Loadouts
+    ├── 7f2cc8b7d9f1e3a5
+    │   └── ... unpacked files
+    ├── 7f2cc8b7d9f1e3a5.nx
+    └── 7f2cc8b7d9f1e3a5.snapshot.bin
+    ```
 
 For the exact details, see the [Loadouts][loadouts-location] page.
 
@@ -230,3 +247,4 @@ Loadouts and package configs may be shared in the future on a machine level.
 [hashcache-docs]: ../../Common/Hash-Cache/About.md
 [hash-cache-usage]: ../../Common/Hash-Cache/Usage-In-Server.md
 [fs-performance]: ../../Research/FileSystem-Performance.md
+[esoteric platforms]: ../../Code-Guidelines/Code-Guidelines.md#esoteric--embedded-platforms

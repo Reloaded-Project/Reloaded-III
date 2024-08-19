@@ -12,6 +12,9 @@ struct Snapshot {
     // Metadata
     num_events: u32,
 
+    // Loadout ID (This is the same as the loadout {UID}.)
+    loadout_id: String,
+
     // Packages
     packages: Vec<PackageInfo>,
 

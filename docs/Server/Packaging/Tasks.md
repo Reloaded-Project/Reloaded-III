@@ -219,7 +219,7 @@ If the task is sourced from a package, the following variables are also availabl
 
 - `{PackageDir}`: The absolute path to the base folder of the package.
 - `{PackageConfigDir}`: The absolute path to the config folder for the package.
-    - [This is the `Package Configs` (`PackageConfigs/{packageId}`) folder.][items-to-store]
+    - [This is the `Package Configs` (`PackageConfigs/{loadoutId}/{packageId}`) folder.][items-to-store]
     - This folder allows for
 - `{PackageUserCacheDir}`: The absolute path to the config folder for the package.
     - [This is the `Package Cache Files (User)` (`Cache/{packageId}`) folder.][items-to-store]

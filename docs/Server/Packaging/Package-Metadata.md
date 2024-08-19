@@ -39,6 +39,7 @@ These fields are usually only found when [PackageType](#packagetype) == `Tool`:
 | Type   | Name           | Description                                          |
 | ------ | -------------- | ---------------------------------------------------- |
 | Task[] | [Tasks][tasks] | List of binaries that the `tool` package ships with. |
+| Task[] | [Tasks][tasks] | List of binaries that the `tool` package ships with. |
 
 ## Implicit Fields
 

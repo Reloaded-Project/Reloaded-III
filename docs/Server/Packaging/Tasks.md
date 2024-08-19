@@ -27,10 +27,9 @@ Name = "Launch Game"
 GroupNames = ["GOG"]
 Description = "Launches the game."
 Path = {
-  Default = "", # Cross Platform Binary
-  Windows = "Game.exe",
-  Linux = "Game.sh",
-  MacOS = "Game.app"
+  win+x64-any = "Game.exe",
+  linux+x64-any = "Game.elf",
+  macos+x64-any = "Game.app"
 }
 IsPrimary = true
 IsHidden = false
@@ -123,6 +122,10 @@ The `Path` field specifies the relative path to the executable file or the URL t
 - If the task is declared in a [Package][package], the `Path` is relative to the folder the package is located in.
 - If the task is declared for a game, the `Path` is relative to the folder that contains the main executable of the game.
     - The one marked [IsPrimary](#isprimary).
+
+// TODO:
+    - [Platform][platforms] only: `win`, `linux`. When package has all architecture binaries.
+    - [Platform][platforms]+[Arch][architecture]: `win+x64-v3`, `linux+x64-v3`. When package has only one specific architecture.
 
 **Examples:**
 
@@ -218,9 +221,6 @@ The available placeholders are:
 If the task is sourced from a package, the following variables are also available:
 
 - `{PackageDir}`: The absolute path to the base folder of the package.
-- `{PackageConfigDir}`: The absolute path to the config folder for the package.
-    - [This is the `Package Configs` (`PackageConfigs/{loadoutId}/{packageId}`) folder.][items-to-store]
-    - This folder allows for
 - `{PackageUserCacheDir}`: The absolute path to the config folder for the package.
     - [This is the `Package Cache Files (User)` (`Cache/{packageId}`) folder.][items-to-store]
 - `{PackageMachineCacheDir}`: The absolute path to the config folder for the package.

@@ -36,10 +36,10 @@ These fields are usually only found when [PackageType](#packagetype) == `Mod`:
 
 These fields are usually only found when [PackageType](#packagetype) == `Tool`:
 
-| Type   | Name           | Description                                          |
-| ------ | -------------- | ---------------------------------------------------- |
-| Task[] | [Tasks][tasks] | List of binaries that the `tool` package ships with. |
-| Task[] | [Tasks][tasks] | List of binaries that the `tool` package ships with. |
+| Type         | Name                         | Description                                          |
+| ------------ | ---------------------------- | ---------------------------------------------------- |
+| Task[]       | [Tasks][tasks]               | List of binaries that the `tool` package ships with. |
+| ConfigFile[] | [ConfigFiles](#config-files) | List of configuration files synced with Reloaded-II. |
 
 ## Implicit Fields
 
@@ -633,6 +633,68 @@ By default this value is `false` for code mods and `true` for asset mods. Howeve
 the mods which read the contents of asset mods may choose to ignore the unload request
 if they themselves don't support it. (These mods should log a warning to console if they do so.)
 
+## Config Files
+
+!!! info "For `Tools`, this allows the [ingesting of configuration files][ingest-config] from an external location."
+
+Example section:
+
+```toml
+[[ConfigFiles]]
+Type = "File"
+Path = "config.toml"
+Description = "Main configuration file"
+
+[[ConfigFiles]]
+Type = "File"
+Path = "{AppData}/ToolName/settings.json"
+Description = "User-specific settings"
+
+[[ConfigFiles]]
+Type = "Folder"
+Path = "presets"
+Description = "Preset configurations"
+
+[[ConfigFiles]]
+Type = "Glob"
+Pattern = "*.cfg"
+Description = "All CFG files in the root directory"
+
+[[ConfigFiles]]
+Type = "Folder"
+Path = "{LocalAppData}/ToolName/Logs"
+Description = "Log files"
+```
+
+When a loadout is loaded or the relevant `Tool` started by Reloaded3 stops running, updated
+configs are `ingested` (integrated) into the loadout.
+
+For more details, see [Tools as Packages][tools-as-packages].
+
+### ConfigFile
+
+| Type            | Name        | Description                                                     |
+| --------------- | ----------- | --------------------------------------------------------------- |
+| string          | Type        | Type of the config entry: "File", "Folder", or "Glob"           |
+| [Path](#path)[] | Paths       | Array of OS-specific paths for the config file or folder        |
+| string          | Description | A brief description of the configuration file or group of files |
+
+#### Path
+
+| Type   | Name | Description                                              |
+| ------ | ---- | -------------------------------------------------------- |
+| string | OS   | Target OS: "Windows", "Linux", "macOS", or "Default"     |
+| string | Path | The path or to the file/folder, can include placeholders |
+
+The `Path` field allows for some placeholders:
+
+- `{PackageDir}`: The directory containing the package.
+- `{AppData}`: User-specific application data folder
+- `{LocalAppData}`: User-specific local application data folder
+- `{ProgramData}`: Application data for all users
+- `{Temp}`: Temporary folder
+- `{Documents}`: User's Documents folder
+
 <!-- Links -->
 [game-metadata-id]: ../Storage/Games/About.md#id
 [backend]: ../../Loader/Backends/About.md
@@ -662,3 +724,5 @@ if they themselves don't support it. (These mods should log a warning to console
 [architecture]: ../../Loader/Backends/About.md#architectures
 [tasks]: ./Tasks.md
 [package-structure]: ./About.md#package-structure
+[ingest-config]: ../Storage/Locations.md#package-config-handling
+[tools-as-packages]: ./Tools-As-Packages.md#chosen-approach

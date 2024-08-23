@@ -43,15 +43,13 @@ Suppose we want to write the following sequence of events:
 
 Here's how these events would be written to the file:
 
-```
-| Byte 0-7    | Meaning                                                    |
-| ----------- | ---------------------------------------------------------- |
-| 01          | [GameLaunched](#gamelaunched) event                        |
-| 40 ??       | [PackageStatusChanged8](#0100-packagestatuschanged8) event |
-| 41 ??       | [ConfigUpdated8](#0101-configupdated8) event               |
-| 00 00 00    | NOP padding to align next event to 8-byte boundary         |
-| 85 85 ?? ?? | [PackageUpdated16](#1005-packageupdated16) event           |
-```
+| Byte 0-7      | Meaning                                                    |
+| ------------- | ---------------------------------------------------------- |
+| `01`          | [GameLaunched](#gamelaunched) event                        |
+| `40 ??`       | [PackageStatusChanged8](#0100-packagestatuschanged8) event |
+| `41 ??`       | [ConfigUpdated8](#0101-configupdated8) event               |
+| `00 00 00`    | NOP padding to align next event to 8-byte boundary         |
+| `85 85 ?? ??` | [PackageUpdated16](#1005-packageupdated16) event           |
 
 Explanation:
 
@@ -620,6 +618,39 @@ This event is emitted the files of the game match a known new store manifest/rev
 | --------- | ------ | ----- | ---------------------------------------------------------------------------------------------------------------- |
 | `u8`      | Length | X     | [0-255] Length of new commandline parameters in [commandline-parameter-data.bin][commandline-parameter-data.bin] |
 
+## ExternalConfigUpdated
+
+!!! info "This event indicates that a tool's configuration file has been updated."
+
+### Messages
+
+- [EXTERNAL_CONFIG_UPDATED_V0][external-config-updated-v0]
+
+TODO: ExternalConfigUpdated24
+
+### {11}+07: ExternalConfigUpdated56
+
+| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | MetadataIdx (44-63)            |
+| ---------------- | ---------------------------- | ---------------------------- | ------------------------------ |
+| C7 (`{11} + 07`) | `{XXXXXXXX} {XXXXXXXX} {XX}` | `{YYYYYY} {YYYYYYYY} {YYYY}` | `{ZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
+
+| Data Type           | Name        | Label | Description                                                                           |
+| ------------------- | ----------- | ----- | ------------------------------------------------------------------------------------- |
+| `u18`               | PathIndex   | X     | [0-256K] Index of file in [external-config.bin][external-config-bin]                  |
+| `u18`               | FileIndex   | Y     | [0-256K] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
+| `u20` (MetadataIdx) | MetadataIdx | Z     | [0-1M] Index of metadata in [Package References][packagemetadatabin]                  |
+
+### {11}+08: ExternalConfigUpdatedFull
+
+| EventType (0-7)  | ExternalConfigIdx (8-35)                  | MetadataIdx (36-63)                       |
+| ---------------- | ----------------------------------------- | ----------------------------------------- |
+| C8 (`{11} + 08`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
+
+| Data Type            | Name              | Label | Description                                                                               |
+| -------------------- | ----------------- | ----- | ----------------------------------------------------------------------------------------- |
+| `u28` (ExtConfigIdx) | ExternalConfigIdx | X     | [0-268M] Index of extended reference in [external-config-refs.bin][external-config-refs]. |
+| `u28` (MetadataIdx)  | MetadataIdx       | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin].                   |
+
 [configbin]: Unpacked.md#configbin
 [events-bin]: Unpacked.md#eventsbin
 [packagemetadatabin]: Unpacked.md#package-references
@@ -678,3 +709,6 @@ This event is emitted the files of the game match a known new store manifest/rev
 [mod-installed-as-dependency-v0]: ./Commit-Messages.md#mod_installed_as_dependency_v0
 [translation-installed-as-dependency-v0]: ./Commit-Messages.md#translation_installed_as_dependency_v0
 [tool-installed-as-dependency-v0]: ./Commit-Messages.md#tool_installed_as_dependency_v0
+[external-config-bin]: ./Unpacked.md#external-configbin
+[external-config-paths-bin]: ./Unpacked.md#external-config-pathsbin
+[external-config-refs]: ./Unpacked.md#external-config-refsbin

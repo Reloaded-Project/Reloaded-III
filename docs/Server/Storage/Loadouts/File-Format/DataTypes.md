@@ -2,9 +2,10 @@
 
 - Max number of Package Download Data/Metadata (MetadataIdx): `268,435,456` (28 bits)
 - Max number of Configs (ConfigIdx): `134,217,727` (27 bits)
+- Max number of External Configs (ExtConfigIdx): `134,217,727` (27 bits)
 - Max number of Events: `4,294,967,295` (32 bits)
 - Max number of Game Versions/Revisions (GameVerIdx): `65,536` (16 bits)
-- Max timestamp. R3TimeStamp: `4,294,967,295` (32 bits).
+- Max timestamp. (R3TimeStamp): `4,294,967,295` (32 bits).
     - This is the number of seconds since `1st January 2024`.
     - Max year 2160.
 

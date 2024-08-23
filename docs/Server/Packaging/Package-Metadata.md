@@ -642,16 +642,18 @@ Example section:
 # A file inside the package directory
 # If the tool writes config files to its own folders
 [[ConfigFiles]]
+Id = 0
 Type = "File"
 Description = "Main configuration file"
 [[ConfigFiles.Paths]]
 OS = "any"
 Path = "{PackageDir}/bin/config/config.json"
 
-# Example of using globs with a base directory
+# Example of using 'by extension' with a base directory
 [[ConfigFiles]]
-Type = "Glob"
-Description = "All XML files in the config directory"
+Id = 1
+Type = "ByExtension"
+Description = "All JSON files in the config directory"
 [[ConfigFiles.Paths]]
 OS = "any"
 Path = "{PackageDir}/bin/config"
@@ -660,6 +662,7 @@ IncludeSubfolders = false
 
 # Example of using AppData across different OS
 [[ConfigFiles]]
+Id = 2
 Type = "File"
 Description = "User settings in AppData folder matching across OSes"
 [[ConfigFiles.Paths]]
@@ -671,6 +674,7 @@ Path = "{AppData}/ToolName/settings.json"
 
 # Example of a folder with OS-specific locations
 [[ConfigFiles]]
+Id = 3
 Type = "Folder"
 Description = "OS-specific data folder"
 [[ConfigFiles.Paths]]
@@ -693,9 +697,15 @@ For more details, see [Tools as Packages][tools-as-packages].
 
 | Type            | Name        | Description                                                     |
 | --------------- | ----------- | --------------------------------------------------------------- |
-| string          | Type        | Type of the config entry: `File`, `Folder`, or `Glob`           |
+| u8              | Id          | [Required] Unique identifier. Between 0-255.                    |
+| string          | Type        | Type of the config entry: `File`, `Folder`, or `ByExtension`    |
 | [Path](#path)[] | Paths       | Array of OS-specific paths for the config file or folder        |
 | string          | Description | A brief description of the configuration file or group of files |
+
+!!! info "The `Unique Identifier` (ID) is used to reference paths from external places."
+
+    In a way where configuration files can be transferred between platforms, for example Linux <=> Windows.
+    An example of this is [Unpacked Loadouts][external-config-paths].
 
 #### Path
 
@@ -703,8 +713,8 @@ For more details, see [Tools as Packages][tools-as-packages].
 | ------ | ----------------- | -------------------------------------------------------- |
 | string | OS                | Target OS: `any`, `win`, `linux` or `macos`.             |
 | string | Path              | The path or to the file/folder, can include placeholders |
-| string | Extension         | Name of extension when `Glob` is used.                   |
-| bool   | IncludeSubfolders | Whether to recurse folders when `Glob` is used.          |
+| string | Extension         | Name of extension when `ByExtension` is used.            |
+| bool   | IncludeSubfolders | Whether to recurse folders when `ByExtension` is used.   |
 
 The OS field names are based on the [Backend Names][native-backend].
 
@@ -805,3 +815,4 @@ Explanation of macOS Folders:
 [ingest-config]: ../Storage/Locations.md#package-config-handling
 [tools-as-packages]: ./Tools-As-Packages.md#chosen-approach
 [xdg-path-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html
+[external-config-paths]: ../Storage/Loadouts/File-Format/Unpacked.md#external-config-pathsbin

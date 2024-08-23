@@ -626,7 +626,17 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 - [EXTERNAL_CONFIG_UPDATED_V0][external-config-updated-v0]
 
-TODO: ExternalConfigUpdated24
+### {10}+0C: ExternalConfigUpdated24
+
+| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | MetadataIdx (44-63)            |
+| ---------------- | ---------------------------- | ---------------------------- | ------------------------------ |
+| 8C (`{10} + 0C`) | `{XXXXXXXX} {XXXXXXXX} {XX}` | `{YYYYYY} {YYYYYYYY} {YYYY}` | `{ZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
+
+| Data Type           | Name        | Label | Description                                                                          |
+| ------------------- | ----------- | ----- | ------------------------------------------------------------------------------------ |
+| `u7`                | PathIndex   | X     | [0-127] Index of file in [external-config.bin][external-config-bin]                  |
+| `u7`                | FileIndex   | Y     | [0-127] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
+| `u10` (MetadataIdx) | MetadataIdx | Z     | [0-1024] Index of metadata in [Package References][packagemetadatabin]               |
 
 ### {11}+07: ExternalConfigUpdated56
 
@@ -712,3 +722,4 @@ TODO: ExternalConfigUpdated24
 [external-config-bin]: ./Unpacked.md#external-configbin
 [external-config-paths-bin]: ./Unpacked.md#external-config-pathsbin
 [external-config-refs]: ./Unpacked.md#external-config-refsbin
+[external-config-updated-v0]: ./Commit-Messages.md#external_config_updated_v0

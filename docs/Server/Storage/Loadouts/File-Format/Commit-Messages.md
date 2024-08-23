@@ -451,6 +451,20 @@ to
 - `{NewCommandLine}`
 ```
 
+## External Config Updated (V0)
+
+### Parameters
+
+- `Name` [0]: The name of the package (mod, tool, etc.). [String][commit-param-type]
+- `ID` [1]: The package ID. [String][commit-param-type]
+- `ConfigPath` [2]: The path of the updated configuration file. [String][commit-param-type]
+
+### EXTERNAL_CONFIG_UPDATED_V0
+
+```
+Updated external configuration file '{ConfigPath}' for '{Name}' (ID: '{ID}').
+```
+
 [events-bin]: ./Unpacked.md#eventsbin
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
 [event-config-updated]: ./Events.md#configupdated

@@ -40,14 +40,15 @@ performing a cleanup of unused data (by truncating remaining files).
 
 Format:
 
-| Data Type | Name            | Description                                                  |
-| --------- | --------------- | ------------------------------------------------------------ |
-| `u16`     | Version         | Version of the loadout format.                               |
-| `u16`     | Reserved        |                                                              |
-| `u32`     | NumEvents       | Total number of events and timestamps in this loadout.       |
-| `u32`     | NumMetadata     | Total number of package metadata files in this loadout.      |
-| `u32`     | NumConfigs      | Total number of package configuration files in this loadout. |
-| `u32`     | NumGameVersions | Total number of game versions.                               |
+| Data Type | Name               | Description                                                                          |
+| --------- | ------------------ | ------------------------------------------------------------------------------------ |
+| `u16`     | Version            | Version of the loadout format.                                                       |
+| `u16`     | Reserved           |                                                                                      |
+| `u32`     | NumEvents          | Total number of [events][events-bin] and timestamps in this loadout.                 |
+| `u32`     | NumMetadata        | Total number of [package metadata](#package-reference-idsbin) files in this loadout. |
+| `u32`     | NumConfigs         | Total number of [package configuration](#configbin) files in this loadout.           |
+| `u32`     | NumGameVersions    | Total number of [game versions](#storesbin) (store entries).                         |
+| `u32`     | NumExternalConfigs | Total number of [external configuration](#external-configbin) files in this loadout. |
 
 !!! warning "Backwards compatibility is supported but not forwards."
 
@@ -189,10 +190,10 @@ Each path is a path *relative* to the path specified in [Config File Paths][conf
 
 This is an array of the following structure
 
-| Data Type | Name      | Description                                                                                  |
-| --------- | --------- | -------------------------------------------------------------------------------------------- |
-| `u32`     | PathIndex | [0-4M] Index of configuration file in [external-config.bin][external-config-bin]             |
-| `u32`     | FileIndex | [0-4M] Index of configuration path in [external-config-paths.bin][external-config-paths-bin] |
+| Data Type | Name      | Description                                                                         |
+| --------- | --------- | ----------------------------------------------------------------------------------- |
+| `u32`     | FileIndex | [0-4M] Index of file in [external-config.bin](#external-configbin)                  |
+| `u32`     | PathIndex | [0-4M] Index of file path in [external-config-paths.bin](#external-config-pathsbin) |
 
 This file is used in the event that one of the components of [ExternalConfigUpdated56][event-externalconfigupdated]
 is out of range and cannot fit into the encoding.
@@ -835,3 +836,4 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [config-files]: ../../../Packaging/Package-Metadata.md#config-files
 [config-file-paths]: ../../../Packaging/Package-Metadata.md#path
 [config-file]: ../../../Packaging/Package-Metadata.md#configfile
+[community-repository]: ../../../../Services/Community-Repository.md

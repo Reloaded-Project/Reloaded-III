@@ -1,6 +1,7 @@
 ## Max Numbers
 
-- Max number of Package Download Data/Metadata (MetadataIdx): `268,435,456` (28 bits)
+- Max number of Unique Package IDs (PackageIdIdx): `1,048,576` (20 bits)
+- Max number of Unique Package Versions (PackageVerIdx): `1,048,576` (20 bits)
 - Max number of Configs (ConfigIdx): `134,217,727` (27 bits)
 - Max number of External Configs (ExtConfigIdx): `134,217,727` (27 bits)
 - Max number of Events: `4,294,967,295` (32 bits)

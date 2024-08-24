@@ -101,15 +101,17 @@ struct MicrosoftStoreData {
 2. **Packages**
     - A list of all packages in the loadout, each containing:
         - Package ID: A unique identifier for the package ([XXH3 hash][hashing] of the package ID).
-        - Version: The semantic version of the package as a string (e.g., "1.2.3").
+        - Version: The semantic version of the package as a string (e.g., `1.2.3`).
         - State: The current state of the package using the [`PackageState`][packagestate] enum.
         - Configuration Index: An optional index into the configurations Vec.
     - Corresponds to [Package References][packagereferenceidsbin].
+    - Only one version of a package can be installed at a time.
 
 3. **Configurations**
     - A list of raw configuration data for packages.
     - Indexed by the `configuration_index` in `PackageInfo`.
     - Corresponds to [config.bin & config-data.bin][configbin].
+    - Configurations are not version specific. They persist across package versions.
 
 4. **Mod Load Order**
     - An ordered list of indices representing the current load order of mods.
@@ -191,4 +193,4 @@ there will be no migration code; as to avoid bloating the binary.
 [loadout-location]: ../About.md#location
 [bitcode]: ../../../../Research/Library-Sizes/Serializers.md#bitcode
 [configbin]: ./Unpacked.md#configbin
-[packagereferenceidsbin]: ./Unpacked.md#package-reference-idsbin
+[packagereferenceidsbin]: ./Unpacked.md#package-idsbin

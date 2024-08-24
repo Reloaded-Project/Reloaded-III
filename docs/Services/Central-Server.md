@@ -930,6 +930,6 @@ By default, I recommend searching by substring. In Name and ModId. Summary can b
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
 [package-id]: ../Server/Packaging/Package-Metadata.md#id
 [sync-loadout]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#restoring-actual-package-files
-[package-reference-ids]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#package-reference-idsbin
+[package-reference-ids]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#package-idsbin
 [hashing]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use
 [mod-metadata-search-image]: ../Server/Packaging/Package-Metadata.md#icon-search

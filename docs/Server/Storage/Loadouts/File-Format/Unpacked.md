@@ -10,8 +10,8 @@
 | [Commit Parameters](#commit-parameters)                  | `commit-parameter-types.bin`<br/>+`commit-parameter-lengths-{x}.bin`<br/>+ `commit-parameters-{x}.bin` | List of commit message parameters for each event.                     |
 | [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                                                   | Package Configurations.                                               |
 | [External Configs](#external-configbin)                  | `external-config.bin`<br/>+ `external-config-data.bin`<br/>+ `external-config-paths.bin`               | Package Configurations.                                               |
-| [Package Reference (IDs)](#package-references)           | `package-reference-ids.bin`                                                                            | Hashes of package IDs in this loadout.                                |
-| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin`                            | String versions of package IDs in this loadout.                       |
+| [Package Reference (IDs)](#packages)                     | `package-ids.bin`                                                                                      | Hashes of package IDs in this loadout.                                |
+| [Package Reference (Versions)](#packages)                | `package-versions-len.bin`<br/>+ `package-versions.bin`                                                | String versions of package IDs in this loadout.                       |
 | [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                                                    | Game store specific info to restore game to last version if possible. |
 | [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                                                       | Raw data for commandline parameters. Length specified in event.       |
 
@@ -40,15 +40,16 @@ performing a cleanup of unused data (by truncating remaining files).
 
 Format:
 
-| Data Type | Name               | Description                                                                          |
-| --------- | ------------------ | ------------------------------------------------------------------------------------ |
-| `u16`     | Version            | Version of the loadout format.                                                       |
-| `u16`     | Reserved           |                                                                                      |
-| `u32`     | NumEvents          | Total number of [events][events-bin] and timestamps in this loadout.                 |
-| `u32`     | NumMetadata        | Total number of [package metadata](#package-reference-idsbin) files in this loadout. |
-| `u32`     | NumConfigs         | Total number of [package configuration](#configbin) files in this loadout.           |
-| `u32`     | NumGameVersions    | Total number of [game versions](#storesbin) (store entries).                         |
-| `u32`     | NumExternalConfigs | Total number of [external configuration](#external-configbin) files in this loadout. |
+| Data Type | Name               | Description                                                                                  |
+| --------- | ------------------ | -------------------------------------------------------------------------------------------- |
+| `u16`     | Version            | Version of the loadout format.                                                               |
+| `u16`     | Reserved           |                                                                                              |
+| `u32`     | NumEvents          | Total number of [events][events-bin] and timestamps in this loadout.                         |
+| `u32`     | NumPackageIds      | Total number of unique [package ID(s)](#package-idsbin) files in this loadout.               |
+| `u32`     | NumPackageVersions | Total number of unique [package version(s)](#package-versions-lenbin) files in this loadout. |
+| `u32`     | NumConfigs         | Total number of [package configuration](#configbin) files in this loadout.                   |
+| `u32`     | NumGameVersions    | Total number of [game versions](#storesbin) (store entries).                                 |
+| `u32`     | NumExternalConfigs | Total number of [external configuration](#external-configbin) files in this loadout.         |
 
 !!! warning "Backwards compatibility is supported but not forwards."
 
@@ -198,28 +199,32 @@ This is an array of the following structure
 This file is used in the event that one of the components of [ExternalConfigUpdated56][event-externalconfigupdated]
 is out of range and cannot fit into the encoding.
 
-## Package References
+## Packages
 
-!!! info "A 'package reference' consists of a [XXH3(PackageID)][hashing] and Version."
+!!! info "We refer to a 'unique package' by [XXH3(PackageID)][hashing]"
 
-    From [Package.toml][package-toml].
+    The field `PackageID` being the `Id` field from [Package.toml][package-toml].
 
-    This is the minimum amount of data required to uniquely identify a package.
+    There can only be one version of a package with given ID in a loadout
+    at a given time.
 
-Packages are referred to by an index known as [MetadataIdx][max-numbers] in the events.
+References to Package IDs (`XXH3(PackageID)`) are referred to by an index known as
+[PackageIdIdx][max-numbers] in the events:
 
-So a `MetadataIdx == 1` means `fetch the entry at index 1` of [package-reference-ids.bin](#package-reference-idsbin)
-and [package-reference-versions.bin](#package-reference-idsbin).
+- A `PackageIdIdx == 1` in an event means `fetch the entry at index 1` of [package-ids.bin](#package-idsbin).
 
-As for how to use the data, it is similar to [config.bin](#configbin), essentially we deduplicate
-entries by in-memory hash. So an event can always refer to a [MetadataIdx][max-numbers] created
+Most events will only require a [PackageIdIdx][max-numbers]. However, in some cases the version
+[PackageVerIdx](#package-versions) is also needed, for example, to upgrade packages.
+
+As for how to use the data, it is similar to [config.bin](#configbin). We deduplicate
+entries by in-memory hash. So an event can always refer to a [PackageIdIdx][max-numbers] created
 in an earlier event to save space.
 
 !!! danger "Launcher MUST ensure each published mod has valid update/download data."
 
-    Otherwise this system could fail, as a hash of packageID is not useful.
+    Otherwise this system could fail, as a hash of packageID on its own is not useful.
 
-### package-reference-ids.bin
+### package-ids.bin
 
 !!! info "This is a buffer of [XXH3(PackageID)][hashing]"
 
@@ -232,7 +237,7 @@ System can still always fail, we just pray it won't.
 
 !!! note "Some Numbers"
 
-    Nexus Mods alone hosts 815999 mods as of 30th of May 2024 (obtained via GraphQL API).
+    [Nexus Mods][nexus] alone hosts 815999 mods as of 30th of May 2024 (obtained via GraphQL API).
 
     The probability of a hash collision on whole mod set is roughly the following:
 
@@ -257,9 +262,20 @@ and at that point a meteor is more likely to land on your house (no joke).
 
 !!! note "This ID is used to [restore the package](#restoring-actual-package-files)."
 
-### package-reference-versions-len.bin
+## Package Versions
 
-Contains the lengths of entries in [package-reference-versions.bin](#package-reference-idsbin).
+!!! info "In some contexts, it may also be useful to know the package version."
+
+Reference to unique *Package Version* are referred to by an index known as [PackageVerIdx][max-numbers]
+in the events:
+
+- So a `PackageVerIdx == 1` in an event means `fetch the entry at index 1` of [package-versions.bin](#package-versionsbin).
+
+This information is sometimes used to `e.g.` upgrade packages.
+
+### package-versions-len.bin
+
+Contains the lengths of entries in [package-versions.bin](#package-idsbin).
 
 | Data Type | Name          | Description                 |
 | --------- | ------------- | --------------------------- |
@@ -269,9 +285,9 @@ Contains the lengths of entries in [package-reference-versions.bin](#package-ref
 
     Most versions are of form `X.Y.Z` so there is a lot of repetition of `05`.
 
-### package-reference-versions.bin
+### package-versions.bin
 
-!!! info "This is a buffer consisting of package versions, whose length is defined in [package-reference.bin](#package-references)"
+!!! info "This is a buffer consisting of package versions, whose length is defined in [package-reference.bin](#packages)"
 
 These versions are stored as UTF-8 strings. No null terminator.
 
@@ -837,3 +853,4 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [config-file-paths]: ../../../Packaging/Package-Metadata.md#path
 [config-file]: ../../../Packaging/Package-Metadata.md#configfile
 [community-repository]: ../../../../Services/Community-Repository.md
+[nexus]: https://www.nexusmods.com

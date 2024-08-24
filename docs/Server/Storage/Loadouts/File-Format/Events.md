@@ -138,7 +138,7 @@ This way we can ensure alignment is maintained.
 
 ### Messages
 
-`PackageType` is the type of package referred to `MetadataIdx`.
+`PackageType` is the type of package referred to by package at [PackageIdIdx].
 
 - [PACKAGE_ADDED_V0][package-added-v0] when `NewStatus == Added` when `PackageType` is not known.
 - [PACKAGE_REMOVED_V0][package-removed-v0] when `NewStatus == Removed` when `PackageType` is not known.
@@ -165,53 +165,52 @@ This way we can ensure alignment is maintained.
 - [TRANSLATION_INSTALLED_AS_DEPENDENCY_V0][translation-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` and `PackageType == Translation`.
 - [TOOL_INSTALLED_AS_DEPENDENCY_V0][tool-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` and `PackageType == Tool`.
 
-
 ### {01}+00: PackageStatusChanged8
 
-| EventType (0-7)  | NewStatus (8-10) | MetadataIdx (11-15) |
-| ---------------- | ---------------- | ------------------- |
-| 40 (`{01} + 00`) | `{XXX}`          | `{YYYYY}`           |
+| EventType (0-7)  | NewStatus (8-10) | [PackageIdIdx] (11-15) |
+| ---------------- | ---------------- | ---------------------- |
+| 40 (`{01} + 00`) | `{XXX}`          | `{YYYYY}`              |
 
-| Data Type          | Name        | Label | Description                                                          |
-| ------------------ | ----------- | ----- | -------------------------------------------------------------------- |
-| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                             |
-| `u5`               | MetadataIdx | Y     | [0-31] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type             | Name           | Label | Description                                                      |
+| --------------------- | -------------- | ----- | ---------------------------------------------------------------- |
+| PackageStateChange    | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                         |
+| `u5` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-31] Index of package ID in [package-ids.bin][package-ids.bin] |
 
 ### {10}+00: PackageStatusChanged16
 
-| EventType (0-7)  | Padding (8-15) | NewStatus (16-18) | MetadataIdx (19-31)  |
+| EventType (0-7)  | Padding (8-15) | NewStatus (16-18) | PackageIdIdx (19-31) |
 | ---------------- | -------------- | ----------------- | -------------------- |
 | 80 (`{10} + 00`) | 80             | `{XXX}`           | `{YYYYY} {YYYYYYYY}` |
 
-| Data Type          | Name        | Label | Description                                                            |
-| ------------------ | ----------- | ----- | ---------------------------------------------------------------------- |
-| `u8`               | Padding     | 80    | Constant `80`. Repeats previous byte.                                  |
-| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                               |
-| `u13`              | MetadataIdx | Y     | [0-8192] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type              | Name           | Label | Description                                                        |
+| ---------------------- | -------------- | ----- | ------------------------------------------------------------------ |
+| `u8`                   | Padding        | 80    | Constant `80`. Repeats previous byte.                              |
+| PackageStateChange     | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                           |
+| `u13` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-8192] Index of package ID in [package-ids.bin][package-ids.bin] |
 
 ### {10}+01: PackageStatusChanged24
 
-| EventType (0-7)  | NewStatus (8-10) | MetadataIdx (11-31)             |
+| EventType (0-7)  | NewStatus (8-10) | PackageIdIdx (11-31)            |
 | ---------------- | ---------------- | ------------------------------- |
 | 81 (`{10} + 01`) | `{XXX}`          | `{YYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type          | Name        | Label | Description                                                          |
-| ------------------ | ----------- | ----- | -------------------------------------------------------------------- |
-| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                             |
-| `u21`              | MetadataIdx | Y     | [0-2M] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type              | Name           | Label | Description                                                      |
+| ---------------------- | -------------- | ----- | ---------------------------------------------------------------- |
+| PackageStateChange     | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                         |
+| `u21` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-2M] Index of package ID in [package-ids.bin][package-ids.bin] |
 
 ### {11}+00: PackageStatusChanged32
 
-| EventType (0-7)  | Padding (8-31) | Unused (32-32) | NewStatus (33-35) | MetadataIdx (36-63)                       |
+| EventType (0-7)  | Padding (8-31) | Unused (32-32) | NewStatus (33-35) | PackageIdIdx (36-63)                      |
 | ---------------- | -------------- | -------------- | ----------------- | ----------------------------------------- |
 | C0 (`{11} + 00`) | C0 C0 C0       | 0              | `{XXX}`           | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type          | Name        | Label | Description                                                            |
-| ------------------ | ----------- | ----- | ---------------------------------------------------------------------- |
-| `u24`              | Padding     | C0    | Constant `C0`. Repeats previous byte.                                  |
-| `u1`               | Unused      | 0     |                                                                        |
-| PackageStateChange | NewStatus   | X     | See [PackageStateChange][pkgstatechange]                               |
-| `u28`              | MetadataIdx | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type              | Name           | Label | Description                                                        |
+| ---------------------- | -------------- | ----- | ------------------------------------------------------------------ |
+| `u24`                  | Padding        | C0    | Constant `C0`. Repeats previous byte.                              |
+| `u1`                   | Unused         | 0     |                                                                    |
+| PackageStateChange     | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                           |
+| `u28` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-268M] Index of package ID in [package-ids.bin][package-ids.bin] |
 
 ## GameLaunched
 
@@ -250,60 +249,60 @@ When the exact changes are not known, the event is [written as V1][commit-messag
 
 ### {01}+01: ConfigUpdated8
 
-| EventType (0-7)  | NewStatus (8-11) | MetadataIdx (12-15) |
-| ---------------- | ---------------- | ------------------- |
-| 41 (`{01} + 01`) | `{XXXX}`         | `{YYYY}`            |
+| EventType (0-7)  | NewStatus (8-11) | PackageIdIdx (12-15) |
+| ---------------- | ---------------- | -------------------- |
+| 41 (`{01} + 01`) | `{XXXX}`         | `{YYYY}`             |
 
-| Data Type          | Name        | Label | Description                                                          |
-| ------------------ | ----------- | ----- | -------------------------------------------------------------------- |
-| `u4` (ConfigIdx)   | ConfigIdx   | X     | [0-15] Index of associated configuration in [config.bin][configbin]  |
-| `u4` (MetadataIdx) | MetadataIdx | Y     | [0-15] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type             | Name           | Label | Description                                                         |
+| --------------------- | -------------- | ----- | ------------------------------------------------------------------- |
+| `u4` (ConfigIdx)      | ConfigIdx      | X     | [0-15] Index of associated configuration in [config.bin][configbin] |
+| `u4` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-15] Index of package ID in [package-ids.bin][package-ids.bin]    |
 
 ### {10}+02: ConfigUpdated16
 
-| EventType (0-7)  | Padding (8-15) | ConfigIdx (16-22) | MetadataIdx (23-31) |
-| ---------------- | -------------- | ----------------- | ------------------- |
-| 82 (`{10} + 02`) | 82             | `{XXXXXXX}`       | `{Y} {YYYYYYYY}`    |
+| EventType (0-7)  | Padding (8-15) | ConfigIdx (16-22) | PackageIdIdx (23-31) |
+| ---------------- | -------------- | ----------------- | -------------------- |
+| 82 (`{10} + 02`) | 82             | `{XXXXXXX}`       | `{Y} {YYYYYYYY}`     |
 
-| Data Type          | Name        | Label | Description                                                           |
-| ------------------ | ----------- | ----- | --------------------------------------------------------------------- |
-| `u8`               | Padding     | 82    | Constant `82`. Repeats previous byte.                                 |
-| `u7` (ConfigIdx)   | ConfigIdx   | X     | [0-127] Index of associated configuration in [config.bin][configbin]  |
-| `u9` (MetadataIdx) | MetadataIdx | Y     | [0-511] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type             | Name           | Label | Description                                                          |
+| --------------------- | -------------- | ----- | -------------------------------------------------------------------- |
+| `u8`                  | Padding        | 82    | Constant `82`. Repeats previous byte.                                |
+| `u7` (ConfigIdx)      | ConfigIdx      | X     | [0-127] Index of associated configuration in [config.bin][configbin] |
+| `u9` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-511] Index of package ID in [package-ids.bin][package-ids.bin]    |
 
 ### {10}+03: ConfigUpdated24
 
-| EventType (0-7)  | ConfigIdx (8-18)              | MetadataIdx (19-31)             |
+| EventType (0-7)  | ConfigIdx (8-18)              | PackageIdIdx (19-31)            |
 | ---------------- | ----------------------------- | ------------------------------- |
 | 83 (`{10} + 01`) | `{XXXXXXXX} {XXXXXXXX} {XXX}` | `{YYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type           | Name        | Label | Description                                                            |
-| ------------------- | ----------- | ----- | ---------------------------------------------------------------------- |
-| `u11` (ConfigIdx)   | ConfigIdx   | X     | [0-2047] Index of associated configuration in [config.bin][configbin]  |
-| `u13` (MetadataIdx) | MetadataIdx | Y     | [0-8191] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type              | Name           | Label | Description                                                           |
+| ---------------------- | -------------- | ----- | --------------------------------------------------------------------- |
+| `u11` (ConfigIdx)      | ConfigIdx      | X     | [0-2047] Index of associated configuration in [config.bin][configbin] |
+| `u13` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-8191] Index of package ID in [package-ids.bin][package-ids.bin]    |
 
 ### {11}+01 ConfigUpdated32
 
-| EventType (0-7)  | Padding (8-31) | ConfigIdx (32-46)      | MetadataIdx (47-63)         |
+| EventType (0-7)  | Padding (8-31) | ConfigIdx (32-46)      | PackageIdIdx (47-63)        |
 | ---------------- | -------------- | ---------------------- | --------------------------- |
 | C1 (`{11} + 01`) | C1 C1 C1       | `{XXXXXXX} {XXXXXXXX}` | `{Y} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type           | Name        | Label | Description                                                              |
-| ------------------- | ----------- | ----- | ------------------------------------------------------------------------ |
-| `u24`               | Padding     | C1    | Constant `C1`. Maximize compression.                                     |
-| `u15` (ConfigIdx)   | ConfigIdx   | X     | [0-32767] Index of associated configuration in [config.bin][configbin]   |
-| `u17` (MetadataIdx) | MetadataIdx | Y     | [0-131071] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type              | Name           | Label | Description                                                            |
+| ---------------------- | -------------- | ----- | ---------------------------------------------------------------------- |
+| `u24`                  | Padding        | C1    | Constant `C1`. Maximize compression.                                   |
+| `u15` (ConfigIdx)      | ConfigIdx      | X     | [0-32767] Index of associated configuration in [config.bin][configbin] |
+| `u17` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-131071] Index of package ID in [package-ids.bin][package-ids.bin]   |
 
 ### {11}+02 ConfigUpdatedFull
 
-| EventType (0-7)  | ConfigIdx (8-35)       | MetadataIdx (36-63)         |
+| EventType (0-7)  | ConfigIdx (8-35)       | PackageIdIdx (36-63)        |
 | ---------------- | ---------------------- | --------------------------- |
 | C2 (`{11} + 02`) | `{XXXXXXX} {XXXXXXXX}` | `{Y} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type           | Name        | Label | Description                                                            |
-| ------------------- | ----------- | ----- | ---------------------------------------------------------------------- |
-| `u27` (ConfigIdx)   | ConfigIdx   | X     | [0-134M] Index of associated configuration in [config.bin][configbin]  |
-| `u28` (MetadataIdx) | MetadataIdx | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin] |
+| Data Type              | Name           | Label | Description                                                           |
+| ---------------------- | -------------- | ----- | --------------------------------------------------------------------- |
+| `u27` (ConfigIdx)      | ConfigIdx      | X     | [0-134M] Index of associated configuration in [config.bin][configbin] |
+| `u28` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-268M] Index of package ID in [package-ids.bin][package-ids.bin]    |
 
 ## LoadoutDisplaySettingChanged
 
@@ -314,7 +313,6 @@ This is rarely changed so has a large 4-byte payload and can change multiple eve
 ### Messages
 
 - [LOADOUT_DISPLAY_SETTINGS_CHANGED_V0][loadout-display-settings-changed-v0] when multiple settings have changed.
-
 - [LOADOUT_GRID_ENABLED_SORT_MODE_CHANGED_V0][loadout-grid-enabled-sort-mode-changed-v0] when only `LoadoutGridEnabledSortMode` has changed.
 - [LOADOUT_GRID_DISABLED_SORT_MODE_CHANGED_V0][loadout-grid-disabled-sort-mode-changed-v0] when only `LoadoutGridDisabledSortMode` has changed.
 - [MOD_LOAD_ORDER_SORT_CHANGED_V0][mod-load-order-sort-changed-v0] when only `ModLoadOrderSort` has changed.
@@ -333,19 +331,15 @@ This is rarely changed so has a large 4-byte payload and can change multiple eve
 | `u2` [(SortOrder)][sortorder]             | ModLoadOrderSort            | Y     | Sorting mode for load order reorderer.          |
 | `u4` [(GridDisplayMode)][griddisplaymode] | LoadoutGridStyle            | Z     | Display mode for LoadoutGrid.                   |
 
-## PackageUpdated
+## PackageVersionChanged
 
 !!! info "This event indicates that a package has been updated to a new version."
 
-This discards the previous manifest at `OldMetadataIdx` and replaces it with the new manifest at `NewMetadataIdx`.
+This upgrades a package at [PackageIdIdx] from the old (previous) version to the new version at `NewPackageVerIdx`.
 
-!!! note "`NewMetadataIdx` can point to either a newly written manifest or a previous one"
+!!! note "`NewPackageVerIdx` can point to either a newly written manifest or a previous one"
 
     It's a previous one in case of a rollback/undo, otherwise it's a new one.
-
-!!! note "Some mods can receive updates quite often"
-
-    That's why `OldMetadatIdx` and `NewMetadataIdx` are evenly distributed in bits.
 
 ### Messages
 
@@ -356,49 +350,49 @@ This discards the previous manifest at `OldMetadataIdx` and replaces it with the
 
 ### {10}+05: PackageUpdated16
 
-| EventType (0-7)  | Padding (8-15) | OldMetadataIdx (16-23) | NewMetadataIdx (24-31) |
-| ---------------- | -------------- | ---------------------- | ---------------------- |
-| 85 (`{10} + 05`) | 85             | `{XXXXXXXX}`           | `{YYYYYYYY}`           |
+| EventType (0-7)  | Padding (8-15) | OldPackageVerIdx (16-23) | NewPackageVerIdx (24-31) |
+| ---------------- | -------------- | ------------------------ | ------------------------ |
+| 85 (`{10} + 05`) | 85             | `{XXXXXXXX}`             | `{YYYYYYYY}`             |
 
-| Data Type          | Name           | Label | Description                                                              |
-| ------------------ | -------------- | ----- | ------------------------------------------------------------------------ |
-| `u8`               | Padding        | 85    | Constant `85`. Repeats previous byte.                                    |
-| `u8` (MetadataIdx) | OldMetadataIdx | X     | [0-255] Index of old version in [Package References][packagemetadatabin] |
-| `u8` (MetadataIdx) | NewMetadataIdx | Y     | [0-255] Index of new version in [Package References][packagemetadatabin] |
+| Data Type             | Name             | Label | Description                                                              |
+| --------------------- | ---------------- | ----- | ------------------------------------------------------------------------ |
+| `u8`                  | Padding          | 85    | Constant `85`. Repeats previous byte.                                    |
+| `u8` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-255] Index of old version in [Package References][packagemetadatabin] |
+| `u8` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-255] Index of new version in [Package References][packagemetadatabin] |
 
 ### {10}+06: PackageUpdated24
 
-| EventType (0-7)  | OldMetadataIdx (8-19)          | NewMetadataIdx (20-31)         |
+| EventType (0-7)  | OldPackageVerIdx (8-19)        | NewPackageVerIdx (20-31)       |
 | ---------------- | ------------------------------ | ------------------------------ |
 | 86 (`{10} + 06`) | `{XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type           | Name           | Label | Description                                                               |
-| ------------------- | -------------- | ----- | ------------------------------------------------------------------------- |
-| `u12` (MetadataIdx) | OldMetadataIdx | X     | [0-4095] Index of old version in [Package References][packagemetadatabin] |
-| `u12` (MetadataIdx) | NewMetadataIdx | Y     | [0-4095] Index of new version in [Package References][packagemetadatabin] |
+| Data Type              | Name             | Label | Description                                                               |
+| ---------------------- | ---------------- | ----- | ------------------------------------------------------------------------- |
+| `u12` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-4095] Index of old version in [Package References][packagemetadatabin] |
+| `u12` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-4095] Index of new version in [Package References][packagemetadatabin] |
 
 ### {11}+03 PackageUpdated32
 
-| EventType (0-7)  | Padding (8-31) | OldMetadataIdx (8-35)                     | NewMetadataIdx (36-63)                    |
+| EventType (0-7)  | Padding (8-31) | OldPackageVerIdx (8-35)                   | NewPackageVerIdx (36-63)                  |
 | ---------------- | -------------- | ----------------------------------------- | ----------------------------------------- |
 | C3 (`{11} + 03`) | C3 C3 C3       | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type           | Name           | Label | Description                                                                |
-| ------------------- | -------------- | ----- | -------------------------------------------------------------------------- |
-| `u24`               | Padding        | C3    | Constant `C3`. Repeats previous byte.                                      |
-| `u16` (MetadataIdx) | OldMetadataIdx | X     | [0-65535] Index of old version in [Package References][packagemetadatabin] |
-| `u16` (MetadataIdx) | NewMetadataIdx | Y     | [0-65535] Index of new version in [Package References][packagemetadatabin] |
+| Data Type              | Name             | Label | Description                                                                |
+| ---------------------- | ---------------- | ----- | -------------------------------------------------------------------------- |
+| `u24`                  | Padding          | C3    | Constant `C3`. Repeats previous byte.                                      |
+| `u16` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-65535] Index of old version in [Package References][packagemetadatabin] |
+| `u16` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-65535] Index of new version in [Package References][packagemetadatabin] |
 
 ### {11}+04 PackageUpdated56
 
-| EventType (0-7)  | OldMetadataIdx (8-35)                     | NewMetadataIdx (36-63)                    |
+| EventType (0-7)  | OldPackageVerIdx (8-35)                   | NewPackageVerIdx (36-63)                  |
 | ---------------- | ----------------------------------------- | ----------------------------------------- |
 | C4 (`{11} + 04`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type           | Name           | Label | Description                                                               |
-| ------------------- | -------------- | ----- | ------------------------------------------------------------------------- |
-| `u28` (MetadataIdx) | OldMetadataIdx | X     | [0-268M] Index of old version in [Package References][packagemetadatabin] |
-| `u28` (MetadataIdx) | NewMetadataIdx | Y     | [0-268M] Index of new version in [Package References][packagemetadatabin] |
+| Data Type              | Name             | Label | Description                                                               |
+| ---------------------- | ---------------- | ----- | ------------------------------------------------------------------------- |
+| `u28` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-268M] Index of old version in [Package References][packagemetadatabin] |
+| `u28` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-268M] Index of new version in [Package References][packagemetadatabin] |
 
 ## PackageLoadOrderChanged
 
@@ -620,7 +614,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 ## ExternalConfigUpdated
 
-!!! info "This event indicates that a tool's configuration file has been updated."
+!!! info "This event indicates that an external config file belonging to a package has been updated."
 
 ### Messages
 
@@ -628,42 +622,43 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 ### {10}+0C: ExternalConfigUpdated24
 
-| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | MetadataIdx (44-63)            |
+| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | PackageIdIdx (44-63)           |
 | ---------------- | ---------------------------- | ---------------------------- | ------------------------------ |
 | 8C (`{10} + 0C`) | `{XXXXXXXX} {XXXXXXXX} {XX}` | `{YYYYYY} {YYYYYYYY} {YYYY}` | `{ZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
 
-| Data Type           | Name        | Label | Description                                                                          |
-| ------------------- | ----------- | ----- | ------------------------------------------------------------------------------------ |
-| `u7`                | PathIndex   | X     | [0-127] Index of file in [external-config.bin][external-config-bin]                  |
-| `u7`                | FileIndex   | Y     | [0-127] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
-| `u10` (MetadataIdx) | MetadataIdx | Z     | [0-1024] Index of metadata in [Package References][packagemetadatabin]               |
+| Data Type              | Name           | Label | Description                                                                          |
+| ---------------------- | -------------- | ----- | ------------------------------------------------------------------------------------ |
+| `u7`                   | PathIndex      | X     | [0-127] Index of file in [external-config.bin][external-config-bin]                  |
+| `u7`                   | FileIndex      | Y     | [0-127] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
+| `u10` ([PackageIdIdx]) | [PackageIdIdx] | Z     | [0-1024] Index of package ID in [package-ids.bin][package-ids.bin]                   |
 
 ### {11}+07: ExternalConfigUpdated56
 
-| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | MetadataIdx (44-63)            |
+| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | [PackageIdIdx] (44-63)         |
 | ---------------- | ---------------------------- | ---------------------------- | ------------------------------ |
 | C7 (`{11} + 07`) | `{XXXXXXXX} {XXXXXXXX} {XX}` | `{YYYYYY} {YYYYYYYY} {YYYY}` | `{ZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
 
-| Data Type           | Name        | Label | Description                                                                           |
-| ------------------- | ----------- | ----- | ------------------------------------------------------------------------------------- |
-| `u18`               | PathIndex   | X     | [0-256K] Index of file in [external-config.bin][external-config-bin]                  |
-| `u18`               | FileIndex   | Y     | [0-256K] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
-| `u20` (MetadataIdx) | MetadataIdx | Z     | [0-1M] Index of metadata in [Package References][packagemetadatabin]                  |
+| Data Type            | Name         | Label | Description                                                                           |
+| -------------------- | ------------ | ----- | ------------------------------------------------------------------------------------- |
+| `u18`                | PathIndex    | X     | [0-256K] Index of file in [external-config.bin][external-config-bin]                  |
+| `u18`                | FileIndex    | Y     | [0-256K] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
+| `u20` (PackageIdIdx) | PackageIdIdx | Z     | [0-1M] Index of package ID in [package-ids.bin][package-ids.bin]                      |
 
 ### {11}+08: ExternalConfigUpdatedFull
 
-| EventType (0-7)  | ExternalConfigIdx (8-35)                  | MetadataIdx (36-63)                       |
+| EventType (0-7)  | ExternalConfigIdx (8-35)                  | PackageIdIdx (36-63)                      |
 | ---------------- | ----------------------------------------- | ----------------------------------------- |
 | C8 (`{11} + 08`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type            | Name              | Label | Description                                                                               |
-| -------------------- | ----------------- | ----- | ----------------------------------------------------------------------------------------- |
-| `u28` (ExtConfigIdx) | ExternalConfigIdx | X     | [0-268M] Index of extended reference in [external-config-refs.bin][external-config-refs]. |
-| `u28` (MetadataIdx)  | MetadataIdx       | Y     | [0-268M] Index of metadata in [Package References][packagemetadatabin].                   |
+| Data Type              | Name              | Label | Description                                                                               |
+| ---------------------- | ----------------- | ----- | ----------------------------------------------------------------------------------------- |
+| `u28` (ExtConfigIdx)   | ExternalConfigIdx | X     | [0-268M] Index of extended reference in [external-config-refs.bin][external-config-refs]. |
+| `u28` ([PackageIdIdx]) | [PackageIdIdx]    | Y     | [0-268M] Index of package ID in [package-ids.bin][package-ids.bin].                       |
 
 [configbin]: Unpacked.md#configbin
 [events-bin]: Unpacked.md#eventsbin
-[packagemetadatabin]: Unpacked.md#package-references
+[packagemetadatabin]: Unpacked.md#packages
+[package-ids.bin]: Unpacked.md#package-idsbin
 [package-added-v0]: ./Commit-Messages.md#package_added_v0
 [package-removed-v0]: ./Commit-Messages.md#package_removed_v0
 [package-hidden-v0]: ./Commit-Messages.md#package_hidden_v0
@@ -723,3 +718,4 @@ This event is emitted the files of the game match a known new store manifest/rev
 [external-config-paths-bin]: ./Unpacked.md#external-config-pathsbin
 [external-config-refs]: ./Unpacked.md#external-config-refsbin
 [external-config-updated-v0]: ./Commit-Messages.md#external_config_updated_v0
+[PackageIdIdx]: ./DataTypes.md

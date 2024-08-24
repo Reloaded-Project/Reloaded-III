@@ -470,7 +470,7 @@ Updated external configuration file '{ConfigPath}' for '{Name}' (ID: '{ID}').
 [event-config-updated]: ./Events.md#configupdated
 [event-loadout-display-setting-changed]: ./Events.md#1004-loadoutdisplaysettingchanged
 [event-game-launched]: ./Events.md#gamelaunched
-[event-packageupdated]: ./Events.md#packageupdated
+[event-packageupdated]: ./Events.md#packageversionchanged
 [event-configupdated]: ./Events.md#configupdated
 [event-packageloadorderchanged]: ./Events.md#packageloadorderchanged
 [event-updategamestoremanifest]: ./Events.md#updategamestoremanifest

@@ -35,7 +35,7 @@ Suppose we want to write the following sequence of events:
 1. [GameLaunched] (1 byte)
 2. [PackageStatusChanged24] (4 bytes)
 3. [ConfigUpdated24] (2 bytes)
-4. [PackageUpdated16] (4 bytes)
+4. [PackageUpdated24] (4 bytes)
 
 Here's how these events would be written to the file:
 
@@ -220,6 +220,8 @@ This event has no extra data.
 | `02`            |
 
 ### [03] GameLaunchedN
+
+!!! info "a.k.a. `GameLaunched8`"
 
 !!! info "This is equivalent to repeating [GameLaunched] event `N` times."
 
@@ -882,5 +884,5 @@ Reference:
 [GameLaunchedN]: ./Commit-Messages.md#game_launched_n_v0
 [ConfigUpdated24]: #21-externalconfigupdated24
 [PackageStatusChanged24]: #packagestatuschanged
-[PackageUpdated16]: #1005-packageupdated16
 [NOP]: #00-nop
+[PackageUpdated24]: #17-packageupdated24

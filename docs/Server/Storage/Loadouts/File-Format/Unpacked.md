@@ -491,7 +491,7 @@ This would be encoded as:
     - 14: Length of "Super Cool Mod"
     - 28: Length of "reloaded3.utility.somexample"
 
-3. [commit-parameters-text.bin](#parametertype):
+3. [commit-parameters-text.bin][ParameterType]:
 
     - `Super Cool Mod`
     - `reloaded3.utility.somexample`
@@ -558,7 +558,7 @@ Let's say we want to reference all three parameters from the previous example in
 
     - 0: Version of the commit message.
 
-This optimized approach uses a single [ParameterType](#parametertype) (`11: BackReference3_8`) to
+This optimized approach uses a single [ParameterType] (`11: BackReference3_8`) to
 reference all three parameters at once, reducing the overall size of the encoded data.
 
 It's particularly efficient when you need to reference multiple consecutive parameters from a
@@ -585,8 +585,8 @@ previous event.
     2. Read the parameter types from [commit-parameter-types.bin][commit-param-types].
     3. Based on the parameter types, retrieve the actual parameter data from the appropriate locations:
         - Contextual parameters like `EventTime` can be inferred from the event context.
-        - Text data from [commit-parameters-text.bin](#parametertype)
-        - Timestamps from [commit-parameters-timestamps.bin](#parametertype)
+        - Text data from [commit-parameters-text.bin][ParameterType]
+        - Timestamps from [commit-parameters-timestamps.bin][ParameterType]
         - Back references from the appropriate [commit-parameters-backrefs-*.bin][commit-param-backrefs] file
         - Lists from [commit-parameters-lists.bin][commit-param-lists]
 
@@ -597,74 +597,11 @@ previous event.
 
 This is an array of:
 
-| Data Type | Name                            | Description            |
-| --------- | ------------------------------- | ---------------------- |
-| `u8`      | [ParameterType](#parametertype) | Type of the parameter. |
+| Data Type | Name            | Description            |
+| --------- | --------------- | ---------------------- |
+| `u8`      | [ParameterType] | Type of the parameter. |
 
-### commit-parameters-versions.bin
-
-!!! info "This enables versioning, ensuring that different variations of the same commit message can coexist."
-
-!!! warning "There should be 1 entry for each event!! Regardless of whether it has a message or not!!"
-
-This is an array of:
-
-| Data Type | Name    | Description                    |
-| --------- | ------- | ------------------------------ |
-| `u8`      | Version | Version of the commit message. |
-
-The version number corresponds to the version suffix in the message key.
-
-For example:
-
-- If the message key is `PACKAGE_ADDED_V0`, the version would be `0`.
-- If the message key is `MOD_CONFIG_UPDATED_V1`, the version would be `1`.
-
-This array contains `u8` values which correspond to the version of the commit message last issued
-for each event.
-
-For example, if the message for an event like [PackageStatusChanged][message-packagestatuschanged]
-is encoded with the key `PACKAGE_ADDED_V0`, it would be written as `0`:
-
-```
-Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
-```
-
-However, if a new version of the message is introduced with a ***different meaning***, ***order of
-parameters***, or ***number of parameters***, it would use a new key like `PACKAGE_ADDED_V1`, and
-the version number would be `1`.
-
-In practice, expect to see mostly `0`, as the text for most commit messages is unlikely to change
-often. When changes are needed, a new version of the message is created with an incremented version
-number in its key.
-
-!!! note "Compressing 1M zeroes with zstd yields file size of ~50 bytes."
-
-### commit-parameters-lengths-8.bin
-
-This is an array of:
-
-| Data Type | Name            | Description                       |
-| --------- | --------------- | --------------------------------- |
-| `u8`      | ParameterLength | Length of the parameter in bytes. |
-
-### commit-parameters-lengths-16.bin
-
-This is an array of:
-
-| Data Type | Name            | Description                       |
-| --------- | --------------- | --------------------------------- |
-| `u16`     | ParameterLength | Length of the parameter in bytes. |
-
-### commit-parameters-lengths-32.bin
-
-This is an array of:
-
-| Data Type | Name            | Description                       |
-| --------- | --------------- | --------------------------------- |
-| `u32`     | ParameterLength | Length of the parameter in bytes. |
-
-### ParameterType
+#### ParameterType
 
 `ParameterType` is defined as:
 
@@ -719,6 +656,77 @@ Here is a listing of which parameter types go where:
 | `16` | `u32, u32` [(BackReference2_32)](#back-references)      | `commit-parameters-backrefs-32.bin` |
 | `17` | `u32, u32, u32` [(BackReference3_32)](#back-references) | `commit-parameters-backrefs-32.bin` |
 
+### Commit Parameter Lengths
+
+!!! info "The following files store the parameter lengths."
+
+These files are only used whenever the used [ParameterType] requires it.
+
+See the `description` section of each [ParameterType] for more information.
+
+#### commit-parameters-lengths-8.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u8`      | ParameterLength | Length of the parameter in bytes. |
+
+#### commit-parameters-lengths-16.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u16`     | ParameterLength | Length of the parameter in bytes. |
+
+#### commit-parameters-lengths-32.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u32`     | ParameterLength | Length of the parameter in bytes. |
+
+### commit-parameters-versions.bin
+
+!!! info "This enables versioning, ensuring that different variations of the same commit message can coexist."
+
+!!! warning "There should be 1 entry for each event!! Regardless of whether it has a message or not!!"
+
+This is an array of:
+
+| Data Type | Name    | Description                    |
+| --------- | ------- | ------------------------------ |
+| `u8`      | Version | Version of the commit message. |
+
+The version number corresponds to the version suffix in the message key.
+
+For example:
+
+- If the message key is `PACKAGE_ADDED_V0`, the version would be `0`.
+- If the message key is `MOD_CONFIG_UPDATED_V1`, the version would be `1`.
+
+This array contains `u8` values which correspond to the version of the commit message last issued
+for each event.
+
+For example, if the message for an event like [PackageStatusChanged][message-packagestatuschanged]
+is encoded with the key `PACKAGE_ADDED_V0`, it would be written as `0`:
+
+```
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+However, if a new version of the message is introduced with a ***different meaning***, ***order of
+parameters***, or ***number of parameters***, it would use a new key like `PACKAGE_ADDED_V1`, and
+the version number would be `1`.
+
+In practice, expect to see mostly `0`, as the text for most commit messages is unlikely to change
+often. When changes are needed, a new version of the message is created with an incremented version
+number in its key.
+
+!!! note "Compressing 1M zeroes with zstd yields file size of ~50 bytes."
+
 ### Back References
 
 !!! info "Back References are a Special Type of Parameter that references a previous item."
@@ -731,7 +739,7 @@ Here is a listing of which parameter types go where:
 This improves loadout sizes by reducing existing previous data.
 
 Back References are defined as 1 or more `ParameterIndex` fields, whose location and data type
-depends on [ParameterType](#parametertype).
+depends on [ParameterType].
 
 A `ParameterIndex` of `0` means 'the first commit parameter' in file.
 `1` means 'the second commit parameter' etc.
@@ -773,11 +781,11 @@ This is where `Parameter Lists` come in.
 
 A `Parameter List` is defined as:
 
-| Data Type | Name                            | Description                           |
-| --------- | ------------------------------- | ------------------------------------- |
-| `u8`      | [ParameterType](#parametertype) | Type of the parameter.                |
-| `u4`      | Version                         | [Event Specific] version of the list. |
-| `u20`     | NumParameters                   | Number of parameters.                 |
+| Data Type | Name            | Description                           |
+| --------- | --------------- | ------------------------------------- |
+| `u8`      | [ParameterType] | Type of the parameter.                |
+| `u4`      | Version         | [Event Specific] version of the list. |
+| `u20`     | NumParameters   | Number of parameters.                 |
 
 For the example above, we can treat each `Change` as 2 parameters.
 In which case, if we had 2 changes, we would set `NumParameters` to `4`.
@@ -838,3 +846,4 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [config-file]: ../../../Packaging/Package-Metadata.md#configfile
 [community-repository]: ../../../../Services/Community-Repository.md
 [nexus]: https://www.nexusmods.com
+[ParameterType]: #parametertype

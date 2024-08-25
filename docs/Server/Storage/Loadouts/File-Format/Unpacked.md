@@ -9,8 +9,9 @@
 | [Timestamps](#timestampsbin)                             | `timestamps.bin`                                                                                       | Timestamps for each commit.                                           |
 | [Commit Parameters](#commit-parameters)                  | `commit-parameter-types.bin`<br/>+`commit-parameter-lengths-{x}.bin`<br/>+ `commit-parameters-{x}.bin` | List of commit message parameters for each event.                     |
 | [Configs](#configbin)                                    | `config.bin`<br/>+ `config-data.bin`                                                                   | Package Configurations.                                               |
-| [Package Reference (IDs)](#package-references)           | `package-reference-ids.bin`                                                                            | Hashes of package IDs in this loadout.                                |
-| [Package Reference (Versions)](#package-references)      | `package-reference-versions-len.bin`<br/>+ `package-reference-versions.bin`                            | String versions of package IDs in this loadout.                       |
+| [External Configs](#external-configbin)                  | `external-config.bin`<br/>+ `external-config-data.bin`<br/>+ `external-config-paths.bin`               | Package Configurations.                                               |
+| [Package Reference (IDs)](#packages)                     | `package-ids.bin`                                                                                      | Hashes of package IDs in this loadout.                                |
+| [Package Reference (Versions)](#packages)                | `package-versions-len.bin`<br/>+ `package-versions.bin`                                                | String versions of package IDs in this loadout.                       |
 | [Store Manifests](#storesbin)                            | `stores.bin`<br/>+ `store-data.bin`                                                                    | Game store specific info to restore game to last version if possible. |
 | [Commandline Parameters](#commandline-parameter-databin) | `commandline-parameter-data.bin`                                                                       | Raw data for commandline parameters. Length specified in event.       |
 
@@ -39,14 +40,16 @@ performing a cleanup of unused data (by truncating remaining files).
 
 Format:
 
-| Data Type | Name            | Description                                                  |
-| --------- | --------------- | ------------------------------------------------------------ |
-| `u16`     | Version         | Version of the loadout format.                               |
-| `u16`     | Reserved        |                                                              |
-| `u32`     | NumEvents       | Total number of events and timestamps in this loadout.       |
-| `u32`     | NumMetadata     | Total number of package metadata files in this loadout.      |
-| `u32`     | NumConfigs      | Total number of package configuration files in this loadout. |
-| `u32`     | NumGameVersions | Total number of game versions.                               |
+| Data Type | Name               | Description                                                                                  |
+| --------- | ------------------ | -------------------------------------------------------------------------------------------- |
+| `u16`     | Version            | Version of the loadout format.                                                               |
+| `u16`     | Reserved           |                                                                                              |
+| `u32`     | NumEvents          | Total number of [events][events-bin] and timestamps in this loadout.                         |
+| `u32`     | NumPackageIds      | Total number of unique [package ID(s)](#package-idsbin) files in this loadout.               |
+| `u32`     | NumPackageVersions | Total number of unique [package version(s)](#package-versions-lenbin) files in this loadout. |
+| `u32`     | NumConfigs         | Total number of [package configuration](#configbin) files in this loadout.                   |
+| `u32`     | NumGameVersions    | Total number of [game versions](#storesbin) (store entries).                                 |
+| `u32`     | NumExternalConfigs | Total number of [external configuration](#external-configbin) files in this loadout.         |
 
 !!! warning "Backwards compatibility is supported but not forwards."
 
@@ -91,7 +94,7 @@ This is an array of 32-bit timestamps ([`R3TimeStamp[]`][max-numbers]). The numb
 
 ## config.bin
 
-!!! info "This stores all historical mod configurations for any point in time."
+!!! info "This stores all historical package configurations for any point in time."
 
 This is the array of file sizes, each being:
 
@@ -121,32 +124,93 @@ every time a config is added. Emitted events refer to this index.
 
 ### config-data.bin
 
-!!! info "This is a buffer of raw, unmodified configuration files."
+!!! info "This is a buffer of raw, unmodified, ***unique*** configuration files."
 
 You can get the file size and offsets from the [config.bin](#configbin) file.
 
-## Package References
+## external-config.bin
 
-!!! info "A 'package reference' consists of a [XXH3(PackageID)][hashing] and Version."
+!!! info "This stores all historical external configurations for any point in time."
 
-    From [Package.toml][package-toml].
+    External configurations are these generated by tools, as opposed to the ones generated by R3.
 
-    This is the minimum amount of data required to uniquely identify a package.
+This is the array of file sizes, each being:
 
-Packages are referred to by an index known as [MetadataIdx][max-numbers] in the events.
+| Data Type | Name     | Description                     |
+| --------- | -------- | ------------------------------- |
+| `u32`     | FileSize | Size of the configuration file. |
 
-So a `MetadataIdx == 1` means `fetch the entry at index 1` of [package-reference-ids.bin](#package-reference-idsbin)
-and [package-reference-versions.bin](#package-reference-idsbin).
+Every new config is appended to [external-config-data.bin](#external-config-databin) as it is added.
 
-As for how to use the data, it is similar to [config.bin](#configbin), essentially we deduplicate
-entries by in-memory hash. So an event can always refer to a [MetadataIdx][max-numbers] created
+The path of every config is appended to [external-config-paths.bin](#external-config-pathsbin).
+
+Each unique config has an index, a.k.a. [ConfigIdx][max-numbers], which is an incrementing value from 0
+every time a config is added. Emitted events refer to this index.
+
+!!! question "How do you use this data?"
+
+    See: [config.bin](#configbin)'s `How do you use this data?` section.
+
+### external-config-data.bin
+
+!!! info "This is a buffer of raw, unmodified, ***unique*** configuration files."
+
+You can get the file size and offsets from the [config.bin](#configbin) file.
+
+### external-config-paths.bin
+
+!!! info "This is a buffer of paths to configuration files generated by external tools/packages/programs."
+
+This is a list of ***unique*** `String8`s (1 byte prefixed UTF-8 Strings).
+
+Each path is a path *relative* to the path specified in [Config File Paths][config-file-paths].
+
+!!! example "This is best illustrated with an example."
+
+    For a config with the path set to
+
+    ```toml
+    [[ConfigFiles]]
+    Id = 3
+    Type = "Folder" # or 'ByExtension
+    Description = "OS-specific data folder"
+    [[ConfigFiles.Paths]]
+    OS = "any"
+    Path = "{LocalAppData}/ToolName/Data"
+    ```
+
+    Storing a path of `config.json` in `external-config-paths.bin` would equal the final path to be:
+
+    - `"{LocalAppData}/ToolName/Data/config.json"`
+
+    If the `Type` is `File`. An empty path would be used instead.
+
+## Packages
+
+!!! info "We refer to a 'unique package' by [XXH3(PackageID)][hashing]"
+
+    The field `PackageID` being the `Id` field from [Package.toml][package-toml].
+
+    There can only be one version of a package with given ID in a loadout
+    at a given time.
+
+References to Package IDs (`XXH3(PackageID)`) are referred to by an index known as
+[PackageIdIdx][max-numbers] in the events:
+
+- A `PackageIdIdx == 1` in an event means `fetch the entry at index 1` of [package-ids.bin](#package-idsbin).
+
+Most events will only require a [PackageIdIdx][max-numbers]. However, in some cases the version
+[PackageVerIdx](#package-versions) is also needed, for example, to upgrade packages.
+
+As for how to use the data, it is similar to [config.bin](#configbin). We deduplicate
+entries by in-memory hash. So an event can always refer to a [PackageIdIdx][max-numbers] created
 in an earlier event to save space.
 
 !!! danger "Launcher MUST ensure each published mod has valid update/download data."
 
-    Otherwise this system could fail, as a hash of packageID is not useful.
+    Otherwise this system could fail, as a hash of packageID on its own is not useful.
 
-### package-reference-ids.bin
+### package-ids.bin
 
 !!! info "This is a buffer of [XXH3(PackageID)][hashing]"
 
@@ -159,7 +223,7 @@ System can still always fail, we just pray it won't.
 
 !!! note "Some Numbers"
 
-    Nexus Mods alone hosts 815999 mods as of 30th of May 2024 (obtained via GraphQL API).
+    [Nexus Mods][nexus] alone hosts 815999 mods as of 30th of May 2024 (obtained via GraphQL API).
 
     The probability of a hash collision on whole mod set is roughly the following:
 
@@ -184,9 +248,20 @@ and at that point a meteor is more likely to land on your house (no joke).
 
 !!! note "This ID is used to [restore the package](#restoring-actual-package-files)."
 
-### package-reference-versions-len.bin
+## Package Versions
 
-Contains the lengths of entries in [package-reference-versions.bin](#package-reference-idsbin).
+!!! info "In some contexts, it may also be useful to know the package version."
+
+Reference to unique *Package Version* are referred to by an index known as [PackageVerIdx][max-numbers]
+in the events:
+
+- So a `PackageVerIdx == 1` in an event means `fetch the entry at index 1` of [package-versions.bin](#package-versionsbin).
+
+This information is sometimes used to `e.g.` upgrade packages.
+
+### package-versions-len.bin
+
+Contains the lengths of entries in [package-versions.bin](#package-idsbin).
 
 | Data Type | Name          | Description                 |
 | --------- | ------------- | --------------------------- |
@@ -196,9 +271,9 @@ Contains the lengths of entries in [package-reference-versions.bin](#package-ref
 
     Most versions are of form `X.Y.Z` so there is a lot of repetition of `05`.
 
-### package-reference-versions.bin
+### package-versions.bin
 
-!!! info "This is a buffer consisting of package versions, whose length is defined in [package-reference.bin](#package-references)"
+!!! info "This is a buffer consisting of package versions, whose length is defined in [package-reference.bin](#packages)"
 
 These versions are stored as UTF-8 strings. No null terminator.
 
@@ -389,36 +464,37 @@ Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 Which could be marked as:
 
 ```
-Added '**Super Cool Mod**' with ID '**reloaded3.utility.scmexample**' and version '**1.0.0**'
+Added '**Super Cool Mod**' with ID '**reloaded3.utility.somexample**' and version '**1.0.0**'
 ```
+
+!!! note "The `Version` is a ['Contextual Parameter'][commit-messages-contextual], and thus is derived from context."
+
+    It is not stored in the commit parameters.
 
 #### Encoding
 
-!!! note "Parameters are encoded in the order in which they appear in the template!!"
+!!! tip "Parameters are encoded in the order in which they appear in the template!!"
 
 This would be encoded as:
 
-1. [commit-parameter-types.bin](#commit-parameters-typesbin): [0, 0, 0]
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [0, 0]
 
     Explanation:
 
-    - 0: UTF-8 Char Array for "Super Cool Mod"
-    - 0: UTF-8 Char Array for "reloaded3.utility.scmexample"
-    - 0: UTF-8 Char Array for "1.0.0"
+    - 0: UTF-8 Char Array for "Super Cool Mod" (Name)
+    - 0: UTF-8 Char Array for "reloaded3.utility.somexample" (ID)
 
-2. [commit-parameters-lengths.bin][commitparam8len]: [14, 28, 5]
+2. [commit-parameters-lengths-8.bin][commitparam8len]: [14, 28]
 
     Explanation:
 
     - 14: Length of "Super Cool Mod"
-    - 28: Length of "reloaded3.utility.scmexample"
-    - 5: Length of "1.0.0"
+    - 28: Length of "reloaded3.utility.somexample"
 
-3. [commit-parameters-text.bin](#parametertype):
+3. [commit-parameters-text.bin][ParameterType]:
 
     - `Super Cool Mod`
-    - `reloaded3.utility.scmexample`
-    - `1.0.0`
+    - `reloaded3.utility.somexample`
 
     These strings are written directly to the `commit-parameters-text.bin` file, without any null
     terminator or padding.
@@ -435,21 +511,19 @@ This would be encoded as:
 
 !!! info "Suppose you wanted to repeat the earlier parameter, we would use [back references](#back-references)."
 
-1. [commit-parameter-types.bin](#commit-parameters-typesbin): [7, 7, 7]
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [5, 5]
 
     Explanation:
 
     - 5: BackReference8 for `"Super Cool Mod"`
-    - 5: BackReference8 for `"reloaded3.utility.scmexample"`
-    - 5: BackReference8 for `"1.0.0"`
+    - 5: BackReference8 for `"reloaded3.utility.somexample"`
 
-2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
+2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1]
 
     Explanation:
 
     - 0: Index of `"Super Cool Mod"`
-    - 1: Index of `"reloaded3.utility.scmexample"`
-    - 2: Index of `"1.0.0"`
+    - 1: Index of `"reloaded3.utility.somexample"`
 
 3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
 
@@ -471,13 +545,12 @@ Let's say we want to reference all three parameters from the previous example in
 
     - 11: BackReference3_8 for all three parameters
 
-2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
+2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1]
 
     Explanation:
 
     - 0: Index of `"Super Cool Mod"`
-    - 1: Index of `"reloaded3.utility.scmexample"`
-    - 2: Index of `"1.0.0"`
+    - 1: Index of `"reloaded3.utility.somexample"`
 
 3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
 
@@ -485,7 +558,7 @@ Let's say we want to reference all three parameters from the previous example in
 
     - 0: Version of the commit message.
 
-This optimized approach uses a single [ParameterType](#parametertype) (`11: BackReference3_8`) to
+This optimized approach uses a single [ParameterType] (`11: BackReference3_8`) to
 reference all three parameters at once, reducing the overall size of the encoded data.
 
 It's particularly efficient when you need to reference multiple consecutive parameters from a
@@ -512,8 +585,8 @@ previous event.
     2. Read the parameter types from [commit-parameter-types.bin][commit-param-types].
     3. Based on the parameter types, retrieve the actual parameter data from the appropriate locations:
         - Contextual parameters like `EventTime` can be inferred from the event context.
-        - Text data from [commit-parameters-text.bin](#parametertype)
-        - Timestamps from [commit-parameters-timestamps.bin](#parametertype)
+        - Text data from [commit-parameters-text.bin][ParameterType]
+        - Timestamps from [commit-parameters-timestamps.bin][ParameterType]
         - Back references from the appropriate [commit-parameters-backrefs-*.bin][commit-param-backrefs] file
         - Lists from [commit-parameters-lists.bin][commit-param-lists]
 
@@ -524,74 +597,11 @@ previous event.
 
 This is an array of:
 
-| Data Type | Name                            | Description            |
-| --------- | ------------------------------- | ---------------------- |
-| `u8`      | [ParameterType](#parametertype) | Type of the parameter. |
+| Data Type | Name            | Description            |
+| --------- | --------------- | ---------------------- |
+| `u8`      | [ParameterType] | Type of the parameter. |
 
-### commit-parameters-versions.bin
-
-!!! info "This enables versioning, ensuring that different variations of the same commit message can coexist."
-
-!!! warning "There should be 1 entry for each event!! Regardless of whether it has a message or not!!"
-
-This is an array of:
-
-| Data Type | Name    | Description                    |
-| --------- | ------- | ------------------------------ |
-| `u8`      | Version | Version of the commit message. |
-
-The version number corresponds to the version suffix in the message key.
-
-For example:
-
-- If the message key is `PACKAGE_ADDED_V0`, the version would be `0`.
-- If the message key is `MOD_CONFIG_UPDATED_V1`, the version would be `1`.
-
-This array contains `u8` values which correspond to the version of the commit message last issued
-for each event.
-
-For example, if the message for an event like [PackageStatusChanged][message-packagestatuschanged]
-is encoded with the key `PACKAGE_ADDED_V0`, it would be written as `0`:
-
-```
-Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
-```
-
-However, if a new version of the message is introduced with a ***different meaning***, ***order of
-parameters***, or ***number of parameters***, it would use a new key like `PACKAGE_ADDED_V1`, and
-the version number would be `1`.
-
-In practice, expect to see mostly `0`, as the text for most commit messages is unlikely to change
-often. When changes are needed, a new version of the message is created with an incremented version
-number in its key.
-
-!!! note "Compressing 1M zeroes with zstd yields file size of ~50 bytes."
-
-### commit-parameters-lengths-8.bin
-
-This is an array of:
-
-| Data Type | Name            | Description                       |
-| --------- | --------------- | --------------------------------- |
-| `u8`      | ParameterLength | Length of the parameter in bytes. |
-
-### commit-parameters-lengths-16.bin
-
-This is an array of:
-
-| Data Type | Name            | Description                       |
-| --------- | --------------- | --------------------------------- |
-| `u16`     | ParameterLength | Length of the parameter in bytes. |
-
-### commit-parameters-lengths-32.bin
-
-This is an array of:
-
-| Data Type | Name            | Description                       |
-| --------- | --------------- | --------------------------------- |
-| `u32`     | ParameterLength | Length of the parameter in bytes. |
-
-### ParameterType
+#### ParameterType
 
 `ParameterType` is defined as:
 
@@ -646,6 +656,77 @@ Here is a listing of which parameter types go where:
 | `16` | `u32, u32` [(BackReference2_32)](#back-references)      | `commit-parameters-backrefs-32.bin` |
 | `17` | `u32, u32, u32` [(BackReference3_32)](#back-references) | `commit-parameters-backrefs-32.bin` |
 
+### Commit Parameter Lengths
+
+!!! info "The following files store the parameter lengths."
+
+These files are only used whenever the used [ParameterType] requires it.
+
+See the `description` section of each [ParameterType] for more information.
+
+#### commit-parameters-lengths-8.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u8`      | ParameterLength | Length of the parameter in bytes. |
+
+#### commit-parameters-lengths-16.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u16`     | ParameterLength | Length of the parameter in bytes. |
+
+#### commit-parameters-lengths-32.bin
+
+This is an array of:
+
+| Data Type | Name            | Description                       |
+| --------- | --------------- | --------------------------------- |
+| `u32`     | ParameterLength | Length of the parameter in bytes. |
+
+### commit-parameters-versions.bin
+
+!!! info "This enables versioning, ensuring that different variations of the same commit message can coexist."
+
+!!! warning "There should be 1 entry for each event!! Regardless of whether it has a message or not!!"
+
+This is an array of:
+
+| Data Type | Name    | Description                    |
+| --------- | ------- | ------------------------------ |
+| `u8`      | Version | Version of the commit message. |
+
+The version number corresponds to the version suffix in the message key.
+
+For example:
+
+- If the message key is `PACKAGE_ADDED_V0`, the version would be `0`.
+- If the message key is `MOD_CONFIG_UPDATED_V1`, the version would be `1`.
+
+This array contains `u8` values which correspond to the version of the commit message last issued
+for each event.
+
+For example, if the message for an event like [PackageStatusChanged][message-packagestatuschanged]
+is encoded with the key `PACKAGE_ADDED_V0`, it would be written as `0`:
+
+```
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+```
+
+However, if a new version of the message is introduced with a ***different meaning***, ***order of
+parameters***, or ***number of parameters***, it would use a new key like `PACKAGE_ADDED_V1`, and
+the version number would be `1`.
+
+In practice, expect to see mostly `0`, as the text for most commit messages is unlikely to change
+often. When changes are needed, a new version of the message is created with an incremented version
+number in its key.
+
+!!! note "Compressing 1M zeroes with zstd yields file size of ~50 bytes."
+
 ### Back References
 
 !!! info "Back References are a Special Type of Parameter that references a previous item."
@@ -658,7 +739,7 @@ Here is a listing of which parameter types go where:
 This improves loadout sizes by reducing existing previous data.
 
 Back References are defined as 1 or more `ParameterIndex` fields, whose location and data type
-depends on [ParameterType](#parametertype).
+depends on [ParameterType].
 
 A `ParameterIndex` of `0` means 'the first commit parameter' in file.
 `1` means 'the second commit parameter' etc.
@@ -700,11 +781,11 @@ This is where `Parameter Lists` come in.
 
 A `Parameter List` is defined as:
 
-| Data Type | Name                            | Description                           |
-| --------- | ------------------------------- | ------------------------------------- |
-| `u8`      | [ParameterType](#parametertype) | Type of the parameter.                |
-| `u4`      | Version                         | [Event Specific] version of the list. |
-| `u20`     | NumParameters                   | Number of parameters.                 |
+| Data Type | Name            | Description                           |
+| --------- | --------------- | ------------------------------------- |
+| `u8`      | [ParameterType] | Type of the parameter.                |
+| `u4`      | Version         | [Event Specific] version of the list. |
+| `u20`     | NumParameters   | Number of parameters.                 |
 
 For the example above, we can treat each `Change` as 2 parameters.
 In which case, if we had 2 changes, we would set `NumParameters` to `4`.
@@ -757,5 +838,12 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [commit-param-backrefs]: ./Unpacked.md#back-references
 [commit-param-lists]: ./Unpacked.md#parameter-lists
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
+[event-externalconfigupdated]: ./Events.md#22-externalconfigupdated56
 [package-added]: ./Commit-Messages.md#package_added_v0
 [snapshots]: ./Snapshot.md
+[config-files]: ../../../Packaging/Package-Metadata.md#config-files
+[config-file-paths]: ../../../Packaging/Package-Metadata.md#path
+[config-file]: ../../../Packaging/Package-Metadata.md#configfile
+[community-repository]: ../../../../Services/Community-Repository.md
+[nexus]: https://www.nexusmods.com
+[ParameterType]: #parametertype

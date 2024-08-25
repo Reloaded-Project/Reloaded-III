@@ -36,9 +36,10 @@ These fields are usually only found when [PackageType](#packagetype) == `Mod`:
 
 These fields are usually only found when [PackageType](#packagetype) == `Tool`:
 
-| Type   | Name           | Description                                          |
-| ------ | -------------- | ---------------------------------------------------- |
-| Task[] | [Tasks][tasks] | List of binaries that the `tool` package ships with. |
+| Type         | Name                         | Description                                          |
+| ------------ | ---------------------------- | ---------------------------------------------------- |
+| Task[]       | [Tasks][tasks]               | List of binaries that the `tool` package ships with. |
+| ConfigFile[] | [ConfigFiles](#config-files) | List of configuration files synced with Reloaded-II. |
 
 ## Implicit Fields
 
@@ -215,7 +216,6 @@ automatically generated package. Specifically by:
 - Prepending `[Platform]` or `[Platform+Arch]` to the `Name` field.
 - Appending the `architecture` part to the [Id](#id) field.
 - Updating the [Targets](#targets) field to include the correct architecture (if needed).
-
 
 !!! warning "***DO NOT*** use architectures be used in [dependency references](#dependency-info)."
 
@@ -632,6 +632,157 @@ By default this value is `false` for code mods and `true` for asset mods. Howeve
 the mods which read the contents of asset mods may choose to ignore the unload request
 if they themselves don't support it. (These mods should log a warning to console if they do so.)
 
+## Config Files
+
+!!! info "For `Tools`, this allows the [ingesting of configuration files][ingest-config] from an external location."
+
+Example section:
+
+```toml
+# A file inside the package directory
+# If the tool writes config files to its own folders
+[[ConfigFiles]]
+Id = 0
+Type = "File"
+Description = "Main configuration file"
+[[ConfigFiles.Paths]]
+OS = "any"
+Path = "{PackageDir}/bin/config/config.json"
+
+# Example of using 'by extension' with a base directory
+[[ConfigFiles]]
+Id = 1
+Type = "ByExtension"
+Description = "All JSON files in the config directory"
+[[ConfigFiles.Paths]]
+OS = "any"
+Path = "{PackageDir}/bin/config"
+Extension = "json"
+IncludeSubfolders = false
+
+# Example of using AppData across different OS
+[[ConfigFiles]]
+Id = 2
+Type = "File"
+Description = "User settings in AppData folder matching across OSes"
+[[ConfigFiles.Paths]]
+OS = "any"
+Path = "{AppData}/ToolName/settings.json"
+# Windows: C:\Users\{Username}\AppData\Roaming\ToolName\settings.json
+# Linux: /home/{Username}/.config/ToolName/settings.json
+# macOS: /Users/{Username}/Library/Application Support/ToolName/settings.json
+
+# Example of a folder with OS-specific locations
+[[ConfigFiles]]
+Id = 3
+Type = "Folder"
+Description = "OS-specific data folder"
+[[ConfigFiles.Paths]]
+OS = "win"
+Path = "{LocalAppData}/ToolName/Data"
+[[ConfigFiles.Paths]]
+OS = "linux"
+Path = "{XDG_DATA_HOME}/ToolName"
+[[ConfigFiles.Paths]]
+OS = "macos"
+Path = "{Library}/Application Support/ToolName"
+```
+
+When a loadout is loaded or the relevant `Tool` started by Reloaded3 stops running, updated
+configs are `ingested` (integrated) into the loadout.
+
+For more details, see [Tools as Packages][tools-as-packages].
+
+### ConfigFile
+
+| Type            | Name        | Description                                                     |
+| --------------- | ----------- | --------------------------------------------------------------- |
+| u8              | Id          | [Required] Unique identifier. Between 0-255.                    |
+| string          | Type        | Type of the config entry: `File`, `Folder`, or `ByExtension`    |
+| [Path](#path)[] | Paths       | Array of OS-specific paths for the config file or folder        |
+| string          | Description | A brief description of the configuration file or group of files |
+
+!!! info "The `Unique Identifier` (ID) is used to reference paths from external places."
+
+    In a way where configuration files can be transferred between platforms, for example Linux <=> Windows.
+    An example of this is [Unpacked Loadouts][external-config-paths].
+
+#### Path
+
+| Type   | Name              | Description                                              |
+| ------ | ----------------- | -------------------------------------------------------- |
+| string | OS                | Target OS: `any`, `win`, `linux` or `macos`.             |
+| string | Path              | The path or to the file/folder, can include placeholders |
+| string | Extension         | Name of extension when `ByExtension` is used.            |
+| bool   | IncludeSubfolders | Whether to recurse folders when `ByExtension` is used.   |
+
+The OS field names are based on the [Backend Names][native-backend].
+
+## Path Placeholders
+
+!!! info "The `Path` field allows for some placeholders."
+
+These are based on the `Windows` folder names, with equivalent `Linux` and `macOS` folders.
+
+| Placeholder      | Windows                   | Linux                                     | macOS                               |
+| ---------------- | ------------------------- | ----------------------------------------- | ----------------------------------- |
+| `{PackageDir}`   | Package directory         | Package directory                         | Package directory                   |
+| `{AppData}`      | `%APPDATA%`               | `$XDG_CONFIG_HOME` or `$HOME/.config`     | `$HOME/Library/Application Support` |
+| `{LocalAppData}` | `%LOCALAPPDATA%`          | `$XDG_DATA_HOME` or `$HOME/.local/share`  | `$HOME/Library/Application Support` |
+| `{ProgramData}`  | `%PROGRAMDATA%`           | `/usr/local/share`                        | `/Library/Application Support`      |
+| `{Temp}`         | `%TEMP%`                  | `$XDG_RUNTIME_DIR` or `/tmp`              | `$TMPDIR`                           |
+| `{Documents}`    | `%USERPROFILE%\Documents` | `$XDG_DOCUMENTS_DIR` or `$HOME/Documents` | `$HOME/Documents`                   |
+| `{Home}`         | `%USERPROFILE%`           | `$HOME`                                   | `$HOME`                             |
+
+These are typically used for the following:
+
+- `{PackageDir}`: The directory containing the current package.
+- `{AppData}`: User-specific (roaming) application data folder
+- `{LocalAppData}`: User-specific local application data folder
+- `{ProgramData}`: Application data for all users
+- `{Temp}`: Temporary folder
+- `{Documents}`: User's Documents folder
+
+### Linux Specific Placeholders
+
+On `Linux`, the [XDG Path Spec][xdg-path-spec] is also supported:
+
+| Placeholder           | Linux Location                            |
+| --------------------- | ----------------------------------------- |
+| `{XDG_DATA_HOME}`     | `$XDG_DATA_HOME` or `$HOME/.local/share`  |
+| `{XDG_CONFIG_HOME}`   | `$XDG_CONFIG_HOME` or `$HOME/.config`     |
+| `{XDG_CACHE_HOME}`    | `$XDG_CACHE_HOME` or `$HOME/.cache`       |
+| `{XDG_DOCUMENTS_DIR}` | `$XDG_DOCUMENTS_DIR` or `$HOME/Documents` |
+
+Explanation of Linux Folders:
+
+- `{XDG_DATA_HOME}`: Directory for user-specific data files, typically used for non-configuration files like runtime data. Defaults to $HOME/.local/share.
+- `{XDG_CONFIG_HOME}`: Directory for user-specific configuration files. Defaults to $HOME/.config.
+- `{XDG_CACHE_HOME}`: Directory for user-specific non-essential data files, such as cache. Defaults to $HOME/.cache.
+- `{XDG_DOCUMENTS_DIR}`: Directory for user-specific documents, usually mapped to $HOME/Documents.
+
+### macOS Specific Placeholders
+
+On `macOS`, the following placeholders map to directories commonly used by macOS-specific applications and are not part of the common cross-platform placeholders:
+
+| Placeholder            | macOS Location              |
+| ---------------------- | --------------------------- |
+| `{Library}`            | `$HOME/Library`             |
+| `{LibraryCaches}`      | `$HOME/Library/Caches`      |
+| `{LibraryPreferences}` | `$HOME/Library/Preferences` |
+| `{LibraryLogs}`        | `$HOME/Library/Logs`        |
+| `{LibraryContainers}`  | `$HOME/Library/Containers`  |
+| `{SystemLibrary}`      | `/Library`                  |
+
+Explanation of macOS Folders:
+
+- **`{Library}`**: The root directory for user-specific application support files, caches, preferences, etc. Located at `$HOME/Library`.
+- **`{LibraryCaches}`**: Directory for user-specific cache files. Located at `$HOME/Library/Caches`.
+- **`{LibraryPreferences}`**: Directory for user-specific application preference files. Located at `$HOME/Library/Preferences`.
+- **`{LibraryLogs}`**: Directory for user-specific application log files. Located at `$HOME/Library/Logs`.
+- **`{LibraryContainers}`**: Directory for containerized app data, used primarily for sandboxed apps. Located at `$HOME/Library/Containers`.
+- **`{SystemLibrary}`**: The system-wide equivalent of the user’s Library folder, containing system-level application support files. Located at `/Library`.
+
 <!-- Links -->
 [game-metadata-id]: ../Storage/Games/About.md#id
 [backend]: ../../Loader/Backends/About.md
@@ -661,3 +812,7 @@ if they themselves don't support it. (These mods should log a warning to console
 [architecture]: ../../Loader/Backends/About.md#architectures
 [tasks]: ./Tasks.md
 [package-structure]: ./About.md#package-structure
+[ingest-config]: ../Storage/Locations.md#package-config-handling
+[tools-as-packages]: ./Tools-As-Packages.md#chosen-approach
+[xdg-path-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html
+[external-config-paths]: ../Storage/Loadouts/File-Format/Unpacked.md#external-config-pathsbin

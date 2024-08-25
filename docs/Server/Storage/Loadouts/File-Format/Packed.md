@@ -45,9 +45,12 @@ The following tree structure represents the files included in the packed .nx arc
 ├── commit-parameters-lists.bin
 ├── config.bin
 ├── config-data.bin
-├── package-reference-ids.bin
-├── package-reference-versions-len.bin
-├── package-reference-versions.bin
+├── external-config.bin
+├── external-config-data.bin
+├── external-config-paths.bin
+├── package-ids.bin
+├── package-versions-len.bin
+├── package-versions.bin
 ├── stores.bin
 ├── store-data.bin
 └── commandline-parameter-data.bin

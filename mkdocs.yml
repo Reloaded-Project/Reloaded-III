@@ -119,6 +119,7 @@ nav:
     - Packaging:
       - About: Server/Packaging/About.md
       - Package Metadata: Server/Packaging/Package-Metadata.md
+      - Tools as Packages: Server/Packaging/Tools-As-Packages.md
       - Publishing Packages: Server/Packaging/Publishing-Packages.md
       - Tasks: Server/Packaging/Tasks.md
     - Workflows: 

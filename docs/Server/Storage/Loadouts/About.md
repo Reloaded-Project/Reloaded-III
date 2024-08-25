@@ -131,13 +131,13 @@ be written to each file as we replay the events, then truncate everything after 
 In the event of a crash, corrupt loadout or power loss, we have 3 sources of truth:
 
 - [Packed Loadout][packed-loadout]
-- [Unpacked Loadout][unpacked-loadout] (if Exists)
+- [Unpacked Loadout][unpacked-loadout]
 - [Snapshot][snapshot]
 
 We restore the loadout using the newest of these sources.<br/>
 This is determined by the [event count][event-count-header] field.
 
-If the newest is a [packed][packed-loadout] or  loadout,
+If the newest is a [packed][packed-loadout] or loadout,
 we simply replace the other 2 sources and we're done.
 
 If the latest source however is a [snapshot][snapshot], we use that as a fallback and diff it against
@@ -161,6 +161,7 @@ Loadouts are stored in the `Loadouts` folder.
     ```
     .
     ├── 7f2cc8b7d9f1e3a5
+    │   └── ... unpacked files
     └── database.mdb
         ├── 7f2cc8b7d9f1e3a5.nx
         └── 7f2cc8b7d9f1e3a5.snapshot.bin

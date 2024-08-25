@@ -71,12 +71,12 @@ in persistent storage. We will auto clean them ourselves.
 
 ### User
 
-| Item                                              | Subfolder                    | Description                                                    |
-| ------------------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
-| [Loadouts](#loadouts)                             | `Loadouts`                   | Loadouts that are private to the current user.                 |
-| [Added Games][game-metadata]                      | `Games/{gameId}`             | And all of user's global preferences for that game.            |
-| Package Configs                                   | `PackageConfigs/{packageId}` | Config/Save files for packages. ***This contains user data***. |
-| [Package Cache Files](#cache-files-user-specific) | `Cache/Package/{packageId}`  | Cache files that have inputs ***with user data***.             |
+| Item                                              | Subfolder                    | Description                                                           |
+| ------------------------------------------------- | ---------------------------- | --------------------------------------------------------------------- |
+| [Loadouts](#loadouts)                             | `Loadouts`                   | Loadouts that are private to the current user.                        |
+| [Added Games][game-metadata]                      | `Games/{gameId}`             | And all of user's global preferences for that game.                   |
+| Package Configs                                   | Inside [Loadouts](#loadouts) | Extra details in [Package Config Handling](#package-config-handling). |
+| [Package Cache Files](#cache-files-user-specific) | `Cache/Package/{packageId}`  | Cache files that have inputs ***with user data***.                    |
 
 ## Extra Details on Stored Items
 
@@ -144,6 +144,7 @@ Loadouts are stored in the `Loadouts` folder.
     ```
     .
     ├── 7f2cc8b7d9f1e3a5
+    │   └── ... unpacked files
     └── database.mdb
         ├── 7f2cc8b7d9f1e3a5.nx
         └── 7f2cc8b7d9f1e3a5.snapshot.bin
@@ -182,6 +183,26 @@ Hashes
 Details on how the hash cache files are is in the [Usage in Server][hash-cache-usage] page.
 
 The hash cache files are stored inside a [lmdb][fs-performance] database, named `hashes.mdb`.
+
+### Package Config Handling
+
+!!! info "Package configs are stored inside [Loadouts](#loadouts)."
+
+However, that may raise some questions, so here they are.
+
+1. **Why are package configs stored in Loadouts?**
+    - Performance. Random file access is slow on Windows; so we want to avoid that.
+    - See [Loader Binary Format](https://github.com/Reloaded-Project/Reloaded-III/issues/34) for more info. <!-- (TODO: Replace Link to format page) -->
+
+2. **How can I modify configs in real time?**
+    - Configs can be adjusted in real time in two ways, **with saving** and **without saving**.
+    - Without saving can be done entirely in-process when inside a game.
+    - With saving will spawn a server process (if one does not already exist), and commit a save via server API. <!-- (TODO: Link to server API) -->
+
+3. **How are tool configs stored?**
+    - Tools can specify locations of config files inside [Package Metadata][package-metadata].
+    - When a loadout is loaded or tool stops running, updated configs are `ingested` (integrated) into the loadout.
+    - If local files are newer than remote files, the user is prompted if they wish to `integrate`.
 
 ## Extra
 
@@ -248,3 +269,4 @@ Loadouts and package configs may be shared in the future on a machine level.
 [hash-cache-usage]: ../../Common/Hash-Cache/Usage-In-Server.md
 [fs-performance]: ../../Research/FileSystem-Performance.md
 [esoteric platforms]: ../../Code-Guidelines/Code-Guidelines.md#esoteric-and-embedded-platforms
+[tools-as-packages-approach]: ../Packaging/Tools-As-Packages.md#chosen-approach

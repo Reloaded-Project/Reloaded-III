@@ -1,10 +1,16 @@
 ## Max Numbers
 
-- Max number of Package Download Data/Metadata (MetadataIdx): `268,435,456` (28 bits)
-- Max number of Configs (ConfigIdx): `134,217,727` (27 bits)
+- Max number of Unique Package IDs (PackageIdIdx): `1,048,576` (20 bits)
+    - Realistically expect 10,000 in very, very large loadouts.
+    - And 100 in typical loadouts.
+- Max number of Unique Package Versions (PackageVerIdx): `1,048,576` (20 bits)
+    - Realistically expect 200 in very, very large loadouts.
+- Max number of Unique Configs (ConfigIdx): `1,048,576` (20 bits)
+- Max number of Unique External Configs (ExtConfigIdx): `262,144` (18 bits)
+    - This is both max number of unique external paths, and unique external data.
 - Max number of Events: `4,294,967,295` (32 bits)
 - Max number of Game Versions/Revisions (GameVerIdx): `65,536` (16 bits)
-- Max timestamp. R3TimeStamp: `4,294,967,295` (32 bits).
+- Max timestamp. (R3TimeStamp): `4,294,967,295` (32 bits).
     - This is the number of seconds since `1st January 2024`.
     - Max year 2160.
 
@@ -23,6 +29,28 @@
 - `3`: `Added`. The package was added to the loadout.
 - `4`: `Enabled`. The package was enabled in the loadout.
 - `5`: `InstalledAsDependency`. The package was installed as a dependency.
+
+### PackageInstallStateChange
+
+!!! info "This is a sub-form of [PackageStateChange](#packagestatechange) that only includes install states."
+
+    - Size: 2 bits
+    - Possible values: 0-3
+
+- `0`: `Removed`. The package was removed from the loadout.
+- `1`: `Hidden` The package was hidden from the loadout.
+- `2`: `Added`. The package was added to the loadout.
+- `3`: `InstalledAsDependency`. The package was installed as a dependency.
+
+### PackageEnabledStateChange
+
+!!! info "This is a sub-form of [PackageStateChange](#packagestatechange) that only includes enabled states."
+
+    - Size: 1 bits
+    - Possible values: 0-1
+
+- `0`: `Disabled` (Default State). The package was disabled in the loadout.
+- `1`: `Enabled`. The package was enabled in the loadout.
 
 ## PackageState
 

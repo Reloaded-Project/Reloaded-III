@@ -484,7 +484,7 @@ This would be encoded as:
     - 0: UTF-8 Char Array for "Super Cool Mod" (Name)
     - 0: UTF-8 Char Array for "reloaded3.utility.somexample" (ID)
 
-2. [commit-parameters-lengths.bin][commitparam8len]: [14, 28]
+2. [commit-parameters-lengths-8.bin][commitparam8len]: [14, 28]
 
     Explanation:
 

@@ -630,11 +630,11 @@ opcode ranges for them.
 - [TRANSLATION_ENABLED_V0][translation-enabled-v0] `PackageType == Translation`.
 - [TOOL_ENABLED_V0][tool-enabled-v0] when `PackageType == Tool`.
 
-### [6B] - [9A] PackageEnabled8
+### [23] - [52] PackageEnabled8
 
 | EventType (0-7) | [PackageIdIdx] (8-15) |
 | --------------- | --------------------- |
-| `6B` - `9A`     | `{XXXXXXXX}`          |
+| `23` - `52`     | `{XXXXXXXX}`          |
 
 | Data Type             | Name           | Label | Description                                                       |
 | --------------------- | -------------- | ----- | ----------------------------------------------------------------- |
@@ -644,12 +644,10 @@ The `EventType` has 48 reserved values, each for a different range of [PackageId
 
 They function as follows:
 
-- `6B` [PackageIdIdx] has range [0-255].
-- `6C` [PackageIdIdx] has range [256-511].
+- `23` [PackageIdIdx] has range [0-255].
+- `24` [PackageIdIdx] has range [256-511].
 - ...
-- `9A` [PackageIdIdx] has range [12032-12287].
-
-i.e. Each `EventType` has a range of 256 package IDs.
+- `52` [PackageIdIdx] has range [12032-12287].
 
 !!! info "There is no `PackageEnabled24` variant, instead use [PackageStatusChanged24](#packagestatuschanged)."
 
@@ -672,26 +670,20 @@ Please also see optimization note at start of [PackageEnabled](#packageenabled).
 - [TRANSLATION_DISABLED_V0][translation-disabled-v0] when `PackageType == Translation`.
 - [TOOL_DISABLED_V0][tool-disabled-v0] when `PackageType == Tool`.
 
-### [9B] - [CA] PackageDisabled8
+### [53] - [82] PackageDisabled8
 
 | EventType (0-7) | [PackageIdIdx] (8-15) |
 | --------------- | --------------------- |
-| `9B` - `CA`     | `{XXXXXXXX}`          |
+| `53` - `82`     | `{XXXXXXXX}`          |
 
-| Data Type             | Name           | Label | Description                                                       |
-| --------------------- | -------------- | ----- | ----------------------------------------------------------------- |
-| `u8` ([PackageIdIdx]) | [PackageIdIdx] | X     | [0-255] Index of package ID in [package-ids.bin][package-ids.bin] |
-
-The `EventType` has 16 reserved values, each for a different range of [PackageIdIdx].
+The `EventType` has 48 reserved values, each for a different range of [PackageIdIdx].
 
 They function as follows:
 
-- `9B` [PackageIdIdx] has range [0-255].
-- `9C` [PackageIdIdx] has range [256-511].
+- `53` [PackageIdIdx] has range [0-255].
+- `54` [PackageIdIdx] has range [256-511].
 - ...
-- `CA` [PackageIdIdx] has range [12032-12287].
-
-i.e. Each `EventType` has a range of 256 package IDs.
+- `82` [PackageIdIdx] has range [12032-12287].
 
 !!! info "There is no `PackageDisabled24` variant, instead use [PackageStatusChanged24](#packagestatuschanged)."
 
@@ -709,34 +701,29 @@ i.e. Each `EventType` has a range of 256 package IDs.
 - [TRANSLATION_ADDED_V0][translation-added-v0] when `PackageType == Translation`.
 - [TOOL_ADDED_V0][tool-added-v0] when `PackageType == Tool`.
 
-### [CB] - [CD] PackageAdded24
+### [83] - [85] PackageAdded24
 
 | EventType (0-7) | [PackageVerIdx]  (8-17) | [PackageIdIdx] (18-31) |
 | --------------- | ----------------------- | ---------------------- |
-| `CB` - `CD`     | `{XXXXXXXX} {XX}`       | `{YYYYYY} {YYYYYYYY}`  |
+| `83` - `85`     | `{XXXXXXXX} {XX}`       | `{YYYYYY} {YYYYYYYY}`  |
 
-| Data Type               | Name            | Label | Description                                                                   |
-| ----------------------- | --------------- | ----- | ----------------------------------------------------------------------------- |
-| `u10` ([PackageVerIdx]) | [PackageVerIdx] | X     | [0-1023] Index of the version in [package-versions.bin][package-versions.bin] |
-| `u14` ([PackageIdIdx])  | [PackageIdIdx]  | Y     | [0-32767] Index of package ID in [package-ids.bin][package-ids.bin]           |
-
-The `EventType` has 8 reserved values to act as an offset to the [PackageVerIdx] field.
+The `EventType` has 3 reserved values to act as an offset to the [PackageVerIdx] field.
 
 Reference:
 
-- `CB` [PackageVerIdx] has range [0-1023].
-- `CC` [PackageVerIdx] has range [1024-2047].
-- `CD` [PackageVerIdx] has range [2048-3071].
+- `83` [PackageVerIdx] has range [0-1023].
+- `84` [PackageVerIdx] has range [1024-2047].
+- `85` [PackageVerIdx] has range [2048-3071].
 
-### [CE] PackageAddedFull
+### [86] PackageAddedFull
 
 | EventType (0-7) | Reserved (8-23) | NewStatus (24-43)                   | PackageIdIdx (44-63)             |
 | --------------- | --------------- | ----------------------------------- | -------------------------------- |
-| `CE`            | `CE CE`         | `{XX} {XXXXXXXX} {XXXXXXXX}` `{XX}` | `{YYYYYY} {YYYYYYYY} {YYYYYYYY}` |
+| `86`            | `86 86`         | `{XX} {XXXXXXXX} {XXXXXXXX}` `{XX}` | `{YYYYYY} {YYYYYYYY} {YYYYYYYY}` |
 
 | Data Type               | Name            | Label | Description                                                                 |
 | ----------------------- | --------------- | ----- | --------------------------------------------------------------------------- |
-| `u16`                   | Reserved        | CE    | Reserved. Constant `CE` to improve compression.                             |
+| `u16`                   | Reserved        | 86    | Reserved. Constant `CE` to improve compression.                             |
 | `u20` ([PackageVerIdx]) | [PackageVerIdx] | X     | [0-1M] Index of the version in [package-versions.bin][package-versions.bin] |
 | `u20` ([PackageIdIdx])  | [PackageIdIdx]  | Y     | [0-1M] Index of package ID in [package-ids.bin][package-ids.bin]            |
 
@@ -762,7 +749,7 @@ When the exact changes are not known, the event is [written as V1][commit-messag
 - [TRANSLATION_ADDED_WITH_CONFIG_V1][translation-added-with-config-v1] when `PackageType == Translation`.
 - [TOOL_ADDED_WITH_CONFIG_V1][tool-added-with-config-v1] when `PackageType == Tool`.
 
-### [CF] PackageAddedWithConfig
+### [87] PackageAddedWithConfig
 
 !!! info "This also sets the initial config file (i.e. [ConfigUpdated](#configupdated)) when the package is added."
 
@@ -770,7 +757,7 @@ When the exact changes are not known, the event is [written as V1][commit-messag
 
 | EventType (0-7) | [ConfigIdx] (8-23)    | NewStatus (24-43)                   | PackageIdIdx (44-63)             |
 | --------------- | --------------------- | ----------------------------------- | -------------------------------- |
-| `CF`            | `{XXXXXXXX XXXXXXXX}` | `{YY} {YYYYYYYY} {YYYYYYYY}` `{YY}` | `{ZZZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
+| `87`            | `{XXXXXXXX XXXXXXXX}` | `{YY} {YYYYYYYY} {YYYYYYYY}` `{YY}` | `{ZZZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
 
 | Data Type               | Name            | Label | Description                                                                 |
 | ----------------------- | --------------- | ----- | --------------------------------------------------------------------------- |
@@ -794,11 +781,11 @@ package with version `1.0.0`.
 - [TRANSLATION_ADDED_V0][translation-added-v0] when `PackageType == Translation`.
 - [TOOL_ADDED_V0][tool-added-v0] when `PackageType == Tool`.
 
-### [D0] - [FF] PackageAddedVersion100_8
+### [88] - [B7] PackageAddedVersion100_8
 
 | EventType (0-7) | [PackageIdIdx] (8-15) |
 | --------------- | --------------------- |
-| `D0` - `FF`     | `{XXXXXXXX}`          |
+| `88` - `B7`     | `{XXXXXXXX}`          |
 
 | Data Type             | Name           | Label | Description                                                       |
 | --------------------- | -------------- | ----- | ----------------------------------------------------------------- |
@@ -808,9 +795,9 @@ The `EventType` has 48 reserved values to act as an offset to the [PackageIdIdx]
 
 Reference:
 
-- `D0` [PackageIdIdx] has range [0-255].
+- `88` [PackageIdIdx] has range [0-255].
 - ...
-- `FF` [PackageIdIdx] has range [12032-12287].
+- `B7` [PackageIdIdx] has range [12032-12287].
 
 [configbin]: Unpacked.md#configbin
 [events-bin]: Unpacked.md#eventsbin

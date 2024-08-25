@@ -22,6 +22,10 @@ struct Snapshot {
     configurations: Vec<Vec<u8>>,
     config_hashes: HashMap<XXH3, u32>, // Hash to index in 'configurations'
 
+    // External Configurations
+    external_configs: Vec<ExternalConfigInfo>,
+    external_config_hashes: HashMap<XXH3, u32>, // Hash to index in 'external_configs'
+
     // Mod Load Order
     mod_load_order: Vec<u32>, // Vec of indices into packages
 
@@ -40,6 +44,12 @@ struct PackageInfo {
     version: String, // Semantic version
     state: PackageState,
     configuration_index: Option<u32>, // Index into configurations Vec
+}
+
+struct ExternalConfigInfo {
+    package_id: XXH3, // XXH3(PackageID)
+    path: String, // Relative path to the external config file
+    data: Vec<u8>, // Raw content of the external config file
 }
 
 struct LoadoutDisplaySettings {
@@ -113,17 +123,25 @@ struct MicrosoftStoreData {
     - Corresponds to [config.bin & config-data.bin][configbin].
     - Configurations are not version specific. They persist across package versions.
 
-4. **Mod Load Order**
+4. **External Configurations**
+    - A list of external configuration information for packages, each containing:
+        - Package ID: The [XXH3 hash][hashing] of the package ID this config belongs to.
+        - Path: The relative path to the external config file.
+        - Data: The raw content of the external config file.
+    - Corresponds to [external-config.bin, external-config-data.bin, & external-config-paths.bin][externalconfigbin].
+    - External configurations are tracked separately from internal configurations.
+
+5. **Mod Load Order**
     - An ordered list of indices representing the current load order of mods.
     - These indices correspond to the positions in the `packages` list.
 
-5. **Loadout Display Settings**
+6. **Loadout Display Settings**
     - Enabled Grid Sort Mode: How enabled mods are sorted in the mod view ([`SortingMode`][sortingmode]).
     - Disabled Grid Sort Mode: How disabled mods are sorted in the mod view ([`SortingMode`][sortingmode]).
     - Mod Load Order Sort: Whether mods are shown `top to bottom` or `bottom to top` for load ordering ([`SortOrder`][sortorder]).
     - Grid Display Style: The visual style of the grid that displays enabled mods ([`GridDisplayMode`][griddisplaymode]).
 
-6. **Game Store Manifest**
+7. **Game Store Manifest**
     - Store Type: Which store the game is from ([`StoreType`][storetype]).
     - Store Data: A structure containing common fields and store-specific data:
         - Common fields for all store types:
@@ -138,7 +156,7 @@ struct MicrosoftStoreData {
 
         The `store_type` field determines which store-specific struct is populated and should be used.
 
-7. **Commandline Parameters**
+8. **Commandline Parameters**
     - A string containing the current commandline parameters for the game.
 
 ## How Snapshots are Used
@@ -193,4 +211,5 @@ there will be no migration code; as to avoid bloating the binary.
 [loadout-location]: ../About.md#location
 [bitcode]: ../../../../Research/Library-Sizes/Serializers.md#bitcode
 [configbin]: ./Unpacked.md#configbin
+[externalconfigbin]: ./Unpacked.md#external-configbin
 [packagereferenceidsbin]: ./Unpacked.md#package-idsbin

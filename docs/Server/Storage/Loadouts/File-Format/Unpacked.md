@@ -185,20 +185,6 @@ Each path is a path *relative* to the path specified in [Config File Paths][conf
 
     If the `Type` is `File`. An empty path would be used instead.
 
-### external-config-refs.bin
-
-!!! info "This is a buffer of `references` to [external-config-paths.bin](#external-config-pathsbin) and [external-config.bin](#external-configbin)"
-
-This is an array of the following structure
-
-| Data Type | Name      | Description                                                                         |
-| --------- | --------- | ----------------------------------------------------------------------------------- |
-| `u32`     | FileIndex | [0-4M] Index of file in [external-config.bin](#external-configbin)                  |
-| `u32`     | PathIndex | [0-4M] Index of file path in [external-config-paths.bin](#external-config-pathsbin) |
-
-This file is used in the event that one of the components of [ExternalConfigUpdated56][event-externalconfigupdated]
-is out of range and cannot fit into the encoding.
-
 ## Packages
 
 !!! info "We refer to a 'unique package' by [XXH3(PackageID)][hashing]"
@@ -478,7 +464,7 @@ Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
 Which could be marked as:
 
 ```
-Added '**Super Cool Mod**' with ID '**reloaded3.utility.scmexample**' and version '**1.0.0**'
+Added '**Super Cool Mod**' with ID '**reloaded3.utility.somexample**' and version '**1.0.0**'
 ```
 
 #### Encoding
@@ -492,7 +478,7 @@ This would be encoded as:
     Explanation:
 
     - 0: UTF-8 Char Array for "Super Cool Mod"
-    - 0: UTF-8 Char Array for "reloaded3.utility.scmexample"
+    - 0: UTF-8 Char Array for "reloaded3.utility.somexample"
     - 0: UTF-8 Char Array for "1.0.0"
 
 2. [commit-parameters-lengths.bin][commitparam8len]: [14, 28, 5]
@@ -500,13 +486,13 @@ This would be encoded as:
     Explanation:
 
     - 14: Length of "Super Cool Mod"
-    - 28: Length of "reloaded3.utility.scmexample"
+    - 28: Length of "reloaded3.utility.somexample"
     - 5: Length of "1.0.0"
 
 3. [commit-parameters-text.bin](#parametertype):
 
     - `Super Cool Mod`
-    - `reloaded3.utility.scmexample`
+    - `reloaded3.utility.somexample`
     - `1.0.0`
 
     These strings are written directly to the `commit-parameters-text.bin` file, without any null
@@ -529,7 +515,7 @@ This would be encoded as:
     Explanation:
 
     - 5: BackReference8 for `"Super Cool Mod"`
-    - 5: BackReference8 for `"reloaded3.utility.scmexample"`
+    - 5: BackReference8 for `"reloaded3.utility.somexample"`
     - 5: BackReference8 for `"1.0.0"`
 
 2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
@@ -537,7 +523,7 @@ This would be encoded as:
     Explanation:
 
     - 0: Index of `"Super Cool Mod"`
-    - 1: Index of `"reloaded3.utility.scmexample"`
+    - 1: Index of `"reloaded3.utility.somexample"`
     - 2: Index of `"1.0.0"`
 
 3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
@@ -565,7 +551,7 @@ Let's say we want to reference all three parameters from the previous example in
     Explanation:
 
     - 0: Index of `"Super Cool Mod"`
-    - 1: Index of `"reloaded3.utility.scmexample"`
+    - 1: Index of `"reloaded3.utility.somexample"`
     - 2: Index of `"1.0.0"`
 
 3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
@@ -846,7 +832,7 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [commit-param-backrefs]: ./Unpacked.md#back-references
 [commit-param-lists]: ./Unpacked.md#parameter-lists
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
-[event-externalconfigupdated]: ./Events.md#1107-externalconfigupdated56
+[event-externalconfigupdated]: ./Events.md#22-externalconfigupdated56
 [package-added]: ./Commit-Messages.md#package_added_v0
 [snapshots]: ./Snapshot.md
 [config-files]: ../../../Packaging/Package-Metadata.md#config-files

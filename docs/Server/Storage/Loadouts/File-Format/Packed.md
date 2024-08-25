@@ -48,7 +48,6 @@ The following tree structure represents the files included in the packed .nx arc
 ├── external-config.bin
 ├── external-config-data.bin
 ├── external-config-paths.bin
-├── external-config-refs.bin
 ├── package-ids.bin
 ├── package-versions-len.bin
 ├── package-versions.bin

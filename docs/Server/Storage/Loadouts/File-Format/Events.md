@@ -6,7 +6,7 @@
 
     So an order like `u8`, and `u24` means 0:8 bits, then 8:32 bits.
 
-Each event is represented by a 1 byte `EventType` (denoted in section title).
+Each event is represented by a 1 byte `EventType` (denoted in section title ***in hex***).
 
 This is a power of 2, and can be followed by a 1, 3 or 7 byte payload.<br/>
 This makes each event 1, 2, 4 or 8 bytes long.
@@ -23,10 +23,6 @@ the event will be written.
 Any event needing data longer than 7 bytes, the data should be stored in another file and
 accessed by index.
 
-!!! note "`EventType` 0xF0 - 0xFF are 2 byte codes."
-
-    This allows extending the total number of opcodes to 4336.
-
 ## An Example
 
 Let's consider a sequence of events to illustrate how padding and reading work in this system.
@@ -34,29 +30,31 @@ We'll use a mix of different event types to show various scenarios.
 
 ### Writing Events
 
+!!! info "The event types used here are be outdated. This is just an example only."
+
 Suppose we want to write the following sequence of events:
 
-1. [GameLaunched](#gamelaunched) (1 byte)
-2. [PackageStatusChanged8](#0100-packagestatuschanged8) (2 bytes)
+1. [GameLaunched][GameLaunched] (1 byte)
+2. `PackageStatusChanged8` (2 bytes)
 3. [ConfigUpdated8](#0101-configupdated8) (2 bytes)
 4. [PackageUpdated16](#1005-packageupdated16) (4 bytes)
 
 Here's how these events would be written to the file:
 
-| Byte 0-7      | Meaning                                                    |
-| ------------- | ---------------------------------------------------------- |
-| `01`          | [GameLaunched](#gamelaunched) event                        |
-| `40 ??`       | [PackageStatusChanged8](#0100-packagestatuschanged8) event |
-| `41 ??`       | [ConfigUpdated8](#0101-configupdated8) event               |
-| `00 00 00`    | NOP padding to align next event to 8-byte boundary         |
-| `85 85 ?? ??` | [PackageUpdated16](#1005-packageupdated16) event           |
+| Byte 0-7      | Meaning                                            |
+| ------------- | -------------------------------------------------- |
+| `01`          | [GameLaunched][GameLaunched] event                 |
+| `40 ??`       | `PackageStatusChanged8` event                      |
+| `41 ??`       | [ConfigUpdated8](#0101-configupdated8) event       |
+| `00 00 00`    | NOP padding to align next event to 8-byte boundary |
+| `85 85 ?? ??` | [PackageUpdated16](#1005-packageupdated16) event   |
 
 Explanation:
 
-- The [GameLaunched](#gamelaunched) event (`01`) takes 1 byte.
-- The [PackageStatusChanged8](#0100-packagestatuschanged8) event (`40 XX`) takes 2 bytes.
+- The [GameLaunched][GameLaunched] event (`01`) takes 1 byte.
+- The `PackageStatusChanged8` event (`40 XX`) takes 2 bytes.
 - The [ConfigUpdated8](#0101-configupdated8) event (`41 XX`) takes 2 bytes.
-- At this point, we've written 5 bytes. To ensure the next 4-byte event ([PackageUpdated16](#1005-packageupdated16)) starts on an 8-byte boundary, we add 3 bytes of [NOP](#0000-nop) padding (`00 00 00`).
+- At this point, we've written 5 bytes. To ensure the next 4-byte event ([PackageUpdated16](#1005-packageupdated16)) starts on an 8-byte boundary, we add 3 bytes of [NOP](#00-nop) padding (`00 00 00`).
 - Finally, we write the [PackageUpdated16](#1005-packageupdated16) event (`85 85 XX XX`), which takes 4 bytes.
 
 ### Reading Events
@@ -64,8 +62,8 @@ Explanation:
 When reading these events, the system would perform full 8-byte reads:
 
 1. First read (8 bytes): `01 40 ?? 41 ?? 00 00 00`
-    - Processes [GameLaunched](#gamelaunched) (1 byte)
-    - Processes [PackageStatusChanged8](#0100-packagestatuschanged8) (2 bytes)
+    - Processes [GameLaunched][GameLaunched] (1 byte)
+    - Processes `PackageStatusChanged8` (2 bytes)
     - Processes [ConfigUpdated8](#0101-configupdated8) (2 bytes)
     - Skips NOP padding (3 bytes)
 
@@ -80,11 +78,24 @@ When reading these events, the system would perform full 8-byte reads:
 To achieve this we do the following:
 
 - Padding bytes use same byte as EventType to increase repeated bytes.
-- EventType(s) have forms with multiple lengths (to minimize unused bytes).
+    - For >=3 bytes.
+    - ZStandard does not compress duplicates shorter than 3 bytes well.
+- EventType(s) have forms with multiple lengths.
+- The same byte should not be repeated twice.
 
-## Event Ranges
+- Use as many opcodes as possible.
+    - Any unused opcodes is wasted space, don't be afraid to add more.
+    - The format can always have a breaking change up until final release.
 
-The payload size is determined by the 2 high bits of the event type.
+## Opcode Distribution
+
+!!! info "The opcode distribution is arbitrary."
+
+    And may be subject to change between versions up until final release (although unlikely).
+
+    However backwards compatibility in the library will always be maintained.
+
+A non-arbitrary optimization was previously considered in the form:
 
 | Sequence | Size |
 | -------- | ---- |
@@ -93,35 +104,41 @@ The payload size is determined by the 2 high bits of the event type.
 | 10       | 3    |
 | 11       | 7    |
 
-This leaves the remaining next 6 bits (0-63) for the event type.
+This would reduce (x86) code size and improve decode speed by a small amount, but is not in use here
+to favour instead reducing loadout size.
 
-i.e. `{YY}{XXXXXX}`.
+!!! tip "We can instantly load last state from [Snapshots], therefore first load is not as huge a priority."
+
+    Instead, we mainly replay the events to revert a loadout, to an earlier state, a rare event.
+    It is therefore acceptable if this takes up a tiny bit longer (up to 300ms on a 100,000 event loadout).
 
 ## Event Representation
 
 Each event is represented with something like this:
 
-| EventType (0-7)  | Field X (8-11) | Field Y (12-15) |
-| ---------------- | -------------- | --------------- |
-| 01 (`{00} + 01`) | `{XXX}`        | `{YYYY}`        |
+| EventType (0-7) | Field X (8-11) | Field Y (12-15) |
+| --------------- | -------------- | --------------- |
+| `01`            | `{XXX}`        | `{YYYY}`        |
 
 Ranges are inclusive.
 
 Elements in curly brackets `{}` indicate binary packing. So the payload `{XXX}` means '`X` is stored
 in 3 bits'. These provide a visual representation of the ranges to prevent ambiguity.
 
-In the EventType, the `{00}` denotes the size prefix, and the `+` shows the offset into
-the given prefix (0-63, in hex).
+In the EventType, the number is provided in hex. Sometimes it can be provided as a range, for example
+`03` - `13`; when it is provided as a range, each entry slightly alters the behaviour of the event.
 
-## {00}+00: NOP
+For more details, see the event specific documentation.
+
+## [00] NOP
 
 !!! info "Dummy no-op event for restoring alignment."
 
     This event is used to pad the next event to the next 8 byte boundary*
 
-| EventType (0-7)  |
-| ---------------- |
-| 00 (`{00} + 00`) |
+| EventType (0-7) |
+| --------------- |
+| `00`            |
 
 This is used as padding if there is an event that needs to be written, but it will span over the
 8 byte boundary. For example, if we've written 7 bytes and are about to write a 2 byte event.
@@ -135,6 +152,10 @@ This way we can ensure alignment is maintained.
 ## PackageStatusChanged
 
 !!! info "A new package has been added to `Package References` and can be seen from loadout."
+
+!!! tip "When adding a new package for the first time, i.e. `NewStatus == Added` consider using [PackageAdded](#packageadded) instead."
+
+    This also allows you to set the initial version of the package in a single operation.
 
 ### Messages
 
@@ -165,52 +186,19 @@ This way we can ensure alignment is maintained.
 - [TRANSLATION_INSTALLED_AS_DEPENDENCY_V0][translation-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` and `PackageType == Translation`.
 - [TOOL_INSTALLED_AS_DEPENDENCY_V0][tool-installed-as-dependency-v0] when `NewStatus == InstalledAsDependency` and `PackageType == Tool`.
 
-### {01}+00: PackageStatusChanged8
+### [01] PackageStatusChanged24
 
-| EventType (0-7)  | NewStatus (8-10) | [PackageIdIdx] (11-15) |
-| ---------------- | ---------------- | ---------------------- |
-| 40 (`{01} + 00`) | `{XXX}`          | `{YYYYY}`              |
-
-| Data Type             | Name           | Label | Description                                                      |
-| --------------------- | -------------- | ----- | ---------------------------------------------------------------- |
-| PackageStateChange    | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                         |
-| `u5` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-31] Index of package ID in [package-ids.bin][package-ids.bin] |
-
-### {10}+00: PackageStatusChanged16
-
-| EventType (0-7)  | Padding (8-15) | NewStatus (16-18) | PackageIdIdx (19-31) |
-| ---------------- | -------------- | ----------------- | -------------------- |
-| 80 (`{10} + 00`) | 80             | `{XXX}`           | `{YYYYY} {YYYYYYYY}` |
-
-| Data Type              | Name           | Label | Description                                                        |
-| ---------------------- | -------------- | ----- | ------------------------------------------------------------------ |
-| `u8`                   | Padding        | 80    | Constant `80`. Repeats previous byte.                              |
-| PackageStateChange     | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                           |
-| `u13` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-8192] Index of package ID in [package-ids.bin][package-ids.bin] |
-
-### {10}+01: PackageStatusChanged24
-
-| EventType (0-7)  | NewStatus (8-10) | PackageIdIdx (11-31)            |
-| ---------------- | ---------------- | ------------------------------- |
-| 81 (`{10} + 01`) | `{XXX}`          | `{YYYYY} {YYYYYYYY} {YYYYYYYY}` |
+| EventType (0-7) | NewStatus (8-10) | PackageIdIdx (11-30)            | Reserved (31-31) |
+| --------------- | ---------------- | ------------------------------- | ---------------- |
+| `02`            | `{XXX}`          | `{YYYYY} {YYYYYYYY} {YYYYYYYY}` | `{Z}`            |
 
 | Data Type              | Name           | Label | Description                                                      |
 | ---------------------- | -------------- | ----- | ---------------------------------------------------------------- |
-| PackageStateChange     | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                         |
-| `u21` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-2M] Index of package ID in [package-ids.bin][package-ids.bin] |
+| [PackageStateChange]   | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                         |
+| `u20` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-1M] Index of package ID in [package-ids.bin][package-ids.bin] |
+| `u1`                   | Reserved       | Z     | Currently Unused                                                 |
 
-### {11}+00: PackageStatusChanged32
-
-| EventType (0-7)  | Padding (8-31) | Unused (32-32) | NewStatus (33-35) | PackageIdIdx (36-63)                      |
-| ---------------- | -------------- | -------------- | ----------------- | ----------------------------------------- |
-| C0 (`{11} + 00`) | C0 C0 C0       | 0              | `{XXX}`           | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
-
-| Data Type              | Name           | Label | Description                                                        |
-| ---------------------- | -------------- | ----- | ------------------------------------------------------------------ |
-| `u24`                  | Padding        | C0    | Constant `C0`. Repeats previous byte.                              |
-| `u1`                   | Unused         | 0     |                                                                    |
-| PackageStateChange     | NewStatus      | X     | See [PackageStateChange][pkgstatechange]                           |
-| `u28` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-268M] Index of package ID in [package-ids.bin][package-ids.bin] |
+!!! tip "For adding mods, please use [PackageAddedFull]."
 
 ## GameLaunched
 
@@ -225,13 +213,31 @@ This event has no extra data.
 
 ### Messages
 
-- [GAME_LAUNCHED_V0][game-launched-v0]
+- [GAME_LAUNCHED_V0][game-launched-v0] when [GameLaunched]
+- [GAME_LAUNCHED_N_V0][game-launched-n-v0] when [GameLaunchedN]
 
-### {00}+01: GameLaunched
+### [02] GameLaunched
 
-| EventType (0-7)  |
-| ---------------- |
-| 01 (`{00} + 01`) |
+| EventType (0-7) |
+| --------------- |
+| `02`            |
+
+### [03] GameLaunchedN
+
+!!! info "This is equivalent to repeating [GameLaunched] event `N` times."
+
+| EventType (0-7) | Length (8-15) |
+| --------------- | ------------- |
+| `03`            | `{XXXXXXXX}`  |
+
+| Data Type | Name   | Label | Description                                                 |
+| --------- | ------ | ----- | ----------------------------------------------------------- |
+| `u8`      | Length | N     | [0-255] Number of times to repeat the [GameLaunched] event. |
+
+!!! danger "This event emits N timestamps in [timestamps.bin]."
+
+    Make sure not to miss this in the decoder!!
+    This is a compression opcode over repeating the [GameLaunched] event `N` times.
 
 ## ConfigUpdated
 
@@ -247,62 +253,51 @@ When the exact changes are not known, the event is [written as V1][commit-messag
 - [MOD_CONFIG_UPDATED_V1][mod-config-updated-v1] when `PackageType == Mod` and exact changes are not known.
 - [TOOL_CONFIG_UPDATED_V1][tool-config-updated-v1] when `PackageType == Tool` and exact changes are not known.
 
-### {01}+01: ConfigUpdated8
+### [04] - [13] ConfigUpdated24
 
-| EventType (0-7)  | NewStatus (8-11) | PackageIdIdx (12-15) |
-| ---------------- | ---------------- | -------------------- |
-| 41 (`{01} + 01`) | `{XXXX}`         | `{YYYY}`             |
-
-| Data Type             | Name           | Label | Description                                                         |
-| --------------------- | -------------- | ----- | ------------------------------------------------------------------- |
-| `u4` (ConfigIdx)      | ConfigIdx      | X     | [0-15] Index of associated configuration in [config.bin][configbin] |
-| `u4` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-15] Index of package ID in [package-ids.bin][package-ids.bin]    |
-
-### {10}+02: ConfigUpdated16
-
-| EventType (0-7)  | Padding (8-15) | ConfigIdx (16-22) | PackageIdIdx (23-31) |
-| ---------------- | -------------- | ----------------- | -------------------- |
-| 82 (`{10} + 02`) | 82             | `{XXXXXXX}`       | `{Y} {YYYYYYYY}`     |
-
-| Data Type             | Name           | Label | Description                                                          |
-| --------------------- | -------------- | ----- | -------------------------------------------------------------------- |
-| `u8`                  | Padding        | 82    | Constant `82`. Repeats previous byte.                                |
-| `u7` (ConfigIdx)      | ConfigIdx      | X     | [0-127] Index of associated configuration in [config.bin][configbin] |
-| `u9` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-511] Index of package ID in [package-ids.bin][package-ids.bin]    |
-
-### {10}+03: ConfigUpdated24
-
-| EventType (0-7)  | ConfigIdx (8-18)              | PackageIdIdx (19-31)            |
-| ---------------- | ----------------------------- | ------------------------------- |
-| 83 (`{10} + 01`) | `{XXXXXXXX} {XXXXXXXX} {XXX}` | `{YYYYY} {YYYYYYYY} {YYYYYYYY}` |
-
-| Data Type              | Name           | Label | Description                                                           |
-| ---------------------- | -------------- | ----- | --------------------------------------------------------------------- |
-| `u11` (ConfigIdx)      | ConfigIdx      | X     | [0-2047] Index of associated configuration in [config.bin][configbin] |
-| `u13` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-8191] Index of package ID in [package-ids.bin][package-ids.bin]    |
-
-### {11}+01 ConfigUpdated32
-
-| EventType (0-7)  | Padding (8-31) | ConfigIdx (32-46)      | PackageIdIdx (47-63)        |
-| ---------------- | -------------- | ---------------------- | --------------------------- |
-| C1 (`{11} + 01`) | C1 C1 C1       | `{XXXXXXX} {XXXXXXXX}` | `{Y} {YYYYYYYY} {YYYYYYYY}` |
+| EventType (0-7) | [ConfigIdx] (8-21)             | [PackageIdIdx] (22-31) |
+| --------------- | ------------------------------ | ---------------------- |
+| `04` - `13`     | `{XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY}`    |
 
 | Data Type              | Name           | Label | Description                                                            |
 | ---------------------- | -------------- | ----- | ---------------------------------------------------------------------- |
-| `u24`                  | Padding        | C1    | Constant `C1`. Maximize compression.                                   |
-| `u15` (ConfigIdx)      | ConfigIdx      | X     | [0-32767] Index of associated configuration in [config.bin][configbin] |
-| `u17` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-131071] Index of package ID in [package-ids.bin][package-ids.bin]   |
+| `u14` ([ConfigIdx])    | [ConfigIdx]    | X     | [0-16383] Index of associated configuration in [config.bin][configbin] |
+| `u10` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-1023] Index of package ID in [package-ids.bin][package-ids.bin]     |
 
-### {11}+02 ConfigUpdatedFull
+The `EventType` has 16 reserved values, each for a different range of [PackageIdIdx].
 
-| EventType (0-7)  | ConfigIdx (8-35)       | PackageIdIdx (36-63)        |
-| ---------------- | ---------------------- | --------------------------- |
-| C2 (`{11} + 02`) | `{XXXXXXX} {XXXXXXXX}` | `{Y} {YYYYYYYY} {YYYYYYYY}` |
+They function as follows:
 
-| Data Type              | Name           | Label | Description                                                           |
-| ---------------------- | -------------- | ----- | --------------------------------------------------------------------- |
-| `u27` (ConfigIdx)      | ConfigIdx      | X     | [0-134M] Index of associated configuration in [config.bin][configbin] |
-| `u28` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-268M] Index of package ID in [package-ids.bin][package-ids.bin]    |
+- `04` [PackageIdIdx] has range [0-1023].
+- `05` [PackageIdIdx] has range [1024-2047].
+- ...
+- `13` [PackageIdIdx] has range [15360-16383].
+
+i.e. Each `EventType` has a range of 256 package IDs.
+
+### [14] ConfigUpdated32
+
+| EventType (0-7) | Padding (8-31) | [ConfigIdx] (32-47)     | PackageIdIdx (48-63)    |
+| --------------- | -------------- | ----------------------- | ----------------------- |
+| `14` - `17`     | CNST           | `{XXXXXXXX} {XXXXXXXX}` | `{YYYYYYYY} {YYYYYYYY}` |
+
+| Data Type              | Name           | Label | Description                                                              |
+| ---------------------- | -------------- | ----- | ------------------------------------------------------------------------ |
+| `u24`                  | Padding        | CNST  | Constant that repeats `EventType` field. Ignored. Maximizes compression. |
+| `u16` ([ConfigIdx])    | [ConfigIdx]    | X     | [0-65535] Index of associated configuration in [config.bin][configbin]   |
+| `u16` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-65535] Index of package ID in [package-ids.bin][package-ids.bin]      |
+
+### [15] ConfigUpdatedFull
+
+| EventType (0-7) | Padding (8-23) | ConfigIdx (24-43)             | PackageIdIdx (44-63)           |
+| --------------- | -------------- | ----------------------------- | ------------------------------ |
+| `15`            | `15` `15`      | `{XXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY}` |
+
+| Data Type              | Name           | Label | Description                                                         |
+| ---------------------- | -------------- | ----- | ------------------------------------------------------------------- |
+| `u16`                  | Padding        | `15`  | Repeats `EventType` field. Ignored. Maximizes compression.          |
+| `u20` ([ConfigIdx])    | [ConfigIdx]    | X     | [0-1M] Index of associated configuration in [config.bin][configbin] |
+| `u20` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-1M] Index of package ID in [package-ids.bin][package-ids.bin]    |
 
 ## LoadoutDisplaySettingChanged
 
@@ -318,11 +313,11 @@ This is rarely changed so has a large 4-byte payload and can change multiple eve
 - [MOD_LOAD_ORDER_SORT_CHANGED_V0][mod-load-order-sort-changed-v0] when only `ModLoadOrderSort` has changed.
 - [LOADOUT_GRID_STYLE_CHANGED_V0][loadout-grid-style-changed-v0] when only `LoadoutGridStyle` has changed.
 
-### {10}+04 LoadoutDisplaySettingChanged
+### [16] LoadoutDisplaySettingChanged
 
-| EventType (0-7)  | Unused (8-11) | LoadoutGridEnabledSortMode (12-18) | LoadoutGridDisabledSortMode (19-25) | ModLoadOrderSort (26-27) | LoadoutGridStyle (28-31) |
-| ---------------- | ------------- | ---------------------------------- | ----------------------------------- | ------------------------ | ------------------------ |
-| 84 (`{10} + 04`) |               | `{WWWWWWW}`                        | `{XXXXXXX}`                         | `{YY}`                   | `{ZZZZ}`                 |
+| EventType (0-7) | Unused (8-11) | LoadoutGridEnabledSortMode (12-18) | LoadoutGridDisabledSortMode (19-25) | ModLoadOrderSort (26-27) | LoadoutGridStyle (28-31) |
+| --------------- | ------------- | ---------------------------------- | ----------------------------------- | ------------------------ | ------------------------ |
+| `16`            |               | `{WWWWWWW}`                        | `{XXXXXXX}`                         | `{YY}`                   | `{ZZZZ}`                 |
 
 | Data Type                                 | Name                        | Label | Description                                     |
 | ----------------------------------------- | --------------------------- | ----- | ----------------------------------------------- |
@@ -348,51 +343,30 @@ This upgrades a package at [PackageIdIdx] from the old (previous) version to the
 - [TRANSLATION_UPDATED_V0][translation-updated-v0] when `PackageType == Translation`.
 - [TOOL_UPDATED_V0][tool-updated-v0] when `PackageType == Tool`.
 
-### {10}+05: PackageUpdated16
+### [17] PackageUpdated24
 
-| EventType (0-7)  | Padding (8-15) | OldPackageVerIdx (16-23) | NewPackageVerIdx (24-31) |
-| ---------------- | -------------- | ------------------------ | ------------------------ |
-| 85 (`{10} + 05`) | 85             | `{XXXXXXXX}`             | `{YYYYYYYY}`             |
-
-| Data Type             | Name             | Label | Description                                                              |
-| --------------------- | ---------------- | ----- | ------------------------------------------------------------------------ |
-| `u8`                  | Padding          | 85    | Constant `85`. Repeats previous byte.                                    |
-| `u8` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-255] Index of old version in [Package References][packagemetadatabin] |
-| `u8` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-255] Index of new version in [Package References][packagemetadatabin] |
-
-### {10}+06: PackageUpdated24
-
-| EventType (0-7)  | OldPackageVerIdx (8-19)        | NewPackageVerIdx (20-31)       |
-| ---------------- | ------------------------------ | ------------------------------ |
-| 86 (`{10} + 06`) | `{XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY}` |
+| EventType (0-7) | OldPackageVerIdx (8-19) | NewPackageVerIdx (20-31) |
+| --------------- | ----------------------- | ------------------------ |
+| `17`            | `{XXXXXXXX} {XXXX}`     | `{YYYY} {YYYYYYYY}`      |
 
 | Data Type              | Name             | Label | Description                                                               |
 | ---------------------- | ---------------- | ----- | ------------------------------------------------------------------------- |
 | `u12` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-4095] Index of old version in [Package References][packagemetadatabin] |
 | `u12` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-4095] Index of new version in [Package References][packagemetadatabin] |
 
-### {11}+03 PackageUpdated32
+The `EventType` has 16 reserved values, each for a different range of [PackageIdIdx].
 
-| EventType (0-7)  | Padding (8-31) | OldPackageVerIdx (8-35)                   | NewPackageVerIdx (36-63)                  |
-| ---------------- | -------------- | ----------------------------------------- | ----------------------------------------- |
-| C3 (`{11} + 03`) | C3 C3 C3       | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
+### [18] PackageUpdatedFull
 
-| Data Type              | Name             | Label | Description                                                                |
-| ---------------------- | ---------------- | ----- | -------------------------------------------------------------------------- |
-| `u24`                  | Padding          | C3    | Constant `C3`. Repeats previous byte.                                      |
-| `u16` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-65535] Index of old version in [Package References][packagemetadatabin] |
-| `u16` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-65535] Index of new version in [Package References][packagemetadatabin] |
+| EventType (0-7) | Padding (8-23) | OldPackageVerIdx (24-43)      | NewPackageVerIdx (44-63)       |
+| --------------- | -------------- | ----------------------------- | ------------------------------ |
+| `18`            | `18 18`        | `{XXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-### {11}+04 PackageUpdated56
-
-| EventType (0-7)  | OldPackageVerIdx (8-35)                   | NewPackageVerIdx (36-63)                  |
-| ---------------- | ----------------------------------------- | ----------------------------------------- |
-| C4 (`{11} + 04`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
-
-| Data Type              | Name             | Label | Description                                                               |
-| ---------------------- | ---------------- | ----- | ------------------------------------------------------------------------- |
-| `u28` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-268M] Index of old version in [Package References][packagemetadatabin] |
-| `u28` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-268M] Index of new version in [Package References][packagemetadatabin] |
+| Data Type              | Name             | Label | Description                                                             |
+| ---------------------- | ---------------- | ----- | ----------------------------------------------------------------------- |
+| `u16`                  | Padding          | `18`  | Repeats `EventType` field. Ignored. Maximizes compression.              |
+| `u20` ([PackageIdIdx]) | OldPackageVerIdx | X     | [0-1M] Index of old version in [Package References][packagemetadatabin] |
+| `u20` ([PackageIdIdx]) | NewPackageVerIdx | Y     | [0-1M] Index of new version in [Package References][packagemetadatabin] |
 
 ## PackageLoadOrderChanged
 
@@ -476,76 +450,65 @@ On something like a GameCube, `50ms`.
 - [MOD_LOAD_ORDER_CHANGED_V0][mod-load-order-changed-v0] when `PackageType == Mod`.
 - [TRANSLATION_LOAD_ORDER_CHANGED_V0][translation-load-order-changed-v0] when `PackageType == Translation`.
 
-### {10}+07: PackageLoadOrderChanged16
+### [19] PackageLoadOrderChanged16
 
-| EventType (0-7)  | OldPosition (8-15) | NewPosition (16-23) |
-| ---------------- | ------------------ | ------------------- |
-| 87 (`{10} + 07`) | `{XXXXXXXX}`       | `{YYYYYYYY}`        |
+| EventType (0-7) | OldPosition (8-15) | NewPosition (16-23) |
+| --------------- | ------------------ | ------------------- |
+| `19`            | `{XXXXXXXX}`       | `{YYYYYYYY}`        |
 
 | Data Type | Name        | Label | Description                                        |
 | --------- | ----------- | ----- | -------------------------------------------------- |
 | `u8`      | OldPosition | X     | [0-255] Old position of the mod in the load order. |
 | `u8`      | NewPosition | Y     | [0-255] New position of the mod in the load order. |
 
-### {10}+08: PackageLoadOrderChanged24
+### [1A] PackageLoadOrderChanged24
 
-| EventType (0-7)  | OldPosition (8-19)  | NewPosition (20-31) |
-| ---------------- | ------------------- | ------------------- |
-| 88 (`{10} + 08`) | `{XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY}` |
+| EventType (0-7) | OldPosition (8-19)  | NewPosition (20-31) |
+| --------------- | ------------------- | ------------------- |
+| `1A`            | `{XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY}` |
 
 | Data Type | Name        | Label | Description                                         |
 | --------- | ----------- | ----- | --------------------------------------------------- |
 | `u12`     | OldPosition | X     | [0-4095] Old position of the mod in the load order. |
 | `u12`     | NewPosition | Y     | [0-4095] New position of the mod in the load order. |
 
-### {10}+09: PackageLoadOrderMovedToBottom24
+### [1B] PackageLoadOrderMovedToBottom24
 
 Optimized form for common action of moving a mod to the bottom of the load order.
 
-| EventType (0-7)  | OldPosition (8-27)             | OffsetFromBottom (28-31) |
-| ---------------- | ------------------------------ | ------------------------ |
-| 89 (`{10} + 09`) | `{XXXX} {XXXXXXXX} {XXXXXXXX}` | `{YYY}`                  |
+| EventType (0-7) | OldPosition (8-27)             | OffsetFromBottom (28-31) |
+| --------------- | ------------------------------ | ------------------------ |
+| `1B`            | `{XXXX} {XXXXXXXX} {XXXXXXXX}` | `{YYY}`                  |
 
 | Data Type | Name             | Label | Description                                       |
 | --------- | ---------------- | ----- | ------------------------------------------------- |
 | `u20`     | OldPosition      | X     | [0-1M] Old position of the mod in the load order. |
 | `u4`      | OffsetFromBottom | Y     | [0-15] Offset from bottom.                        |
 
-### {10}+0A: PackageLoadOrderMovedToTop24
+### [1C] PackageLoadOrderMovedToTop24
 
 Optimized form for common action of moving a mod to the top of the load order.
 
-| EventType (0-7)  | OldPosition (8-27)             | OffsetFromTop (28-31) |
-| ---------------- | ------------------------------ | --------------------- |
-| 8A (`{10} + 0A`) | `{XXXX} {XXXXXXXX} {XXXXXXXX}` | `{YYY}`               |
+| EventType (0-7) | OldPosition (8-27)             | OffsetFromTop (28-31) |
+| --------------- | ------------------------------ | --------------------- |
+| `1C`            | `{XXXX} {XXXXXXXX} {XXXXXXXX}` | `{YYY}`               |
 
 | Data Type | Name          | Label | Description                                       |
 | --------- | ------------- | ----- | ------------------------------------------------- |
 | `u20`     | OldPosition   | X     | [0-1M] Old position of the mod in the load order. |
 | `u4`      | OffsetFromTop | Y     | [0-15] Offset from top.                           |
 
-### {11}+05: PackageLoadOrderChanged32
+### [1D] PackageLoadOrderChanged32
 
-| EventType (0-7)  | Padding (8-31) | OldPosition (32-47)     | NewPosition (48-63)     |
-| ---------------- | -------------- | ----------------------- | ----------------------- |
-| C5 (`{11} + 05`) | C5 C5 C5       | `{XXXXXXXX} {XXXXXXXX}` | `{YYYYYYYY} {YYYYYYYY}` |
+| EventType (0-7) | Padding (8-23) | OldPosition (24-43)           | NewPosition (44-63)            |
+| --------------- | -------------- | ----------------------------- | ------------------------------ |
+| `1D`            | `1D` `1D`      | `{XXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY}` |
 
-| Data Type | Name        | Label | Description                                          |
-| --------- | ----------- | ----- | ---------------------------------------------------- |
-| `u24`     | Padding     | C5    | Constant `C5`. Repeats previous byte.                |
-| `u16`     | OldPosition | X     | [0-65535] Old position of the mod in the load order. |
-| `u16`     | NewPosition | Y     | [0-65535] New position of the mod in the load order. |
-
-### {11}+06: PackageLoadOrderChanged56
-
-| EventType (0-7)  | OldPosition (8-35)                        | NewPosition (36-63)                       |
-| ---------------- | ----------------------------------------- | ----------------------------------------- |
-| C6 (`{11} + 06`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
-
-| Data Type | Name        | Label | Description                                         |
-| --------- | ----------- | ----- | --------------------------------------------------- |
-| `u28`     | OldPosition | X     | [0-268M] Old position of the mod in the load order. |
-| `u28`     | NewPosition | Y     | [0-268M] New position of the mod in the load order. |
+| Data Type              | Name           | Label | Description                                                |
+| ---------------------- | -------------- | ----- | ---------------------------------------------------------- |
+| `u16`                  | Padding        | `1D`  | Repeats `EventType` field. Ignored. Maximizes compression. |
+| `u20` ([ConfigIdx])    | [ConfigIdx]    | X     | [0-1M] Old position of the mod in the load order.          |
+| `u20` ([PackageIdIdx]) | [PackageIdIdx] | Y     | [0-1M] New position of the mod in the load order.          |
 
 ## UpdateGameStoreManifest
 
@@ -567,23 +530,23 @@ This event is emitted the files of the game match a known new store manifest/rev
 - [UPDATE_GAME_STORE_MANIFEST_XBOX_V0][update-game-store-manifest-xbox-v0] when the store is Microsoft (Xbox) Store.
 - [UPDATE_GAME_STORE_MANIFEST_EGS_V0][update-game-store-manifest-egs-v0] when the store is Epic Games Store.
 
-### {01}+02: UpdateGameStoreManifest
+### [1E] UpdateGameStoreManifest8
 
-| EventType (0-7)  | NewRevision (8-15) |
-| ---------------- | ------------------ |
-| 42 (`{01} + 02`) | `{XXXXXXXX}`       |
+| EventType (0-7) | NewRevision (8-15) |
+| --------------- | ------------------ |
+| `1E`            | `{XXXXXXXX}`       |
 
 | Data Type         | Name        | Label | Description                        |
 | ----------------- | ----------- | ----- | ---------------------------------- |
 | `u8` (GameVerIdx) | NewRevision | X     | [0-255] New game version revision. |
 
-### {10}+0B: UpdateGameStoreManifest
+### [1F] UpdateGameStoreManifest24
 
 !!! note "Unlikely this will ever be used, but just in case."
 
-| EventType (0-7)  | NewRevision (8-31)                 |
-| ---------------- | ---------------------------------- |
-| 8B (`{10} + 0B`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX}` |
+| EventType (0-7) | NewRevision (8-31)                 |
+| --------------- | ---------------------------------- |
+| `1F`            | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX}` |
 
 | Data Type         | Name        | Label | Description                          |
 | ----------------- | ----------- | ----- | ------------------------------------ |
@@ -602,11 +565,11 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 - [UPDATE_COMMANDLINE_V0][update-commandline]
 
-### {01}+03: UpdateCommandline8
+### [20] UpdateCommandline8
 
-| EventType (0-7)  | Length (8-15) |
-| ---------------- | ------------- |
-| 43 (`{01} + 03`) | `{XXXXXXXX}`  |
+| EventType (0-7) | Length (8-15) |
+| --------------- | ------------- |
+| `20`            | `{XXXXXXXX}`  |
 
 | Data Type | Name   | Label | Description                                                                                                      |
 | --------- | ------ | ----- | ---------------------------------------------------------------------------------------------------------------- |
@@ -620,11 +583,11 @@ This event is emitted the files of the game match a known new store manifest/rev
 
 - [EXTERNAL_CONFIG_UPDATED_V0][external-config-updated-v0]
 
-### {10}+0C: ExternalConfigUpdated24
+### [21] ExternalConfigUpdated24
 
-| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | PackageIdIdx (44-63)           |
-| ---------------- | ---------------------------- | ---------------------------- | ------------------------------ |
-| 8C (`{10} + 0C`) | `{XXXXXXXX} {XXXXXXXX} {XX}` | `{YYYYYY} {YYYYYYYY} {YYYY}` | `{ZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
+| EventType (0-7) | PathIndex (8-14) | FileIndex (15-21) | PackageIdIdx (22-31) |
+| --------------- | ---------------- | ----------------- | -------------------- |
+| `21`            | `{XXX} {XXXX}`   | `{YYY} {YYYY}`    | `{ZZZZ} {ZZZZZZZZ}`  |
 
 | Data Type              | Name           | Label | Description                                                                          |
 | ---------------------- | -------------- | ----- | ------------------------------------------------------------------------------------ |
@@ -632,11 +595,11 @@ This event is emitted the files of the game match a known new store manifest/rev
 | `u7`                   | FileIndex      | Y     | [0-127] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
 | `u10` ([PackageIdIdx]) | [PackageIdIdx] | Z     | [0-1024] Index of package ID in [package-ids.bin][package-ids.bin]                   |
 
-### {11}+07: ExternalConfigUpdated56
+### [22] ExternalConfigUpdated56
 
-| EventType (0-7)  | PathIndex (8-25)             | FileIndex (26-43)            | [PackageIdIdx] (44-63)         |
-| ---------------- | ---------------------------- | ---------------------------- | ------------------------------ |
-| C7 (`{11} + 07`) | `{XXXXXXXX} {XXXXXXXX} {XX}` | `{YYYYYY} {YYYYYYYY} {YYYY}` | `{ZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
+| EventType (0-7) | PathIndex (8-25)             | FileIndex (26-43)            | [PackageIdIdx] (44-63)         |
+| --------------- | ---------------------------- | ---------------------------- | ------------------------------ |
+| `22`            | `{XXXXXXXX} {XXXXXXXX} {XX}` | `{YYYYYY} {YYYYYYYY} {YYYY}` | `{ZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
 
 | Data Type            | Name         | Label | Description                                                                           |
 | -------------------- | ------------ | ----- | ------------------------------------------------------------------------------------- |
@@ -644,21 +607,216 @@ This event is emitted the files of the game match a known new store manifest/rev
 | `u18`                | FileIndex    | Y     | [0-256K] Index of file path in [external-config-paths.bin][external-config-paths-bin] |
 | `u20` (PackageIdIdx) | PackageIdIdx | Z     | [0-1M] Index of package ID in [package-ids.bin][package-ids.bin]                      |
 
-### {11}+08: ExternalConfigUpdatedFull
+## PackageEnabled
 
-| EventType (0-7)  | ExternalConfigIdx (8-35)                  | PackageIdIdx (36-63)                      |
-| ---------------- | ----------------------------------------- | ----------------------------------------- |
-| C8 (`{11} + 08`) | `{XXXXXXXX} {XXXXXXXX} {XXXXXXXX} {XXXX}` | `{YYYY} {YYYYYYYY} {YYYYYYYY} {YYYYYYYY}` |
+!!! info "A package has been enabled."
 
-| Data Type              | Name              | Label | Description                                                                               |
-| ---------------------- | ----------------- | ----- | ----------------------------------------------------------------------------------------- |
-| `u28` (ExtConfigIdx)   | ExternalConfigIdx | X     | [0-268M] Index of extended reference in [external-config-refs.bin][external-config-refs]. |
-| `u28` ([PackageIdIdx]) | [PackageIdIdx]    | Y     | [0-268M] Index of package ID in [package-ids.bin][package-ids.bin].                       |
+    This is analogous to enabling a mod in the loadout.
+
+    This is an optimization over the full length ([PackageStatusChanged](#packagestatuschanged)) event;
+
+Usually a user would just enable a mod and leave it at that. So [PackageEnabled](#packageenabled) (this)
+is expected to be a bit more common than [PackageDisabled](#packagedisabled).
+
+For this reason, the two events have been separated, in case we want to have different event type
+opcode ranges for them.
+
+### Messages
+
+`PackageType` is the type of package referred to by package at [PackageIdIdx].
+
+- [PACKAGE_ENABLED_V0][package-enabled-v0] `PackageType` is not known.
+- [MOD_ENABLED_V0][mod-enabled-v0] `PackageType == Mod`.
+- [TRANSLATION_ENABLED_V0][translation-enabled-v0] `PackageType == Translation`.
+- [TOOL_ENABLED_V0][tool-enabled-v0] when `PackageType == Tool`.
+
+### [6B] - [9A] PackageEnabled8
+
+| EventType (0-7) | [PackageIdIdx] (8-15) |
+| --------------- | --------------------- |
+| `6B` - `9A`     | `{XXXXXXXX}`          |
+
+| Data Type             | Name           | Label | Description                                                       |
+| --------------------- | -------------- | ----- | ----------------------------------------------------------------- |
+| `u8` ([PackageIdIdx]) | [PackageIdIdx] | X     | [0-255] Index of package ID in [package-ids.bin][package-ids.bin] |
+
+The `EventType` has 48 reserved values, each for a different range of [PackageIdIdx].
+
+They function as follows:
+
+- `6B` [PackageIdIdx] has range [0-255].
+- `6C` [PackageIdIdx] has range [256-511].
+- ...
+- `9A` [PackageIdIdx] has range [12032-12287].
+
+i.e. Each `EventType` has a range of 256 package IDs.
+
+!!! info "There is no `PackageEnabled24` variant, instead use [PackageStatusChanged24](#packagestatuschanged)."
+
+## PackageDisabled
+
+!!! info "A package has been disabled."
+
+    This is analogous to disabling a mod in the loadout.
+
+    This is an optimization over the full length ([PackageStatusChanged](#packagestatuschanged)) event;
+
+Please also see optimization note at start of [PackageEnabled](#packageenabled).
+
+### Messages
+
+`PackageType` is the type of package referred to by package at [PackageIdIdx].
+
+- [PACKAGE_DISABLED_V0][package-disabled-v0] when `PackageType` is not known.
+- [MOD_DISABLED_V0][mod-disabled-v0] when `PackageType == Mod`.
+- [TRANSLATION_DISABLED_V0][translation-disabled-v0] when `PackageType == Translation`.
+- [TOOL_DISABLED_V0][tool-disabled-v0] when `PackageType == Tool`.
+
+### [9B] - [CA] PackageDisabled8
+
+| EventType (0-7) | [PackageIdIdx] (8-15) |
+| --------------- | --------------------- |
+| `9B` - `CA`     | `{XXXXXXXX}`          |
+
+| Data Type             | Name           | Label | Description                                                       |
+| --------------------- | -------------- | ----- | ----------------------------------------------------------------- |
+| `u8` ([PackageIdIdx]) | [PackageIdIdx] | X     | [0-255] Index of package ID in [package-ids.bin][package-ids.bin] |
+
+The `EventType` has 16 reserved values, each for a different range of [PackageIdIdx].
+
+They function as follows:
+
+- `9B` [PackageIdIdx] has range [0-255].
+- `9C` [PackageIdIdx] has range [256-511].
+- ...
+- `CA` [PackageIdIdx] has range [12032-12287].
+
+i.e. Each `EventType` has a range of 256 package IDs.
+
+!!! info "There is no `PackageDisabled24` variant, instead use [PackageStatusChanged24](#packagestatuschanged)."
+
+## PackageAdded
+
+!!! info "This is a specialized case for adding a new package."
+
+    This is equivalent to adding a new package ([PackageStatusChanged](#packagestatuschanged)) and
+    setting its initial version ([PackageVersionChanged](#packageversionchanged)) in a single operation.
+
+### Messages
+
+- [PACKAGE_ADDED_V0][package-added-v0] when `PackageType` is not known.
+- [MOD_ADDED_V0][mod-added-v0] when `PackageType == Mod`.
+- [TRANSLATION_ADDED_V0][translation-added-v0] when `PackageType == Translation`.
+- [TOOL_ADDED_V0][tool-added-v0] when `PackageType == Tool`.
+
+### [CB] - [CD] PackageAdded24
+
+| EventType (0-7) | [PackageVerIdx]  (8-17) | [PackageIdIdx] (18-31) |
+| --------------- | ----------------------- | ---------------------- |
+| `CB` - `CD`     | `{XXXXXXXX} {XX}`       | `{YYYYYY} {YYYYYYYY}`  |
+
+| Data Type               | Name            | Label | Description                                                                   |
+| ----------------------- | --------------- | ----- | ----------------------------------------------------------------------------- |
+| `u10` ([PackageVerIdx]) | [PackageVerIdx] | X     | [0-1023] Index of the version in [package-versions.bin][package-versions.bin] |
+| `u14` ([PackageIdIdx])  | [PackageIdIdx]  | Y     | [0-32767] Index of package ID in [package-ids.bin][package-ids.bin]           |
+
+The `EventType` has 8 reserved values to act as an offset to the [PackageVerIdx] field.
+
+Reference:
+
+- `CB` [PackageVerIdx] has range [0-1023].
+- `CC` [PackageVerIdx] has range [1024-2047].
+- `CD` [PackageVerIdx] has range [2048-3071].
+
+### [CE] PackageAddedFull
+
+| EventType (0-7) | Reserved (8-23) | NewStatus (24-43)                   | PackageIdIdx (44-63)             |
+| --------------- | --------------- | ----------------------------------- | -------------------------------- |
+| `CE`            | `CE CE`         | `{XX} {XXXXXXXX} {XXXXXXXX}` `{XX}` | `{YYYYYY} {YYYYYYYY} {YYYYYYYY}` |
+
+| Data Type               | Name            | Label | Description                                                                 |
+| ----------------------- | --------------- | ----- | --------------------------------------------------------------------------- |
+| `u16`                   | Reserved        | CE    | Reserved. Constant `CE` to improve compression.                             |
+| `u20` ([PackageVerIdx]) | [PackageVerIdx] | X     | [0-1M] Index of the version in [package-versions.bin][package-versions.bin] |
+| `u20` ([PackageIdIdx])  | [PackageIdIdx]  | Y     | [0-1M] Index of package ID in [package-ids.bin][package-ids.bin]            |
+
+The `EventType` has 8 reserved values to act as an offset to the [PackageVerIdx] field.
+
+## PackageAddedWithConfig
+
+!!! info "This is a specialized case that also updates config directly after [adding a versioned package](#packageadded)."
+
+### Messages
+
+First message is one of the following:
+
+- [PACKAGE_ADDED_WITH_CONFIG_V0][package-added-with-config-v0] when `PackageType` is not known.
+- [MOD_ADDED_WITH_CONFIG_V0][mod-added-with-config-v0] when `PackageType == Mod`.
+- [TRANSLATION_ADDED_WITH_CONFIG_V0][translation-added-with-config-v0] when `PackageType == Translation`.
+- [TOOL_ADDED_WITH_CONFIG_V0][tool-added-with-config-v0] when `PackageType == Tool`.
+
+When the exact changes are not known, the event is [written as V1][commit-message-versioning]:
+
+- [PACKAGE_ADDED_WITH_CONFIG_V1][package-added-with-config-v1] when `PackageType` is not known.
+- [MOD_ADDED_WITH_CONFIG_V1][mod-added-with-config-v1] when `PackageType == Mod`.
+- [TRANSLATION_ADDED_WITH_CONFIG_V1][translation-added-with-config-v1] when `PackageType == Translation`.
+- [TOOL_ADDED_WITH_CONFIG_V1][tool-added-with-config-v1] when `PackageType == Tool`.
+
+### [CF] PackageAddedWithConfig
+
+!!! info "This also sets the initial config file (i.e. [ConfigUpdated](#configupdated)) when the package is added."
+
+    In the case the user downloads a package and configures it directly after.
+
+| EventType (0-7) | [ConfigIdx] (8-23)    | NewStatus (24-43)                   | PackageIdIdx (44-63)             |
+| --------------- | --------------------- | ----------------------------------- | -------------------------------- |
+| `CF`            | `{XXXXXXXX XXXXXXXX}` | `{YY} {YYYYYYYY} {YYYYYYYY}` `{YY}` | `{ZZZZZZ} {ZZZZZZZZ} {ZZZZZZZZ}` |
+
+| Data Type               | Name            | Label | Description                                                                 |
+| ----------------------- | --------------- | ----- | --------------------------------------------------------------------------- |
+| `u16` ([ConfigIdx])     | [ConfigIdx]     | X     | [0-65535] Index of associated configuration in [config.bin][configbin]      |
+| `u20` ([PackageVerIdx]) | [PackageVerIdx] | Y     | [0-1M] Index of the version in [package-versions.bin][package-versions.bin] |
+| `u20` ([PackageIdIdx])  | [PackageIdIdx]  | Z     | [0-1M] Index of package ID in [package-ids.bin][package-ids.bin]            |
+
+## PackageVersion100Added
+
+!!! info "`1.0.0` is by far the most common version for a new package."
+
+    Because many mods don't get updated. So we can exploit this for some additional compression wins.
+
+This is an optimized form of [PackageAdded](#packageadded) for the common case of adding a new
+package with version `1.0.0`.
+
+### Messages
+
+- [PACKAGE_ADDED_V0][package-added-v0] when `PackageType` is not known.
+- [MOD_ADDED_V0][mod-added-v0] when `PackageType == Mod`.
+- [TRANSLATION_ADDED_V0][translation-added-v0] when `PackageType == Translation`.
+- [TOOL_ADDED_V0][tool-added-v0] when `PackageType == Tool`.
+
+### [D0] - [FF] PackageAddedVersion100_8
+
+| EventType (0-7) | [PackageIdIdx] (8-15) |
+| --------------- | --------------------- |
+| `D0` - `FF`     | `{XXXXXXXX}`          |
+
+| Data Type             | Name           | Label | Description                                                       |
+| --------------------- | -------------- | ----- | ----------------------------------------------------------------- |
+| `u8` ([PackageIdIdx]) | [PackageIdIdx] | X     | [0-255] Index of package ID in [package-ids.bin][package-ids.bin] |
+
+The `EventType` has 48 reserved values to act as an offset to the [PackageIdIdx] field.
+
+Reference:
+
+- `D0` [PackageIdIdx] has range [0-255].
+- ...
+- `FF` [PackageIdIdx] has range [12032-12287].
 
 [configbin]: Unpacked.md#configbin
 [events-bin]: Unpacked.md#eventsbin
 [packagemetadatabin]: Unpacked.md#packages
 [package-ids.bin]: Unpacked.md#package-idsbin
+[package-versions.bin]: ./Unpacked.md#package-versionsbin
 [package-added-v0]: ./Commit-Messages.md#package_added_v0
 [package-removed-v0]: ./Commit-Messages.md#package_removed_v0
 [package-hidden-v0]: ./Commit-Messages.md#package_hidden_v0
@@ -704,6 +862,7 @@ This event is emitted the files of the game match a known new store manifest/rev
 [update-commandline]: ./Commit-Messages.md#update_commandline_v0
 [featuresbin]: ./About.md#featuresbin
 [pkgstatechange]: ./DataTypes.md#packagestatechange
+[PackageStateChange]: ./DataTypes.md#packagestatechange
 [sortingmode]: ./DataTypes.md#sortingmode
 [sortorder]: ./DataTypes.md#sortorder
 [griddisplaymode]: ./DataTypes.md#griddisplaymode
@@ -719,3 +878,22 @@ This event is emitted the files of the game match a known new store manifest/rev
 [external-config-refs]: ./Unpacked.md#external-config-refsbin
 [external-config-updated-v0]: ./Commit-Messages.md#external_config_updated_v0
 [PackageIdIdx]: ./DataTypes.md
+[PackageVerIdx]: ./DataTypes.md
+[PackageEnabledStateChange]: ./DataTypes.md#packageenabledstatechange
+[PackageInstallStateChange]: ./DataTypes.md#packageinstallstatechange
+[Snapshots]: ./Snapshot.md
+[ConfigIdx]: ./DataTypes.md
+[ExternalConfigIdx]: ./DataTypes.md
+[package-added-with-config-v0]: ./Commit-Messages.md#package-added-with-config-v0
+[mod-added-with-config-v0]: ./Commit-Messages.md#mod_added_with_config_v0
+[translation-added-with-config-v0]: ./Commit-Messages.md#translation_added_with_config_v0
+[tool-added-with-config-v0]: ./Commit-Messages.md#tool_added_with_config_v0
+[package-added-with-config-v1]: ./Commit-Messages.md#package_added_with_config_v1
+[mod-added-with-config-v1]: ./Commit-Messages.md#mod_added_with_config_v1
+[translation-added-with-config-v1]: ./Commit-Messages.md#translation_added_with_config_v1
+[tool-added-with-config-v1]: ./Commit-Messages.md#tool_added_with_config_v1
+[PackageAddedFull]: #ce-packageaddedfull
+[GameLaunched]: #gamelaunched
+[timestamps.bin]: ./Unpacked.md#timestampsbin
+[GameLaunchedN]: ./Commit-Messages.md#game_launched_n_v0
+[ConfigUpdated24]: #21-externalconfigupdated24

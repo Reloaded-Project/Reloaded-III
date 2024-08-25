@@ -202,6 +202,99 @@ Installed translation '**{Name}**' with ID '**{ID}**' and version '**{Version}**
 Installed tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**' as a dependency.
 ```
 
+## Package Added (with Config) (V0)
+
+### Parameters
+
+- `Name` [0]: The name of the package, mod, translation or tool. [String]
+- `ID` [1]: The package ID. [String]
+- `ChangeList` [2]: List of configuration changes. [Parameter List]
+- `Version` [-1]: The package version. [String [Contextual]]
+
+### PACKAGE_ADDED_WITH_CONFIG_V0
+
+```
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+
+You've set up the following initial settings:
+
+{ChangeList}
+
+(ID: '{ID}')
+```
+
+### MOD_ADDED_WITH_CONFIG_V0
+
+```
+Added mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+
+You've configured these starter settings for the mod:
+
+{ChangeList}
+
+(ID: '{ID}')
+```
+
+### TRANSLATION_ADDED_WITH_CONFIG_V0
+
+```
+Added language '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+
+You've set up these initial language settings:
+
+{ChangeList}
+
+(ID: '{ID}')
+```
+
+### TOOL_ADDED_WITH_CONFIG_V0
+
+```
+Added tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+
+You've configured these initial settings:
+
+{ChangeList}
+
+(ID: '{ID}')
+```
+
+### PACKAGE_ADDED_WITH_CONFIG_V1
+
+```
+Added '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+You've set up some initial settings too. But we didn't understand the settings format.
+
+(ID: '{ID}')
+```
+
+### MOD_ADDED_WITH_CONFIG_V1
+
+```
+Added mod '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+You've set up some initial settings too. But we didn't understand the settings format.
+
+(ID: '{ID}')
+```
+
+### TRANSLATION_ADDED_WITH_CONFIG_V1
+
+```
+Added language '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+You've set up some initial settings too. But we didn't understand the settings format.
+
+(ID: '{ID}')
+```
+
+### TOOL_ADDED_WITH_CONFIG_V1
+
+```
+Added tool '**{Name}**' with ID '**{ID}**' and version '**{Version}**'.
+You've set up some initial settings too. But we didn't understand the settings format.
+
+(ID: '{ID}')
+```
+
 ## Package Updated (V0)
 
 !!! info "Source: Event [PackageUpdated][event-packageupdated]"
@@ -254,10 +347,38 @@ e.g. `11th of May 2020`.
 
 - `EventTimestamp` [-1]: [TimeStamp [Contextual]](#contextual-parameters)
 
-## Config Updated (V0)
+## GAME_LAUNCHED_N_V0
+
+!!! info "Invoked by [GameLaunchedN][event-game-launched-n]"
 
 ### Parameters
 
+- `Timestamps` [-1]: List of launch timestamps. [TimeStamp List [Contextual]](#contextual-parameters)
+
+```
+Launched game multiple times:
+- {Timestamps}
+```
+
+### GAME_LAUNCHED_N_PARAM_V0
+
+!!! note "This is an individual item in the `Timestamps` list above"
+
+```
+- **{TimeStamp}**
+```
+
+Example:
+
+```
+- 11th of May 2020
+- 12th of May 2020
+- 13th of May 2020
+```
+
+## Config Updated (V0)
+
+### Parameters
 
 - `Name` [0]: The name of the package, mod, translation or tool. [String][commit-param-type]
 - `ModID` [1]: The package ID for mod/tool. [String][commit-param-type]
@@ -468,7 +589,7 @@ Updated external configuration file '{ConfigPath}' for '{Name}' (ID: '{ID}').
 [events-bin]: ./Unpacked.md#eventsbin
 [event-packagestatuschanged]: ./Events.md#packagestatuschanged
 [event-config-updated]: ./Events.md#configupdated
-[event-loadout-display-setting-changed]: ./Events.md#1004-loadoutdisplaysettingchanged
+[event-loadout-display-setting-changed]: ./Events.md#16-loadoutdisplaysettingchanged
 [event-game-launched]: ./Events.md#gamelaunched
 [event-packageupdated]: ./Events.md#packageversionchanged
 [event-configupdated]: ./Events.md#configupdated
@@ -480,3 +601,4 @@ Updated external configuration file '{ConfigPath}' for '{Name}' (ID: '{ID}').
 [commit-param-list]: ./Unpacked.md#parameter-lists
 [commit-param-version]: ./Unpacked.md#commit-parameters-versionsbin
 [r3-locale-format]: ../../../../Common/Localisation/File-Format.md
+[event-game-launched-n]: ./Events.md#03-gamelaunchedn

@@ -30,46 +30,43 @@ We'll use a mix of different event types to show various scenarios.
 
 ### Writing Events
 
-!!! info "The event types used here are be outdated. This is just an example only."
-
 Suppose we want to write the following sequence of events:
 
-1. [GameLaunched][GameLaunched] (1 byte)
-2. `PackageStatusChanged8` (2 bytes)
-3. [ConfigUpdated8](#0101-configupdated8) (2 bytes)
-4. [PackageUpdated16](#1005-packageupdated16) (4 bytes)
+1. [GameLaunched] (1 byte)
+2. [PackageStatusChanged24] (4 bytes)
+3. [ConfigUpdated24] (2 bytes)
+4. [PackageUpdated16] (4 bytes)
 
 Here's how these events would be written to the file:
 
-| Byte 0-7      | Meaning                                            |
-| ------------- | -------------------------------------------------- |
-| `01`          | [GameLaunched][GameLaunched] event                 |
-| `40 ??`       | `PackageStatusChanged8` event                      |
-| `41 ??`       | [ConfigUpdated8](#0101-configupdated8) event       |
-| `00 00 00`    | NOP padding to align next event to 8-byte boundary |
-| `85 85 ?? ??` | [PackageUpdated16](#1005-packageupdated16) event   |
+| Byte 0-7      | Meaning                        |
+| ------------- | ------------------------------ |
+| `02`          | [GameLaunched] event           |
+| `01 ?? ?? ??` | [PackageStatusChanged24] event |
+| `00 00 00`    | NOP padding                    |
+| `04 ?? ?? ??` | [ConfigUpdated24] event        |
+| `17 ?? ?? ??` | [PackageUpdated24] event       |
 
 Explanation:
 
-- The [GameLaunched][GameLaunched] event (`01`) takes 1 byte.
-- The `PackageStatusChanged8` event (`40 XX`) takes 2 bytes.
-- The [ConfigUpdated8](#0101-configupdated8) event (`41 XX`) takes 2 bytes.
-- At this point, we've written 5 bytes. To ensure the next 4-byte event ([PackageUpdated16](#1005-packageupdated16)) starts on an 8-byte boundary, we add 3 bytes of [NOP](#00-nop) padding (`00 00 00`).
-- Finally, we write the [PackageUpdated16](#1005-packageupdated16) event (`85 85 XX XX`), which takes 4 bytes.
+- The [GameLaunched] event (`02`) takes 1 byte.
+- The [PackageStatusChanged24] event (`01 XX XX XX`) takes 4 bytes.
+- After these 5 bytes, we add 3 bytes of [NOP] padding (`00 00 00`) to align to the 8-byte boundary.
+- The [ConfigUpdated24] event (`04 XX XX XX`) takes 4 bytes.
+- The [PackageUpdated24] event (`17 XX XX XX`) takes 4 bytes.
 
 ### Reading Events
 
 When reading these events, the system would perform full 8-byte reads:
 
-1. First read (8 bytes): `01 40 ?? 41 ?? 00 00 00`
-    - Processes [GameLaunched][GameLaunched] (1 byte)
-    - Processes `PackageStatusChanged8` (2 bytes)
-    - Processes [ConfigUpdated8](#0101-configupdated8) (2 bytes)
+1. First read (8 bytes): `02 01 XX XX XX 00 00 00`
+    - Processes [GameLaunched] (1 byte)
+    - Processes [PackageStatusChanged24] (4 bytes)
     - Skips NOP padding (3 bytes)
 
-2. Second read (8 bytes): `85 85 ?? ?? ?? ?? ?? ??`
-   - Processes [PackageUpdated16](#1005-packageupdated16) (4 bytes)
-   - The last 2 bytes (XX XX) would be the start of the next event or additional padding
+2. Second read (8 bytes): `04 XX XX XX 17 XX XX XX`
+    - Processes [ConfigUpdated24] (4 bytes)
+    - Processes [PackageUpdated24] (4 bytes)
 
 ## Optimizing for Compression
 
@@ -649,7 +646,7 @@ They function as follows:
 - ...
 - `52` [PackageIdIdx] has range [12032-12287].
 
-!!! info "There is no `PackageEnabled24` variant, instead use [PackageStatusChanged24](#packagestatuschanged)."
+!!! info "There is no `PackageEnabled24` variant, instead use [PackageStatusChanged24][PackageStatusChanged24]."
 
 ## PackageDisabled
 
@@ -685,7 +682,7 @@ They function as follows:
 - ...
 - `82` [PackageIdIdx] has range [12032-12287].
 
-!!! info "There is no `PackageDisabled24` variant, instead use [PackageStatusChanged24](#packagestatuschanged)."
+!!! info "There is no `PackageDisabled24` variant, instead use [PackageStatusChanged24]."
 
 ## PackageAdded
 
@@ -884,3 +881,6 @@ Reference:
 [timestamps.bin]: ./Unpacked.md#timestampsbin
 [GameLaunchedN]: ./Commit-Messages.md#game_launched_n_v0
 [ConfigUpdated24]: #21-externalconfigupdated24
+[PackageStatusChanged24]: #packagestatuschanged
+[PackageUpdated16]: #1005-packageupdated16
+[NOP]: #00-nop

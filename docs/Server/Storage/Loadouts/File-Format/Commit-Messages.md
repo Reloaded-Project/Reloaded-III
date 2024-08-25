@@ -578,7 +578,7 @@ to
 
 - `Name` [0]: The name of the package (mod, tool, etc.). [String][commit-param-type]
 - `ID` [1]: The package ID. [String][commit-param-type]
-- `ConfigPath` [2]: The path of the updated configuration file. [String][commit-param-type]
+- `ConfigPath` [-1]: The path of the updated configuration file. [String [Contextual]](#contextual-parameters)
 
 ### EXTERNAL_CONFIG_UPDATED_V0
 

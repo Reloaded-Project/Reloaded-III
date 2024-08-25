@@ -467,33 +467,34 @@ Which could be marked as:
 Added '**Super Cool Mod**' with ID '**reloaded3.utility.somexample**' and version '**1.0.0**'
 ```
 
+!!! note "The `Version` is a ['Contextual Parameter'][commit-messages-contextual], and thus is derived from context."
+
+    It is not stored in the commit parameters.
+
 #### Encoding
 
-!!! note "Parameters are encoded in the order in which they appear in the template!!"
+!!! tip "Parameters are encoded in the order in which they appear in the template!!"
 
 This would be encoded as:
 
-1. [commit-parameter-types.bin](#commit-parameters-typesbin): [0, 0, 0]
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [0, 0]
 
     Explanation:
 
-    - 0: UTF-8 Char Array for "Super Cool Mod"
-    - 0: UTF-8 Char Array for "reloaded3.utility.somexample"
-    - 0: UTF-8 Char Array for "1.0.0"
+    - 0: UTF-8 Char Array for "Super Cool Mod" (Name)
+    - 0: UTF-8 Char Array for "reloaded3.utility.somexample" (ID)
 
-2. [commit-parameters-lengths.bin][commitparam8len]: [14, 28, 5]
+2. [commit-parameters-lengths.bin][commitparam8len]: [14, 28]
 
     Explanation:
 
     - 14: Length of "Super Cool Mod"
     - 28: Length of "reloaded3.utility.somexample"
-    - 5: Length of "1.0.0"
 
 3. [commit-parameters-text.bin](#parametertype):
 
     - `Super Cool Mod`
     - `reloaded3.utility.somexample`
-    - `1.0.0`
 
     These strings are written directly to the `commit-parameters-text.bin` file, without any null
     terminator or padding.
@@ -510,21 +511,19 @@ This would be encoded as:
 
 !!! info "Suppose you wanted to repeat the earlier parameter, we would use [back references](#back-references)."
 
-1. [commit-parameter-types.bin](#commit-parameters-typesbin): [5, 5, 5]
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [5, 5]
 
     Explanation:
 
     - 5: BackReference8 for `"Super Cool Mod"`
     - 5: BackReference8 for `"reloaded3.utility.somexample"`
-    - 5: BackReference8 for `"1.0.0"`
 
-2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
+2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1]
 
     Explanation:
 
     - 0: Index of `"Super Cool Mod"`
     - 1: Index of `"reloaded3.utility.somexample"`
-    - 2: Index of `"1.0.0"`
 
 3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
 
@@ -546,13 +545,12 @@ Let's say we want to reference all three parameters from the previous example in
 
     - 11: BackReference3_8 for all three parameters
 
-2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1, 2]
+2. [commit-parameters-backrefs-8.bin](#back-references): [0, 1]
 
     Explanation:
 
     - 0: Index of `"Super Cool Mod"`
     - 1: Index of `"reloaded3.utility.somexample"`
-    - 2: Index of `"1.0.0"`
 
 3. [commit-parameters-versions.bin](#commit-parameters-versionsbin): [0]
 

@@ -510,7 +510,7 @@ This would be encoded as:
 
 !!! info "Suppose you wanted to repeat the earlier parameter, we would use [back references](#back-references)."
 
-1. [commit-parameter-types.bin](#commit-parameters-typesbin): [7, 7, 7]
+1. [commit-parameter-types.bin](#commit-parameters-typesbin): [5, 5, 5]
 
     Explanation:
 

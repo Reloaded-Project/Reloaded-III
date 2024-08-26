@@ -18,10 +18,8 @@ The loadout files are packed using the NX format with the following configuratio
 
 !!! note "Implementation Status"
 
-    Both of these features are *not yet* implemented in the NX Archive Format.
+    The first two features are *not yet* implemented in the NX Archive Format.
     They are however planned.
-
-These will be present in a future native port of the library.
 
 ### Packed Files
 

@@ -516,7 +516,7 @@ To look up a package, translation, or other hash based data:
 
 1. Calculate the XXH3 hash of the package ID.
 2. Take the first two bytes of the hash.
-3. Navigate to the corresponding directory based on the first byte, second byte, and third byte.
+3. Navigate to the corresponding directory based on the first byte and second byte.
 4. Load the corresponding `.msgpack.zstd` file (or folder) within that directory.
 5. Search for the package entry with the matching full hash within that file.
 

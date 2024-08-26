@@ -123,6 +123,7 @@ nav:
       - Tasks: Server/Packaging/Tasks.md
       - File Format:  
         - Packaging Container: Server/Packaging/File-Format/Packaging-Container.md
+        - Archive Extension Format: Server/Packaging/File-Format/Archive-User-Data-Format.md
     - Workflows: 
       - About: Server/Workflows/About.md
       - Guidelines: Server/Workflows/Guidelines.md

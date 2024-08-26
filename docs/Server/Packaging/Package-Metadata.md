@@ -179,6 +179,10 @@ any = "reloaded3.gamesupport.persona5royal.dll"
 
 !!! warning "Must be a valid Windows & Unix file name."
 
+!!! warning "Has a max length of 255 characters."
+
+    But ideally should keep under 64.
+
 This format is designed to minimize collisions while providing a human-readable name.
 
 The suggested format to use for names is `game.type.subtype.name.author.target`.

@@ -93,6 +93,8 @@ Using following settings:
 - Compression Level: 22
 - Block Size: 16MB
 - Padding: None
+- `package.toml` and `config.toml` are ***NOT*** SOLID compressed.
+    - This helps indexing in [Central Server].
 
 !!! tip "Any inner `.nx` archives are ***NOT*** re-compressed."
 
@@ -156,3 +158,4 @@ We can exploit this, and use this to workaround upload restrictions.
 [nx-format]: https://nexus-mods.github.io/NexusMods.Archives.Nx/
 [XXH3]: https://github.com/Cyan4973/xxHash
 [delta-patching]: ./Delta-Patching.md
+[Central Server]: ../../../Services/Central-Server.md

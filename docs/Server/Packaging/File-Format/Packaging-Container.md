@@ -91,12 +91,15 @@ Using following settings:
 - Hashing: [XXH3].
 - Compression: ZStandard
 - Compression Level: 22
+- Block Size: 16MB
+- Padding: None
 
 !!! tip "Any inner `.nx` archives are ***NOT*** re-compressed."
 
 !!! note "Implementation Status"
 
     XXH3 hashing is not yet implemented in NX Archive Format.
+    Removing padding is also not yet implemented.
 
 ### Nx Over Zip
 

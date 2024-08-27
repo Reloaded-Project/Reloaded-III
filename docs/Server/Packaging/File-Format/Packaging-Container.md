@@ -66,15 +66,19 @@ NxVFS transforms a part of file tree from:
 
 ```
 modfiles
-├── redirector
-│   └── skill-game-asset.bin
+├── vfs
+│   └── redirector
+│       └── skill-game-asset.bin
 └── mod.dll
 ```
 
 into
 
 ```
-modfiles.nx
+modfiles
+├── redirector
+│   └── skill-game-asset.bin
+└── mod.dll
 ```
 
 In this case, we should avoid recompressing the `.nx` archive.

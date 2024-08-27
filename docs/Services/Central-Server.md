@@ -500,6 +500,72 @@ The response contains the contents of the [`UpdateData`][update-data] struct fro
 
 Apologies for the confusion. Here's the updated version of the `Static CDN API` section with the requested changes:
 
+### Get Download Information
+
+- `POST /api/packages/download-info`
+
+***Description:*** Retrieve download information for packages from various sources.
+
+***Request Body:*** An array of objects, each containing `packageId` field.
+
+***Example Request Body:***
+```json
+[
+  {
+    "packageId": "reloaded3.gamesupport.persona5royal.s56"
+  },
+  {
+    "packageId": "reloaded3.utility.reloadedhooks.s56"
+  }
+]
+```
+
+***Example Response Body:***
+```json
+[
+  {
+    "packageId": "reloaded3.gamesupport.persona5royal.s56",
+    "version": "1.0.1",
+    "downloadInfo": [
+      {
+        "type": "GameBanana",
+        "downloadId": "610939",
+        "downloadUrl": "https://gamebanana.com/dl/610939"
+      },
+      {
+        "type": "NexusMods",
+        "fileId": "7318624808113",
+        "fileName": "Persona5Royal-Support-1.0.1.zip"
+      },
+      {
+        "type": "GitHub",
+        "assetId": 160499684,
+        "assetName": "Persona5Royal-Support-1.0.1.zip",
+        "downloadUrl": "https://github.com/Sewer56/persona5royal-modloader/releases/download/v1.0.1/Persona5Royal-Support-1.0.1.zip"
+      }
+    ]
+  },
+  {
+    "packageId": "reloaded3.utility.reloadedhooks.s56",
+    "version": "2.3.0",
+    "downloadInfo": [
+      {
+        "type": "GitHub",
+        "assetId": 160499685,
+        "assetName": "ReloadedHooks-2.3.0.zip",
+        "downloadUrl": "https://github.com/Reloaded-Project/Reloaded.Hooks/releases/download/v2.3.0/ReloadedHooks-2.3.0.zip"
+      },
+      {
+        "type": "NuGet",
+        "packageId": "Reloaded.Hooks",
+        "version": "2.3.0",
+        "downloadUrl": "https://api.nuget.org/v3-flatcontainer/reloaded.hooks/2.3.0/reloaded.hooks.2.3.0.nupkg"
+      }
+    ]
+  }
+]
+```
+
 ## Static CDN API
 
 !!! info "The Static CDN API provides offline access to package metadata, configurations, compatibility reports, and other essential information."

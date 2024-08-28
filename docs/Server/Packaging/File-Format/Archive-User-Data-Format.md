@@ -43,31 +43,74 @@ First part lists the number of items which follow:
 - `Align4`
 - `u32`: NumPatches
 
-After this is the `patch file indices` section:
-
-- [PatchFileIndex[NumPatches]](#patchfileindex): PatchFileIndices
-
-After this is the `patch source hashes` section:
-
+- `u32[NumPatches]`: [PatchFileIndices]
 - `Align8`
-- [TargetCount[NumPatches]](#targetcount): PatchSources
-
-!!! tip "The `PatchFileIndices` and `PatchSources` form tuples."
-
-Then follows the `patch target count` section:
-
-- [TargetCount[NumPatches]](#patchfileindex): PatchTargetCounts
-
-And lastly are the patch targets:
-
+- [`XXH3[NumPatches]`][xxh3]: [PatchSources]
+- `u32[NumPatches]`: [PatchTargetCounts]
 - `String8[NumPatchTargets]`: PatchTargetPaths
 
-The `NumPatchTargets` are calculated by summing all values of `PatchTargetCounts`.
-
-Each member of `PatchTargetCounts` represents the number of output files for the corresponding
-[PatchSource] and [PatchFileIndex] tuple. This allows to
+!!! info "`NumPatchTargets` is calculated by summing all values of `PatchTargetCounts`."
 
 The `PatchTargetPaths` are the paths of all files.
+
+!!! example "An example"
+
+    ```
+    NumPatches: 3
+    PatchTargetCounts: [2, 1, 3]
+    PatchTargetPaths: [
+        "textures/armor.dds",
+        "textures/armor_normal.dds",
+        "scripts/main.lua",
+        "models/character.nif",
+        "models/weapon.nif",
+        "models/shield.nif"
+    ]
+    ```
+
+    1. The output of `PatchSources[0]` + `PatchFileIndices[0]` produces 2 files:
+        - "textures/armor.dds"
+        - "textures/armor_normal.dds"
+
+    2. The output of `PatchSources[1]` + `PatchFileIndices[1]` produces 1 file:
+        - "scripts/main.lua"
+
+    3. The output of `PatchSources[2]` + `PatchFileIndices[2]` produces 3 files:
+        - "models/character.nif"
+        - "models/weapon.nif"
+        - "models/shield.nif"
+
+#### PatchFileIndices
+
+!!! info "These are the 0 based indexes of the patch files as they appear in the `NX` archive."
+
+This is an array of `u32` values.
+
+A value of 0 means the first file in the archive's file entries.
+
+#### PatchSources
+
+!!! info "These are the hashes of the source files"
+
+The PatchSources and [PatchFileIndices] form tuples.
+
+So `PatchSources[0]` has the hash of the file from the previous version of the package that
+you should apply the patch at `PatchFileIndices[0]` to.
+
+To find the original file, we check the original mod folder and find the file with the
+corresponding [XXH3] hash using the [File Hash Cache].
+
+#### PatchTargetCounts
+
+!!! info "Each [PatchSources] and [PatchFileIndices] tuple can output multiple files."
+
+When there are duplicate files in the new version of the package, we can reuse a pre-generated
+patch for them. In this case, the `PatchTargetCounts` will be greater than 1; as this is the number
+of files that the `source+patch` output will output to.
+
+##### PatchTargetPaths
+
+!!! info "These are the relative paths of the files that the [PatchSources] and [PatchFileIndices] tuples will output to."
 
 ### Extract Info
 
@@ -94,37 +137,6 @@ The `PatchTargetPaths` are the paths of all files.
 - `u32`: NumFilesToCopy
 - [XXH3[NumFilesToCopy]][xxh3]: FilesToCopy
 - `String8[NumFilesToCopy]`: RelativeOutputPaths
-
-### Data Types
-
-#### TargetCount
-
-!!! info "Represents the number of targets for a specified [PatchSource] and [PatchFileIndex] tuple."
-
-This is a `u32` value.
-
-#### PatchSource
-
-!!! info "This structure contains the source file in the previous version of the package"
-
-    The actual patch file is at [PatchFileIndex].
-
-The structure has single member:
-
-- [XXH3][xxh3]: SourceHash
-
-We check the original mod folder and find the file with the corresponding [XXH3] hash
-using the [File Hash Cache].
-
-#### PatchFileIndex
-
-!!! info "This structure contains the index of the patch file for the corresponding [Source Files](#patchsource)"
-
-    The actual patch file is at [PatchFileIndex].
-
-The structure has single member:
-
-- `u32`: Index
 
 ## Delta Apply Logic
 
@@ -255,8 +267,6 @@ Deltas can be discovered by using the [Central Server].
 [Package Version]: ../Package-Metadata.md#version
 [xxh3]: ../../../Common/Hashing.md#stable-hashing-for-large-data-with-many-files
 [File Hash Cache]: ../../../Common/Hash-Cache/File-Format.md
-[PatchSource]: #patchsource
-[PatchFileIndex]: #patchfileindex
 [Patch Info]: #patch-info
 [Extract Info]: #extract-info
 [Process Files]: #process-files
@@ -269,3 +279,6 @@ Deltas can be discovered by using the [Central Server].
 [HDiffPatch]: https://github.com/sisong/HDiffPatch
 [zstd-patch-from]: https://github.com/facebook/zstd/issues/2835
 [ZStandard Patching Engine]: https://github.com/facebook/zstd/wiki/Zstandard-as-a-patching-engine
+[PatchFileIndices]: #patchfileindices
+[PatchSources]: #patchsources
+[PatchTargetCounts]: #patchtargetcounts

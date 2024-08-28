@@ -877,6 +877,10 @@ Here's an example of the decoded MessagePack content:
 
 ### Search API
 
+!!! note "This API does not have a hosted endpoint."
+
+    This is a CDN only API.
+
 !!! info "Retrieves the entire list of mods for a specific game"
 
     We download this and can then search locally.

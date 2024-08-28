@@ -67,6 +67,55 @@ https://gamebanana.com/apiv11/File/610939
 }
 ```
 
+### GitHub
+
+**Example URL:**
+```
+https://api.github.com/repos/Sewer56/nanokit-rs/releases?per_page=1&page=1
+```
+
+**Response Data (simplified):**
+```json
+[
+  {
+    "tag_name": "0.1.0",
+    "name": "0.1.0",
+    "published_at": "2024-04-05T14:45:15Z",
+    "assets": [
+      {
+        "url": "https://api.github.com/repos/Sewer56/nanokit-rs/releases/assets/160499684",
+        "id": 160499684,
+        "name": "Changelog.md",
+        "size": 495,
+        "browser_download_url": "https://github.com/Sewer56/nanokit-rs/releases/download/0.1.0/Changelog.md",
+        "created_at": "2024-04-05T14:45:15Z"
+      }
+    ]
+  }
+]
+```
+
+**Data Explanation:**
+
+- `tag_name`: The tag name of the release (often corresponds to the version)
+- `name`: The name of the release
+- `published_at`: Timestamp of when the release was published
+- `assets`: Array of assets (downloadable files) associated with the release
+    - `url`: Stable URL for this file.
+    - `id`: Unique identifier for the asset (use this as `assetId`)
+    - `name`: Filename of the asset
+    - `size`: File size in bytes
+    - `browser_download_url`: Direct download URL for the asset (don't use this one!!)
+    - `created_at`: Timestamp of when the asset was created
+
+!!! danger "Do not use `browser_download_url`, it changes with file name."
+
+    Instead use the `url` field, it is stable as it is tied to the asset id.
+
+!!! note "Max 100 items per page per file."
+
+    GitHub doesn't return error, just caps it to 100 silently.
+
 ### NexusMods
 
 #### Obtain a Mod Page
@@ -179,58 +228,29 @@ query ModFilesByUid($uids: [String!]!) {
 
 This fetches us the mod files by specific UID.
 
-### GitHub
+!!! note "No currently known V2 API for download links."
 
-**Example URL:**
-```
-https://api.github.com/repos/Sewer56/nanokit-rs/releases?per_page=1&page=1
-```
+    You have to use V1 API.
 
-**Response Data (simplified):**
-```json
-[
-  {
-    "tag_name": "0.1.0",
-    "name": "0.1.0",
-    "published_at": "2024-04-05T14:45:15Z",
-    "assets": [
-      {
-        "url": "https://api.github.com/repos/Sewer56/nanokit-rs/releases/assets/160499684",
-        "id": 160499684,
-        "name": "Changelog.md",
-        "size": 495,
-        "browser_download_url": "https://github.com/Sewer56/nanokit-rs/releases/download/0.1.0/Changelog.md",
-        "created_at": "2024-04-05T14:45:15Z"
-      }
-    ]
-  }
-]
-```
+## What to Persist
 
-**Data Explanation:**
+!!! info "What should we persist to uniquely access files in the future?"
 
-- `tag_name`: The tag name of the release (often corresponds to the version)
-- `name`: The name of the release
-- `published_at`: Timestamp of when the release was published
-- `assets`: Array of assets (downloadable files) associated with the release
-    - `url`: Stable URL for this file.
-    - `id`: Unique identifier for the asset (use this as `assetId`)
-    - `name`: Filename of the asset
-    - `size`: File size in bytes
-    - `browser_download_url`: Direct download URL for the asset (don't use this one!!)
-    - `created_at`: Timestamp of when the asset was created
+***GameBanana:***
 
-!!! danger "Do not use `browser_download_url`, it changes with file name."
+- `u64`: id_row
 
-    Instead use the `url` field, it is stable as it is tied to the asset id.
+***GitHub:***
 
-!!! note "Max 100 items per page per file."
+- `String8` user_name
+- `String8` repository_name
+- `u64` asset_id
 
-    GitHub doesn't return error, just caps it to 100 silently.
+***NexusMods:***
 
-## Unique Identifiers
-
-### GameBanana
-
+- `u64` uid
+    - This is a tuple of `modId` and `gameId` in NexusMods.
+    - First 4 bytes are `modId`, last 4 bytes are `gameId`.
+    - These are little endian.
 
 [Central Server]: ../Services/Central-Server.md

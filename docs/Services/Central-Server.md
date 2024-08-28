@@ -493,6 +493,52 @@ is not specified, all versions will be returned.
         "assetId": 160499684,
         "fileSize": 495
       }
+    ],
+    "deltaUpdates": [
+      {
+        "fromVersion": "1.0.0",
+        "downloadInfo": [
+          {
+            "type": "GameBanana",
+            "idRow": 610940,
+            "fileSize": 102400
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808114",
+            "fileSize": 102400
+          },
+          {
+            "type": "GitHub",
+            "userName": "Sewer56",
+            "repositoryName": "persona5royal-modloader",
+            "assetId": 160499685,
+            "fileSize": 102400
+          }
+        ]
+      },
+      {
+        "fromVersion": "1.0.1",
+        "downloadInfo": [
+          {
+            "type": "GameBanana",
+            "idRow": 610941,
+            "fileSize": 51200
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808115",
+            "fileSize": 51200
+          },
+          {
+            "type": "GitHub",
+            "userName": "Sewer56",
+            "repositoryName": "persona5royal-modloader",
+            "assetId": 160499686,
+            "fileSize": 51200
+          }
+        ]
+      }
     ]
   },
   {
@@ -517,12 +563,31 @@ is not specified, all versions will be returned.
         "uid": "7318624808114",
         "fileSize": 552
       }
+    ],
+    "deltaUpdates": [
+      {
+        "fromVersion": "2.2.0",
+        "downloadInfo": [
+          {
+            "type": "GitHub",
+            "userName": "Reloaded-Project",
+            "repositoryName": "Reloaded.Hooks",
+            "assetId": 160499686,
+            "fileSize": 102
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808116",
+            "fileSize": 102
+          }
+        ]
+      }
     ]
   }
 ]
 ```
 
-The response contains two main sections for each package:
+The response contains the following main sections for each package:
 
 1. [`updateSourceData`](#update-source-data):
     - This section contains information about the mod page or repository where the package was originally sourced from.
@@ -530,6 +595,10 @@ The response contains two main sections for each package:
 2. [`downloadInfo`](#download-info):
     - This section provides specific information required to download this package version.
     - Includes unique identifiers and file sizes for each platform.
+
+3. [`deltaUpdates`][delta-update-header]:
+    - This section provides information about delta updates available for the package.
+    - You can obtain the delta info using the (TODO: API).
 
 #### Update Source Data
 
@@ -678,6 +747,30 @@ Here's an example of the decoded MessagePack content:
         "repositoryName": "persona5royal-modloader",
         "assetId": 160499684,
         "fileSize": 495
+      }
+    ],
+    "deltaUpdates": [
+      {
+        "fromVersion": "1.0.0",
+        "downloadInfo": [
+          {
+            "type": "GameBanana",
+            "idRow": 610940,
+            "fileSize": 102400
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808114",
+            "fileSize": 102400
+          },
+          {
+            "type": "GitHub",
+            "userName": "Sewer56",
+            "repositoryName": "persona5royal-modloader",
+            "assetId": 160499685,
+            "fileSize": 102400
+          }
+        ]
       }
     ]
   },
@@ -1027,3 +1120,4 @@ By default, I recommend searching by substring. In Name and ModId. Summary can b
 [hashing]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use
 [mod-metadata-search-image]: ../Server/Packaging/Package-Metadata.md#icon-search
 [Download Information]: #download-information
+[delta-update-header]: ../Server/Packaging/File-Format/Archive-User-Data-Format.md#header-delta-update

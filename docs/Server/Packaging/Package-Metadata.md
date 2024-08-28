@@ -19,7 +19,7 @@ Inside each package folder is a file named `package.toml`; which stores the meta
 | Credit[]          | [Credits](#credits)                      | [Optional] Stores information about who contributed what to the project.  |
 | string?           | SourceUrl                                | [Optional] Link to source code (if applicable).                           |
 | string?           | ProjectUrl                               | [Optional] Link to website to learn more about the project.               |
-| UpdateData        | [UpdateData](#update-data)               | Stores package specific update information.                               |
+| UpdateSourceData  | [UpdateSourceData](#update-source-data)  | Stores package specific update information.                               |
 | DependencyInfo[]  | [Dependencies](#dependency-info)         | Stores information about this package's dependencies.                     |
 | DateTime          | [Published](#published)                  | The time when this package was packed.                                    |
 | StoragePreference | [StoragePreference](#storage-preference) | Specifies the preferred storage tier for the package.                     |
@@ -110,20 +110,20 @@ Url = "https://github.com/SirGamers"
 Name = "Atlus"
 Role = "Original Game Developer"
 
-[UpdateData]
-[UpdateData.GameBanana]
+[UpdateSourceData]
+[UpdateSourceData.GameBanana]
 ItemType = "Mod"
 ItemId = 408376
 
-[UpdateData.GitHub]
+[UpdateSourceData.GitHub]
 UserName = "Sewer56"
 RepositoryName = "reloaded3.gamesupport.persona5royal"
 
-[UpdateData.Nexus]
+[UpdateSourceData.Nexus]
 GameDomain = "persona5"
 Id = 789012
 
-[UpdateData.NuGet]
+[UpdateSourceData.NuGet]
 DefaultRepositoryUrls = [
    "http://packages.sewer56.moe:5000/v3/index.json"
 ]
@@ -133,8 +133,8 @@ AllowUpdateFromAnyRepository = false
 Id = "reloaded3.utility.reloadedhooks.s56"
 Name = "Reloaded3 Hooking Library"
 Author = "Sewer56"
-[Dependencies.UpdateData]
-[Dependencies.UpdateData.GitHub]
+[Dependencies.UpdateSourceData]
+[Dependencies.UpdateSourceData.GitHub]
 UserName = "Reloaded-Project"
 RepositoryName = "reloaded3.utility.reloadedhooks"
 
@@ -142,8 +142,8 @@ RepositoryName = "reloaded3.utility.reloadedhooks"
 Id = "reloaded3.utility.sigscan.s56"
 Name = "Reloaded3 Signature Scanning Library"
 Author = "Sewer56"
-[Dependencies.UpdateData]
-[Dependencies.UpdateData.GitHub]
+[Dependencies.UpdateSourceData]
+[Dependencies.UpdateSourceData.GitHub]
 UserName = "Reloaded-Project"
 RepositoryName = "reloaded3.utility.sigscanrs"
 
@@ -151,8 +151,8 @@ RepositoryName = "reloaded3.utility.sigscanrs"
 Id = "reloaded3.api.crimiddleware.filesystemv2.modloader.s56"
 Name = "CRI File System V2 Mod Loader"
 Author = "Sewer56"
-[Dependencies.UpdateData]
-[Dependencies.UpdateData.GitHub]
+[Dependencies.UpdateSourceData]
+[Dependencies.UpdateSourceData.GitHub]
 UserName = "Sewer56"
 RepositoryName = "reloaded3.api.crimiddleware.filesystemv2.modloader"
 
@@ -362,7 +362,7 @@ Each credit uses a `Credit` structure with following fields:
 | string | Role  | What the person or group did.                       |
 | string | Url   | [Optional] Link to the person's website or profile. |
 
-## Update Data
+## Update Source Data
 
 !!! info
 
@@ -374,6 +374,13 @@ Each credit uses a `Credit` structure with following fields:
 
     This section might be moved to dedicated Update library section.
 
+!!! warning "This is a security feature"
+
+    Setting the `Update Data` prevents possible `dependency confusion`/`supply chain` attacks; in
+    the event someone tries to upload a package with the same ID to a different location.
+
+    Notably important for [Central Server].
+
 | Type                 | Name                                  | Description                            |
 | -------------------- | ------------------------------------- | -------------------------------------- |
 | GameBananaUpdateInfo | [GameBanana](#gamebanana-update-info) | Info on how to update from GitHub.     |
@@ -383,21 +390,22 @@ Each credit uses a `Credit` structure with following fields:
 
 ### GameBanana Update Info
 
-| Type   | Name     | Description                                                                                                                                           |
-| ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| string | ItemType | Type of item on GameBanana API, e.g. 'Mod', 'Sound', 'Wip'                                                                                            |
-| int    | ItemId   | Id of the item on GameBanana, this is the last number in the URL to your mod page; e.g. 150115 if your mod URL is https://gamebanana.com/mods/150115. |
+| Type   | Name     | Description                                                                        |
+| ------ | -------- | ---------------------------------------------------------------------------------- |
+| string | ItemType | Type of item on GameBanana API, e.g. 'Mod', 'Sound', 'Wip'                         |
+| int    | ItemId   | Id of the item on GameBanana, this is the last number in the URL to your mod page. |
+
+!!! tip "You can get the `ItemId` from the URL of the edit page"
+
+    For example for the URL `https://gamebanana.com/mods/150115`,
+    the ID here is `150115`. You can access this before adding the files to your mod page.
 
 ### GitHub Update Info
 
-| Type   | Name           | Description                                                                           |
-| ------ | -------------- | ------------------------------------------------------------------------------------- |
-| string | UserName       | The user/organization name associated with the repository to fetch files from.        |
-| string | RepositoryName | The name of the repository to fetch files from.                                       |
-| bool   | AssetFileName  | [Optional] Pattern for the file name to download if no metadata file is found.        |
-| bool   | UseReleaseTag  | [Optional] If true, uses the release tag to denote version of the package as speedup. |
-
-The field `AssetFileName` is provided for backwards compatibility only. e.g. `*update.zip` will look for any file ending with `update.zip`
+| Type   | Name           | Description                                                                    |
+| ------ | -------------- | ------------------------------------------------------------------------------ |
+| string | UserName       | The user/organization name associated with the repository to fetch files from. |
+| string | RepositoryName | The name of the repository to fetch files from.                                |
 
 ### Nexus Update Info
 
@@ -408,7 +416,16 @@ The field `AssetFileName` is provided for backwards compatibility only. e.g. `*u
 | string | GameDomain | The ID/Domain for the game. e.g. 'skyrim' |
 | int    | Id         | Unique id for the mod.                    |
 
+!!! tip "You can get the `Id` from the URL of the edit page"
+
+    For example for the URL `https://www.nexusmods.com/site/mods/edit/?step=details&id=1026&game_id=2295`,
+    the ID here is `1026`. You can access this before publishing the mod.
+
 ### NuGet Update Info
+
+!!! info "This is not planned to ship"
+
+    This will only ship if there's demand for it.
 
 | Type     | Name                  | Description                                        |
 | -------- | --------------------- | -------------------------------------------------- |
@@ -431,12 +448,12 @@ The field `AssetFileName` is provided for backwards compatibility only. e.g. `*u
 
 `DependencyInfo` is defined as:
 
-| Type       | Name                       | Description                             |
-| ---------- | -------------------------- | --------------------------------------- |
-| string     | Id                         | Unique ID of the dependency.            |
-| string     | Name                       | Human friendly name of dependency.      |
-| string     | Author                     | Name of the dependency author.          |
-| UpdateData | [UpdateData](#update-data) | Stores mod update specific information. |
+| Type             | Name                                    | Description                             |
+| ---------------- | --------------------------------------- | --------------------------------------- |
+| string           | Id                                      | Unique ID of the dependency.            |
+| string           | Name                                    | Human friendly name of dependency.      |
+| string           | Author                                  | Name of the dependency author.          |
+| UpdateSourceData | [UpdateSourceData](#update-source-data) | Stores mod update specific information. |
 
 All of these fields are copied from the dependency packages.
 
@@ -820,3 +837,4 @@ Explanation of macOS Folders:
 [tools-as-packages]: ./Tools-As-Packages.md#chosen-approach
 [xdg-path-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html
 [external-config-paths]: ../Storage/Loadouts/File-Format/Unpacked.md#external-config-pathsbin
+[Central Server]: ../../Services/Central-Server.md

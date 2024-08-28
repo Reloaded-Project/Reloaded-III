@@ -33,7 +33,7 @@ struct DependencyInfo {
     id: String,
     name: String,
     author: String,
-    // Additional fields for UpdateData can be added here
+    // Additional fields for UpdateSourceData can be added here
 }
 
 #[derive(Archive, Deserialize, Serialize, Debug, Eq, PartialEq)]

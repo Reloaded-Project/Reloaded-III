@@ -1,6 +1,10 @@
 # Packaging
 
-!!! info "This page contains all information related to how mods are packaged and distributed."
+!!! info "This page contains all information related to how packages are structured and distributed."
+
+    The following sections contain information specifically about how *reloaded3* packages are structured.
+
+    Other systems may use slightly different layout and/or feature set.
 
 ## Package Structure
 
@@ -39,6 +43,12 @@ reloaded3.utility.examplemod.s56
 │   └── license.md
 └── package.toml
 ```
+
+The specification for `package.toml` can be found at [Package Metadata].
+
+The specification for `config.toml` can be found at [Configuration Schema].
+
+The specification for the `languages` folder can be found at [Localisation].
 
 ### Changelog
 
@@ -141,7 +151,15 @@ That means including the following in each package:
 
 !!! note "A package does not need to contain assets for previous versions, only changelogs."
 
+## Where are Packages Stored?
+
+!!! info "Reloaded3 packages are by default stored in a [machine persistent `Packages` folder][packages-folder]."
+
 [cc-by-nc-sa-4.0]: https://creativecommons.org/licenses/by-nc-sa/4.0/
 [docs-file]: ./Package-Metadata.md#docsfile
 [gallery-items]: ./Package-Metadata.md#gallery
 [images]: ../../Common/Images.md
+[Package Metadata]: ./Package-Metadata.md
+[Configuration Schema]: ../../Common/Configuration/Config-Schema.md
+[Localisation]: ../../Common/Localisation/File-Format.md
+[packages-folder]: ../Storage/Locations.md#machine-non-persistent

@@ -19,6 +19,7 @@ The byte `00` is recommended for padding.
 
     This is `0x5233504B` in big endian. For `Reloaded3PacKage`.
 
+- `u8`: Version
 - `String8`: [Package ID]
 - `String8`: [Package Version]
 
@@ -30,6 +31,7 @@ The byte `00` is recommended for padding.
 
 The ***header*** is the following:
 
+- `u8`: Version
 - `String8`: [Package ID]
 - `String8`: [Package Version]
 - `String8`: [Previous Package Version][Package Version]

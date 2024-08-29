@@ -124,6 +124,7 @@ nav:
       - File Format:  
         - Packaging Container: Server/Packaging/File-Format/Packaging-Container.md
         - Archive Extension Format: Server/Packaging/File-Format/Archive-User-Data-Format.md
+        - Delta Patching Logic: Server/Packaging/File-Format/Delta-Patching-Logic.md
     - Workflows: 
       - About: Server/Workflows/About.md
       - Guidelines: Server/Workflows/Guidelines.md

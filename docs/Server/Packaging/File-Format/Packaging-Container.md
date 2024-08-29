@@ -161,5 +161,5 @@ We can exploit this, and use this to workaround upload restrictions.
 
 [nx-format]: https://nexus-mods.github.io/NexusMods.Archives.Nx/
 [XXH3]: https://github.com/Cyan4973/xxHash
-[delta-patching]: ./Delta-Patching.md
+[delta-patching]: ./Archive-User-Data-Format.md#delta-format
 [Central Server]: ../../../Services/Central-Server.md

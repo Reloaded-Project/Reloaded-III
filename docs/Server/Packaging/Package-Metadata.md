@@ -838,3 +838,7 @@ Explanation of macOS Folders:
 [xdg-path-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html
 [external-config-paths]: ../Storage/Loadouts/File-Format/Unpacked.md#external-config-pathsbin
 [Central Server]: ../../Services/Central-Server.md
+[package-images]: ./About.md#package-structure
+[grid-display-mode]: ../Storage/Loadouts/File-Format/DataTypes.md#griddisplaymode
+[instruction-sets]: ../../Loader/Backends/About.md#architectures
+[images]: ../../Common/Images.md

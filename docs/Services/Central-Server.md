@@ -1104,6 +1104,87 @@ To perform a search, users can follow these steps:
 
 By default, I recommend searching by substring. In Name and ModId. Summary can be opt in.
 
+### Delta Verification API
+
+!!! info "This API determines the information needed to determine if you are eligible to apply a delta update."
+
+Each file contains a list of hashes that must exist in the previous version of the package.
+
+If any file does not exist, you will be unable to apply the delta update.
+
+#### File Structure
+
+```
+.
+└── delta-headers
+    ├── 00
+    │   ├── 00
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ...
+    │   │   └── {deltaHeaderHash}.bin
+    │   ├── 01
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ...
+    │   │   └── {deltaHeaderHash}.bin
+    │   ...
+    │   └── ff
+    │       ├── {deltaHeaderHash}.bin
+    │       ├── {deltaHeaderHash}.bin
+    │       ...
+    │       └── {deltaHeaderHash}.bin
+    ...
+    └── ff
+        ├── 00
+        │   ├── {deltaHeaderHash}.bin
+        │   ├── {deltaHeaderHash}.bin
+        │   ...
+        │   └── {deltaHeaderHash}.bin
+        ...
+        └── ff
+            ├── {deltaHeaderHash}.bin
+            ├── {deltaHeaderHash}.bin
+            ...
+            └── {deltaHeaderHash}.bin
+```
+
+#### Delta Header Hash Calculation
+
+!!! info "To determine which file you need to open (generate `deltaHeaderhash`), follow these steps"
+
+1. Create a string by concatenating `packageId`, `oldVersion`, and `newVersion`, separated by null bytes:
+    ```
+    {packageId}\0{oldVersion}\0{newVersion}\0
+    ```
+2. Encode this string as UTF-8.
+    - Note: *In most cases, this will be ASCII and result in 1 byte per character.*
+3. Calculate the [XXH3] hash of this UTF-8 encoded string.
+    - Including the final null terminator.
+4. Use the string name of the hash (in hexadecimal) to determine the file location.
+
+For example, if the [XXH3] hash is `12ab3c4d5e6f7890`, the file would be located at:
+
+```
+delta-headers/12/ab/12ab3c4d5e6f7890.bin
+```
+
+This follows the same pattern as other files.
+
+#### Delta Header File Content
+
+!!! info "The `.bin` file contains a list of XXH3 hashes."
+
+    These hashes represent the files required in the previous/original mod folder to apply the
+    delta update.
+
+    ***If a file with any of the hashes is not present, the delta update cannot be applied.***
+
+- `u8`: Version
+- `u24`: Reserved
+- `u32`: Number of hashes
+- `XXH3[Number of hashes]`: List of file hashes
+
 [adding-localisations]: ../Common/Localisation/Adding-Localisations.md
 [community-repository]: ./Community-Repository.md
 [community-repository-versions]: ./Community-Repository.md#version
@@ -1121,3 +1202,4 @@ By default, I recommend searching by substring. In Name and ModId. Summary can b
 [mod-metadata-search-image]: ../Server/Packaging/Package-Metadata.md#icon-search
 [Download Information]: #download-information
 [delta-update-header]: ../Server/Packaging/File-Format/Archive-User-Data-Format.md#header-delta-update
+[XXH3]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use

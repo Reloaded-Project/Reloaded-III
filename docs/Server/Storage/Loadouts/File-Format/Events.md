@@ -878,7 +878,7 @@ Reference:
 [mod-added-with-config-v1]: ./Commit-Messages.md#mod_added_with_config_v1
 [translation-added-with-config-v1]: ./Commit-Messages.md#translation_added_with_config_v1
 [tool-added-with-config-v1]: ./Commit-Messages.md#tool_added_with_config_v1
-[PackageAddedFull]: #ce-packageaddedfull
+[PackageAddedFull]: #86-packageaddedfull
 [GameLaunched]: #gamelaunched
 [timestamps.bin]: ./Unpacked.md#timestampsbin
 [GameLaunchedN]: ./Commit-Messages.md#game_launched_n_v0

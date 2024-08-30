@@ -40,7 +40,7 @@
     This is present for high performance dependencies, where every nanosecond counts.
 
     Generally, it is not expected that mod authors will manually leverage this functionality however,
-    that said; it is hoped we can make it easy to use during the [publish process][mod-publishing] if possible.
+    that said; it is hoped we can make it easy to use during the `publish process` if possible.
 
 | Type   | Name   | Description                                   |
 | ------ | ------ | --------------------------------------------- |
@@ -128,5 +128,4 @@ For the following reasons:
 [regular-mods]: ../Core-Architecture.md#regular-mods-layer-3
 [Package Metadata]: ../../Server/Packaging/Package-Metadata.md
 [microarchitecture-levels]: https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels
-[mod-publishing]: ../../Server/Packaging/Publishing-Packages.md
 [research-march-levels]: ../../Research/Microarchitecture-Levels.md

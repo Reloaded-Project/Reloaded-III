@@ -1,6 +1,6 @@
 !!! info "This details the per game metadata stored in the [`Added Games (User)` (`Games/{gameId}`) folder.][added-games-location]"
 
-!!! warning "TODO: Store [Loadout Specific Info][loadout-specific-info]"
+!!! warning "TODO: Store [Global Configuration Settings][loadout-specific-info]"
 
 Game config stores all of the user's preferences for launcher/loader behaviour related to a game.
 

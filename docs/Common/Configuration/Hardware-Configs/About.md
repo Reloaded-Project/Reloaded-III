@@ -42,3 +42,5 @@ Let's be good citizens of the open source space.
 | ------------------------------------- | -------------------------------------- |
 | [Displays](./Displays.md)             | Settings tied to a specific monitor.   |
 | [Controllers](./Controllers/About.md) | SDL3 Based Cross Platform Controllers. |
+
+[config-schema]: ../Config-Schema.md

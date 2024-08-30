@@ -2,9 +2,7 @@
 
 !!! info "This page describes Reloaded3's configuration file format details."
 
-!!! warning "TODO: Ingest for settings outside of Reloaded3 origin"
-
-!!! warning "TODO: How we store global configuration in Application Profiles"
+!!! warning "TODO: How we store global configuration in [Game Config][game-config]"
 
 ## Requirements
 
@@ -63,9 +61,14 @@ The planned UX for the time being is the following.
 | [Source Generation][source-gen]      | How we generate source code from config schema.        |
 | [Binary Format][binary-format]       | How Reloaded3 configuration files are written to disk. |
 
+## Extra Info
+
+- For 'external' configurations in foreign formats within Reloaded3 system, see: [external-config.bin].
+
 [binary-format]: ./Binary-Format.md
 [config-schema]: ./Config-Schema.md
 [hardware-configs]: ./Hardware-Configs/About.md
 [loadouts]: ../../Server/Storage/Loadouts/About.md
 [source-gen]: ./Source-Generation.md
 [game-config]: ../../Server/Storage/Games/About.md
+[external-config.bin]: ../../Server/Storage/Loadouts/File-Format/Unpacked.md#external-configbin

@@ -4,7 +4,7 @@
 
 It is responsible for the tasks listed below.
 
-!!! note "API returns Zstandard compressed MessagePack by default."
+!!! note "API returns ***Zstandard compressed MessagePack by default***."
 
     But we will use JSON in the examples for readability.
 
@@ -431,14 +431,15 @@ For more information on how translations are structured and added to packages, r
 - Retrieve the contents of all translation files for a package.
 - Implement a translation management system that allows editing and updating translation files.
 
-### Download Locations
+### Download Information
 
-- `POST /api/packages/download-locations`
+- `POST /api/packages/download-info`
 
-***Description:*** Get the latest download locations for the specified packages.
-This is used to restore packages to a new PC [after syncing a loadout][sync-loadout].
+***Description:*** Get the download locations and file information for the specified packages.
+This is used to restore packages to a new PC [after syncing a loadout][sync-loadout] and to provide update information.
 
-***Request Body:*** An array of objects, each containing `packageId` and `version` fields.
+***Request Body:*** An array of objects, each containing `packageId` and `version` fields. If version field
+is not specified, all versions will be returned.
 
 ***Example Request Body:***
 ```json
@@ -460,7 +461,7 @@ This is used to restore packages to a new PC [after syncing a loadout][sync-load
   {
     "packageId": "reloaded3.gamesupport.persona5royal.s56",
     "version": "1.1.0",
-    "updateData": {
+    "updateSourceData": {
       "GameBanana": {
         "ItemType": "Mod",
         "ItemId": 408376
@@ -472,33 +473,176 @@ This is used to restore packages to a new PC [after syncing a loadout][sync-load
       "Nexus": {
         "GameDomain": "persona5",
         "Id": 789012
-      },
-      "NuGet": {
-        "DefaultRepositoryUrls": [
-          "http://packages.sewer56.moe:5000/v3/index.json"
-        ],
-        "AllowUpdateFromAnyRepository": false
       }
-    }
+    },
+    "downloadInfo": [
+      {
+        "type": "GameBanana",
+        "idRow": 610939,
+        "fileSize": 1048576
+      },
+      {
+        "type": "NexusMods",
+        "uid": "7318624808113",
+        "fileSize": 1048576
+      },
+      {
+        "type": "GitHub",
+        "userName": "Sewer56",
+        "repositoryName": "persona5royal-modloader",
+        "assetId": 160499684,
+        "fileSize": 495
+      }
+    ],
+    "deltaUpdates": [
+      {
+        "fromVersion": "1.0.0",
+        "downloadInfo": [
+          {
+            "type": "GameBanana",
+            "idRow": 610940,
+            "fileSize": 102400
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808114",
+            "fileSize": 102400
+          },
+          {
+            "type": "GitHub",
+            "userName": "Sewer56",
+            "repositoryName": "persona5royal-modloader",
+            "assetId": 160499685,
+            "fileSize": 102400
+          }
+        ]
+      },
+      {
+        "fromVersion": "1.0.1",
+        "downloadInfo": [
+          {
+            "type": "GameBanana",
+            "idRow": 610941,
+            "fileSize": 51200
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808115",
+            "fileSize": 51200
+          },
+          {
+            "type": "GitHub",
+            "userName": "Sewer56",
+            "repositoryName": "persona5royal-modloader",
+            "assetId": 160499686,
+            "fileSize": 51200
+          }
+        ]
+      }
+    ]
   },
   {
     "packageId": "reloaded3.utility.reloadedhooks.s56",
     "version": "2.3.0",
-    "updateData": {
+    "updateSourceData": {
       "GitHub": {
         "UserName": "Reloaded-Project",
         "RepositoryName": "reloaded3.utility.reloadedhooks"
       }
-    }
+    },
+    "downloadInfo": [
+      {
+        "type": "GitHub",
+        "userName": "Reloaded-Project",
+        "repositoryName": "Reloaded.Hooks",
+        "assetId": 160499685,
+        "fileSize": 552
+      },
+      {
+        "type": "NexusMods",
+        "uid": "7318624808114",
+        "fileSize": 552
+      }
+    ],
+    "deltaUpdates": [
+      {
+        "fromVersion": "2.2.0",
+        "downloadInfo": [
+          {
+            "type": "GitHub",
+            "userName": "Reloaded-Project",
+            "repositoryName": "Reloaded.Hooks",
+            "assetId": 160499686,
+            "fileSize": 102
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808116",
+            "fileSize": 102
+          }
+        ]
+      }
+    ]
   }
 ]
 ```
 
-The response contains the contents of the [`UpdateData`][update-data] struct from [Package.toml][package-metadata] for each package.
+The response contains the following main sections for each package:
 
-!!! tip "To get the full package, including documentation, the entire package must be downloaded."
+1. [`updateSourceData`](#update-source-data):
+    - This section contains information about the mod page or repository where the package was originally sourced from.
 
-Apologies for the confusion. Here's the updated version of the `Static CDN API` section with the requested changes:
+2. [`downloadInfo`](#download-info):
+    - This section provides specific information required to download this package version.
+    - Includes unique identifiers and file sizes for each platform.
+
+3. [`deltaUpdates`][delta-update-header]:
+    - This section provides information about delta updates available for the package.
+    - You can obtain the delta info using the (TODO: API).
+
+#### Update Source Data
+
+The `updateSourceData` section contains the following information for each supported platform.
+
+##### GameBanana Update Info
+
+| Type   | Name     | Description                                                                        |
+| ------ | -------- | ---------------------------------------------------------------------------------- |
+| string | ItemType | Type of item on GameBanana API, e.g. 'Mod', 'Sound', 'Wip'                         |
+| int    | ItemId   | Id of the item on GameBanana, this is the last number in the URL to your mod page. |
+
+##### GitHub Update Info
+
+| Type   | Name           | Description                                                                    |
+| ------ | -------------- | ------------------------------------------------------------------------------ |
+| string | UserName       | The user/organization name associated with the repository to fetch files from. |
+| string | RepositoryName | The name of the repository to fetch files from.                                |
+
+##### Nexus Update Info
+
+| Type   | Name       | Description                               |
+| ------ | ---------- | ----------------------------------------- |
+| string | GameDomain | The ID/Domain for the game. e.g. 'skyrim' |
+| int    | Id         | Unique id for the mod.                    |
+
+#### Download Info
+
+The `downloadInfo` array contains objects with the following structure:
+
+| Type   | Name           | Description                                                    |
+| ------ | -------------- | -------------------------------------------------------------- |
+| string | type           | The platform type (e.g., "GameBanana", "NexusMods", "GitHub")  |
+| varies | identifier     | Platform-specific identifier (e.g., idRow, uid, assetId)       |
+| int    | fileSize       | Size of the file in bytes                                      |
+| string | userName       | (GitHub only) The username associated with the repository      |
+| string | repositoryName | (GitHub only) The name of the repository containing the file   |
+
+The `identifier` field varies depending on the platform:
+- For GameBanana, it's `idRow`
+- For NexusMods, it's `uid`
+- For GitHub, it's `assetId`
+
+This combined API provides all the necessary information for both updating and downloading packages from various sources.
 
 ## Static CDN API
 
@@ -516,7 +660,7 @@ To look up a package, translation, or other hash based data:
 
 1. Calculate the XXH3 hash of the package ID.
 2. Take the first two bytes of the hash.
-3. Navigate to the corresponding directory based on the first byte, second byte, and third byte.
+3. Navigate to the corresponding directory based on the first byte and second byte.
 4. Load the corresponding `.msgpack.zstd` file (or folder) within that directory.
 5. Search for the package entry with the matching full hash within that file.
 
@@ -525,13 +669,13 @@ of packages across files, while accommodating the potential for accessing around
 
 (In a manner where 1 file == 1 mod)
 
-### Download Locations API
+### Download Information API
 
-Each `.msgpack.zstd` file in the `download-locations` directory contains an array of package entries.
+Each `.msgpack.zstd` file in the `download-info` directory contains an array of package entries.
 
 ```
 .
-└── download-locations
+└── download-info
     ├── 00
     │   ├── 00
     │   │   ├── {packageIdHash}.msgpack.zstd
@@ -564,7 +708,6 @@ Each `.msgpack.zstd` file in the `download-locations` directory contains an arra
             └── {packageIdHash}.msgpack.zstd
 ```
 
-
 Here's an example of the decoded MessagePack content:
 
 ```json
@@ -585,20 +728,59 @@ Here's an example of the decoded MessagePack content:
       "Nexus": {
         "GameDomain": "persona5",
         "Id": 789012
-      },
-      "NuGet": {
-        "DefaultRepositoryUrls": [
-          "http://packages.sewer56.moe:5000/v3/index.json"
-        ],
-        "AllowUpdateFromAnyRepository": false
       }
-    }
+    },
+    "downloadInfo": [
+      {
+        "type": "GameBanana",
+        "idRow": 610939,
+        "fileSize": 1048576
+      },
+      {
+        "type": "NexusMods",
+        "uid": "7318624808113",
+        "fileSize": 1048576
+      },
+      {
+        "type": "GitHub",
+        "userName": "Sewer56",
+        "repositoryName": "persona5royal-modloader",
+        "assetId": 160499684,
+        "fileSize": 495
+      }
+    ],
+    "deltaUpdates": [
+      {
+        "fromVersion": "1.0.0",
+        "downloadInfo": [
+          {
+            "type": "GameBanana",
+            "idRow": 610940,
+            "fileSize": 102400
+          },
+          {
+            "type": "NexusMods",
+            "uid": "7318624808114",
+            "fileSize": 102400
+          },
+          {
+            "type": "GitHub",
+            "userName": "Sewer56",
+            "repositoryName": "persona5royal-modloader",
+            "assetId": 160499685,
+            "fileSize": 102400
+          }
+        ]
+      }
+    ]
   },
   ...
 ]
 ```
 
-!!! note "Expect only 1 package per file"
+!!! note "Expect only contents for 1 package per file"
+
+The contents of this API mirror those in the [Download Information] API, so use that API for reference.
 
 ### Package Metadata API
 
@@ -788,6 +970,10 @@ Here's an example of the decoded MessagePack content:
 
 ### Search API
 
+!!! note "This API does not have a hosted endpoint."
+
+    This is a CDN only API.
+
 !!! info "Retrieves the entire list of mods for a specific game"
 
     We download this and can then search locally.
@@ -918,13 +1104,94 @@ To perform a search, users can follow these steps:
 
 By default, I recommend searching by substring. In Name and ModId. Summary can be opt in.
 
+### Delta Verification API
+
+!!! info "This API determines the information needed to determine if you are eligible to apply a delta update."
+
+Each file contains a list of hashes that must exist in the previous version of the package.
+
+If any file does not exist, you will be unable to apply the delta update.
+
+#### File Structure
+
+```
+.
+└── delta-headers
+    ├── 00
+    │   ├── 00
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ...
+    │   │   └── {deltaHeaderHash}.bin
+    │   ├── 01
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ├── {deltaHeaderHash}.bin
+    │   │   ...
+    │   │   └── {deltaHeaderHash}.bin
+    │   ...
+    │   └── ff
+    │       ├── {deltaHeaderHash}.bin
+    │       ├── {deltaHeaderHash}.bin
+    │       ...
+    │       └── {deltaHeaderHash}.bin
+    ...
+    └── ff
+        ├── 00
+        │   ├── {deltaHeaderHash}.bin
+        │   ├── {deltaHeaderHash}.bin
+        │   ...
+        │   └── {deltaHeaderHash}.bin
+        ...
+        └── ff
+            ├── {deltaHeaderHash}.bin
+            ├── {deltaHeaderHash}.bin
+            ...
+            └── {deltaHeaderHash}.bin
+```
+
+#### Delta Header Hash Calculation
+
+!!! info "To determine which file you need to open (generate `deltaHeaderhash`), follow these steps"
+
+1. Create a string by concatenating `packageId`, `oldVersion`, and `newVersion`, separated by null bytes:
+    ```
+    {packageId}\0{oldVersion}\0{newVersion}\0
+    ```
+2. Encode this string as UTF-8.
+    - Note: *In most cases, this will be ASCII and result in 1 byte per character.*
+3. Calculate the [XXH3] hash of this UTF-8 encoded string.
+    - Including the final null terminator.
+4. Use the string name of the hash (in hexadecimal) to determine the file location.
+
+For example, if the [XXH3] hash is `12ab3c4d5e6f7890`, the file would be located at:
+
+```
+delta-headers/12/ab/12ab3c4d5e6f7890.bin
+```
+
+This follows the same pattern as other files.
+
+#### Delta Header File Content
+
+!!! info "The `.bin` file contains a list of XXH3 hashes."
+
+    These hashes represent the files required in the previous/original mod folder to apply the
+    delta update.
+
+    ***If a file with any of the hashes is not present, the delta update cannot be applied.***
+
+- `u8`: Version
+- `u24`: Reserved
+- `u32`: Number of hashes
+- `XXH3[Number of hashes]`: List of file hashes
+
 [adding-localisations]: ../Common/Localisation/Adding-Localisations.md
 [community-repository]: ./Community-Repository.md
 [community-repository-versions]: ./Community-Repository.md#version
 [community-repository-id]: ../Server/Storage/Games/About.md#whats-inside-an-game-configuration
 [game-id]: ../Server/Storage/Games/About.md#id
 [package-metadata]: ../Server/Packaging/Package-Metadata.md
-[update-data]: ../Server/Packaging/Package-Metadata.md#update-data
+[update-data]: ../Server/Packaging/Package-Metadata.md#update-source-data
 [steam-grid-db]: ../Research/External-Services/SteamGridDB.md
 [r2-all-deps-idx]: https://github.com/Reloaded-Project/Reloaded-II.Index/blob/main/AllDependencies.json.br
 [pages-limits]: https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages#usage-limits
@@ -933,3 +1200,6 @@ By default, I recommend searching by substring. In Name and ModId. Summary can b
 [package-reference-ids]: ../Server/Storage/Loadouts/File-Format/Unpacked.md#package-idsbin
 [hashing]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use
 [mod-metadata-search-image]: ../Server/Packaging/Package-Metadata.md#icon-search
+[Download Information]: #download-information
+[delta-update-header]: ../Server/Packaging/File-Format/Archive-User-Data-Format.md#header-delta-update
+[XXH3]: ../Common/Hashing.md#stable-hashing-for-general-purpose-use

@@ -455,7 +455,7 @@ Each credit uses a `Credit` structure with following fields:
 | string           | Author                                  | Name of the dependency author.          |
 | UpdateSourceData | [UpdateSourceData](#update-source-data) | Stores mod update specific information. |
 
-All of these fields are copied from the dependency packages.
+All of these fields are auto copied from the dependency packages by the `Reloaded3` server.
 
 This struct contains only the info needed to locate the dependency, and troubleshoot if a dependency is missing.
 
@@ -837,7 +837,7 @@ Explanation of macOS Folders:
 [tools-as-packages]: ./Tools-As-Packages.md#chosen-approach
 [xdg-path-spec]: https://specifications.freedesktop.org/basedir-spec/latest/index.html
 [external-config-paths]: ../Storage/Loadouts/File-Format/Unpacked.md#external-config-pathsbin
-[Central Server]: ../../Services/Central-Server.md
+[Central Server]: ../../Services/Central-Server/Online-API.md
 [package-images]: ./About.md#package-structure
 [grid-display-mode]: ../Storage/Loadouts/File-Format/DataTypes.md#griddisplaymode
 [instruction-sets]: ../../Loader/Backends/About.md#architectures

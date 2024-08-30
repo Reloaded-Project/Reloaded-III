@@ -2,10 +2,8 @@
 
 !!! note "To avoid having end users register on SteamGridDB, we will expose a 1st party server that wraps the API"
 
-    TODO: Talk to the SteamGridDB owner to find if they're ok with this.
-
-    I plan to cache the data on my end, but it will still cause an unusually large amount of
-    requests against my API key. Possibly like 200 requests a minute.
+    With a local cache of ~24 hours, depending on the API kind. After discussion with Zennn (SteamGridDB maintainer),
+    this should be fine to avoid overloading the SteamGridDB servers.
 
 To see where this is used, see [Central Server][central-server]
 
@@ -71,4 +69,4 @@ The individual IDs are the same as the ones you obtain from search.
 
 No API key is required for these endpoints.
 
-[central-server]: ../../Services/Central-Server.md
+[central-server]: ../../Services/Central-Server/Online-API.md

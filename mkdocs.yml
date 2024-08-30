@@ -204,7 +204,11 @@ nav:
       - Game Support Mods: Mods/Guidelines/Game-Support.md
       - Middleware Mods: Mods/Guidelines/Middleware.md
   - Online Services:
-    - Central Server: Services/Central-Server.md
+    - Central Server: 
+      - About: Services/Central-Server/About.md
+      - Online API: Services/Central-Server/Online-API.md
+      - Static API: Services/Central-Server/Static-API.md
+      - Package Indexing: Services/Central-Server/Package-Indexing.md
     - Community Repository: Services/Community-Repository.md
   - Code Guidelines:
     - Hardware Requirements: Code-Guidelines/Hardware-Requirements.md

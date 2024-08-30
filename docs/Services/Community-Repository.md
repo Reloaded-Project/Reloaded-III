@@ -567,7 +567,7 @@ If we ever get notified from GitHub about bandwidth usage, we will migrate this 
 [images]: ../Common/Images.md
 [grid-display-mode]: ../Server/Storage/Loadouts/File-Format/DataTypes.md#griddisplaymode
 [steam-grid-db-docs]: ../Research/External-Services/SteamGridDB.md
-[reloaded-central-server]: ./Central-Server.md
+[reloaded-central-server]: ./Central-Server/Online-API.md
 [stores-bin]: ../Server/Storage/Loadouts/About.md#storesbin
 [gog-buildid]: ../Server/Storage/Loadouts/Stores/GOG.md#retrieving-available-game-versions
 [store-type]: ../Server/Storage/Loadouts/File-Format/DataTypes.md#storetype

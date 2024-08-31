@@ -24,6 +24,10 @@ It provides essential information such as [Package Metadata] needed to resolve m
 5. **Backup**: The package is backed up to `HDD/Cloud Storage` for long-term preservation.
     - If a mod is ever 'lost', it is uploaded to [archive.org] for safekeeping.
 
+6. **Deletion Tracking**: If a package is no longer found on a mod site during indexing, it's marked as deleted in the database.
+
+7. **Reinstatement Checking**: During indexing, the system also checks for reappearance of previously deleted packages.
+
 ## Indexing Rules
 
 !!! info "Things to keep in mind while indexing."
@@ -70,9 +74,27 @@ the original uploader doesn't respond after some time.
 
 #### Reinstating Accidentally Deleted Packages
 
-!!! info "If a package is declared as `lost`, but a file with the same hash is re-uploaded to same mod page, the index self-updates."
+When a package that was previously marked as deleted is detected during indexing:
 
-<!-- TODO: Marking packages as 'lost -->
+1. The system calculates the XXH3 hash of the newly found package archive file.
+2. This hash is compared with the stored hash (`XXH3(archiveFile)`) for the corresponding mod site and download type (full package or delta update).
+3. If the hashes match, the package is reinstated (marked as not deleted).
+4. If the hashes don't match, the package remains marked as deleted and a warning is logged.
+   - Mod author is notified via the mod site's comments section.
+   - Otherwise, maintainer is notified (manual intervention required).
+
+!!! info "Packages have a `wasDeleted` flag and site-specific XXH3 hashes in their metadata"
+
+    This allows for tracking deletion status and verifying package integrity during reinstatement.
+
+!!! warning "Packages available on multiple sites are tracked separately for each site"
+
+    A package is only considered fully reinstated when it's available again on all previously known sources.
+
+!!! note "XXH3 hashes are stored per download and update type"
+
+    The `XXH3(archiveFile)` hash is stored for each download in both full package downloads and delta updates.
+    This allows for distinguishing between full package and delta update hashes.
 
 ### External Sites are the Moderators
 

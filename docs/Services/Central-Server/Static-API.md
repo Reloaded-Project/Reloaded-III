@@ -92,19 +92,25 @@ Here's an example of the decoded MessagePack content:
       {
         "type": "GameBanana",
         "idRow": 610939,
-        "fileSize": 1048576
+        "fileSize": 1048576,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       },
       {
         "type": "NexusMods",
         "uid": "7318624808113",
-        "fileSize": 1048576
+        "fileSize": 1048576,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       },
       {
         "type": "GitHub",
         "userName": "Sewer56",
         "repositoryName": "persona5royal-modloader",
         "assetId": 160499684,
-        "fileSize": 495
+        "fileSize": 495,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       }
     ],
     "deltaUpdates": [
@@ -114,19 +120,25 @@ Here's an example of the decoded MessagePack content:
           {
             "type": "GameBanana",
             "idRow": 610940,
-            "fileSize": 102400
+            "fileSize": 102400,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           },
           {
             "type": "NexusMods",
             "uid": "7318624808114",
-            "fileSize": 102400
+            "fileSize": 102400,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           },
           {
             "type": "GitHub",
             "userName": "Sewer56",
             "repositoryName": "persona5royal-modloader",
             "assetId": 160499685,
-            "fileSize": 102400
+            "fileSize": 102400,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           }
         ]
       }

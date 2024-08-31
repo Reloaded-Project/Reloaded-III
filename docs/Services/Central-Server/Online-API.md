@@ -446,19 +446,25 @@ is not specified, all versions will be returned.
       {
         "type": "GameBanana",
         "idRow": 610939,
-        "fileSize": 1048576
+        "fileSize": 1048576,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       },
       {
         "type": "NexusMods",
         "uid": "7318624808113",
-        "fileSize": 1048576
+        "fileSize": 1048576,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       },
       {
         "type": "GitHub",
         "userName": "Sewer56",
         "repositoryName": "persona5royal-modloader",
         "assetId": 160499684,
-        "fileSize": 495
+        "fileSize": 495,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       }
     ],
     "deltaUpdates": [
@@ -468,19 +474,25 @@ is not specified, all versions will be returned.
           {
             "type": "GameBanana",
             "idRow": 610940,
-            "fileSize": 102400
+            "fileSize": 102400,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           },
           {
             "type": "NexusMods",
             "uid": "7318624808114",
-            "fileSize": 102400
+            "fileSize": 102400,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           },
           {
             "type": "GitHub",
             "userName": "Sewer56",
             "repositoryName": "persona5royal-modloader",
             "assetId": 160499685,
-            "fileSize": 102400
+            "fileSize": 102400,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           }
         ]
       },
@@ -490,19 +502,25 @@ is not specified, all versions will be returned.
           {
             "type": "GameBanana",
             "idRow": 610941,
-            "fileSize": 51200
+            "fileSize": 51200,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           },
           {
             "type": "NexusMods",
             "uid": "7318624808115",
-            "fileSize": 51200
+            "fileSize": 51200,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           },
           {
             "type": "GitHub",
             "userName": "Sewer56",
             "repositoryName": "persona5royal-modloader",
             "assetId": 160499686,
-            "fileSize": 51200
+            "fileSize": 51200,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           }
         ]
       }
@@ -523,12 +541,16 @@ is not specified, all versions will be returned.
         "userName": "Reloaded-Project",
         "repositoryName": "Reloaded.Hooks",
         "assetId": 160499685,
-        "fileSize": 552
+        "fileSize": 552,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       },
       {
         "type": "NexusMods",
         "uid": "7318624808114",
-        "fileSize": 552
+        "fileSize": 552,
+        "xxhash3": 1311768467294899695,
+        "wasDeleted": false
       }
     ],
     "deltaUpdates": [
@@ -540,12 +562,16 @@ is not specified, all versions will be returned.
             "userName": "Reloaded-Project",
             "repositoryName": "Reloaded.Hooks",
             "assetId": 160499686,
-            "fileSize": 102
+            "fileSize": 102,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           },
           {
             "type": "NexusMods",
             "uid": "7318624808116",
-            "fileSize": 102
+            "fileSize": 102,
+            "xxhash3": 18364758544493064721,
+            "wasDeleted": false
           }
         ]
       }
@@ -571,15 +597,18 @@ The response contains the following main sections for each package:
 
 The `downloadInfo` array contains objects with the following structure:
 
-| Type   | Name           | Description                                                   |
-| ------ | -------------- | ------------------------------------------------------------- |
-| string | type           | The platform type (e.g., "GameBanana", "GitHub", "NexusMods") |
-| varies | identifier     | Platform-specific identifier (e.g., idRow, uid, assetId)      |
-| int    | fileSize       | Size of the file in bytes                                     |
-| string | userName       | (GitHub only) The username associated with the repository     |
-| string | repositoryName | (GitHub only) The name of the repository containing the file  |
+| Type   | Name           | Description                                                    |
+| ------ | -------------- | -------------------------------------------------------------- |
+| string | type           | The platform type (e.g., "GameBanana", "GitHub", "NexusMods")  |
+| varies | identifier     | Platform-specific identifier (e.g., idRow, uid, assetId)       |
+| int    | fileSize       | Size of the file in bytes                                      |
+| u64    | xxhash3        | The `xxhash3` sum of the data (in little endian)               |
+| string | userName       | (GitHub only) The username associated with the repository      |
+| string | repositoryName | (GitHub only) The name of the repository containing the file   |
+| bool   | wasDeleted     | True if this package has been deleted from the original source |
 
 The `identifier` field varies depending on the platform:
+
 - For GameBanana, it's `idRow`
 - For NexusMods, it's `uid`
 - For GitHub, it's `assetId`

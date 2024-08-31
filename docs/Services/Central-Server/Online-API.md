@@ -438,7 +438,7 @@ is not specified, all versions will be returned.
         "RepositoryName": "reloaded3.gamesupport.persona5royal"
       },
       "Nexus": {
-        "GameDomain": "persona5",
+        "GameId": 1000,
         "Id": 789012
       }
     },
@@ -556,7 +556,7 @@ is not specified, all versions will be returned.
 
 The response contains the following main sections for each package:
 
-1. [`updateSourceData`](#update-source-data):
+1. [`updateSourceData`](../../Server/Packaging/Package-Metadata.md#update-source-data):
     - This section contains information about the mod page or repository where the package was originally sourced from.
 
 2. [`downloadInfo`](#download-info):
@@ -567,42 +567,17 @@ The response contains the following main sections for each package:
     - This section provides information about delta updates available for the package.
     - You can obtain the delta info using the (TODO: API).
 
-#### Update Source Data
-
-The `updateSourceData` section contains the following information for each supported platform.
-
-##### GameBanana Update Info
-
-| Type   | Name     | Description                                                                        |
-| ------ | -------- | ---------------------------------------------------------------------------------- |
-| string | ItemType | Type of item on GameBanana API, e.g. 'Mod', 'Sound', 'Wip'                         |
-| int    | ItemId   | Id of the item on GameBanana, this is the last number in the URL to your mod page. |
-
-##### GitHub Update Info
-
-| Type   | Name           | Description                                                                    |
-| ------ | -------------- | ------------------------------------------------------------------------------ |
-| string | UserName       | The user/organization name associated with the repository to fetch files from. |
-| string | RepositoryName | The name of the repository to fetch files from.                                |
-
-##### Nexus Update Info
-
-| Type   | Name       | Description                               |
-| ------ | ---------- | ----------------------------------------- |
-| string | GameDomain | The ID/Domain for the game. e.g. 'skyrim' |
-| int    | Id         | Unique id for the mod.                    |
-
 #### Download Info
 
 The `downloadInfo` array contains objects with the following structure:
 
-| Type   | Name           | Description                                                    |
-| ------ | -------------- | -------------------------------------------------------------- |
-| string | type           | The platform type (e.g., "GameBanana", "NexusMods", "GitHub")  |
-| varies | identifier     | Platform-specific identifier (e.g., idRow, uid, assetId)       |
-| int    | fileSize       | Size of the file in bytes                                      |
-| string | userName       | (GitHub only) The username associated with the repository      |
-| string | repositoryName | (GitHub only) The name of the repository containing the file   |
+| Type   | Name           | Description                                                   |
+| ------ | -------------- | ------------------------------------------------------------- |
+| string | type           | The platform type (e.g., "GameBanana", "GitHub", "NexusMods") |
+| varies | identifier     | Platform-specific identifier (e.g., idRow, uid, assetId)      |
+| int    | fileSize       | Size of the file in bytes                                     |
+| string | userName       | (GitHub only) The username associated with the repository     |
+| string | repositoryName | (GitHub only) The name of the repository containing the file  |
 
 The `identifier` field varies depending on the platform:
 - For GameBanana, it's `idRow`

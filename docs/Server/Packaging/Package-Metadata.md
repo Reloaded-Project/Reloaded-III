@@ -123,12 +123,6 @@ RepositoryName = "reloaded3.gamesupport.persona5royal"
 GameDomain = "persona5"
 Id = 789012
 
-[UpdateSourceData.NuGet]
-DefaultRepositoryUrls = [
-   "http://packages.sewer56.moe:5000/v3/index.json"
-]
-AllowUpdateFromAnyRepository = false
-
 [[Dependencies]]
 Id = "reloaded3.utility.reloadedhooks.s56"
 Name = "Reloaded3 Hooking Library"
@@ -366,27 +360,26 @@ Each credit uses a `Credit` structure with following fields:
 
 !!! info
 
-    Information tied to Reloaded3's update library.
-
-    This info is stored in a way that avoids direct dependency on Update library by using an `Abstractions` package.
-
-!!! note
-
-    This section might be moved to dedicated Update library section.
+    Information tied to `reloaded3packaging` (Reloaded3's update library).
 
 !!! warning "This is a security feature"
 
     Setting the `Update Data` prevents possible `dependency confusion`/`supply chain` attacks; in
     the event someone tries to upload a package with the same ID to a different location.
 
-    Notably important for [Central Server].
+    Notably important for [Central Server]. The [Central Server] will only allow updates from sources
+    listed in the [UpdateSourceData](#update-source-data) when indexing packages if a package has
+    already been indexed. (See Rule: [Putting Packages 'on Hold' Until Cross Referenced][indexing-rules-crossref]).
+
+!!! info "Reloaded3 enforces that all mods have an update source at the `publishing stage`."
+
+    This is to ensure that mods can be updated in the future.
 
 | Type                 | Name                                  | Description                            |
 | -------------------- | ------------------------------------- | -------------------------------------- |
 | GameBananaUpdateInfo | [GameBanana](#gamebanana-update-info) | Info on how to update from GitHub.     |
 | GitHubUpdateInfo     | [GitHub](#github-update-info)         | Info on how to update from GameBanana. |
 | NexusUpdateInfo      | [Nexus](#nexus-update-info)           | Info on how to update from Nexus.      |
-| NuGetUpdateInfo      | [NuGet](#nuget-update-info)           | Info on how to update from NuGet.      |
 
 ### GameBanana Update Info
 
@@ -409,27 +402,15 @@ Each credit uses a `Credit` structure with following fields:
 
 ### Nexus Update Info
 
-!!! warning "Implementation delayed until API allows non-premium members to generate download links."
-
-| Type   | Name       | Description                               |
-| ------ | ---------- | ----------------------------------------- |
-| string | GameDomain | The ID/Domain for the game. e.g. 'skyrim' |
-| int    | Id         | Unique id for the mod.                    |
+| Type | Name   | Description                   |
+| ---- | ------ | ----------------------------- |
+| u32  | GameID | The ID of the game @NexusMods |
+| u32  | Id     | Unique id for the mod.        |
 
 !!! tip "You can get the `Id` from the URL of the edit page"
 
     For example for the URL `https://www.nexusmods.com/site/mods/edit/?step=details&id=1026&game_id=2295`,
     the ID here is `1026`. You can access this before publishing the mod.
-
-### NuGet Update Info
-
-!!! info "This is not planned to ship"
-
-    This will only ship if there's demand for it.
-
-| Type     | Name                  | Description                                        |
-| -------- | --------------------- | -------------------------------------------------- |
-| string[] | DefaultRepositoryUrls | List of NuGet URLs/repos this mod can update from. |
 
 ## Dependency Info
 
@@ -842,3 +823,4 @@ Explanation of macOS Folders:
 [grid-display-mode]: ../Storage/Loadouts/File-Format/DataTypes.md#griddisplaymode
 [instruction-sets]: ../../Loader/Backends/About.md#architectures
 [images]: ../../Common/Images.md
+[indexing-rules-crossref]: ../../Services/Central-Server/Package-Indexing.md#putting-packages-on-hold-until-cross-referenced

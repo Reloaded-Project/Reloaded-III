@@ -84,7 +84,7 @@ Here's an example of the decoded MessagePack content:
         "RepositoryName": "reloaded3.gamesupport.persona5royal"
       },
       "Nexus": {
-        "GameDomain": "persona5",
+        "GameId": 1000,
         "Id": 789012
       }
     },

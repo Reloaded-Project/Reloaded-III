@@ -51,7 +51,7 @@ restarted or is down.
 
 1. **Package Verification**: Implements cross-referencing to prevent unauthorized package updates.
 2. **Moderation**: Relies on third-party websites as moderators for package entries.
-3. **Automatic Backups**: Regularly backs up all packages to [archive.org] to prevent data loss.
+3. **Automatic Backups**: Regularly backs up all packages to HDD/Cloud Storage to prevent data loss.
 
 [SteamGridDB Wrapper]: ./Online-API.md#steamgriddb-api
 [Compatibility API (Batch)]: ./Online-API.md#compatibility-reports-batch
@@ -66,4 +66,3 @@ restarted or is down.
 [Static Download Info]: ./Static-API.md#download-information-api
 [Search API]: ./Static-API.md#search-api
 [Delta Verification]: ./Static-API.md#delta-verification-api
-[archive.org]: https://archive.org

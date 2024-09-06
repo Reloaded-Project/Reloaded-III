@@ -726,6 +726,180 @@ As a general rule of thumb, test your code against:
 
     You should find more detailed instructions in the [reloaded-library-template][reloaded-library-template].
 
+### 7. Avoid Panic
+
+!!! warning "Panic should be avoided where possible in portable reloaded3 libraries."
+
+`panic!` in Rust can lead to several issues:
+
+1. It creates unwind tables, increasing binary size.
+2. It can negatively impact performance when mixed together with `Result<T, E>`.
+3. It's inconvenient for C exports; because you have to catch it, which adds overhead and inconvenience.
+    - If not caught, it leads to undefined behaviour.
+4. You need to recursively document it in the docstrings; which is painful.
+
+#### 7.1 Don't Panic unless Absolutely Necessary
+
+!!! info "You should only panic on truly unrecoverable errors"
+
+```rust
+// Define a simple error enum
+#[derive(Debug, PartialEq)]
+enum ValidationError {
+    TooSmall,
+    TooBig,
+}
+
+// ❌ Don't use methods that can panic
+fn risky_validate(num: i32) -> i32 {
+    assert!(num >= 1, "Number too small");  // This can panic
+    assert!(num <= 100, "Number too big");  // This can panic
+    num
+}
+
+// ✅ Do use Result with an enum error type to handle potential errors
+fn safe_validate(num: i32) -> Result<i32, ValidationError> {
+    if num < 1 {
+        Err(ValidationError::TooSmall)
+    } else if num > 100 {
+        Err(ValidationError::TooBig)
+    } else {
+        Ok(num)
+    }
+}
+```
+
+Here the validation panic is undesireable, as it can be handled gracefully by the caller.
+
+Only panic if you have 100% unrecoverable errors where you absolutely
+have to abort the program.
+
+#### 7.2 Use `Result<T, E>` Instead of Panicking
+
+!!! tip "Always prefer returning a `Result<T, E>` instead of using operations that might panic."
+
+This allows the caller to handle errors gracefully, and also lets them be aware of all possible error cases.
+
+```rust
+// Define an error enum
+#[derive(Debug, PartialEq)]
+enum DivisionError {
+    DivideByZero,
+}
+
+// ❌ Don't use methods that can panic
+fn risky_divide(a: i32, b: i32) -> i32 {
+    a / b // This will panic if b is zero
+}
+
+// ✅ Do use Result with an enum error type to handle potential errors
+fn safe_divide(a: i32, b: i32) -> Result<i32, DivisionError> {
+    if b == 0 {
+        Err(DivisionError::DivideByZero)
+    } else {
+        Ok(a / b) // Compiler will infer it can't be 0
+    }
+}
+```
+
+!!! tip "If you can guarantee that `b` cannot be zero, use `unchecked_div`."
+
+```rust
+// ✅ Do use unchecked_div if you can guarantee b is not zero
+fn divide(a: i32, b: i32) -> i32 {
+    unsafe { a.unchecked_div(b) }
+}
+```
+
+#### 7.3 Avoid Indexing (Use `Option<&T>`)
+
+!!! info "Indexing with `[]` can panic if the index is out of bounds."
+
+Instead, use `get()` which returns an `Option<&T>`.
+
+```rust
+// ❌ Don't use indexing
+let first = my_vec[0]; // This can panic
+
+// ✅ Do use get() and handle the None case
+let first = my_vec.get(0).copied().unwrap_or_default();
+```
+
+!!! tip "If you can guarantee at compile time that the index is within bounds, use `unsafe` indexing"
+
+```rust
+// ✅ Do use unsafe indexing if bounds are guaranteed
+let first = unsafe { *my_vec.get_unchecked(0) };
+```
+
+#### 7.4 Careful Use of `unwrap()` and `expect()`
+
+Avoid using `unwrap()` or `expect()` in production code, as these will panic on `None` or `Err` values.
+
+```rust
+// ❌ Don't use unwrap() or expect()
+let value = some_operation().unwrap();
+
+// ✅ Do handle the error case explicitly
+let value = match some_operation() {
+    Ok(v) => v,
+    Err(e) => handle_error(e),
+};
+```
+
+!!! tip "If you can guarantee at compile time the result will be valid, use a debug only check."
+
+    With the [debug unwraps] crate.
+
+```rust
+// ✅ Do use debug_unwrap_unchecked() if you can guarantee the result is valid
+// This will only check result in debug builds.
+let value = unsafe { some_operation().debug_unwrap_unchecked() };
+```
+
+Any use of this should be covered in tests, and ideally with a comment explaining why the guarantee is upheld
+if needed.
+
+#### 7.5 Safe Alternatives to Panicking Operations
+
+!!! info "Some standard library functions can panic."
+
+    Avoid panicking if possible, we don't want code bloat explained above.
+
+For example, the `std` function `copy_from_slice`, panics if the slices have different lengths:
+
+```rust
+// ❌ Don't use copy_from_slice, which can panic
+fn copy_data(destination: &mut [u8], source: &[u8]) {
+    destination.copy_from_slice(source); // Panics if lengths differ
+}
+
+// ✅ Do implement a safe alternative
+fn safe_copy_data(destination: &mut [u8], source: &[u8]) -> Result<(), SomeErrorType> {
+    if destination.len() < source.len() {
+        return Err(SomeErrorType::DestinationTooSmall);
+    }
+    let copy_len = source.len();
+    unsafe { copy_nonoverlapping(source.as_ptr(), destination.as_mut_ptr(), copy_len); }
+    Ok(())
+}
+```
+
+#### 7.6 Use `#[no_panic]` Attribute
+
+!!! tip "You can use the `#[no_panic]` attribute from the `no-panic` crate."
+
+    This will cause a compile-time error if the function could potentially panic.
+
+```rust
+use no_panic::no_panic;
+
+#[no_panic]
+fn critical_function(x: u32) -> u32 {
+    x + 1 // This function is guaranteed not to panic
+}
+```
+
 <!-- Links -->
 [file-emulation-framework]: ../Mods/Essentials/File-Emulation-Framework/About.md
 [game-support-layer2]: ../Loader/Core-Architecture.md#game-support-layer-2
@@ -755,4 +929,5 @@ As a general rule of thumb, test your code against:
 [cc-docs]: https://docs.rs/cc
 [dwelo-guide]: https://medium.com/dwelo-r-d/using-c-libraries-in-rust-13961948c72a
 [dwelo-guide-2]: https://medium.com/dwelo-r-d/wrapping-unsafe-c-libraries-in-rust-d75aeb283c65
+[debug unwraps]: https://crates.io/crates/debug_unwraps
 {% endraw %}

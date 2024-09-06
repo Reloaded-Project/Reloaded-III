@@ -142,9 +142,9 @@ of files that the `source+patch` output will output to.
 
 To determine if you can apply the patch, use the [Delta Verification API].
 
-[Central Server]: ../../../Services/Central-Server.md
-[Delta Verification API]: ../../../Services/Central-Server.md#delta-verification-api
-[Download Information API]: ../../../Services/Central-Server.md#download-information
+[Central Server]: ../../../Services/Central-Server/Online-API.md
+[Delta Verification API]: ../../../Services/Central-Server/Static-API.md#delta-verification-api
+[Download Information API]: ../../../Services/Central-Server/Online-API.md#download-information
 [Extension ID]: https://nexus-mods.github.io/NexusMods.Archives.Nx/Specification/User-Data/#extensions
 [Extract Info]: #extract-info
 [File Hash Cache]: ../../../Common/Hash-Cache/File-Format.md

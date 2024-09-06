@@ -218,7 +218,7 @@ The goal is to create a world where modders can focus on actually *modding* the 
 		"Svg/download-outline.svg",
 		"Download From Anywhere",
 		"Full support for various download sources, download and update!<br/>
-        GameBanana, Nexus, GitHub, NuGet and More!"
+        GameBanana, GitHub, Nexus and More!"
 	)}}
 </div>
 

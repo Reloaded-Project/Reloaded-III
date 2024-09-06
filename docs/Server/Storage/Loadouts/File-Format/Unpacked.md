@@ -817,8 +817,8 @@ as regular parameters in [Commit Parameters](#commit-parameters).
 [commit-messages]: ./Commit-Messages.md
 [hashing]: ../../../../Common/Hashing.md
 [package-toml]: ../../../Packaging/Package-Metadata.md
-[central-server]: ../../../../Services/Central-Server.md
-[static-cdn-api]: ../../../../Services/Central-Server.md#static-cdn-api
+[central-server]: ../../../../Services/Central-Server/Online-API.md
+[static-cdn-api]: ../../../../Services/Central-Server/Static-API.md
 [store-type]: ./DataTypes.md#storetype
 [depot-downloader]: https://github.com/SteamRE/DepotDownloader/blob/b96125f9cbbb0f63d47e14784929f255f6c21ce1/DepotDownloader/ContentDownloader.cs#L185
 [gog]: ../Stores/GOG.md

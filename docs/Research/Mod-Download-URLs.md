@@ -20,6 +20,27 @@ uniquely identify a file.
 
 ### GameBanana
 
+#### Search Mod Pages
+
+**Example URL:**
+```
+https://gamebanana.com/apiv11/Game/:id/Subfeed?_nPage=1&_sSort=default
+```
+
+**Response Data (truncated):**
+```json
+{
+  "_aFiles": [
+    {
+      "_idRow": 610939,
+      "_sFile": "example_mod.zip",
+      "_nFilesize": 1048576,
+      "_sDownloadUrl": "https:\/\/gamebanana.com\/dl\/610939",
+    }
+  ]
+}
+```
+
 #### Obtain a Mod Page
 
 **Example URL:**
@@ -68,6 +89,35 @@ https://gamebanana.com/apiv11/File/610939
 ```
 
 ### GitHub
+
+#### Search Repositories
+
+!!! warning "Repos must be marked with `appropriate tag` (topic) to be found."
+
+    In this example we used `btd6-mod` as the tag, for Bloons TD6 mods which use
+    this technique.
+
+**Example URL:**
+```
+https://api.github.com/search/repositories?q=topic:btd6-mod&order=desc&per_page=100&page=1
+```
+
+**Response Data (truncated):**
+
+```json
+{
+    "total_count": 264,
+    "incomplete_results": false,
+    "items": [
+        {
+            "id": 398926502,
+            "full_name": "doombubbles/ultimate-crosspathing",
+            "created_at": "2021-08-23T00:03:31Z",
+            "updated_at": "2024-08-26T18:27:53Z",
+            "pushed_at": "2024-08-01T04:18:14Z",
+```
+
+#### Get Release Info
 
 **Example URL:**
 ```
@@ -118,7 +168,7 @@ https://api.github.com/repos/Sewer56/nanokit-rs/releases?per_page=1&page=1
 
 ### NexusMods
 
-#### Obtain a Mod Page
+#### Search Mod Pages
 
 **Example GraphQL Query:**
 
@@ -253,4 +303,11 @@ This fetches us the mod files by specific UID.
     - First 4 bytes are `modId`, last 4 bytes are `gameId`.
     - These are little endian.
 
-[Central Server]: ../Services/Central-Server.md
+## Indexing Optimizations
+
+!!! info "Optimizations for indexing these files."
+
+- Sort by date.
+- Stop search when finding item older than last indexed.
+
+[Central Server]: ../Services/Central-Server/Online-API.md

@@ -112,9 +112,9 @@ Expect the tech to `just work` on most OSes where low level libraries like [mio]
 [header-metadata]: ../File-Format/Archive-User-Data-Format.md
 [nx-header]: https://nexus-mods.github.io/NexusMods.Archives.Nx/Specification/File-Header/#how-the-header-is-used
 [Delta Patching Logic]: ../File-Format/Delta-Patching-Logic.md
-[Reloaded3 Central Server]: ../../../Services/Central-Server.md
-[Get Package Metadata]: ../../../Services/Central-Server.md#get-package-metadata
-[Download Information]: ../../../Services/Central-Server.md#download-information
-[Delta Verification API]: ../../../Services/Central-Server.md#delta-verification-api
+[Reloaded3 Central Server]: ../../../Services/Central-Server/Online-API.md
+[Get Package Metadata]: ../../../Services/Central-Server/Online-API.md#get-package-metadata
+[Download Information]: ../../../Services/Central-Server/Online-API.md#download-information
+[Delta Verification API]: ../../../Services/Central-Server/Static-API.md#delta-verification-api
 [Code Guidelines]: ../../../Code-Guidelines/Code-Guidelines.md
 [mio]: https://github.com/tokio-rs/mio

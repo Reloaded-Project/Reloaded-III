@@ -530,6 +530,14 @@ When possible, avoid unsafe allocation and use safe constructs.
     // let mut boxed_array: Box<[MaybeUninit<i32>], A> = Box::new_uninit_slice_in(5, allocator);
     ```
 
+#### 3.2 Guidance for Using Allocators
+
+!!! note "Using custom allocators can be a bit tricky."
+
+    Because `allocator_api` currently isn't very well documented.
+
+For additional guidance, see [Demystifying Rust Allocators] page.
+
 ### 4. Stack Memory Allocation
 
 !!! info "When writing portable code, be aware of the varying thread stack sizes across different platforms"
@@ -930,4 +938,5 @@ fn critical_function(x: u32) -> u32 {
 [dwelo-guide]: https://medium.com/dwelo-r-d/using-c-libraries-in-rust-13961948c72a
 [dwelo-guide-2]: https://medium.com/dwelo-r-d/wrapping-unsafe-c-libraries-in-rust-d75aeb283c65
 [debug unwraps]: https://crates.io/crates/debug_unwraps
+[Demystifying Rust Allocators]: ../Research/Demystifying-Rust-Allocators.md
 {% endraw %}

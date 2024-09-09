@@ -227,8 +227,10 @@ nav:
     - External Services:
         - SteamGridDB: Research/External-Services/SteamGridDB.md
     - Binary Sizes:
-        - IPC: Research/Library-Sizes/IPC.md
-        - Serializers: Research/Library-Sizes/Serializers.md
+      - IPC: Research/Library-Sizes/IPC.md
+      - Serializers: Research/Library-Sizes/Serializers.md
+    - Mods:
+      - Optimizing Bandwidth: Research/Mods/Optimizing-Bandwidth.md
     - FileSystem Performance: Research/FileSystem-Performance.md
     - Microarchitecture Levels: Research/Microarchitecture-Levels.md
     - Mod Download URLs: Research/Mod-Download-URLs.md

@@ -169,7 +169,7 @@ size is available in compressed payload.
 
 ## File Path Sanitization
 
-!!! info "Each file path is sanitized using the following rules before being hashes."
+!!! info "Each file path is sanitized using the following rules before being hashed."
 
 1. Any trailing slashes are removed.
 2. File paths are converted to upper case.

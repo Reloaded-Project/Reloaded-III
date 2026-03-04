@@ -8,7 +8,7 @@ Assume any bit packed values are sequential, i.e. if `u4` then `u4` is specified
 The file, including all packed fields is `little-endian`. It is written out when total number of
 bits aligns with a power of 2.
 
-- `u6` + `u12` is 2 bytes `little-endian`
+- `u6` + `u10` is 2 bytes `little-endian`
 - `u15` + `u17` is 4 bytes `little-endian`
 - `u26` + `u22` + u16 is 8 bytes `little-endian`
 - ***`u6` + `u11` + u17 is 4 bytes `little-endian`, not 2+2***

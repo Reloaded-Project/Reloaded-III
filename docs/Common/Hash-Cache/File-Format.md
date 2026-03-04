@@ -10,8 +10,8 @@ bits aligns with a power of 2.
 
 - `u6` + `u10` is 2 bytes `little-endian`
 - `u15` + `u17` is 4 bytes `little-endian`
-- `u26` + `u22` + u16 is 8 bytes `little-endian`
-- ***`u6` + `u11` + u17 is 4 bytes `little-endian`, not 2+2***
+- `u26` + `u22` + `u16` is 8 bytes `little-endian`
+- ***`u6` + `u11` + `u15` is 4 bytes `little-endian`, not 2+2***
 
 ## File Layout
 
